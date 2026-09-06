@@ -4,8 +4,10 @@ namespace FarmMVP
 {
     /// <summary>
     /// Single entry point. Attached to one GameObject in the scene (or spawned
-    /// automatically). Creates the camera, player, GameManager and UIManager and
-    /// wires them together, so the project runs with zero manual scene setup.
+    /// automatically). Shows the title screen (MainMenuController) first; once
+    /// 새 게임/이어하기 is chosen, StartGame() creates the camera, player,
+    /// GameManager and UIManager and wires them together, so the project runs
+    /// with zero manual scene setup.
     /// </summary>
     [DefaultExecutionOrder(-100)]
     public class GameBootstrap : MonoBehaviour
@@ -34,6 +36,18 @@ namespace FarmMVP
         }
 
         private void Start()
+        {
+            AssetLibrary.EnsureLoaded();
+
+            // Show the title screen first; gameplay is built once the player
+            // picks 새 게임/이어하기 from MainMenuController.
+            var menuGo = new GameObject("MainMenu");
+            var menu = menuGo.AddComponent<MainMenuController>();
+            menu.Boot(this);
+        }
+
+        /// <summary>Called by MainMenuController once 새 게임/이어하기 is chosen.</summary>
+        public void StartGame()
         {
             AssetLibrary.EnsureLoaded();
 
