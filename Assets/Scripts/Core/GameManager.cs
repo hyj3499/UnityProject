@@ -62,6 +62,7 @@ namespace FarmMVP
 
             ItemDatabase.Init();
             CropDatabase.Init();
+            LootTableDatabase.Init();
             AssetLibrary.EnsureLoaded();
 
             // load or new game
@@ -139,6 +140,7 @@ namespace FarmMVP
             CurrentLocation = go.AddComponent<GameLocation>();
             CurrentLocation.id = id;
             CurrentLocation.Build(Data);
+            RestoreDroppedItems(Data.GetLocation(id));
 
             Data.currentLocation = id;
 
@@ -149,6 +151,13 @@ namespace FarmMVP
             Player.transform.position = new Vector3(p.x, p.y, 0);
 
             CenterCameraInstant();
+        }
+
+        /// <summary>이 위치에 저장되어 있던, 아직 줍지 않은 드랍 아이템들을 그대로 되살린다.</summary>
+        private void RestoreDroppedItems(LocationData loc)
+        {
+            foreach (var d in loc.droppedItems)
+                WorldItem.CreateAt(CurrentLocation.FeatureRoot, this, d.itemId, d.count, new Vector2(d.x, d.y));
         }
 
         // ---------- update loop ----------
@@ -208,7 +217,7 @@ namespace FarmMVP
 
         // ---------- interaction ----------
         /// <summary>
-        /// 우클릭: 현재 선택된 마법을 바라보는 타일에 시전 시도.
+        /// 좌클릭: 현재 선택된 마법을 바라보는 타일에 시전 시도.
         /// MP가 부족해 시전 자체를 시작할 수 없었으면 false (호출자가 조준/지속시전을 중단하는 데 사용).
         /// </summary>
         public bool CastMagicOnFacingTile(PlayerController pc)
@@ -219,15 +228,21 @@ namespace FarmMVP
             if (!TrySpendMp(def.mpCost)) return false;
 
             var tile = pc.FacingTile();
-            if (MagicSystem.TryApply(CurrentMagic, CurrentLocation, Inventory, tile.x, tile.y))
+            if (MagicSystem.TryApply(CurrentMagic, CurrentLocation, tile.x, tile.y, out string dropTableId))
+            {
                 SpendTime(def.timeCost);
+                if (dropTableId != null)
+                    ItemDropSpawner.Spawn(CurrentLocation.FeatureRoot, this, tile, dropTableId);
+            }
             else
+            {
                 RefundMp(def.mpCost); // 대상이 없어 아무 일도 없었으면 MP 환불
+            }
 
             return true;
         }
 
-        /// <summary>좌클릭: 선택된 인벤토리 아이템이 씨앗일 때만 바라보는 타일에 심는다.</summary>
+        /// <summary>우클릭: 선택된 인벤토리 아이템이 씨앗일 때만 바라보는 타일에 심는다.</summary>
         public void PlantSelectedOnFacingTile(PlayerController pc)
         {
             if (Paused) return;

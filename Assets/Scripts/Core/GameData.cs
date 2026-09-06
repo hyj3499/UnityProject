@@ -58,6 +58,7 @@ namespace FarmMVP
     {
         public List<HoeDirtData> hoeDirts = new List<HoeDirtData>();
         public List<TreeData> trees = new List<TreeData>();
+        public List<WorldItemData> droppedItems = new List<WorldItemData>();
         public bool initialized = false;
     }
 
@@ -77,5 +78,15 @@ namespace FarmMVP
     {
         public int x, y;
         public int hp;
+        public string dropTableId = TreeFeature.DefaultDropTableId;
+    }
+
+    /// <summary>바닥에 떨어진 채 아직 줍지 않은 월드 아이템 하나 (WorldItem의 저장 형태).</summary>
+    [Serializable]
+    public class WorldItemData
+    {
+        public float x, y;
+        public string itemId;
+        public int count;
     }
 }

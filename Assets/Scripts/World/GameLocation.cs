@@ -17,6 +17,9 @@ namespace FarmMVP
         public Dictionary<Vector2Int, HoeDirt> hoeDirts = new Dictionary<Vector2Int, HoeDirt>();
         public Dictionary<Vector2Int, TreeFeature> trees = new Dictionary<Vector2Int, TreeFeature>();
 
+        /// <summary>드랍된 월드 아이템(WorldItem)을 매달아 둘 부모. 위치가 다시 로드되면 함께 정리된다.</summary>
+        public Transform FeatureRoot => _featureRoot;
+
         private bool[,] _blocked;
         private Transform _tileRoot, _featureRoot;
         private readonly Dictionary<Vector2Int, SpriteRenderer> _hoeRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
@@ -213,7 +216,7 @@ namespace FarmMVP
             foreach (var t in loc.trees)
             {
                 var pos = new Vector2Int(t.x, t.y);
-                trees[pos] = new TreeFeature(t.x, t.y) { hp = t.hp };
+                trees[pos] = new TreeFeature(t.x, t.y, t.dropTableId) { hp = t.hp };
                 SetBlocked(t.x, t.y, true);
                 RenderTree(pos);
             }
@@ -309,14 +312,20 @@ namespace FarmMVP
             return item;
         }
 
-        public bool ChopTree(int x, int y, out bool destroyed)
+        /// <summary>
+        /// 나무를 한 번 벤다. 이번 타격으로 나무가 쓰러졌으면 destroyed=true와 함께
+        /// 그 나무의 dropTableId를 돌려준다 (호출자가 ItemDropSpawner로 실제 드랍을 스폰한다).
+        /// </summary>
+        public bool ChopTree(int x, int y, out bool destroyed, out string dropTableId)
         {
             destroyed = false;
+            dropTableId = null;
             var pos = new Vector2Int(x, y);
             if (!trees.TryGetValue(pos, out var t) || !t.IsAlive) return false;
             destroyed = t.Chop();
             if (destroyed)
             {
+                dropTableId = t.dropTableId;
                 trees.Remove(pos);
                 RenderTree(pos);
             }
@@ -351,7 +360,14 @@ namespace FarmMVP
             }
             loc.trees.Clear();
             foreach (var kv in trees)
-                loc.trees.Add(new TreeData { x = kv.Value.x, y = kv.Value.y, hp = kv.Value.hp });
+                loc.trees.Add(new TreeData { x = kv.Value.x, y = kv.Value.y, hp = kv.Value.hp, dropTableId = kv.Value.dropTableId });
+
+            loc.droppedItems.Clear();
+            foreach (var wi in _featureRoot.GetComponentsInChildren<WorldItem>())
+            {
+                var pos = wi.transform.position;
+                loc.droppedItems.Add(new WorldItemData { x = pos.x, y = pos.y, itemId = wi.ItemId, count = wi.Count });
+            }
             loc.initialized = true;
         }
     }

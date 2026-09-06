@@ -65,10 +65,14 @@ namespace FarmMVP
 
         /// <summary>
         /// 지정한 타일에 마법 효과를 적용 시도한다 (MP 소모/환불은 호출자 책임).
-        /// 실제로 무언가 바뀌었으면 true.
+        /// 실제로 무언가 바뀌었으면 true. 무언가 파괴되어 아이템을 드랍해야 하면
+        /// dropTableId를 돌려주고, 실제 스폰은 호출자(GameManager)가 ItemDropSpawner로 한다 —
+        /// 인벤토리에 바로 넣지 않고 월드에 떨어뜨려야 하기 때문에 여기서는 직접 지급하지 않는다.
         /// </summary>
-        public static bool TryApply(MagicType type, GameLocation location, Inventory inventory, int x, int y)
+        public static bool TryApply(MagicType type, GameLocation location, int x, int y, out string dropTableId)
         {
+            dropTableId = null;
+
             switch (type)
             {
                 case MagicType.Earth: // 대지마법: 경작
@@ -78,9 +82,9 @@ namespace FarmMVP
                     return location.Water(x, y);
 
                 case MagicType.Blade: // 칼날마법: 나무 베기
-                    if (location.ChopTree(x, y, out bool destroyed))
+                    if (location.ChopTree(x, y, out bool destroyed, out string tableId))
                     {
-                        if (destroyed) inventory.Add("wood", 3);
+                        if (destroyed) dropTableId = tableId;
                         return true;
                     }
                     return false;
