@@ -23,30 +23,14 @@ namespace FarmMVP
         public event Action OnStatsChanged;
         public event Action OnMagicChanged;
 
-        // ---------- 마법 ----------
+        // ---------- 마법 (스펙/발동 로직은 MagicSystem 참고) ----------
         public MagicType CurrentMagic { get; private set; } = MagicType.Earth;
-
-        // 마법별 MP 소모량
-        public const int MpCostEarth = 3;
-        public const int MpCostWater = 2;
-        public const int MpCostBlade = 4;
 
         /// <summary>Q키로 마법 순환 (대지 → 물 → 칼날 → 대지 ...).</summary>
         public void CycleMagic()
         {
             CurrentMagic = (MagicType)(((int)CurrentMagic + 1) % 3);
             OnMagicChanged?.Invoke();
-        }
-
-        private int MpCostOf(MagicType m)
-        {
-            switch (m)
-            {
-                case MagicType.Earth: return MpCostEarth;
-                case MagicType.Water: return MpCostWater;
-                case MagicType.Blade: return MpCostBlade;
-            }
-            return 0;
         }
 
         /// <summary>MP가 충분하면 소모하고 true 반환.</summary>
@@ -223,47 +207,39 @@ namespace FarmMVP
         public ItemStack SelectedStack => Inventory.GetSlot(Data.farmer.equippedHotbarIndex);
 
         // ---------- interaction ----------
-        public void UseSelectedOnFacingTile(PlayerController pc)
+        /// <summary>
+        /// 우클릭: 현재 선택된 마법을 바라보는 타일에 시전 시도.
+        /// MP가 부족해 시전 자체를 시작할 수 없었으면 false (호출자가 조준/지속시전을 중단하는 데 사용).
+        /// </summary>
+        public bool CastMagicOnFacingTile(PlayerController pc)
+        {
+            if (Paused) return false;
+
+            var def = MagicSystem.Get(CurrentMagic);
+            if (!TrySpendMp(def.mpCost)) return false;
+
+            var tile = pc.FacingTile();
+            if (MagicSystem.TryApply(CurrentMagic, CurrentLocation, Inventory, tile.x, tile.y))
+                SpendTime(def.timeCost);
+            else
+                RefundMp(def.mpCost); // 대상이 없어 아무 일도 없었으면 MP 환불
+
+            return true;
+        }
+
+        /// <summary>좌클릭: 선택된 인벤토리 아이템이 씨앗일 때만 바라보는 타일에 심는다.</summary>
+        public void PlantSelectedOnFacingTile(PlayerController pc)
         {
             if (Paused) return;
-            var tile = pc.FacingTile();
 
-            // 1) 선택된 아이템이 씨앗이면 심기 (아이템 소비, MP 사용 안 함)
             var stack = SelectedStack;
-            if (stack != null && !stack.IsEmpty && stack.Def.type == ItemType.Seed)
+            if (stack == null || stack.IsEmpty || stack.Def.type != ItemType.Seed) return;
+
+            var tile = pc.FacingTile();
+            if (CurrentLocation.Plant(tile.x, tile.y, stack.Def.cropId))
             {
-                if (CurrentLocation.Plant(tile.x, tile.y, stack.Def.cropId))
-                {
-                    Inventory.ConsumeOne(Data.farmer.equippedHotbarIndex);
-                    SpendTime(5);
-                }
-                return;
-            }
-
-            // 2) 그 외에는 현재 선택된 마법 사용 (성공 시에만 MP 소모)
-            switch (CurrentMagic)
-            {
-                case MagicType.Earth: // 대지마법: 경작
-                    if (!TrySpendMp(MpCostEarth)) return;
-                    if (CurrentLocation.Till(tile.x, tile.y)) SpendTime(10);
-                    else RefundMp(MpCostEarth); // 아무 일도 없었으면 MP 환불
-                    break;
-
-                case MagicType.Water: // 물마법: 물주기
-                    if (!TrySpendMp(MpCostWater)) return;
-                    if (CurrentLocation.Water(tile.x, tile.y)) SpendTime(5);
-                    else RefundMp(MpCostWater);
-                    break;
-
-                case MagicType.Blade: // 칼날마법: 나무 베기
-                    if (!TrySpendMp(MpCostBlade)) return;
-                    if (CurrentLocation.ChopTree(tile.x, tile.y, out bool destroyed))
-                    {
-                        SpendTime(8);
-                        if (destroyed) Inventory.Add("wood", 3);
-                    }
-                    else RefundMp(MpCostBlade);
-                    break;
+                Inventory.ConsumeOne(Data.farmer.equippedHotbarIndex);
+                SpendTime(5);
             }
         }
 

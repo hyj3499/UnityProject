@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace FarmMVP
 {
@@ -17,6 +18,14 @@ namespace FarmMVP
         private int _animFrame;
         private bool _moving;
 
+        // ---------- 마법(좌클릭) / 씨앗(우클릭) 조준 상태 ----------
+        private static readonly Color SeedPreviewColor = new Color(0.35f, 0.85f, 0.35f, 0.45f);
+
+        private TargetIndicator _indicator;
+        private bool _magicHeld;
+        private float _waterTickTimer;
+        private bool _seedHeld;
+
         public void Init(GameManager game)
         {
             _game = game;
@@ -24,15 +33,37 @@ namespace FarmMVP
             if (_sr == null) _sr = gameObject.AddComponent<SpriteRenderer>();
             _sr.sortingOrder = 1000;
             AssetLibrary.EnsureLoaded();
+
+            _indicator = TargetIndicator.Create();
         }
 
         private void Update()
         {
-            if (_game == null || _game.Paused) { UpdateAnimation(0); return; }
+            if (_game == null || _game.Paused)
+            {
+                CancelHolds();
+                UpdateAnimation(0);
+                return;
+            }
 
             HandleMovement();
             HandleHotbarKeys();
             HandleInteraction();
+        }
+
+        /// <summary>인벤토리를 열거나 팝업이 뜨는 등 입력이 막히면 진행 중인 조준을 취소한다.</summary>
+        private void CancelHolds()
+        {
+            if (!_magicHeld && !_seedHeld) return;
+            _magicHeld = false;
+            _seedHeld = false;
+            _indicator?.Hide();
+        }
+
+        /// <summary>인벤토리/핫바 등 UI 위에서 시작된 클릭이 월드 상호작용으로 새는 것을 막는다.</summary>
+        private static bool IsPointerOverUI()
+        {
+            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
         }
 
         private void HandleMovement()
@@ -149,12 +180,107 @@ namespace FarmMVP
 
         private void HandleInteraction()
         {
-            if (Input.GetMouseButtonDown(0))
-                _game.UseSelectedOnFacingTile(this);
+            HandleMagicInput();
+            HandleSeedInput();
 
             // interact key (e / space) for bed and generic
             if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space))
                 _game.TryContextInteract(this);
+        }
+
+        /// <summary>
+        /// 좌클릭 = 마법 사용.
+        /// 대지/칼날마법: 누르는 즉시 범위를 표시하고, 키를 뗄 때 실제로 시전한다
+        /// (짧게 누르면 거의 즉시 떼어지므로 바로 시전한 것처럼 보이고, 길게 누르면 그동안 이동하며 조준할 수 있다).
+        /// 물마법: 누르는 즉시 한 번 시전하고, 계속 누르고 있으면 일정 간격마다 반복 시전한다.
+        /// </summary>
+        private void HandleMagicInput()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 시전으로 새는 것 방지
+
+                _waterTickTimer = 0f;
+
+                if (_game.CurrentMagic == MagicType.Water)
+                {
+                    if (!_game.CastMagicOnFacingTile(this)) return; // MP 부족 - 조준 시작조차 하지 않음
+                }
+
+                _magicHeld = true;
+                _indicator.Show(FacingTile(), MagicSystem.Get(_game.CurrentMagic).previewColor);
+            }
+            else if (_magicHeld && Input.GetMouseButton(0))
+            {
+                _indicator.Show(FacingTile(), MagicSystem.Get(_game.CurrentMagic).previewColor);
+
+                if (_game.CurrentMagic == MagicType.Water)
+                {
+                    _waterTickTimer += Time.deltaTime;
+                    float interval = MagicSystem.Get(_game.CurrentMagic).tickInterval;
+                    if (_waterTickTimer >= interval)
+                    {
+                        _waterTickTimer -= interval;
+                        if (!_game.CastMagicOnFacingTile(this))
+                        {
+                            _magicHeld = false;
+                            _indicator.Hide();
+                        }
+                    }
+                }
+            }
+
+            if (_magicHeld && Input.GetMouseButtonUp(0))
+            {
+                _magicHeld = false;
+                _indicator.Hide();
+
+                // 물마법은 누르는 동안 이미 시전했으므로 뗄 때 추가로 시전하지 않는다.
+                if (_game.CurrentMagic != MagicType.Water)
+                    _game.CastMagicOnFacingTile(this);
+            }
+        }
+
+        /// <summary>
+        /// 우클릭 = 인벤토리에서 씨앗이 선택되어 있을 때만 씨앗 심기.
+        /// 대지/칼날마법과 동일하게 누르는 동안 범위를 표시하며 이동할 수 있고, 뗄 때 심는다.
+        /// </summary>
+        private void HandleSeedInput()
+        {
+            bool isSeed = IsSeedSelected();
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 파종으로 새는 것 방지
+                if (!isSeed) return;
+                _seedHeld = true;
+                _indicator.Show(FacingTile(), SeedPreviewColor);
+            }
+            else if (_seedHeld && Input.GetMouseButton(1))
+            {
+                if (!isSeed)
+                {
+                    _seedHeld = false;
+                    _indicator.Hide();
+                }
+                else
+                {
+                    _indicator.Show(FacingTile(), SeedPreviewColor);
+                }
+            }
+
+            if (_seedHeld && Input.GetMouseButtonUp(1))
+            {
+                _seedHeld = false;
+                _indicator.Hide();
+                if (isSeed) _game.PlantSelectedOnFacingTile(this);
+            }
+        }
+
+        private bool IsSeedSelected()
+        {
+            var stack = _game.SelectedStack;
+            return stack != null && !stack.IsEmpty && stack.Def.type == ItemType.Seed;
         }
 
         public Vector2Int FacingTile()

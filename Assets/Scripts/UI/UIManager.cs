@@ -136,11 +136,13 @@ namespace FarmMVP
             var bg = new GameObject("BG").AddComponent<Image>();
             bg.transform.SetParent(rt, false);
             bg.color = new Color(0.15f, 0.15f, 0.15f, 0.8f);
+            bg.raycastTarget = false; // 상호작용 불가능한 HP/MP 바
             Stretch(bg.rectTransform, 30, 0, 0, 0);
 
             var fillArea = new GameObject("Fill").AddComponent<Image>();
             fillArea.transform.SetParent(rt, false);
             fillArea.color = fill;
+            fillArea.raycastTarget = false;
             Stretch(fillArea.rectTransform, 30, 0, 0, 0);
 
             slider.fillRect = fillArea.rectTransform;
@@ -237,6 +239,7 @@ namespace FarmMVP
             brt.sizeDelta = new Vector2(600, 120);
             var bimg = banner.AddComponent<Image>();
             bimg.color = new Color(0, 0, 0, 0.0f);
+            bimg.raycastTarget = false; // 화면 중앙(플레이어 위치)을 항상 덮는 장식용 배너라 클릭을 가로채면 안 됨
             _bannerText = Label(brt, "", 48, Vector2.zero, TextAnchor.MiddleCenter);
             Stretch(_bannerText.rectTransform, 0, 0, 0, 0);
             _bannerText.color = new Color(1, 1, 1, 0);
@@ -419,18 +422,8 @@ namespace FarmMVP
         /// <summary>우측 하단에 현재 선택된 마법 이름과 MP 소모량을 표시.</summary>
         private void RefreshMagic()
         {
-            switch (_game.CurrentMagic)
-            {
-                case MagicType.Earth:
-                    _toolLabel.text = $"대지마법\nMP {GameManager.MpCostEarth}";
-                    break;
-                case MagicType.Water:
-                    _toolLabel.text = $"물마법\nMP {GameManager.MpCostWater}";
-                    break;
-                case MagicType.Blade:
-                    _toolLabel.text = $"칼날마법\nMP {GameManager.MpCostBlade}";
-                    break;
-            }
+            var def = MagicSystem.Get(_game.CurrentMagic);
+            _toolLabel.text = $"{def.displayName}\nMP {def.mpCost}";
         }
 
         private void UpdateSlotView(SlotView v, ItemStack stack, bool selected)
@@ -523,6 +516,7 @@ namespace FarmMVP
             rt.sizeDelta = size;
             var img = go.AddComponent<Image>();
             img.color = col;
+            img.raycastTarget = false; // 장식용 HUD 배경일 뿐, 클릭을 가로채면 안 됨
             return rt;
         }
 
@@ -541,6 +535,7 @@ namespace FarmMVP
             t.text = text;
             t.horizontalOverflow = HorizontalWrapMode.Overflow;
             t.verticalOverflow = VerticalWrapMode.Overflow;
+            t.raycastTarget = false; // 텍스트는 클릭을 가로채지 않음 (버튼은 배경 Image가 받는다)
             return t;
         }
 
