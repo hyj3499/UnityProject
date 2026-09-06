@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,6 +37,12 @@ namespace FarmMVP
         private Text _bannerText;
         private Text _toastText;
 
+        // Yes/No confirm dialog
+        private GameObject _confirmPanel;
+        private Text _confirmText;
+        private Action _confirmYesAction;
+        private Action _confirmNoAction;
+
         public void Boot(GameManager game)
         {
             Instance = this;
@@ -47,6 +54,7 @@ namespace FarmMVP
             BuildHotbar();
             BuildInventoryPanel();
             BuildBannerAndToast();
+            BuildConfirmDialog();
 
             _game.OnTimeChanged += RefreshTime;
             _game.OnDayChanged += RefreshTime;
@@ -244,6 +252,79 @@ namespace FarmMVP
             _toastText = Label(trt, "", 20, Vector2.zero, TextAnchor.MiddleCenter);
             Stretch(_toastText.rectTransform, 0, 0, 0, 0);
             _toastText.color = new Color(1, 1, 1, 0);
+        }
+
+        // ---------- confirm dialog ----------
+        private void BuildConfirmDialog()
+        {
+            _confirmPanel = new GameObject("ConfirmDialog");
+            var rt = _confirmPanel.AddComponent<RectTransform>();
+            rt.SetParent(_canvas.transform, false);
+            rt.anchorMin = new Vector2(0.5f, 0.5f);
+            rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = new Vector2(360, 160);
+
+            var bg = _confirmPanel.AddComponent<Image>();
+            bg.color = new Color(0.08f, 0.08f, 0.10f, 0.96f);
+
+            _confirmText = Label(rt, "", 22, Vector2.zero, TextAnchor.MiddleCenter);
+            _confirmText.rectTransform.anchorMin = new Vector2(0, 0);
+            _confirmText.rectTransform.anchorMax = new Vector2(1, 1);
+            _confirmText.rectTransform.offsetMin = new Vector2(16, 56);
+            _confirmText.rectTransform.offsetMax = new Vector2(-16, -16);
+            _confirmText.rectTransform.anchoredPosition = Vector2.zero;
+
+            MakeButton(rt, "예", new Vector2(-90, 20), () => OnConfirmClicked(true));
+            MakeButton(rt, "아니오", new Vector2(90, 20), () => OnConfirmClicked(false));
+
+            _confirmPanel.SetActive(false);
+        }
+
+        private Button MakeButton(RectTransform parent, string text, Vector2 pos, UnityEngine.Events.UnityAction onClick)
+        {
+            var go = new GameObject("Button_" + text);
+            var rt = go.AddComponent<RectTransform>();
+            rt.SetParent(parent, false);
+            rt.anchorMin = new Vector2(0.5f, 0);
+            rt.anchorMax = new Vector2(0.5f, 0);
+            rt.pivot = new Vector2(0.5f, 0);
+            rt.anchoredPosition = pos;
+            rt.sizeDelta = new Vector2(120, 40);
+
+            var img = go.AddComponent<Image>();
+            img.color = new Color(0.25f, 0.25f, 0.3f, 1f);
+
+            var btn = go.AddComponent<Button>();
+            btn.targetGraphic = img;
+            btn.onClick.AddListener(onClick);
+
+            var label = Label(rt, text, 18, Vector2.zero, TextAnchor.MiddleCenter);
+            Stretch(label.rectTransform, 0, 0, 0, 0);
+            label.raycastTarget = false;
+
+            return btn;
+        }
+
+        /// <summary>범용 예/아니오 확인 팝업. Yes/No 클릭 시 해당 콜백을 호출한다.</summary>
+        public void ShowYesNo(string message, Action onYes, Action onNo = null)
+        {
+            _confirmText.text = message;
+            _confirmYesAction = onYes;
+            _confirmNoAction = onNo;
+            _confirmPanel.SetActive(true);
+            if (_game != null) _game.Paused = true;
+        }
+
+        private void OnConfirmClicked(bool yes)
+        {
+            _confirmPanel.SetActive(false);
+            if (_game != null) _game.Paused = false;
+
+            var action = yes ? _confirmYesAction : _confirmNoAction;
+            _confirmYesAction = null;
+            _confirmNoAction = null;
+            action?.Invoke();
         }
 
         // ---------- slot construction ----------

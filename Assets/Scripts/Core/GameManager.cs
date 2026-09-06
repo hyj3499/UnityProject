@@ -288,7 +288,7 @@ namespace FarmMVP
                 var bed = CurrentLocation.bedTile.Value;
                 if (Near(tile, bed) || Near(here, bed))
                 {
-                    Sleep();
+                    UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
                     return;
                 }
             }
