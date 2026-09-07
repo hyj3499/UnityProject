@@ -40,6 +40,8 @@ namespace FarmMVP
         public static Sprite UiSlot, UiSlotSelected, UiFrame, UiDialoguePanel;
         public static Sprite UiBookmarkGreen, UiBookmarkOrange, UiBookmarkBlue;
         public static Sprite UiBagLv1, UiBagLv2;
+        // 낚시
+        public static Sprite UiAlert, UiFishTrack, UiFishZone, UiFishMarker;
 
         public static void EnsureLoaded()
         {
@@ -99,6 +101,21 @@ namespace FarmMVP
             UiBookmarkBlue = Load("Sprites/UI/BookmarkBlue");
             UiBagLv1 = Load("Sprites/UI/BagLv1");
             UiBagLv2 = Load("Sprites/UI/BagLv2");
+
+            UiAlert = Load("Sprites/UI/Alert");
+            UiFishTrack = Load("Sprites/UI/FishTrack");
+            UiFishZone = Load("Sprites/UI/FishZone");
+            UiFishMarker = Load("Sprites/UI/FishMarker");
+        }
+
+        /// <summary>
+        /// Resources 경로로 스프라이트를 직접 가져온다 (캐시됨). 물고기처럼 종류가 많아
+        /// 필드를 하나씩 두기 곤란한 것들이 쓴다.
+        /// </summary>
+        public static Sprite GetSprite(string resourcePath)
+        {
+            EnsureLoaded();
+            return Load(resourcePath);
         }
 
         private static Sprite Load(string path)

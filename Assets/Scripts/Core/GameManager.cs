@@ -13,6 +13,9 @@ namespace FarmMVP
         public GameData Data { get; private set; }
         public Inventory Inventory { get; private set; }
 
+        /// <summary>낚시 상태 기계. UIManager가 준비된 뒤 InitFishing에서 만들어진다.</summary>
+        public FishingController Fishing { get; private set; }
+
         /// <summary>배송함. 여기에 넣어 둔 아이템은 다음 날 아침에 팔려 소지금이 된다.</summary>
         public Inventory ShippingBox { get; private set; }
         public GameLocation CurrentLocation { get; private set; }
@@ -347,6 +350,7 @@ namespace FarmMVP
             TreeDatabase.Init();
             LootTableDatabase.Init();
             NpcDatabase.Init();
+            FishingZoneDatabase.Init();   // FishDatabase도 함께 초기화된다
             AssetLibrary.EnsureLoaded();
 
             // load or new game
@@ -368,6 +372,16 @@ namespace FarmMVP
 
             Player.Init(this);
             LoadLocation(Data.currentLocation, new Vector2(Data.farmer.posX, Data.farmer.posY), firstBoot: true);
+        }
+
+        /// <summary>
+        /// 낚시 준비. 미니게임 바가 UIManager의 캔버스에 붙기 때문에 UI가 만들어진 뒤에 불러야 한다
+        /// (GameBootstrap이 ui.Boot 다음에 호출한다).
+        /// </summary>
+        public void InitFishing(UIManager ui)
+        {
+            if (Fishing != null || ui == null) return;
+            Fishing = FishingController.Create(this, Player, FishingUI.Create(ui));
         }
 
         private GameData NewGame()
@@ -455,6 +469,8 @@ namespace FarmMVP
         private void LoadLocation(LocationId id, Vector2 spawn, bool firstBoot, bool spawnAtDoor = false,
                                   LocationId? entryFrom = null, Vector2Int entryFromTile = default)
         {
+            Fishing?.Cancel();   // 던져 둔 찌는 맵을 옮기면 사라진다
+
             if (CurrentLocation != null)
                 Destroy(CurrentLocation.gameObject);
 
@@ -630,6 +646,19 @@ namespace FarmMVP
             if (Paused) return false;
 
             var def = MagicSystem.Get(CurrentMagic);
+
+            // 물마법을 물 타일에 쓰면 물을 주는 대신 낚시를 시작한다.
+            // 낚시는 한 판이 여러 초에 걸쳐 진행되므로 즉시 판정하는 TryApply를 타지 않는다.
+            var facing = pc.FacingTile();
+            if (CurrentMagic == MagicType.Water && Fishing != null
+                && FishingController.CanFishAt(CurrentLocation, facing.x, facing.y))
+            {
+                if (Fishing.IsActive) return true;
+                if (!TrySpendMp(def.mpCost)) return false;
+                if (!Fishing.TryStartFishing(CurrentLocation, facing)) RefundMp(def.mpCost);
+                return true;
+            }
+
             if (!TrySpendMp(def.mpCost)) return false;
 
             var tile = pc.FacingTile();
@@ -646,6 +675,27 @@ namespace FarmMVP
 
             return true;
         }
+
+        /// <summary>
+        /// 미니게임을 성공했을 때 FishingController가 부른다. 인벤토리에 넣고, 자리가 없으면
+        /// 발밑에 떨어뜨린다 (다른 획득 경로와 같은 규칙).
+        /// </summary>
+        public void OnFishCaught(FishDef fish)
+        {
+            if (fish == null) return;
+
+            SpendTime(FishingTimeCost);
+
+            int left = Inventory.Add(fish.fishId, 1);
+            if (left > 0)
+                WorldItem.Create(CurrentLocation.FeatureRoot, this, fish.fishId, left,
+                                 new Vector2(Player.transform.position.x, Player.transform.position.y));
+
+            UIManager.Instance?.Toast($"{fish.displayName} 을(를) 잡았다! ({fish.RarityLabel})");
+        }
+
+        /// <summary>낚시 한 판에 소모되는 게임 내 분.</summary>
+        private const int FishingTimeCost = 20;
 
         /// <summary>
         /// 우클릭: 선택된 인벤토리 아이템이 씨앗일 때 바라보는 타일에 심는다.

@@ -107,6 +107,7 @@ namespace FarmMVP
             // Boot order: game first (creates Inventory/Data), then UI reads them.
             gm.Boot(cam, pc, locationRoot);
             ui.Boot(gm);
+            gm.InitFishing(ui);   // 미니게임 바가 UI 캔버스에 붙으므로 UI 다음에
 
             ui.ShowDayBanner(gm.Data.currentDay);
 

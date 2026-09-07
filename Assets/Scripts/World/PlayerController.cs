@@ -176,6 +176,14 @@ namespace FarmMVP
 
         private void HandleInteraction()
         {
+            // 낚시 중에는 클릭이 전부 낚시로 간다 (FishingController가 직접 읽는다).
+            if (_game.Fishing != null && _game.Fishing.IsActive)
+            {
+                CancelHolds();   // 물마법은 꾹 누르면 반복 시전이라, 낚시 중에는 홀드를 풀어 둔다
+                _indicator?.Hide();
+                return;
+            }
+
             HandleMagicInput();
             HandleSeedInput();
 

@@ -80,7 +80,8 @@ namespace FarmMVP
             switch (type)
             {
                 case MagicType.Earth: return location.CanTill(x, y);
-                case MagicType.Water: return location.CanWater(x, y);
+                // 물 타일이면 물을 주는 대신 낚시가 시작된다 — 조준 표시도 켜져야 한다.
+                case MagicType.Water: return location.CanWater(x, y) || FishingController.CanFishAt(location, x, y);
                 case MagicType.Blade: return location.HasChoppableTree(x, y);
                 case MagicType.Rock: return location.HasBreakableRock(x, y);
                 default: return false;

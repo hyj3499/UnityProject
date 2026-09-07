@@ -26,6 +26,8 @@ namespace FarmMVP
         internal const int GroundOrder = -110;
         /// <summary>타일 팔레트로 칠한 바닥(Tilemap)의 정렬 순서. 기본 바닥 위, 경작지 아래.</summary>
         private const int PaintedGroundOrder = -100;
+        /// <summary>물 타일맵의 정렬 순서. 칠한 바닥 위에 덮이고, 경작지(-50)보다는 아래.</summary>
+        private const int WaterOrder = -90;
 
         public Dictionary<Vector2Int, HoeDirt> hoeDirts = new Dictionary<Vector2Int, HoeDirt>();
         public Dictionary<Vector2Int, TreeFeature> trees = new Dictionary<Vector2Int, TreeFeature>();
@@ -40,7 +42,9 @@ namespace FarmMVP
         /// <summary>맵 크기를 씬에 칠한 바닥에서 가져왔는지. true면 빌더의 기본 크기를 무시한다.</summary>
         private bool _sizeFromTilemap;
 
-        private Tilemap _groundMap, _blockedMask, _tillableMask, _objectMarkers;
+        private Tilemap _groundMap, _blockedMask, _tillableMask, _objectMarkers, _waterMap;
+        /// <summary>물 칸. null이면 물 레이어가 없다.</summary>
+        private bool[,] _water;
 
         // 맵 밖으로 밀려난 저장 데이터. 지우지 않고 들고 있다가 저장할 때 그대로 되돌려 준다 —
         // 나중에 바닥을 더 칠해서 맵이 커지면 그 시설/작물이 다시 살아난다.
@@ -156,6 +160,7 @@ namespace FarmMVP
         ///   충돌   "Blocked_{id}"   또는 "{id}Blocked"   — 칠한 칸은 지나갈 수 없다
         ///   경작   "Tillable_{id}"  또는 "{id}Tillable"  — 칠한 칸에서만 대지마법을 쓸 수 있다
         ///   물건   "Objects_{id}"   또는 "{id}Objects"    — 집/배송함/나무... 를 놓을 자리
+        ///   물     "Water_{id}"     또는 "{id}Water"      — 칠한 칸은 물. 못 지나가고, 낚시할 수 있다
         ///
         /// 마스크 레이어는 "어떤 타일을 칠했는지"는 보지 않고 "칠했는지 아닌지"만 본다. 그래서
         /// 아무 타일이나 하나 골라 영역만 쓱 칠하면 되고, 타일셋의 타일을 하나씩 분류할 필요가 없다.
@@ -167,7 +172,7 @@ namespace FarmMVP
         /// </summary>
         private void FindSceneTilemaps()
         {
-            _groundMap = _blockedMask = _tillableMask = _objectMarkers = null;
+            _groundMap = _blockedMask = _tillableMask = _objectMarkers = _waterMap = null;
 
             foreach (var tm in FindObjectsOfType<Tilemap>())
             {
@@ -193,6 +198,11 @@ namespace FarmMVP
                     case TilemapLayer.Tillable:
                         _tillableMask = tm;
                         if (tr != null) tr.enabled = false;
+                        break;
+                    case TilemapLayer.Water:
+                        // 물은 눈에 보여야 하는 레이어다 — 마스크들과 달리 렌더러를 켜 둔다.
+                        _waterMap = tm;
+                        if (tr != null) { tr.enabled = true; tr.sortingOrder = WaterOrder; }
                         break;
                     case TilemapLayer.Objects:
                         _objectMarkers = tm;
@@ -246,11 +256,12 @@ namespace FarmMVP
         /// </summary>
         private void ApplyMaskTilemaps()
         {
-            Tilemap blockedMask = _blockedMask, tillableMask = _tillableMask;
+            Tilemap blockedMask = _blockedMask, tillableMask = _tillableMask, waterMap = _waterMap;
             _tillable = tillableMask != null ? new bool[width, height] : null;
-            if (blockedMask == null && tillableMask == null) return;
+            _water = waterMap != null ? new bool[width, height] : null;
+            if (blockedMask == null && tillableMask == null && waterMap == null) return;
 
-            int blockedCount = 0, tillableCount = 0;
+            int blockedCount = 0, tillableCount = 0, waterCount = 0;
             for (int x = 0; x < width; x++)
                 for (int y = 0; y < height; y++)
                 {
@@ -266,12 +277,21 @@ namespace FarmMVP
                         _tillable[x, y] = true;
                         tillableCount++;
                     }
+                    // 물은 칠하기만 하면 자동으로 못 지나가는 칸이 된다 (따로 Blocked를 칠 필요 없음)
+                    if (waterMap != null && waterMap.HasTile(waterMap.WorldToCell(world)))
+                    {
+                        _water[x, y] = true;
+                        SetBlocked(x, y, true);
+                        waterCount++;
+                    }
                 }
 
             if (blockedMask != null)
                 Debug.Log($"[GameLocation] {blockedMask.name}: {blockedCount}칸을 통행 불가로 표시했습니다.");
             if (tillableMask != null)
                 Debug.Log($"[GameLocation] {tillableMask.name}: {tillableCount}칸만 경작할 수 있습니다.");
+            if (waterMap != null)
+                Debug.Log($"[GameLocation] {waterMap.name}: 물 {waterCount}칸 (통행 불가, 물마법으로 낚시).");
         }
 
         // ---------- 오브젝트 마커 레이어 ----------
@@ -429,7 +449,7 @@ namespace FarmMVP
             sr.sortingOrder = -50;   // 바닥 장식이라 캐릭터 아래
         }
 
-        private enum TilemapLayer { Ground, Blocked, Tillable, Objects }
+        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water }
 
         private static bool TryParseLayerName(string name, out LocationId locId, out TilemapLayer layer)
         {
@@ -443,6 +463,8 @@ namespace FarmMVP
                 { locId = candidate; layer = TilemapLayer.Tillable; return true; }
                 if (name == $"Objects_{candidate}" || name == $"{candidate}Objects")
                 { locId = candidate; layer = TilemapLayer.Objects; return true; }
+                if (name == $"Water_{candidate}" || name == $"{candidate}Water")
+                { locId = candidate; layer = TilemapLayer.Water; return true; }
             }
             locId = default;
             layer = TilemapLayer.Ground;
@@ -510,7 +532,18 @@ namespace FarmMVP
         public bool IsTillable(int x, int y)
         {
             if (!InBounds(x, y)) return false;
+            if (IsWater(x, y)) return false;
             return _tillable != null ? _tillable[x, y] : tillableByDefault;
+        }
+
+        /// <summary>
+        /// 물 칸인지. "Water_{id}" 타일맵에 칠한 칸이다. 물은 지나갈 수 없고,
+        /// 물마법을 쓰면 물을 주는 대신 낚시가 시작된다.
+        /// </summary>
+        public bool IsWater(int x, int y)
+        {
+            if (!InBounds(x, y) || _water == null) return false;
+            return _water[x, y];
         }
 
         /// <summary>맵 크기(width/height)가 바뀐 뒤 충돌 배열을 다시 만든다 (FarmHouseBuilder에서 사용).</summary>

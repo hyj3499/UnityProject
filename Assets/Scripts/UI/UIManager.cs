@@ -16,6 +16,9 @@ namespace FarmMVP
     {
         public static UIManager Instance { get; private set; }
 
+        /// <summary>낚시 바처럼 다른 스크립트가 만드는 UI가 붙을 캔버스.</summary>
+        public Transform CanvasRoot => _canvas != null ? _canvas.transform : null;
+
         private GameManager _game;
         private Canvas _canvas;
         private Font _font;

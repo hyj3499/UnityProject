@@ -33,7 +33,12 @@ namespace FarmMVP
                 case "Hoe": return AssetLibrary.Hoe;
                 case "WateringCan": return AssetLibrary.WateringCan;
                 case "Axe": return AssetLibrary.Axe;
-                default: return null;
+                default:
+                    // "Fish/Carp" 처럼 폴더가 붙은 키는 Resources에서 직접 찾는다.
+                    // 물고기처럼 종류가 많은 것을 여기 switch에 한 줄씩 늘리지 않기 위한 통로.
+                    return spriteKey != null && spriteKey.Contains("/")
+                        ? AssetLibrary.GetSprite("Sprites/" + spriteKey)
+                        : null;
             }
         }
     }

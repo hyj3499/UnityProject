@@ -97,6 +97,11 @@ namespace FarmMVP
                 spriteKey = "Axe",
                 toolType = ToolType.Axe
             });
+
+            // 물고기는 FishDatabase에 한 번만 정의하고 아이템 정의는 여기서 자동 생성한다 —
+            // 물고기를 추가할 때 두 군데를 고치지 않도록.
+            foreach (var fish in FishDatabase.All)
+                Register(fish.ToItemDef());
         }
 
         private static void Register(ItemDef def) => _defs[def.id] = def;
