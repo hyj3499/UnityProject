@@ -24,6 +24,7 @@ namespace FarmMVP
         private bool[,] _blocked;
         private Transform _tileRoot, _featureRoot;
         private readonly Dictionary<Vector2Int, SpriteRenderer> _hoeRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
+        private readonly Dictionary<Vector2Int, SpriteRenderer> _wetRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _cropRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _treeRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _rockRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
@@ -125,8 +126,8 @@ namespace FarmMVP
                     dirt.crop = new Crop(hd.cropId) { growthStage = hd.growthStage, dayCounter = hd.dayCounter };
                 }
                 hoeDirts[pos] = dirt;
-                RenderHoeDirt(pos);
             }
+            RefreshAllSoil(); // 이웃 모양(오토타일)을 보려면 전부 채운 뒤에 그려야 한다
             foreach (var t in loc.trees)
             {
                 var pos = new Vector2Int(t.x, t.y);
@@ -150,14 +151,36 @@ namespace FarmMVP
 
         public void RenderHoeDirt(Vector2Int pos)
         {
-            var dirt = hoeDirts[pos];
-            // soil renderer
+            if (!hoeDirts.TryGetValue(pos, out var dirt)) return;
+
+            bool autoTile = SoilTileset.Available;
+
+            // soil renderer — 대지마법으로 경작된 땅(Tilled Soil)
             if (!_hoeRenderers.TryGetValue(pos, out var soilSr))
             {
                 soilSr = PlaceTile(AssetLibrary.Tilled, pos.x, pos.y, -50, _featureRoot);
                 _hoeRenderers[pos] = soilSr;
             }
-            soilSr.sprite = dirt.watered ? AssetLibrary.TilledWatered : AssetLibrary.Tilled;
+            soilSr.sprite = autoTile
+                ? SoilTileset.GetDry(NeighborMask(pos, false))
+                : (dirt.watered ? AssetLibrary.TilledWatered : AssetLibrary.Tilled);
+
+            // wet overlay — 물마법으로 젖은 흙(Wet Soil)을 경작지 위에 덧그린다
+            if (autoTile && dirt.watered)
+            {
+                if (!_wetRenderers.TryGetValue(pos, out var wetSr))
+                {
+                    wetSr = PlaceTile(null, pos.x, pos.y, -49, _featureRoot);
+                    wetSr.gameObject.name = $"wet_{pos.x}_{pos.y}";
+                    _wetRenderers[pos] = wetSr;
+                }
+                wetSr.sprite = SoilTileset.GetWet(NeighborMask(pos, true));
+                wetSr.enabled = true;
+            }
+            else if (_wetRenderers.TryGetValue(pos, out var wetSr2))
+            {
+                wetSr2.enabled = false;
+            }
 
             // crop renderer
             if (dirt.HasCrop)
@@ -178,6 +201,44 @@ namespace FarmMVP
             {
                 cropSr2.enabled = false;
             }
+        }
+
+        /// <summary>
+        /// 이웃 8칸이 같은 종류인지(경작지끼리 / 젖은 흙끼리) 검사해 오토타일 비트마스크를 만든다.
+        /// 대각선·가로선·세로선·T자·3x3 어떤 배치든 이 마스크 하나로 맞는 그림이 결정된다.
+        /// </summary>
+        private int NeighborMask(Vector2Int p, bool wetOnly)
+        {
+            int m = 0;
+            if (Matches(p.x, p.y + 1, wetOnly)) m |= SoilTileset.N;
+            if (Matches(p.x + 1, p.y, wetOnly)) m |= SoilTileset.E;
+            if (Matches(p.x, p.y - 1, wetOnly)) m |= SoilTileset.S;
+            if (Matches(p.x - 1, p.y, wetOnly)) m |= SoilTileset.W;
+            if (Matches(p.x + 1, p.y + 1, wetOnly)) m |= SoilTileset.NE;
+            if (Matches(p.x + 1, p.y - 1, wetOnly)) m |= SoilTileset.SE;
+            if (Matches(p.x - 1, p.y - 1, wetOnly)) m |= SoilTileset.SW;
+            if (Matches(p.x - 1, p.y + 1, wetOnly)) m |= SoilTileset.NW;
+            return SoilTileset.Normalize(m);
+        }
+
+        private bool Matches(int x, int y, bool wetOnly)
+        {
+            if (!hoeDirts.TryGetValue(new Vector2Int(x, y), out var d)) return false;
+            return !wetOnly || d.watered;
+        }
+
+        /// <summary>한 칸이 바뀌면 맞닿은 8칸의 테두리도 달라지므로 같이 다시 그린다.</summary>
+        private void RefreshSoilAround(Vector2Int pos)
+        {
+            for (int dy = -1; dy <= 1; dy++)
+                for (int dx = -1; dx <= 1; dx++)
+                    RenderHoeDirt(new Vector2Int(pos.x + dx, pos.y + dy));
+        }
+
+        private void RefreshAllSoil()
+        {
+            foreach (var key in hoeDirts.Keys)
+                RenderHoeDirt(key);
         }
 
         public void RenderTree(Vector2Int pos)
@@ -233,7 +294,7 @@ namespace FarmMVP
             if (hoeDirts.ContainsKey(pos)) return false;
             if (trees.ContainsKey(pos)) return false;
             hoeDirts[pos] = new HoeDirt(x, y);
-            RenderHoeDirt(pos);
+            RefreshSoilAround(pos);
             return true;
         }
 
@@ -252,7 +313,7 @@ namespace FarmMVP
             if (!hoeDirts.TryGetValue(pos, out var d)) return false;
             if (d.watered) return false;
             d.Water();
-            RenderHoeDirt(pos);
+            RefreshSoilAround(pos);
             return true;
         }
 
