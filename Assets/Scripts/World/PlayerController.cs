@@ -20,7 +20,6 @@ namespace FarmMVP
 
         // ---------- 마법(좌클릭) / 씨앗·수확(우클릭) 조준 상태 ----------
         private static readonly Color SeedPreviewColor = new Color(0.35f, 0.85f, 0.35f, 0.45f);
-        private static readonly Color HarvestPreviewColor = new Color(0.95f, 0.75f, 0.2f, 0.45f);
 
         private TargetIndicator _indicator;
         private bool _magicHeld;
@@ -261,9 +260,6 @@ namespace FarmMVP
         private void HandleSeedInput()
         {
             bool isSeed = IsSeedSelected();
-            var facing = FacingTile();
-            bool canHarvest = _game.CurrentLocation != null && _game.CurrentLocation.IsHarvestableAt(facing.x, facing.y);
-            bool canAct = isSeed || canHarvest;
 
             if (Input.GetMouseButtonDown(1))
             {
@@ -274,20 +270,23 @@ namespace FarmMVP
                 if (_game.TryOpenShippingBox(this)) return;
                 if (_game.TryOpenShop(this)) return;
 
-                if (!canAct) return;
+                // 수확도 조준 없이 즉시 — 바라보는 방향과 상관없이 주변에서 가장 가까운 작물을 캔다.
+                if (_game.TryHarvestNearby(this)) return;
+
+                if (!isSeed) return;
                 _seedHeld = true;
-                _indicator.Show(FacingTile(), canHarvest ? HarvestPreviewColor : SeedPreviewColor);
+                _indicator.Show(FacingTile(), SeedPreviewColor);
             }
             else if (_seedHeld && Input.GetMouseButton(1))
             {
-                if (!canAct)
+                if (!isSeed)
                 {
                     _seedHeld = false;
                     _indicator.Hide();
                 }
                 else
                 {
-                    _indicator.Show(FacingTile(), canHarvest ? HarvestPreviewColor : SeedPreviewColor);
+                    _indicator.Show(FacingTile(), SeedPreviewColor);
                 }
             }
 
@@ -295,9 +294,7 @@ namespace FarmMVP
             {
                 _seedHeld = false;
                 _indicator.Hide();
-                // 수확이 우선 — 놓았을 때 실제로 수확할 게 없으면 씨앗 심기를 시도한다.
-                if (!_game.HarvestOnFacingTile(this))
-                    _game.PlantSelectedOnFacingTile(this);
+                _game.PlantSelectedOnFacingTile(this);
             }
         }
 

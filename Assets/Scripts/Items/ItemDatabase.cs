@@ -49,6 +49,27 @@ namespace FarmMVP
 
             Register(new ItemDef
             {
+                id = "stone",
+                displayName = "돌",
+                type = ItemType.Resource,
+                maxStack = 99,
+                spriteKey = "Stone",
+                sellPrice = 10
+            });
+
+            Register(new ItemDef
+            {
+                id = "apricot_seed",
+                displayName = "살구나무 씨앗",
+                type = ItemType.Seed,
+                maxStack = 99,
+                spriteKey = "ApricotSeed",
+                treeId = "apricot",
+                sellPrice = 30
+            });
+
+            Register(new ItemDef
+            {
                 id = "hoe",
                 displayName = "괭이",
                 type = ItemType.Tool,

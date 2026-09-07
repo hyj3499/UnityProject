@@ -97,7 +97,7 @@ namespace FarmMVP
                 string itemName = stack.Def != null ? stack.Def.displayName : stack.itemId;
                 int slot = Data.farmer.equippedHotbarIndex;
                 UIManager.Instance?.ShowYesNo(
-                    $"{def.displayName}에게 「{itemName}」을(를) 선물할까요?\n(아니오를 누르면 대화합니다)",
+                    $"{def.displayName}에게 「{itemName}」을(를) 선물할까요?",
                     onYes: () => GiveGift(def, slot),
                     onNo: () => TalkTo(def));
             }
@@ -310,7 +310,7 @@ namespace FarmMVP
         /// <summary>Q키로 마법 순환 (대지 → 물 → 칼날 → 대지 ...).</summary>
         public void CycleMagic()
         {
-            CurrentMagic = (MagicType)(((int)CurrentMagic + 1) % 3);
+            CurrentMagic = (MagicType)(((int)CurrentMagic + 1) % MagicSystem.Count);
             OnMagicChanged?.Invoke();
         }
 
@@ -343,6 +343,7 @@ namespace FarmMVP
 
             ItemDatabase.Init();
             CropDatabase.Init();
+            TreeDatabase.Init();
             LootTableDatabase.Init();
             NpcDatabase.Init();
             AssetLibrary.EnsureLoaded();
@@ -355,7 +356,7 @@ namespace FarmMVP
             }
 
             // 저장된 선택 마법 복원
-            CurrentMagic = (MagicType)Mathf.Clamp(Data.farmer.currentMagic, 0, 2);
+            CurrentMagic = (MagicType)Mathf.Clamp(Data.farmer.currentMagic, 0, MagicSystem.Count - 1);
 
             Inventory = new Inventory();
             ShippingBox = new Inventory(Inventory.ShippingSlots);
@@ -615,7 +616,10 @@ namespace FarmMVP
             return true;
         }
 
-        /// <summary>우클릭: 선택된 인벤토리 아이템이 씨앗일 때만 바라보는 타일에 심는다.</summary>
+        /// <summary>
+        /// 우클릭: 선택된 인벤토리 아이템이 씨앗일 때 바라보는 타일에 심는다.
+        /// 나무 씨앗(treeId가 있는 것)은 빈 땅에, 작물 씨앗은 갈아 둔 밭에 심긴다.
+        /// </summary>
         public void PlantSelectedOnFacingTile(PlayerController pc)
         {
             if (Paused) return;
@@ -624,7 +628,13 @@ namespace FarmMVP
             if (stack == null || stack.IsEmpty || stack.Def.type != ItemType.Seed) return;
 
             var tile = pc.FacingTile();
-            if (CurrentLocation.Plant(tile.x, tile.y, stack.Def.cropId))
+            var def = stack.Def;
+
+            bool planted = !string.IsNullOrEmpty(def.treeId)
+                ? CurrentLocation.PlantTree(tile.x, tile.y, def.treeId)
+                : CurrentLocation.Plant(tile.x, tile.y, def.cropId);
+
+            if (planted)
             {
                 Inventory.ConsumeOne(Data.farmer.equippedHotbarIndex);
                 SpendTime(5);
@@ -656,17 +666,43 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 우클릭: 바라보는 타일에 수확 가능한 작물이 있으면 수확한다 (인벤토리 아이템 상호작용과
-        /// 같은 키). 수확했으면 true — 호출자는 이게 false일 때만 씨앗 심기를 시도하면 된다.
+        /// 우클릭: 바라보는 방향과 상관없이 플레이어 주변 1칸(3x3) 안에서 수확 가능한 작물 중
+        /// 가장 가까운 것을 수확한다. 수확했으면 true.
         /// </summary>
-        public bool HarvestOnFacingTile(PlayerController pc)
+        public bool TryHarvestNearby(PlayerController pc)
         {
-            if (Paused) return false;
-            var tile = pc.FacingTile();
-            var dropTableId = CurrentLocation.HarvestAt(tile.x, tile.y);
+            if (Paused || CurrentLocation == null) return false;
+
+            Vector3 playerPos = pc.transform.position;
+            int cx = Mathf.RoundToInt(playerPos.x);
+            int cy = Mathf.RoundToInt(playerPos.y);
+
+            var best = Vector2Int.zero;
+            float bestDist = float.MaxValue;
+            bool found = false;
+
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    int x = cx + dx, y = cy + dy;
+                    if (!CurrentLocation.IsHarvestableAt(x, y)) continue;
+
+                    float dist = (new Vector2(x, y) - (Vector2)playerPos).sqrMagnitude;
+                    if (dist >= bestDist) continue;
+
+                    bestDist = dist;
+                    best = new Vector2Int(x, y);
+                    found = true;
+                }
+            }
+
+            if (!found) return false;
+
+            var dropTableId = CurrentLocation.HarvestAt(best.x, best.y);
             if (dropTableId == null) return false;
 
-            ItemDropSpawner.Spawn(CurrentLocation.FeatureRoot, this, tile, dropTableId);
+            ItemDropSpawner.Spawn(CurrentLocation.FeatureRoot, this, best, dropTableId);
             SpendTime(3);
             return true;
         }
@@ -714,7 +750,7 @@ namespace FarmMVP
 
         private void AdvanceAllCrops()
         {
-            // for the location we're in, use the live one; others via data
+            // 살아 있는 위치는 이미 SaveInto로 데이터에 반영된 뒤라 전부 데이터에서 자라게 한다.
             AdvanceCropsInData(Data.farm1);
             AdvanceCropsInData(Data.farm2);
             AdvanceCropsInData(Data.farmHouse);
@@ -722,6 +758,15 @@ namespace FarmMVP
 
         private void AdvanceCropsInData(LocationData loc)
         {
+            // 나무는 물과 상관없이 하루마다 자란다.
+            foreach (var td in loc.trees)
+            {
+                var tree = new TreeFeature(td.x, td.y, td.treeId, td.growthStage) { dayCounter = td.dayCounter };
+                tree.Grow();
+                td.growthStage = tree.growthStage;
+                td.dayCounter = tree.dayCounter;
+            }
+
             foreach (var hd in loc.hoeDirts)
             {
                 if (hd.hasCrop)

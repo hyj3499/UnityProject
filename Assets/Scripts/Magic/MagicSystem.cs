@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace FarmMVP
 {
-    // 농기구 대신 마법을 사용 (대지=경작, 물=물주기, 칼날=나무 베기)
-    public enum MagicType { Earth, Water, Blade }
+    // 농기구 대신 마법을 사용 (대지=경작, 물=물주기, 칼날=나무 베기, 바위=바위 부수기)
+    public enum MagicType { Earth, Water, Blade, Rock }
 
     /// <summary>한 마법의 스펙: MP 소모량, 길게 눌렀을 때 지속 시전 여부와 간격, 조준 표시 색상.</summary>
     public struct MagicDef
@@ -52,6 +52,19 @@ namespace FarmMVP
             previewColor = new Color(0.8f, 0.25f, 0.25f, 0.45f),
         };
 
+        public static readonly MagicDef Rock = new MagicDef
+        {
+            displayName = "바위마법",
+            mpCost = 5,
+            timeCost = 8,
+            continuous = false,
+            tickInterval = 0f,
+            previewColor = new Color(0.55f, 0.55f, 0.6f, 0.45f),
+        };
+
+        /// <summary>마법 종류 수 (Q키 순환에 쓰인다).</summary>
+        public static readonly int Count = System.Enum.GetValues(typeof(MagicType)).Length;
+
         public static MagicDef Get(MagicType type)
         {
             switch (type)
@@ -59,6 +72,7 @@ namespace FarmMVP
                 case MagicType.Earth: return Earth;
                 case MagicType.Water: return Water;
                 case MagicType.Blade: return Blade;
+                case MagicType.Rock: return Rock;
                 default: return Earth;
             }
         }
@@ -85,6 +99,14 @@ namespace FarmMVP
                     if (location.ChopTree(x, y, out bool destroyed, out string tableId))
                     {
                         if (destroyed) dropTableId = tableId;
+                        return true;
+                    }
+                    return false;
+
+                case MagicType.Rock: // 바위마법: 바위 부수기
+                    if (location.BreakRock(x, y, out bool broken, out string rockTable))
+                    {
+                        if (broken) dropTableId = rockTable;
                         return true;
                     }
                     return false;

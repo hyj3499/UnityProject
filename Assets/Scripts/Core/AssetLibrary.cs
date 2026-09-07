@@ -25,6 +25,9 @@ namespace FarmMVP
         // Environment
         public static Sprite Tree, House, Wood;
         public static Sprite ShippingBox, ShippingBoxOpen, ShopCart;
+        public static Sprite[] RockVariants;      // 이끼 없는 바위 5종
+        public static Sprite Stone, ApricotSeed;
+        public static Sprite[] ApricotStages;     // 씨앗 → 묘목 → 성장 → 다 자람
         // Interior furniture
         public static Sprite Bed, Door, Fireplace, Plant;
         // Crops
@@ -64,6 +67,10 @@ namespace FarmMVP
             ShippingBox = Load("Sprites/Environment/ShippingBox");
             ShippingBoxOpen = Load("Sprites/Environment/ShippingBoxOpen");
             ShopCart = Load("Sprites/Environment/ShopCart");
+            RockVariants = LoadRange("Sprites/Environment/Rock_", 5);
+            Stone = Load("Sprites/Environment/Stone");
+            ApricotSeed = Load("Sprites/Environment/ApricotSeed");
+            ApricotStages = LoadRange("Sprites/Environment/Apricot_", 4);
 
             Bed = Load("Sprites/Interior/Bed");
             Door = Load("Sprites/Interior/Door");

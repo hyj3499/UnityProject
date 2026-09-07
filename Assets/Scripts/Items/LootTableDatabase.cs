@@ -26,7 +26,8 @@ namespace FarmMVP
             if (_init) return;
             _init = true;
 
-            Register("tree_oak", new LootTable().Add("wood", 3, 3));
+            Register("tree_apricot", new LootTable().Add("wood", 3, 3).Add("apricot_seed", 1, 1, 0.3f));
+            Register("rock_basic", new LootTable().Add("stone", 1, 3));
             Register("crop_strawberry", new LootTable().Add("strawberry", 1, 1));
         }
 

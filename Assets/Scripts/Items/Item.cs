@@ -17,6 +17,7 @@ namespace FarmMVP
         public string spriteKey;   // key into AssetLibrary
         public ToolType toolType;  // only for tools
         public string cropId;      // only for seeds -> which crop to plant
+        public string treeId;      // 나무 씨앗일 때 어떤 나무가 자라는지
         public int sellPrice;      // 배송함에 넣었을 때 개당 판매 가격 (0이면 팔 수 없음)
 
         public Sprite GetSprite()
@@ -27,6 +28,8 @@ namespace FarmMVP
                 case "StrawberrySeed": return AssetLibrary.StrawberrySeed;
                 case "StrawberryFruit": return AssetLibrary.StrawberryFruit;
                 case "Wood": return AssetLibrary.Wood;
+                case "Stone": return AssetLibrary.Stone;
+                case "ApricotSeed": return AssetLibrary.ApricotSeed;
                 case "Hoe": return AssetLibrary.Hoe;
                 case "WateringCan": return AssetLibrary.WateringCan;
                 case "Axe": return AssetLibrary.Axe;

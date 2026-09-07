@@ -16,6 +16,7 @@ namespace FarmMVP
 
         public Dictionary<Vector2Int, HoeDirt> hoeDirts = new Dictionary<Vector2Int, HoeDirt>();
         public Dictionary<Vector2Int, TreeFeature> trees = new Dictionary<Vector2Int, TreeFeature>();
+        public Dictionary<Vector2Int, RockFeature> rocks = new Dictionary<Vector2Int, RockFeature>();
 
         /// <summary>드랍된 월드 아이템(WorldItem)을 매달아 둘 부모. 위치가 다시 로드되면 함께 정리된다.</summary>
         public Transform FeatureRoot => _featureRoot;
@@ -25,6 +26,7 @@ namespace FarmMVP
         private readonly Dictionary<Vector2Int, SpriteRenderer> _hoeRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _cropRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _treeRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
+        private readonly Dictionary<Vector2Int, SpriteRenderer> _rockRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
 
         // Special interaction points
         public Vector2Int? shippingBoxTile; // Farm1 배송함
@@ -48,14 +50,14 @@ namespace FarmMVP
 
             switch (id)
             {
-                case LocationId.Farm1: BuildFarm1(data); break;
-                case LocationId.Farm2: BuildFarm2(data); break;
-                case LocationId.FarmHouse: BuildFarmHouse(data); break;
+                case LocationId.Farm1: Farm1Builder.Build(this, data); break;
+                case LocationId.Farm2: Farm2Builder.Build(this, data); break;
+                case LocationId.FarmHouse: FarmHouseBuilder.Build(this, data); break;
             }
         }
 
-        // ---------- tile helpers ----------
-        private SpriteRenderer PlaceTile(Sprite sprite, int x, int y, int order, Transform parent = null)
+        // ---------- tile helpers (Locations/*Builder.cs 에서 사용) ----------
+        internal SpriteRenderer PlaceTile(Sprite sprite, int x, int y, int order, Transform parent = null)
         {
             var go = new GameObject($"tile_{x}_{y}");
             go.transform.SetParent(parent ?? _tileRoot, false);
@@ -66,7 +68,7 @@ namespace FarmMVP
             return sr;
         }
 
-        private SpriteRenderer PlaceObject(Sprite sprite, float x, float y, int baseOrder)
+        internal SpriteRenderer PlaceObject(Sprite sprite, float x, float y, int baseOrder)
         {
             var go = new GameObject("obj");
             go.transform.SetParent(_featureRoot, false);
@@ -78,6 +80,20 @@ namespace FarmMVP
             return sr;
         }
 
+        /// <summary>
+        /// Assets/Resources/Prefabs/{locId}Ground.prefab 가 있으면 그걸 인스턴스화해서 바닥으로 쓴다
+        /// (Unity 에디터의 Tile Palette로 손으로 칠한 Tilemap). 없으면 false를 반환해서
+        /// 호출부가 기존 단색 잔디 루프로 대체(fallback)하게 한다.
+        /// </summary>
+        internal bool TryPlaceGroundTilemap(LocationId locId)
+        {
+            var prefab = Resources.Load<GameObject>($"Prefabs/{locId}Ground");
+            if (prefab == null) return false;
+            var go = Instantiate(prefab, _tileRoot);
+            go.transform.localPosition = Vector3.zero;
+            return true;
+        }
+
         public bool InBounds(int x, int y) => x >= 0 && y >= 0 && x < width && y < height;
 
         public bool IsBlocked(int x, int y)
@@ -86,133 +102,16 @@ namespace FarmMVP
             return _blocked[x, y];
         }
 
-        private void SetBlocked(int x, int y, bool v)
+        internal void SetBlocked(int x, int y, bool v)
         {
             if (InBounds(x, y)) _blocked[x, y] = v;
         }
 
-        // ---------- FARM 1 ----------
-        private void BuildFarm1(GameData data)
-        {
-            // grass ground
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
-                    PlaceTile(AssetLibrary.Grass, x, y, -100);
+        /// <summary>맵 크기(width/height)가 바뀐 뒤 충돌 배열을 다시 만든다 (FarmHouseBuilder에서 사용).</summary>
+        internal void ResetBlocked() => _blocked = new bool[width, height];
 
-            // border blocking (except right exit)
-            for (int x = 0; x < width; x++) { SetBlocked(x, 0, true); SetBlocked(x, height - 1, true); }
-            for (int y = 0; y < height; y++) { SetBlocked(0, y, true); }
-
-            // right exit region -> Farm2
-            rightExit = new RectInt(width - 1, height / 2 - 1, 1, 3);
-            for (int y = 0; y < height; y++)
-            {
-                bool open = y >= rightExit.Value.yMin && y < rightExit.Value.yMax;
-                SetBlocked(width - 1, y, !open);
-            }
-
-            // House structure (top-left). Door tile at bottom of house leads to FarmHouse.
-            var houseSr = PlaceObject(AssetLibrary.House, 3.5f, height - 3.0f, 1000);
-            houseSr.sortingOrder = 500;
-            // block house footprint
-            for (int hx = 2; hx <= 6; hx++)
-                for (int hy = height - 5; hy <= height - 1; hy++)
-                    SetBlocked(hx, hy, true);
-            // door tile (walk into it to enter house)
-            doorExitTile = new Vector2Int(4, height - 5);
-            SetBlocked(doorExitTile.Value.x, doorExitTile.Value.y, false);
-
-            // 배송함 (집 옆) — 우클릭해서 열고, 넣어 둔 물건은 다음 날 아침에 팔린다
-            shippingBoxTile = new Vector2Int(8, height - 5);
-            _shippingBoxSr = PlaceObject(AssetLibrary.ShippingBox,
-                shippingBoxTile.Value.x, shippingBoxTile.Value.y + 0.15f, 600);
-            SetBlocked(shippingBoxTile.Value.x, shippingBoxTile.Value.y, true);
-
-            // 상점 수레 — 우클릭해서 배낭을 살 수 있다
-            shopTile = new Vector2Int(13, 4);
-            PlaceObject(AssetLibrary.ShopCart, shopTile.Value.x, shopTile.Value.y + 0.6f, 600);
-            SetBlocked(shopTile.Value.x, shopTile.Value.y, true);
-
-            // Trees (from data or defaults)
-            var loc = data.GetLocation(LocationId.Farm1);
-            if (!loc.initialized)
-            {
-                loc.trees.Add(new TreeData { x = 12, y = 10, hp = TreeFeature.MaxHp });
-                loc.trees.Add(new TreeData { x = 15, y = 8, hp = TreeFeature.MaxHp });
-                loc.trees.Add(new TreeData { x = 10, y = 4, hp = TreeFeature.MaxHp });
-                loc.initialized = true;
-            }
-            RestoreFeatures(loc);
-        }
-
-        // ---------- FARM 2 ----------
-        private void BuildFarm2(GameData data)
-        {
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
-                    PlaceTile(AssetLibrary.Grass, x, y, -100);
-
-            for (int x = 0; x < width; x++) { SetBlocked(x, 0, true); SetBlocked(x, height - 1, true); }
-            for (int y = 0; y < height; y++) { SetBlocked(width - 1, y, true); }
-
-            // left exit -> Farm1
-            leftExit = new RectInt(0, height / 2 - 1, 1, 3);
-            for (int y = 0; y < height; y++)
-            {
-                bool open = y >= leftExit.Value.yMin && y < leftExit.Value.yMax;
-                SetBlocked(0, y, !open);
-            }
-
-            // a couple of decorative trees
-            var loc = data.GetLocation(LocationId.Farm2);
-            if (!loc.initialized)
-            {
-                loc.trees.Add(new TreeData { x = 6, y = 9, hp = TreeFeature.MaxHp });
-                loc.trees.Add(new TreeData { x = 14, y = 5, hp = TreeFeature.MaxHp });
-                loc.initialized = true;
-            }
-            RestoreFeatures(loc);
-        }
-
-        // ---------- FARM HOUSE (interior) ----------
-        private void BuildFarmHouse(GameData data)
-        {
-            width = 12; height = 9;
-            _blocked = new bool[width, height];
-
-            // wall row at top, wood floor elsewhere
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
-                {
-                    if (y >= height - 2)
-                        PlaceTile(AssetLibrary.Wall, x, y, -100);
-                    else
-                        PlaceTile(AssetLibrary.Floor, x, y, -100);
-                }
-
-            // border walls
-            for (int x = 0; x < width; x++) { SetBlocked(x, 0, true); SetBlocked(x, height - 1, true); SetBlocked(x, height - 2, true); }
-            for (int y = 0; y < height; y++) { SetBlocked(0, y, true); SetBlocked(width - 1, y, true); }
-
-            // rug
-            var rug = PlaceObject(AssetLibrary.Rug, width / 2f - 0.5f, 3f, 50);
-            rug.sortingOrder = -50;
-
-            // bed (top-left interior)
-            bedTile = new Vector2Int(2, height - 3);
-            var bed = PlaceObject(AssetLibrary.Bed, 2f, height - 3.0f, 500);
-            SetBlocked(2, height - 3, true);
-            SetBlocked(2, height - 4, true);
-
-            // fireplace decor
-            PlaceObject(AssetLibrary.Fireplace, 6f, height - 3.0f, 500);
-            SetBlocked(6, height - 3, true);
-
-            // door (bottom) -> back to Farm1
-            doorExitTile = new Vector2Int(width / 2, 1);
-            var door = PlaceObject(AssetLibrary.Door, width / 2f, 0.6f, 500);
-            SetBlocked(doorExitTile.Value.x, 0, false);
-        }
+        /// <summary>배송함 스프라이트 렌더러를 등록한다 (Farm1Builder에서 사용).</summary>
+        internal void SetShippingBoxRenderer(SpriteRenderer sr) => _shippingBoxSr = sr;
 
         // ---------- feature restore / render ----------
         public void RestoreFeatures(LocationData loc)
@@ -231,9 +130,21 @@ namespace FarmMVP
             foreach (var t in loc.trees)
             {
                 var pos = new Vector2Int(t.x, t.y);
-                trees[pos] = new TreeFeature(t.x, t.y, t.dropTableId) { hp = t.hp };
+                trees[pos] = new TreeFeature(t.x, t.y, t.treeId, t.growthStage)
+                {
+                    hp = t.hp,
+                    dayCounter = t.dayCounter
+                };
                 SetBlocked(t.x, t.y, true);
                 RenderTree(pos);
+            }
+
+            foreach (var r in loc.rocks)
+            {
+                var pos = new Vector2Int(r.x, r.y);
+                rocks[pos] = new RockFeature(r.x, r.y, r.variant) { hp = r.hp };
+                SetBlocked(r.x, r.y, true);
+                RenderRock(pos);
             }
         }
 
@@ -271,18 +182,46 @@ namespace FarmMVP
 
         public void RenderTree(Vector2Int pos)
         {
+            bool alive = trees.TryGetValue(pos, out var tree) && tree.IsAlive;
+
             if (_treeRenderers.TryGetValue(pos, out var sr))
             {
-                if (!trees.ContainsKey(pos) || !trees[pos].IsAlive)
+                if (!alive)
                 {
                     Destroy(sr.gameObject);
                     _treeRenderers.Remove(pos);
                     SetBlocked(pos.x, pos.y, false);
                 }
+                else
+                {
+                    sr.sprite = tree.GetSprite(); // 자라면서 그림이 바뀐다
+                }
                 return;
             }
-            var s = PlaceObject(AssetLibrary.Tree, pos.x, pos.y + 0.6f, 600);
-            _treeRenderers[pos] = s;
+
+            if (!alive) return;
+            var created = PlaceObject(tree.GetSprite(), pos.x, pos.y + 0.6f, 600);
+            _treeRenderers[pos] = created;
+        }
+
+        public void RenderRock(Vector2Int pos)
+        {
+            bool alive = rocks.TryGetValue(pos, out var rock) && rock.IsAlive;
+
+            if (_rockRenderers.TryGetValue(pos, out var sr))
+            {
+                if (!alive)
+                {
+                    Destroy(sr.gameObject);
+                    _rockRenderers.Remove(pos);
+                    SetBlocked(pos.x, pos.y, false);
+                }
+                return;
+            }
+
+            if (!alive) return;
+            var created = PlaceObject(rock.GetSprite(), pos.x, pos.y, 600);
+            _rockRenderers[pos] = created;
         }
 
         // ---------- gameplay actions ----------
@@ -347,6 +286,7 @@ namespace FarmMVP
         /// <summary>
         /// 나무를 한 번 벤다. 이번 타격으로 나무가 쓰러졌으면 destroyed=true와 함께
         /// 그 나무의 dropTableId를 돌려준다 (호출자가 ItemDropSpawner로 실제 드랍을 스폰한다).
+        /// 아직 다 자라지 않은 나무는 한 번에 뽑히고 아무것도 남기지 않는다.
         /// </summary>
         public bool ChopTree(int x, int y, out bool destroyed, out string dropTableId)
         {
@@ -354,15 +294,63 @@ namespace FarmMVP
             dropTableId = null;
             var pos = new Vector2Int(x, y);
             if (!trees.TryGetValue(pos, out var t) || !t.IsAlive) return false;
+
+            bool wasMature = t.IsMature;
             destroyed = t.Chop();
             if (destroyed)
             {
-                dropTableId = t.dropTableId;
+                if (wasMature) dropTableId = t.Def.dropTableId;
                 trees.Remove(pos);
                 RenderTree(pos);
             }
             return true;
         }
+
+        /// <summary>바위를 한 번 친다. 부서졌으면 broken=true와 드랍 테이블을 돌려준다.</summary>
+        public bool BreakRock(int x, int y, out bool broken, out string dropTableId)
+        {
+            broken = false;
+            dropTableId = null;
+            var pos = new Vector2Int(x, y);
+            if (!rocks.TryGetValue(pos, out var r) || !r.IsAlive) return false;
+
+            broken = r.Hit();
+            if (broken)
+            {
+                dropTableId = RockFeature.DropTableId;
+                rocks.Remove(pos);
+                RenderRock(pos);
+            }
+            return true;
+        }
+
+        /// <summary>빈 땅에 나무 씨앗을 심는다.</summary>
+        public bool PlantTree(int x, int y, string treeId)
+        {
+            var pos = new Vector2Int(x, y);
+            if (!InBounds(x, y)) return false;
+            if (IsBlocked(x, y)) return false;
+            if (trees.ContainsKey(pos) || rocks.ContainsKey(pos) || hoeDirts.ContainsKey(pos)) return false;
+
+            trees[pos] = new TreeFeature(x, y, treeId, 0);
+            SetBlocked(x, y, true);
+            RenderTree(pos);
+            return true;
+        }
+
+        internal static void AddDefaultTree(LocationData loc, int x, int y)
+        {
+            var def = TreeDatabase.Get(TreeDatabase.DefaultTreeId);
+            loc.trees.Add(new TreeData
+            {
+                x = x, y = y, hp = def.maxHp,
+                treeId = def.treeId,
+                growthStage = def.maxGrowthStage
+            });
+        }
+
+        internal static void AddRock(LocationData loc, int x, int y, int variant)
+            => loc.rocks.Add(new RockData { x = x, y = y, hp = RockFeature.MaxHp, variant = variant });
 
         /// <summary>Advance all crops one day (called on sleep).</summary>
         public void OnNewDay()
@@ -392,7 +380,20 @@ namespace FarmMVP
             }
             loc.trees.Clear();
             foreach (var kv in trees)
-                loc.trees.Add(new TreeData { x = kv.Value.x, y = kv.Value.y, hp = kv.Value.hp, dropTableId = kv.Value.dropTableId });
+            {
+                var t = kv.Value;
+                loc.trees.Add(new TreeData
+                {
+                    x = t.x, y = t.y, hp = t.hp,
+                    treeId = t.treeId,
+                    growthStage = t.growthStage,
+                    dayCounter = t.dayCounter
+                });
+            }
+
+            loc.rocks.Clear();
+            foreach (var kv in rocks)
+                loc.rocks.Add(new RockData { x = kv.Value.x, y = kv.Value.y, hp = kv.Value.hp, variant = kv.Value.variant });
 
             loc.droppedItems.Clear();
             foreach (var wi in _featureRoot.GetComponentsInChildren<WorldItem>())
