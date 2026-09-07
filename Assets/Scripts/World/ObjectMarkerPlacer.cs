@@ -10,9 +10,10 @@ namespace FarmMVP
     /// 뿐이라 이 파일은 오브젝트를 아무리 추가해도 길이가 그대로다.
     ///
     /// 마스크 레이어와 달리 여기서는 "무엇을 칠했는지"가 중요하다 — 칠한 Tile 에셋의 이름이
-    /// 무엇을 놓을지 정한다 (Obj_House, Obj_Tree, ...). 이름 규칙:
-    ///   Obj_{키}          ObjectMarkerDatabase에 등록된 오브젝트
-    ///   Obj_Exit{맵이름}  밟으면 그 맵으로 넘어가는 칸
+    /// 무엇을 놓을지 정한다. 이름 규칙:
+    ///   Obj_{그림 파일 이름}  ObjectMarkerDatabase에 등록된 오브젝트 (Obj_ShopCart, Obj_Rock_0)
+    ///   Obj_{나무 id}         TreeDatabase의 나무 (Obj_Apricot)
+    ///   Obj_Exit{맵이름}      밟으면 그 맵으로 넘어가는 칸 (Obj_ExitFarm2)
     /// </summary>
     internal static class ObjectMarkerPlacer
     {
@@ -36,18 +37,18 @@ namespace FarmMVP
                     var tile = markers.GetTile(markers.WorldToCell(new Vector3(x, y, 0f)));
                     if (tile == null) continue;
 
-                    string key = MarkerKey(tile.name);
-                    if (key == null) continue;
+                    string name = ObjectMarkerDatabase.StripPrefix(tile.name);
+                    if (string.IsNullOrEmpty(name)) continue;
 
                     // "Obj_ExitFarm2" 처럼 목적지 이름이 붙은 마커 — 밟으면 그 맵으로 간다.
-                    if (key.StartsWith("exit"))
+                    if (name.StartsWith("Exit", System.StringComparison.OrdinalIgnoreCase))
                     {
-                        if (TryParseLocationKey(key.Substring(4), out var target)) { loc.AddExit(x, y, target); placed++; }
+                        if (TryParseLocationName(name.Substring(4), out var target)) { loc.AddExit(x, y, target); placed++; }
                         else unknown.Add(tile.name);
                         continue;
                     }
 
-                    var def = ObjectMarkerDatabase.Get(key);
+                    var def = ObjectMarkerDatabase.Find(tile.name);
                     if (def == null) { unknown.Add(tile.name); continue; }
 
                     if (Place(loc, def, x, y, locData, addTrees, addRocks)) placed++;
@@ -63,7 +64,9 @@ namespace FarmMVP
             if (unknown.Count > 0)
             {
                 Debug.LogWarning($"[ObjectMarkers] {markers.name}: 이름을 알 수 없는 마커 타일 — " +
-                                 string.Join(", ", unknown) + " (Obj_House / Obj_Tree 처럼 이름을 맞춰 주세요)");
+                                 string.Join(", ", unknown) + " — 마커 이름은 그림 파일 이름 그대로입니다 " +
+                                 "(Sprites/Environment/ShopCart.png -> Obj_ShopCart). " +
+                                 "Tools/Farm 메뉴로 다시 만들면 이름이 맞춰집니다.");
             }
 
             if (!loc.doorExitTile.HasValue && (loc.id == LocationId.Farm1 || loc.id == LocationId.FarmHouse))
@@ -84,13 +87,13 @@ namespace FarmMVP
             if (def.role == MarkerRole.Tree)
             {
                 if (!addTrees || locData == null) return false;
-                GameLocation.AddDefaultTree(locData, x, y);
+                GameLocation.AddTree(locData, x, y, def.treeId);
                 return true;
             }
             if (def.role == MarkerRole.Rock)
             {
                 if (!addRocks || locData == null) return false;
-                GameLocation.AddRock(locData, x, y, (x * 7 + y * 3) % 5);
+                GameLocation.AddRock(locData, x, y, def.rockVariant);
                 return true;
             }
 
@@ -135,21 +138,13 @@ namespace FarmMVP
             return true;
         }
 
-        /// <summary>"Obj_House" -> "house". 앞의 Obj_ 는 있어도 없어도 되고 대소문자도 가리지 않는다.</summary>
-        private static string MarkerKey(string tileName)
+        /// <summary>"Farm2" -> LocationId.Farm2 (대소문자 무시).</summary>
+        private static bool TryParseLocationName(string name, out LocationId locId)
         {
-            if (string.IsNullOrEmpty(tileName)) return null;
-            var n = tileName.Trim();
-            if (n.StartsWith("Obj_", System.StringComparison.OrdinalIgnoreCase)) n = n.Substring(4);
-            return n.Replace("_", "").ToLowerInvariant();
-        }
-
-        /// <summary>"farm2" -> LocationId.Farm2 (대소문자 무시).</summary>
-        private static bool TryParseLocationKey(string key, out LocationId locId)
-        {
+            string key = ObjectMarkerDatabase.Normalize(name);
             foreach (LocationId candidate in System.Enum.GetValues(typeof(LocationId)))
             {
-                if (key == candidate.ToString().ToLowerInvariant()) { locId = candidate; return true; }
+                if (key == ObjectMarkerDatabase.Normalize(candidate.ToString())) { locId = candidate; return true; }
             }
             locId = default;
             return false;

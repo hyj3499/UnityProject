@@ -831,8 +831,11 @@ namespace FarmMVP
         }
 
         internal static void AddDefaultTree(LocationData loc, int x, int y)
+            => AddTree(loc, x, y, TreeDatabase.DefaultTreeId);
+
+        internal static void AddTree(LocationData loc, int x, int y, string treeId)
         {
-            var def = TreeDatabase.Get(TreeDatabase.DefaultTreeId);
+            var def = TreeDatabase.Get(treeId);
             loc.trees.Add(new TreeData
             {
                 x = x, y = y, hp = def.maxHp,

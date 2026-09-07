@@ -25,7 +25,11 @@ namespace FarmMVP
         public const string DefaultTreeId = "apricot";
 
         private static readonly Dictionary<string, TreeDef> _defs = new Dictionary<string, TreeDef>();
+        private static readonly List<TreeDef> _all = new List<TreeDef>();
         private static bool _init;
+
+        /// <summary>등록된 나무 전부. 나무 종류마다 배치 마커를 자동으로 만드는 데 쓰인다.</summary>
+        public static IReadOnlyList<TreeDef> All { get { Init(); return _all; } }
 
         public static void Init()
         {
@@ -45,7 +49,11 @@ namespace FarmMVP
             });
         }
 
-        private static void Register(TreeDef d) => _defs[d.treeId] = d;
+        private static void Register(TreeDef d)
+        {
+            _defs[d.treeId] = d;
+            _all.Add(d);
+        }
 
         public static TreeDef Get(string treeId)
         {

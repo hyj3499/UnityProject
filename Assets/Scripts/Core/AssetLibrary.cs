@@ -12,6 +12,9 @@ namespace FarmMVP
     public static class AssetLibrary
     {
         private static readonly Dictionary<string, Sprite> _cache = new Dictionary<string, Sprite>();
+        /// <summary>폴더별 "스프라이트 이름 -> 스프라이트". 잘라 놓은 시트 안을 이름으로 찾기 위한 것.</summary>
+        private static readonly Dictionary<string, Dictionary<string, Sprite>> _folderIndex =
+            new Dictionary<string, Dictionary<string, Sprite>>();
         private static bool _loaded;
 
         // Player animation frame arrays
@@ -169,15 +172,60 @@ namespace FarmMVP
         private static Sprite LoadQuiet(string path)
         {
             if (_cache.TryGetValue(path, out var cached)) return cached;
-            var s = Resources.Load<Sprite>(path);
+            var s = Resolve(path);
             _cache[path] = s;
             return s;
+        }
+
+        /// <summary>
+        /// 스프라이트 하나를 찾는다. 먼저 그 경로의 <b>독립된 파일</b>을 보고, 없으면 같은 폴더의
+        /// <b>잘라 놓은 시트 안</b>을 이름으로 뒤진다.
+        ///
+        /// 스프라이트 에디터로 큰 시트를 잘라 조각마다 이름을 붙이는 방식(Apricot Tree.png 안의
+        /// "Apricot_0", "Apricot_3_Fall" ...)을 쓰면 파일이 따로 존재하지 않기 때문에
+        /// Resources.Load(경로)만으로는 찾을 수 없다. 그 경우를 여기서 받아 준다.
+        /// </summary>
+        private static Sprite Resolve(string path)
+        {
+            var direct = Resources.Load<Sprite>(path);
+            if (direct != null) return direct;
+
+            int slash = path.LastIndexOf('/');
+            if (slash < 0) return null;
+
+            var index = FolderSpriteIndex(path.Substring(0, slash));
+            if (index == null) return null;
+            return index.TryGetValue(path.Substring(slash + 1), out var s) ? s : null;
+        }
+
+        /// <summary>
+        /// 폴더 안의 모든 스프라이트를 이름으로 찾을 수 있게 한 번 훑어 둔다 (잘라 놓은 시트의 조각 포함).
+        ///
+        /// Resources.LoadAll은 하위 폴더까지 훑기 때문에 Sprites/Tiles 는 제외한다 — 그 아래에는
+        /// 계절 타일셋 네 벌(각 934조각)이 있어서 통째로 읽으면 낭비다. 타일은 SeasonalTileset이
+        /// 시트 단위로 따로 읽으므로 여기서 볼 일이 없다.
+        /// </summary>
+        private static Dictionary<string, Sprite> FolderSpriteIndex(string folder)
+        {
+            if (folder.StartsWith("Sprites/Tiles")) return null;
+            if (_folderIndex.TryGetValue(folder, out var cached)) return cached;
+
+            var all = Resources.LoadAll<Sprite>(folder);
+            Dictionary<string, Sprite> map = null;
+            if (all != null && all.Length > 0)
+            {
+                map = new Dictionary<string, Sprite>(all.Length);
+                foreach (var sprite in all)
+                    if (sprite != null && !map.ContainsKey(sprite.name)) map[sprite.name] = sprite;
+            }
+            _folderIndex[folder] = map;
+            return map;
         }
 
         private static Sprite Load(string path)
         {
             if (_cache.TryGetValue(path, out var s)) return s;
-            s = Resources.Load<Sprite>(path);
+            s = Resolve(path);
             if (s == null)
                 Debug.LogWarning($"[AssetLibrary] Missing sprite: {path}");
             _cache[path] = s;
