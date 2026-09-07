@@ -18,8 +18,9 @@ namespace FarmMVP
         private int _animFrame;
         private bool _moving;
 
-        // ---------- 마법(좌클릭) / 씨앗(우클릭) 조준 상태 ----------
+        // ---------- 마법(좌클릭) / 씨앗·수확(우클릭) 조준 상태 ----------
         private static readonly Color SeedPreviewColor = new Color(0.35f, 0.85f, 0.35f, 0.45f);
+        private static readonly Color HarvestPreviewColor = new Color(0.95f, 0.75f, 0.2f, 0.45f);
 
         private TargetIndicator _indicator;
         private bool _magicHeld;
@@ -242,30 +243,34 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 우클릭 = 인벤토리에서 씨앗이 선택되어 있을 때만 씨앗 심기.
-        /// 대지/칼날마법과 동일하게 누르는 동안 범위를 표시하며 이동할 수 있고, 뗄 때 심는다.
+        /// 우클릭 = 인벤토리 아이템 상호작용 키. 바라보는 타일에 수확 가능한 작물이 있으면
+        /// 수확하고(우선), 아니면 씨앗이 선택되어 있을 때만 심는다.
+        /// 대지/칼날마법과 동일하게 누르는 동안 범위를 표시하며 이동할 수 있고, 뗄 때 실행한다.
         /// </summary>
         private void HandleSeedInput()
         {
             bool isSeed = IsSeedSelected();
+            var facing = FacingTile();
+            bool canHarvest = _game.CurrentLocation != null && _game.CurrentLocation.IsHarvestableAt(facing.x, facing.y);
+            bool canAct = isSeed || canHarvest;
 
             if (Input.GetMouseButtonDown(1))
             {
-                if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 파종으로 새는 것 방지
-                if (!isSeed) return;
+                if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 상호작용으로 새는 것 방지
+                if (!canAct) return;
                 _seedHeld = true;
-                _indicator.Show(FacingTile(), SeedPreviewColor);
+                _indicator.Show(FacingTile(), canHarvest ? HarvestPreviewColor : SeedPreviewColor);
             }
             else if (_seedHeld && Input.GetMouseButton(1))
             {
-                if (!isSeed)
+                if (!canAct)
                 {
                     _seedHeld = false;
                     _indicator.Hide();
                 }
                 else
                 {
-                    _indicator.Show(FacingTile(), SeedPreviewColor);
+                    _indicator.Show(FacingTile(), canHarvest ? HarvestPreviewColor : SeedPreviewColor);
                 }
             }
 
@@ -273,7 +278,9 @@ namespace FarmMVP
             {
                 _seedHeld = false;
                 _indicator.Hide();
-                if (isSeed) _game.PlantSelectedOnFacingTile(this);
+                // 수확이 우선 — 놓았을 때 실제로 수확할 게 없으면 씨앗 심기를 시도한다.
+                if (!_game.HarvestOnFacingTile(this))
+                    _game.PlantSelectedOnFacingTile(this);
             }
         }
 

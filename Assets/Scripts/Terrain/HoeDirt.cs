@@ -38,16 +38,18 @@ namespace FarmMVP
             watered = false;
         }
 
-        /// <summary>Harvest crop if ready. Returns produced item id (or null).</summary>
-        public string Harvest(out int amount)
+        /// <summary>
+        /// 수확 가능하면 그 작물의 dropTableId를 반환한다 (없으면 null). 다작 작물은 자동으로
+        /// 재성장 단계로 되돌아가고, 단일 수확 작물은 이 타일에서 완전히 제거된다.
+        /// 실제 아이템 스폰은 호출자가 ItemDropSpawner로 한다.
+        /// </summary>
+        public string Harvest()
         {
-            amount = 0;
             if (crop == null || !crop.IsHarvestable) return null;
-            var def = crop.Def;
-            amount = def.harvestAmount;
-            string item = def.harvestItemId;
-            crop = null; // strawberries removed after harvest in MVP
-            return item;
+            string dropTableId = crop.Def.dropTableId;
+            if (!crop.HarvestAndRegrow())
+                crop = null; // 단일 수확 작물
+            return dropTableId;
         }
     }
 }

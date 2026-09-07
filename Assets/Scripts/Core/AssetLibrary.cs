@@ -61,7 +61,7 @@ namespace FarmMVP
             Fireplace = Load("Sprites/Interior/Fireplace");
             Plant = Load("Sprites/Interior/Plant");
 
-            StrawberryStages = LoadRange("Sprites/Crops/Strawberry_", 7);
+            StrawberryStages = LoadRange("Sprites/Crops/Strawberry_", 6);
             StrawberrySeed = Load("Sprites/Crops/StrawberrySeed");
             StrawberryFruit = Load("Sprites/Crops/StrawberryFruit");
 

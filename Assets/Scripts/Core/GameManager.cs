@@ -266,7 +266,7 @@ namespace FarmMVP
             OnTimeChanged?.Invoke();
         }
 
-        /// <summary>E/Space: try to harvest facing tile or sleep in bed.</summary>
+        /// <summary>E/Space: 침대와 상호작용해 잠들기.</summary>
         public void TryContextInteract(PlayerController pc)
         {
             if (Paused) return;
@@ -278,19 +278,24 @@ namespace FarmMVP
             {
                 var bed = CurrentLocation.bedTile.Value;
                 if (Near(tile, bed) || Near(here, bed))
-                {
                     UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
-                    return;
-                }
             }
+        }
 
-            // harvest?
-            var item = CurrentLocation.HarvestAt(tile.x, tile.y, out int amount);
-            if (item != null && amount > 0)
-            {
-                Inventory.Add(item, amount);
-                SpendTime(3);
-            }
+        /// <summary>
+        /// 우클릭: 바라보는 타일에 수확 가능한 작물이 있으면 수확한다 (인벤토리 아이템 상호작용과
+        /// 같은 키). 수확했으면 true — 호출자는 이게 false일 때만 씨앗 심기를 시도하면 된다.
+        /// </summary>
+        public bool HarvestOnFacingTile(PlayerController pc)
+        {
+            if (Paused) return false;
+            var tile = pc.FacingTile();
+            var dropTableId = CurrentLocation.HarvestAt(tile.x, tile.y);
+            if (dropTableId == null) return false;
+
+            ItemDropSpawner.Spawn(CurrentLocation.FeatureRoot, this, tile, dropTableId);
+            SpendTime(3);
+            return true;
         }
 
         private bool Near(Vector2Int a, Vector2Int b) => Mathf.Abs(a.x - b.x) <= 1 && Mathf.Abs(a.y - b.y) <= 1;

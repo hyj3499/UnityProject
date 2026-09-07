@@ -302,14 +302,21 @@ namespace FarmMVP
             return true;
         }
 
-        public string HarvestAt(int x, int y, out int amount)
+        /// <summary>지금 이 타일에 수확 가능한(다 자란) 작물이 있는지 (실제로 캐지 않고 확인만).</summary>
+        public bool IsHarvestableAt(int x, int y)
         {
-            amount = 0;
+            var pos = new Vector2Int(x, y);
+            return hoeDirts.TryGetValue(pos, out var d) && d.HasCrop && d.crop.IsHarvestable;
+        }
+
+        /// <summary>수확 가능하면 그 작물의 dropTableId를 반환한다 (없으면 null).</summary>
+        public string HarvestAt(int x, int y)
+        {
             var pos = new Vector2Int(x, y);
             if (!hoeDirts.TryGetValue(pos, out var d)) return null;
-            var item = d.Harvest(out amount);
-            if (item != null) RenderHoeDirt(pos);
-            return item;
+            var dropTableId = d.Harvest();
+            if (dropTableId != null) RenderHoeDirt(pos);
+            return dropTableId;
         }
 
         /// <summary>

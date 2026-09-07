@@ -27,6 +27,7 @@ namespace FarmMVP
             _init = true;
 
             Register("tree_oak", new LootTable().Add("wood", 3, 3));
+            Register("crop_strawberry", new LootTable().Add("strawberry", 1, 1));
         }
 
         private static void Register(string dropTableId, LootTable table) => _tables[dropTableId] = table;

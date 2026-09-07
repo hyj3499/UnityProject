@@ -16,11 +16,11 @@ namespace FarmMVP
             {
                 cropId = "strawberry",
                 name = "딸기",
-                // 7 sprites (Strawberry_0..6): stage 6 is harvest-ready
-                maxGrowthStage = 6,
+                // 6 sprites (Strawberry_0..5): 새싹(0) -> 성장 -> 결실(5, 수확 가능)
+                maxGrowthStage = 5,
                 daysPerStage = 1,
-                harvestItemId = "strawberry",
-                harvestAmount = 1,
+                dropTableId = "crop_strawberry",
+                regrowStage = 4, // 다작: 수확하면 4단계로 되돌아가 하루만 더 자라면 다시 수확 가능
                 stageSprites = () => { AssetLibrary.EnsureLoaded(); return AssetLibrary.StrawberryStages; }
             });
         }
