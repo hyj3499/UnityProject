@@ -225,6 +225,7 @@ namespace FarmMVP
                 if (def.HomeLocation != locationId) continue;
 
                 var tile = new Vector2Int(def.home.x, def.home.y);
+                if (!CurrentLocation.InBounds(tile.x, tile.y)) continue;  // 맵 밖이면 세우지 않는다
                 _npcActors.Add(NpcActor.Spawn(CurrentLocation.FeatureRoot, def, tile));
                 CurrentLocation.SetNpcBlocked(tile);
             }
@@ -428,7 +429,31 @@ namespace FarmMVP
             LoadLocation(id, spawn, false);
         }
 
-        private void LoadLocation(LocationId id, Vector2 spawn, bool firstBoot)
+        /// <summary>
+        /// 문으로 드나들 때. 도착지를 좌표로 못 박지 않고, 그 맵을 만든 뒤 문 앞 칸에 내려놓는다 —
+        /// 집을 마커로 옮기거나 맵 크기가 바뀌어도 벽 속에 떨어지지 않는다.
+        /// </summary>
+        public void ChangeLocationThroughDoor(LocationId id)
+        {
+            if (CurrentLocation != null)
+                CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
+            LoadLocation(id, Vector2.zero, false, spawnAtDoor: true);
+        }
+
+        /// <summary>
+        /// 맵 경계의 출구 칸을 밟아 이동할 때. 도착지에서 "여기로 되돌아가는 출구" 옆에 내려놓기 때문에
+        /// 출구를 어디에 칠하든 도착 좌표를 따로 적어 둘 필요가 없다.
+        /// </summary>
+        public void ChangeLocationThroughExit(LocationId target, Vector2Int fromTile)
+        {
+            var origin = CurrentLocation != null ? CurrentLocation.id : Data.currentLocation;
+            if (CurrentLocation != null)
+                CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
+            LoadLocation(target, Vector2.zero, false, entryFrom: origin, entryFromTile: fromTile);
+        }
+
+        private void LoadLocation(LocationId id, Vector2 spawn, bool firstBoot, bool spawnAtDoor = false,
+                                  LocationId? entryFrom = null, Vector2Int entryFromTile = default)
         {
             if (CurrentLocation != null)
                 Destroy(CurrentLocation.gameObject);
@@ -447,6 +472,12 @@ namespace FarmMVP
             Vector2 p = spawn;
             if (firstBoot)
                 p = new Vector2(Data.farmer.posX, Data.farmer.posY);
+            else if (spawnAtDoor)
+                p = CurrentLocation.DoorEntryTile;
+            else if (entryFrom.HasValue)
+                p = CurrentLocation.FindEntryFrom(entryFrom.Value, entryFromTile);
+            // 맵 크기가 칠한 바닥을 따라가므로, 예전 저장 위치가 벽 속일 수 있다.
+            p = CurrentLocation.FindWalkableNear(p);
             Player.transform.position = new Vector3(p.x, p.y, 0);
 
             CenterCameraInstant();

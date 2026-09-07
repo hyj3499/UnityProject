@@ -123,32 +123,18 @@ namespace FarmMVP
             int tx = Mathf.RoundToInt(transform.position.x);
             int ty = Mathf.RoundToInt(transform.position.y);
 
-            // Farm1 right -> Farm2
-            if (loc.id == LocationId.Farm1 && loc.rightExit.HasValue)
+            // 다른 맵으로 이어지는 칸 — "Obj_Exit{위치}" 마커이거나, 빌더가 등록한 가장자리 영역.
+            if (loc.TryGetExit(tx, ty, out var exitTarget))
             {
-                var r = loc.rightExit.Value;
-                if (tx >= loc.width - 1 && ty >= r.yMin && ty < r.yMax)
-                {
-                    _game.ChangeLocation(LocationId.Farm2, new Vector2(1, ty));
-                    return;
-                }
-            }
-            // Farm2 left -> Farm1
-            if (loc.id == LocationId.Farm2 && loc.leftExit.HasValue)
-            {
-                var l = loc.leftExit.Value;
-                if (tx <= 0 && ty >= l.yMin && ty < l.yMax)
-                {
-                    _game.ChangeLocation(LocationId.Farm1, new Vector2(loc.width - 2, ty));
-                    return;
-                }
+                _game.ChangeLocationThroughExit(exitTarget, new Vector2Int(tx, ty));
+                return;
             }
             // Farm1 house door -> FarmHouse
             if (loc.id == LocationId.Farm1 && loc.doorExitTile.HasValue)
             {
                 if (tx == loc.doorExitTile.Value.x && ty == loc.doorExitTile.Value.y)
                 {
-                    _game.ChangeLocation(LocationId.FarmHouse, new Vector2(6, 2));
+                    _game.ChangeLocationThroughDoor(LocationId.FarmHouse);
                     return;
                 }
             }
@@ -157,8 +143,7 @@ namespace FarmMVP
             {
                 if (tx == loc.doorExitTile.Value.x && ty <= loc.doorExitTile.Value.y)
                 {
-                    // Return just below the Farm1 house door tile (door at y=Farm1.height-5=10).
-                    _game.ChangeLocation(LocationId.Farm1, new Vector2(4, 9));
+                    _game.ChangeLocationThroughDoor(LocationId.Farm1);
                     return;
                 }
             }

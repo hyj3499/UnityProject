@@ -37,6 +37,16 @@ namespace FarmMVP
         private bool[,] _blocked;
         /// <summary>경작 마스크. null이면 마스크 레이어가 없다는 뜻이라 어디든 경작할 수 있다.</summary>
         private bool[,] _tillable;
+        /// <summary>맵 크기를 씬에 칠한 바닥에서 가져왔는지. true면 빌더의 기본 크기를 무시한다.</summary>
+        private bool _sizeFromTilemap;
+
+        private Tilemap _groundMap, _blockedMask, _tillableMask, _objectMarkers;
+
+        // 맵 밖으로 밀려난 저장 데이터. 지우지 않고 들고 있다가 저장할 때 그대로 되돌려 준다 —
+        // 나중에 바닥을 더 칠해서 맵이 커지면 그 시설/작물이 다시 살아난다.
+        private readonly List<HoeDirtData> _outOfBoundsHoeDirts = new List<HoeDirtData>();
+        private readonly List<TreeData> _outOfBoundsTrees = new List<TreeData>();
+        private readonly List<RockData> _outOfBoundsRocks = new List<RockData>();
         private Transform _tileRoot, _featureRoot;
         private readonly Dictionary<Vector2Int, SpriteRenderer> _hoeRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _wetRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
@@ -51,18 +61,73 @@ namespace FarmMVP
 
         public Vector2Int? bedTile;       // FarmHouse
         public Vector2Int? doorExitTile;  // FarmHouse door -> Farm1 ; Farm1 house -> FarmHouse
-        public RectInt? rightExit;        // Farm1 -> Farm2 region
-        public RectInt? leftExit;         // Farm2 -> Farm1 region
+
+        /// <summary>
+        /// 밟으면 다른 맵으로 넘어가는 칸들. "Obj_Exit{위치}" 마커를 칠해서 만들거나,
+        /// 마커가 없으면 빌더가 가장자리 영역을 여기에 등록한다.
+        /// </summary>
+        private readonly Dictionary<Vector2Int, LocationId> _exits = new Dictionary<Vector2Int, LocationId>();
+
+        /// <summary>이 칸을 밟으면 다른 맵으로 가도록 등록한다. 출구 칸은 당연히 걸어갈 수 있어야 한다.</summary>
+        public void AddExit(int x, int y, LocationId target)
+        {
+            if (!InBounds(x, y)) return;
+            _exits[new Vector2Int(x, y)] = target;
+            SetBlocked(x, y, false);
+        }
+
+        /// <summary>이 칸이 다른 맵으로 가는 칸인지.</summary>
+        public bool TryGetExit(int x, int y, out LocationId target)
+            => _exits.TryGetValue(new Vector2Int(x, y), out target);
+
+        /// <summary>
+        /// origin 맵에서 넘어왔을 때 내려설 자리. 되돌아가는 출구(= origin을 가리키는 칸) 중
+        /// 떠나온 높이와 가장 가까운 것을 고르고, 그 <b>옆</b>의 걸을 수 있는 칸에 내려놓는다.
+        /// 출구 칸 위에 그대로 세우면 다음 프레임에 곧바로 되돌아가 버리기 때문이다.
+        /// </summary>
+        public Vector2 FindEntryFrom(LocationId origin, Vector2Int fromTile)
+        {
+            Vector2Int? best = null;
+            int bestScore = int.MaxValue;
+            foreach (var kv in _exits)
+            {
+                if (kv.Value != origin) continue;
+                int score = Mathf.Abs(kv.Key.y - fromTile.y) * 100 + Mathf.Abs(kv.Key.x - fromTile.x);
+                if (score < bestScore) { bestScore = score; best = kv.Key; }
+            }
+
+            if (best.HasValue)
+            {
+                // 안쪽(오른쪽/왼쪽/위/아래) 순으로 출구가 아닌 빈 칸을 찾는다.
+                var dirs = new[] { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down };
+                foreach (var d in dirs)
+                {
+                    var n = best.Value + d;
+                    if (IsBlocked(n.x, n.y) || _exits.ContainsKey(n)) continue;
+                    return new Vector2(n.x, n.y);
+                }
+            }
+
+            Debug.LogWarning($"[GameLocation] {id}: {origin}에서 되돌아올 출구를 찾지 못해 맵 가운데에 내려놓습니다. " +
+                             $"\"Obj_Exit{origin}\" 마커를 칠해 주세요.");
+            return FindWalkableNear(new Vector2(width / 2f, height / 2f));
+        }
 
         public void Build(GameData data)
         {
             AssetLibrary.EnsureLoaded();
-            _blocked = new bool[width, height];
 
             _tileRoot = new GameObject("Tiles").transform;
             _tileRoot.SetParent(transform, false);
             _featureRoot = new GameObject("Features").transform;
             _featureRoot.SetParent(transform, false);
+
+            // 씬에 칠해 둔 레이어를 먼저 찾는다. 칠한 바닥의 크기가 곧 이 맵의 크기라서
+            // 빌더가 시설을 놓기 전에 width/height가 확정돼 있어야 한다.
+            FindSceneTilemaps();
+            if (_groundMap != null) AlignGridToMap(_groundMap);
+
+            _blocked = new bool[width, height];
 
             switch (id)
             {
@@ -71,7 +136,17 @@ namespace FarmMVP
                 case LocationId.FarmHouse: FarmHouseBuilder.Build(this, data); break;
             }
 
-            UseSceneTilemaps();
+            ApplyMaskTilemaps();
+        }
+
+        /// <summary>
+        /// 빌더가 쓰는 기본 맵 크기. 씬에 칠해 둔 바닥이 있으면 그쪽 크기가 우선이라 무시된다.
+        /// </summary>
+        internal void SetDefaultSize(int w, int h)
+        {
+            if (_sizeFromTilemap) return;
+            width = w;
+            height = h;
         }
 
         /// <summary>
@@ -80,6 +155,7 @@ namespace FarmMVP
         ///   바닥   "Location_{id}"  또는 "{id}Ground"    — 눈에 보이는 바닥
         ///   충돌   "Blocked_{id}"   또는 "{id}Blocked"   — 칠한 칸은 지나갈 수 없다
         ///   경작   "Tillable_{id}"  또는 "{id}Tillable"  — 칠한 칸에서만 대지마법을 쓸 수 있다
+        ///   물건   "Objects_{id}"   또는 "{id}Objects"    — 집/배송함/나무... 를 놓을 자리
         ///
         /// 마스크 레이어는 "어떤 타일을 칠했는지"는 보지 않고 "칠했는지 아닌지"만 본다. 그래서
         /// 아무 타일이나 하나 골라 영역만 쓱 칠하면 되고, 타일셋의 타일을 하나씩 분류할 필요가 없다.
@@ -89,9 +165,9 @@ namespace FarmMVP
         /// 이름으로 GameObject.Find를 하지 않고 Tilemap 컴포넌트로 찾는 이유: GameManager가
         /// 런타임에 만드는 위치 루트도 이름이 "Location_{id}"라서 이름만으로는 구분되지 않는다.
         /// </summary>
-        private void UseSceneTilemaps()
+        private void FindSceneTilemaps()
         {
-            Tilemap ground = null, blockedMask = null, tillableMask = null;
+            _groundMap = _blockedMask = _tillableMask = _objectMarkers = null;
 
             foreach (var tm in FindObjectsOfType<Tilemap>())
             {
@@ -107,22 +183,25 @@ namespace FarmMVP
                 switch (layer)
                 {
                     case TilemapLayer.Ground:
-                        ground = tm;
+                        _groundMap = tm;
                         if (tr != null) { tr.enabled = true; tr.sortingOrder = PaintedGroundOrder; }
                         break;
                     case TilemapLayer.Blocked:
-                        blockedMask = tm;
+                        _blockedMask = tm;
                         if (tr != null) tr.enabled = false;
                         break;
                     case TilemapLayer.Tillable:
-                        tillableMask = tm;
+                        _tillableMask = tm;
                         if (tr != null) tr.enabled = false;
+                        break;
+                    case TilemapLayer.Objects:
+                        _objectMarkers = tm;
+                        tm.CompressBounds();
+                        HasObjectMarkers = tm.cellBounds.size.x > 0 && tm.cellBounds.size.y > 0;
+                        if (tr != null) tr.enabled = false;   // 마커는 에디터에서만 보이면 된다
                         break;
                 }
             }
-
-            if (ground != null) AlignGridToMap(ground);
-            ApplyMaskTilemaps(blockedMask, tillableMask);
         }
 
         /// <summary>
@@ -152,11 +231,11 @@ namespace FarmMVP
                           $"({-shift.x}, {-shift.y}) 만큼 옮겼습니다.");
             }
 
-            if (b.size.x < width || b.size.y < height)
-            {
-                Debug.Log($"[GameLocation] {ground.name}: 칠한 영역이 {b.size.x}x{b.size.y} 칸인데 " +
-                          $"{id} 맵은 {width}x{height} 칸입니다. 남는 곳은 기본 바닥으로 채웁니다.");
-            }
+            // 칠한 영역이 곧 맵의 크기다. 빌더의 기본값(SetDefaultSize)보다 우선한다.
+            width = b.size.x;
+            height = b.size.y;
+            _sizeFromTilemap = true;
+            Debug.Log($"[GameLocation] {id} 맵 크기를 {ground.name}에 칠한 영역에 맞춰 {width}x{height}로 정했습니다.");
         }
 
         /// <summary>
@@ -165,8 +244,9 @@ namespace FarmMVP
         /// (부모가 달라도 안전하고, 칸 경계에서 0.5칸 떨어져 있어 반올림 문제도 없다).
         /// 충돌은 코드가 이미 막아 둔 칸(집/나무/바위/맵 테두리)에 더해서 적용된다.
         /// </summary>
-        private void ApplyMaskTilemaps(Tilemap blockedMask, Tilemap tillableMask)
+        private void ApplyMaskTilemaps()
         {
+            Tilemap blockedMask = _blockedMask, tillableMask = _tillableMask;
             _tillable = tillableMask != null ? new bool[width, height] : null;
             if (blockedMask == null && tillableMask == null) return;
 
@@ -175,7 +255,8 @@ namespace FarmMVP
                 for (int y = 0; y < height; y++)
                 {
                     var world = new Vector3(x, y, 0f);
-                    if (blockedMask != null && blockedMask.HasTile(blockedMask.WorldToCell(world)))
+                    if (blockedMask != null && !_exits.ContainsKey(new Vector2Int(x, y))
+                        && blockedMask.HasTile(blockedMask.WorldToCell(world)))
                     {
                         SetBlocked(x, y, true);
                         blockedCount++;
@@ -193,7 +274,162 @@ namespace FarmMVP
                 Debug.Log($"[GameLocation] {tillableMask.name}: {tillableCount}칸만 경작할 수 있습니다.");
         }
 
-        private enum TilemapLayer { Ground, Blocked, Tillable }
+        // ---------- 오브젝트 마커 레이어 ----------
+
+        /// <summary>"Objects_{id}" 레이어에 뭔가 칠해져 있으면 true. 빌더는 이때 하드코딩 배치를 건너뛴다.</summary>
+        public bool HasObjectMarkers { get; private set; }
+
+        /// <summary>
+        /// "Objects_{id}" 레이어를 읽어 집·배송함·상점·침대 같은 것들을 실제로 놓는다.
+        ///
+        /// 마스크 레이어와 달리 여기서는 "무엇을 칠했는지"가 중요하다 — 칠한 <b>Tile 에셋의 이름</b>이
+        /// 무엇을 놓을지 정한다 (Obj_House, Obj_Tree, ...). 타일셋 전체를 분류하는 게 아니라
+        /// 마커 타일 10개만 만들면 되고, Tools/Farm 메뉴로 자동 생성할 수 있다.
+        /// 마커 타일에 실제 오브젝트 스프라이트를 넣어 두면 에디터에서 배치가 그대로 미리 보인다.
+        ///
+        /// 나무와 바위는 저장되는 데이터(자라고, 베이면 사라진다)라서 <b>새 게임일 때 초기 배치로만</b>
+        /// 넣는다. 매번 넣으면 베어 낸 나무가 다시 들어올 때마다 되살아난다.
+        /// </summary>
+        public void ApplyObjectMarkers(LocationData locData)
+        {
+            if (_objectMarkers == null) return;
+
+            bool addTrees = locData != null && !locData.initialized;
+            bool addRocks = locData != null && !locData.rocksInitialized;
+            int placed = 0;
+            var unknown = new HashSet<string>();
+
+            for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
+                {
+                    var tile = _objectMarkers.GetTile(_objectMarkers.WorldToCell(new Vector3(x, y, 0f)));
+                    if (tile == null) continue;
+
+                    var key = MarkerKey(tile.name);
+
+                    // "Obj_ExitFarm2" 처럼 목적지 이름이 붙은 마커 — 밟으면 그 맵으로 간다.
+                    if (key != null && key.StartsWith("exit"))
+                    {
+                        if (TryParseLocationKey(key.Substring(4), out var target)) { AddExit(x, y, target); placed++; }
+                        else unknown.Add(tile.name);
+                        continue;
+                    }
+
+                    switch (key)
+                    {
+                        case "house": PlaceHouse(x, y); break;
+                        case "shippingbox": PlaceShippingBox(x, y); break;
+                        case "shop": PlaceShop(x, y); break;
+                        case "bed": PlaceBed(x, y); break;
+                        case "door": PlaceDoor(x, y); break;
+                        case "fireplace": PlaceDecor(AssetLibrary.Fireplace, x, y, true); break;
+                        case "plant": PlaceDecor(AssetLibrary.Plant, x, y, true); break;
+                        case "rug": PlaceRug(x, y); break;
+                        case "tree": if (addTrees) AddDefaultTree(locData, x, y); break;
+                        case "rock": if (addRocks) AddRock(locData, x, y, (x * 7 + y * 3) % 5); break;
+                        default: unknown.Add(tile.name); continue;
+                    }
+                    placed++;
+                }
+
+            if (addTrees) locData.initialized = true;
+            if (addRocks) locData.rocksInitialized = true;
+
+            Debug.Log($"[GameLocation] {_objectMarkers.name}: 마커 {placed}개를 배치했습니다.");
+
+            if (!doorExitTile.HasValue && (id == LocationId.Farm1 || id == LocationId.FarmHouse))
+            {
+                Debug.LogWarning($"[GameLocation] {_objectMarkers.name}: 출입구가 없습니다. " +
+                                 "Farm1에는 Obj_House를, FarmHouse에는 Obj_Door를 칠해야 집을 드나들 수 있습니다.");
+            }
+            if (unknown.Count > 0)
+            {
+                Debug.LogWarning($"[GameLocation] {_objectMarkers.name}: 이름을 알 수 없는 마커 타일 — " +
+                                 string.Join(", ", unknown) + " (Obj_House / Obj_Tree 처럼 이름을 맞춰 주세요)");
+            }
+        }
+
+        /// <summary>"farm2" -> LocationId.Farm2 (대소문자 무시).</summary>
+        private static bool TryParseLocationKey(string key, out LocationId locId)
+        {
+            foreach (LocationId candidate in System.Enum.GetValues(typeof(LocationId)))
+            {
+                if (key == candidate.ToString().ToLowerInvariant()) { locId = candidate; return true; }
+            }
+            locId = default;
+            return false;
+        }
+
+        /// <summary>"Obj_House" -> "house". 앞의 Obj_ 는 있어도 없어도 되고 대소문자도 가리지 않는다.</summary>
+        private static string MarkerKey(string tileName)
+        {
+            if (string.IsNullOrEmpty(tileName)) return null;
+            var n = tileName.Trim();
+            if (n.StartsWith("Obj_", System.StringComparison.OrdinalIgnoreCase)) n = n.Substring(4);
+            return n.Replace("_", "").ToLowerInvariant();
+        }
+
+        /// <summary>
+        /// 집. 마커를 찍은 칸이 집의 <b>왼쪽 아래</b>가 되고, 거기서 5x5를 차지한다.
+        /// 문은 아래줄 가운데 칸 — 그 칸으로 걸어 들어가면 농가 실내로 간다.
+        /// </summary>
+        private void PlaceHouse(int mx, int my)
+        {
+            var sr = PlaceObject(AssetLibrary.House, mx + 1.5f, my + 2.0f, 1000);
+            sr.sortingOrder = 500;
+            for (int hx = mx; hx <= mx + 4; hx++)
+                for (int hy = my; hy <= my + 4; hy++)
+                    SetBlocked(hx, hy, true);
+
+            doorExitTile = new Vector2Int(mx + 2, my);
+            SetBlocked(doorExitTile.Value.x, doorExitTile.Value.y, false);
+        }
+
+        private void PlaceShippingBox(int x, int y)
+        {
+            shippingBoxTile = new Vector2Int(x, y);
+            SetShippingBoxRenderer(PlaceObject(AssetLibrary.ShippingBox, x, y + 0.15f, 600));
+            SetBlocked(x, y, true);
+        }
+
+        private void PlaceShop(int x, int y)
+        {
+            shopTile = new Vector2Int(x, y);
+            PlaceObject(AssetLibrary.ShopCart, x, y + 0.6f, 600);
+            SetBlocked(x, y, true);
+        }
+
+        /// <summary>침대. 마커 칸과 그 아래 칸을 함께 막는다 (스프라이트가 두 칸 높이).</summary>
+        private void PlaceBed(int x, int y)
+        {
+            bedTile = new Vector2Int(x, y);
+            PlaceObject(AssetLibrary.Bed, x, y, 500);
+            SetBlocked(x, y, true);
+            SetBlocked(x, y - 1, true);
+        }
+
+        /// <summary>실내 출입문. 마커 칸으로 걸어가면 밖으로 나간다.</summary>
+        private void PlaceDoor(int x, int y)
+        {
+            doorExitTile = new Vector2Int(x, y);
+            PlaceObject(AssetLibrary.Door, x, y - 0.4f, 500);
+            SetBlocked(x, y, false);
+            SetBlocked(x, y - 1, false);   // 문 아래 벽줄을 열어 준다
+        }
+
+        private void PlaceDecor(Sprite sprite, int x, int y, bool blocks)
+        {
+            PlaceObject(sprite, x, y, 500);
+            if (blocks) SetBlocked(x, y, true);
+        }
+
+        private void PlaceRug(int x, int y)
+        {
+            var sr = PlaceObject(AssetLibrary.Rug, x, y, 50);
+            sr.sortingOrder = -50;   // 바닥 장식이라 캐릭터 아래
+        }
+
+        private enum TilemapLayer { Ground, Blocked, Tillable, Objects }
 
         private static bool TryParseLayerName(string name, out LocationId locId, out TilemapLayer layer)
         {
@@ -205,6 +441,8 @@ namespace FarmMVP
                 { locId = candidate; layer = TilemapLayer.Blocked; return true; }
                 if (name == $"Tillable_{candidate}" || name == $"{candidate}Tillable")
                 { locId = candidate; layer = TilemapLayer.Tillable; return true; }
+                if (name == $"Objects_{candidate}" || name == $"{candidate}Objects")
+                { locId = candidate; layer = TilemapLayer.Objects; return true; }
             }
             locId = default;
             layer = TilemapLayer.Ground;
@@ -286,6 +524,7 @@ namespace FarmMVP
         {
             foreach (var hd in loc.hoeDirts)
             {
+                if (!InBounds(hd.x, hd.y)) { _outOfBoundsHoeDirts.Add(hd); continue; }
                 var pos = new Vector2Int(hd.x, hd.y);
                 var dirt = new HoeDirt(hd.x, hd.y) { watered = hd.watered };
                 if (hd.hasCrop)
@@ -297,6 +536,8 @@ namespace FarmMVP
             RefreshAllSoil(); // 이웃 모양(오토타일)을 보려면 전부 채운 뒤에 그려야 한다
             foreach (var t in loc.trees)
             {
+                // 맵 밖이거나, 맵이 줄어들면서 집/테두리 속이 된 자리는 건너뛴다.
+                if (!InBounds(t.x, t.y) || IsBlocked(t.x, t.y)) { _outOfBoundsTrees.Add(t); continue; }
                 var pos = new Vector2Int(t.x, t.y);
                 trees[pos] = new TreeFeature(t.x, t.y, t.treeId, t.growthStage)
                 {
@@ -309,10 +550,18 @@ namespace FarmMVP
 
             foreach (var r in loc.rocks)
             {
+                if (!InBounds(r.x, r.y) || IsBlocked(r.x, r.y)) { _outOfBoundsRocks.Add(r); continue; }
                 var pos = new Vector2Int(r.x, r.y);
                 rocks[pos] = new RockFeature(r.x, r.y, r.variant) { hp = r.hp };
                 SetBlocked(r.x, r.y, true);
                 RenderRock(pos);
+            }
+
+            int outside = _outOfBoundsHoeDirts.Count + _outOfBoundsTrees.Count + _outOfBoundsRocks.Count;
+            if (outside > 0)
+            {
+                Debug.Log($"[GameLocation] {id}: 시설 {outside}개가 지금 맵({width}x{height}) 밖이거나 막힌 자리라 " +
+                          "표시하지 않습니다. 저장 데이터에는 그대로 남아 있어서, 바닥을 더 칠해 맵을 넓히면 다시 나옵니다.");
             }
         }
 
@@ -510,6 +759,52 @@ namespace FarmMVP
         /// <summary>NPC가 서 있는 칸은 지나갈 수 없게 막는다.</summary>
         public void SetNpcBlocked(Vector2Int tile) => SetBlocked(tile.x, tile.y, true);
 
+        /// <summary>
+        /// 문으로 드나들었을 때 내려설 칸 — 문 바로 위/아래 중 걸을 수 있는 쪽.
+        /// 집을 어디에 놓든(마커로 옮기든, 맵이 줄어들든) 출입구 좌표를 따로 적어 둘 필요가 없다.
+        /// </summary>
+        public Vector2 DoorEntryTile
+        {
+            get
+            {
+                if (!doorExitTile.HasValue) return new Vector2(width / 2f, height / 2f);
+                var d = doorExitTile.Value;
+                if (!IsBlocked(d.x, d.y + 1)) return new Vector2(d.x, d.y + 1);   // 실내: 문 위쪽
+                if (!IsBlocked(d.x, d.y - 1)) return new Vector2(d.x, d.y - 1);   // 실외: 집 아래쪽
+                return new Vector2(d.x, d.y);
+            }
+        }
+
+        /// <summary>
+        /// 스폰하려는 자리가 막혀 있으면(맵이 줄어들어 벽/테두리 속이 된 경우 등) 가장 가까운
+        /// 걸을 수 있는 칸을 찾아 준다. 안 그러면 플레이어가 벽 안에서 영영 못 움직인다.
+        /// 원래 자리가 멀쩡하면 소수점 위치까지 그대로 돌려준다.
+        /// </summary>
+        public Vector2 FindWalkableNear(Vector2 wanted)
+        {
+            int wx = Mathf.RoundToInt(wanted.x), wy = Mathf.RoundToInt(wanted.y);
+            if (InBounds(wx, wy) && !IsBlocked(wx, wy)) return wanted;
+
+            int sx = Mathf.Clamp(wx, 0, Mathf.Max(0, width - 1));
+            int sy = Mathf.Clamp(wy, 0, Mathf.Max(0, height - 1));
+
+            int maxR = Mathf.Max(width, height);
+            for (int r = 0; r <= maxR; r++)
+                for (int dy = -r; dy <= r; dy++)
+                    for (int dx = -r; dx <= r; dx++)
+                    {
+                        if (Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy)) != r) continue; // 정사각 테두리만
+                        int x = sx + dx, y = sy + dy;
+                        if (IsBlocked(x, y)) continue;
+                        Debug.Log($"[GameLocation] {id}: 스폰 지점 ({wanted.x}, {wanted.y})이 막혀 있어 " +
+                                  $"({x}, {y})로 옮겼습니다.");
+                        return new Vector2(x, y);
+                    }
+
+            Debug.LogWarning($"[GameLocation] {id}: 걸을 수 있는 칸을 찾지 못했습니다. 맵이 너무 작거나 전부 막혀 있습니다.");
+            return wanted;
+        }
+
         /// <summary>배송함 UI를 열고 닫을 때 뚜껑이 열린/닫힌 그림으로 바꾼다.</summary>
         public void SetShippingBoxOpen(bool open)
         {
@@ -646,6 +941,11 @@ namespace FarmMVP
             loc.rocks.Clear();
             foreach (var kv in rocks)
                 loc.rocks.Add(new RockData { x = kv.Value.x, y = kv.Value.y, hp = kv.Value.hp, variant = kv.Value.variant });
+
+            // 맵 밖이라 못 그렸던 것들을 되돌려 놓는다 (저장에서 사라지지 않게).
+            loc.hoeDirts.AddRange(_outOfBoundsHoeDirts);
+            loc.trees.AddRange(_outOfBoundsTrees);
+            loc.rocks.AddRange(_outOfBoundsRocks);
 
             loc.droppedItems.Clear();
             foreach (var wi in _featureRoot.GetComponentsInChildren<WorldItem>())
