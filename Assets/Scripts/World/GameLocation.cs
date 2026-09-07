@@ -131,8 +131,10 @@ namespace FarmMVP
             FindSceneTilemaps();
             if (_groundMap != null) AlignGridToMap(_groundMap);
 
-            // SeasonalTile이 지금 계절 그림을 내주도록 타일맵에 다시 물어보게 한다.
-            // (씬의 Tilemap은 위치를 다시 로드해도 살아 있으므로 직접 갱신해야 한다.)
+            // 칠해 둔 평범한 타일을 계절 타일로 바꾸고(이미 바뀐 칸은 건너뛴다) 다시 그리게 한다.
+            // 씬의 Tilemap은 위치를 다시 로드해도 살아 있으므로 직접 갱신해야 한다.
+            SeasonalTileset.Apply(_groundMap);
+            SeasonalTileset.Apply(_waterMap);
             _groundMap?.RefreshAllTiles();
             _waterMap?.RefreshAllTiles();
 
@@ -323,154 +325,12 @@ namespace FarmMVP
         public bool HasObjectMarkers { get; private set; }
 
         /// <summary>
-        /// "Objects_{id}" 레이어를 읽어 집·배송함·상점·침대 같은 것들을 실제로 놓는다.
-        ///
-        /// 마스크 레이어와 달리 여기서는 "무엇을 칠했는지"가 중요하다 — 칠한 <b>Tile 에셋의 이름</b>이
-        /// 무엇을 놓을지 정한다 (Obj_House, Obj_Tree, ...). 타일셋 전체를 분류하는 게 아니라
-        /// 마커 타일 10개만 만들면 되고, Tools/Farm 메뉴로 자동 생성할 수 있다.
-        /// 마커 타일에 실제 오브젝트 스프라이트를 넣어 두면 에디터에서 배치가 그대로 미리 보인다.
-        ///
-        /// 나무와 바위는 저장되는 데이터(자라고, 베이면 사라진다)라서 <b>새 게임일 때 초기 배치로만</b>
-        /// 넣는다. 매번 넣으면 베어 낸 나무가 다시 들어올 때마다 되살아난다.
+        /// "Objects_{id}" 레이어를 읽어 집·배송함·나무 같은 것들을 놓는다.
+        /// 무엇을 놓을지는 ObjectMarkerDatabase의 표가, 놓는 일은 ObjectMarkerPlacer가 한다 —
+        /// 오브젝트를 아무리 추가해도 이 파일은 길어지지 않는다.
         /// </summary>
         public void ApplyObjectMarkers(LocationData locData)
-        {
-            if (_objectMarkers == null) return;
-
-            bool addTrees = locData != null && !locData.initialized;
-            bool addRocks = locData != null && !locData.rocksInitialized;
-            int placed = 0;
-            var unknown = new HashSet<string>();
-
-            for (int x = 0; x < width; x++)
-                for (int y = 0; y < height; y++)
-                {
-                    var tile = _objectMarkers.GetTile(_objectMarkers.WorldToCell(new Vector3(x, y, 0f)));
-                    if (tile == null) continue;
-
-                    var key = MarkerKey(tile.name);
-
-                    // "Obj_ExitFarm2" 처럼 목적지 이름이 붙은 마커 — 밟으면 그 맵으로 간다.
-                    if (key != null && key.StartsWith("exit"))
-                    {
-                        if (TryParseLocationKey(key.Substring(4), out var target)) { AddExit(x, y, target); placed++; }
-                        else unknown.Add(tile.name);
-                        continue;
-                    }
-
-                    switch (key)
-                    {
-                        case "house": PlaceHouse(x, y); break;
-                        case "shippingbox": PlaceShippingBox(x, y); break;
-                        case "shop": PlaceShop(x, y); break;
-                        case "bed": PlaceBed(x, y); break;
-                        case "door": PlaceDoor(x, y); break;
-                        case "fireplace": PlaceDecor(AssetLibrary.Fireplace, x, y, true); break;
-                        case "plant": PlaceDecor(AssetLibrary.Plant, x, y, true); break;
-                        case "rug": PlaceRug(x, y); break;
-                        case "tree": if (addTrees) AddDefaultTree(locData, x, y); break;
-                        case "rock": if (addRocks) AddRock(locData, x, y, (x * 7 + y * 3) % 5); break;
-                        default: unknown.Add(tile.name); continue;
-                    }
-                    placed++;
-                }
-
-            if (addTrees) locData.initialized = true;
-            if (addRocks) locData.rocksInitialized = true;
-
-            Debug.Log($"[GameLocation] {_objectMarkers.name}: 마커 {placed}개를 배치했습니다.");
-
-            if (!doorExitTile.HasValue && (id == LocationId.Farm1 || id == LocationId.FarmHouse))
-            {
-                Debug.LogWarning($"[GameLocation] {_objectMarkers.name}: 출입구가 없습니다. " +
-                                 "Farm1에는 Obj_House를, FarmHouse에는 Obj_Door를 칠해야 집을 드나들 수 있습니다.");
-            }
-            if (unknown.Count > 0)
-            {
-                Debug.LogWarning($"[GameLocation] {_objectMarkers.name}: 이름을 알 수 없는 마커 타일 — " +
-                                 string.Join(", ", unknown) + " (Obj_House / Obj_Tree 처럼 이름을 맞춰 주세요)");
-            }
-        }
-
-        /// <summary>"farm2" -> LocationId.Farm2 (대소문자 무시).</summary>
-        private static bool TryParseLocationKey(string key, out LocationId locId)
-        {
-            foreach (LocationId candidate in System.Enum.GetValues(typeof(LocationId)))
-            {
-                if (key == candidate.ToString().ToLowerInvariant()) { locId = candidate; return true; }
-            }
-            locId = default;
-            return false;
-        }
-
-        /// <summary>"Obj_House" -> "house". 앞의 Obj_ 는 있어도 없어도 되고 대소문자도 가리지 않는다.</summary>
-        private static string MarkerKey(string tileName)
-        {
-            if (string.IsNullOrEmpty(tileName)) return null;
-            var n = tileName.Trim();
-            if (n.StartsWith("Obj_", System.StringComparison.OrdinalIgnoreCase)) n = n.Substring(4);
-            return n.Replace("_", "").ToLowerInvariant();
-        }
-
-        /// <summary>
-        /// 집. 마커를 찍은 칸이 집의 <b>왼쪽 아래</b>가 되고, 거기서 5x5를 차지한다.
-        /// 문은 아래줄 가운데 칸 — 그 칸으로 걸어 들어가면 농가 실내로 간다.
-        /// </summary>
-        private void PlaceHouse(int mx, int my)
-        {
-            var sr = PlaceObject(AssetLibrary.House, mx + 1.5f, my + 2.0f, 1000);
-            sr.sortingOrder = 500;
-            for (int hx = mx; hx <= mx + 4; hx++)
-                for (int hy = my; hy <= my + 4; hy++)
-                    SetBlocked(hx, hy, true);
-
-            doorExitTile = new Vector2Int(mx + 2, my);
-            SetBlocked(doorExitTile.Value.x, doorExitTile.Value.y, false);
-        }
-
-        private void PlaceShippingBox(int x, int y)
-        {
-            shippingBoxTile = new Vector2Int(x, y);
-            SetShippingBoxRenderer(PlaceObject(AssetLibrary.ShippingBox, x, y + 0.15f, 600));
-            SetBlocked(x, y, true);
-        }
-
-        private void PlaceShop(int x, int y)
-        {
-            shopTile = new Vector2Int(x, y);
-            PlaceObject(AssetLibrary.ShopCart, x, y + 0.6f, 600);
-            SetBlocked(x, y, true);
-        }
-
-        /// <summary>침대. 마커 칸과 그 아래 칸을 함께 막는다 (스프라이트가 두 칸 높이).</summary>
-        private void PlaceBed(int x, int y)
-        {
-            bedTile = new Vector2Int(x, y);
-            PlaceObject(AssetLibrary.Bed, x, y, 500);
-            SetBlocked(x, y, true);
-            SetBlocked(x, y - 1, true);
-        }
-
-        /// <summary>실내 출입문. 마커 칸으로 걸어가면 밖으로 나간다.</summary>
-        private void PlaceDoor(int x, int y)
-        {
-            doorExitTile = new Vector2Int(x, y);
-            PlaceObject(AssetLibrary.Door, x, y - 0.4f, 500);
-            SetBlocked(x, y, false);
-            SetBlocked(x, y - 1, false);   // 문 아래 벽줄을 열어 준다
-        }
-
-        private void PlaceDecor(Sprite sprite, int x, int y, bool blocks)
-        {
-            PlaceObject(sprite, x, y, 500);
-            if (blocks) SetBlocked(x, y, true);
-        }
-
-        private void PlaceRug(int x, int y)
-        {
-            var sr = PlaceObject(AssetLibrary.Rug, x, y, 50);
-            sr.sortingOrder = -50;   // 바닥 장식이라 캐릭터 아래
-        }
+            => ObjectMarkerPlacer.Apply(this, _objectMarkers, locData);
 
         private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water }
 

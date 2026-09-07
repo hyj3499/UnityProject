@@ -116,9 +116,8 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 계절 그림이 있으면 그것, 없으면 기본 그림. 그래서 지금은 네 계절이 전부 같은 모습이고,
-        /// Tree_Winter.png 처럼 필요한 것만 나중에 넣으면 그 계절만 바뀐다.
-        /// (계절 접미사 규칙: 파일이름_Spring / _Summer / _Fall / _Winter)
+        /// 계절판(파일이름_Spring/_Summer/_Fall/_Winter)이 있으면 그것, 없으면 기본 그림.
+        /// 예: Sprites/Environment/Tree_Winter.png 를 넣으면 겨울에만 그 나무가 나온다.
         /// </summary>
         private static void LoadSeasonalAssets(Season season)
         {
@@ -141,11 +140,15 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 계절별 스프라이트. "Sprites/Environment/Tree" 를 주면 겨울에는 "Tree_Winter"를 먼저 찾고,
-        /// 없으면 원본을 그대로 돌려준다.
+        /// 계절별 스프라이트. 파일 이름 뒤에 계절을 붙여 두면 그 계절에만 그게 쓰인다:
         ///
-        /// 지금은 계절 그림이 하나도 없어도 전부 기본 그림으로 나오므로, 같은 파일을 네 벌씩
-        /// 복사해 둘 필요가 없다. 나중에 Tree_Winter.png 만 넣으면 그때부터 겨울에만 그게 쓰인다.
+        ///   Sprites/Environment/Apricot_3.png        (기본 · 계절판이 없으면 이게 나온다)
+        ///   Sprites/Environment/Apricot_3_Fall.png   (가을에만)
+        ///   Sprites/Environment/Apricot_3_Winter.png (겨울에만)
+        ///
+        /// 그래서 지금처럼 계절판이 하나도 없어도 네 계절이 전부 기본 그림으로 나오고,
+        /// 바꾸고 싶은 것만 옆에 넣으면 된다 (같은 파일 네 벌을 만들 필요가 없다).
+        /// 찾은 결과는 없는 경우까지 캐시되므로 Resources 접근은 경로당 딱 한 번이다.
         /// </summary>
         public static Sprite GetSeasonal(string resourcePath, Season season)
         {

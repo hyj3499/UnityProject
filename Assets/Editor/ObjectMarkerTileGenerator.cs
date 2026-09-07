@@ -9,34 +9,28 @@ namespace FarmMVP.EditorTools
     /// <summary>
     /// "Objects_{위치}" 레이어에 칠할 마커 타일을 만들어 준다.
     ///
-    /// GameLocation.ApplyObjectMarkers는 칠한 Tile 에셋의 <b>이름</b>으로 무엇을 놓을지 정한다.
+    /// ObjectMarkerPlacer는 칠한 Tile 에셋의 <b>이름</b>으로 무엇을 놓을지 정한다.
     /// 손으로 만들면 이름을 한 글자만 틀려도 조용히 무시되므로, 여기서 한 번에 만들어 이름이
     /// 어긋날 일을 없앤다. 각 마커에는 실제 오브젝트 스프라이트를 넣어 두기 때문에
     /// 타일 팔레트와 씬에서 배치가 그대로 미리 보인다.
+    ///
+    /// 목록은 ObjectMarkerDatabase를 그대로 읽으므로, 오브젝트를 추가할 때 고칠 곳은 그 표 한 군데다.
     /// </summary>
     public static class ObjectMarkerTileGenerator
     {
-        private const string OutDir = "Assets/Resources/Tiles/Markers";
+        private const string OutDir = "Assets/Resources/Sprites/Tiles/Markers";
 
         [MenuItem("Tools/Farm/오브젝트 마커 타일 만들기")]
         public static void Generate()
         {
             AssetLibrary.EnsureLoaded();
+            ObjectMarkerDatabase.Init();
 
-            var markers = new Dictionary<string, Sprite>
-            {
-                { "Obj_House", AssetLibrary.House },
-                { "Obj_ShippingBox", AssetLibrary.ShippingBox },
-                { "Obj_Shop", AssetLibrary.ShopCart },
-                { "Obj_Tree", AssetLibrary.Tree },
-                { "Obj_Rock", AssetLibrary.RockVariants != null && AssetLibrary.RockVariants.Length > 0
-                                  ? AssetLibrary.RockVariants[0] : null },
-                { "Obj_Bed", AssetLibrary.Bed },
-                { "Obj_Door", AssetLibrary.Door },
-                { "Obj_Fireplace", AssetLibrary.Fireplace },
-                { "Obj_Plant", AssetLibrary.Plant },
-                { "Obj_Rug", AssetLibrary.Rug },
-            };
+            // 표를 그대로 읽는다 — ObjectMarkerDatabase에 오브젝트를 추가하면
+            // 여기를 고치지 않아도 마커 타일이 함께 만들어진다.
+            var markers = new Dictionary<string, Sprite>();
+            foreach (var def in ObjectMarkerDatabase.All)
+                markers[ObjectMarkerDatabase.TileName(def)] = def.GetSprite();
 
             // 맵 이동 출구 — 칸 전체를 덮는 흙 타일에 목적지별 색을 입혀 영역이 한눈에 보이게 한다.
             var exitTints = new Dictionary<string, Color>
