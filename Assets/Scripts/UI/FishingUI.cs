@@ -50,7 +50,7 @@ namespace FarmMVP
             go.transform.SetParent(transform, false);
             _alert = go.AddComponent<SpriteRenderer>();
             _alert.sprite = AssetLibrary.UiAlert;
-            _alert.sortingOrder = 1100;   // 플레이어(1000)보다 위
+            _alert.sortingOrder = Depth.Overlay;   // 무엇에도 가려지면 안 된다
             go.SetActive(false);
         }
 

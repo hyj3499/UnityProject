@@ -97,8 +97,9 @@ namespace FarmMVP
                 return true;
             }
 
-            var sr = loc.PlaceObject(def.GetSprite(), x + def.offset.x, y + def.offset.y, def.sortingOrder);
-            sr.sortingOrder = def.sortingOrder;
+            // 그림은 offset만큼 올려 그리되, 앞뒤는 발밑(마커를 찍은 칸)으로 정한다.
+            var sr = loc.PlaceObject(def.GetSprite(), x + def.offset.x, y + def.offset.y, y, def.sortBias);
+            if (def.floorDecor) sr.sortingOrder = Depth.FloorDecor;
 
             if (def.blocks)
             {

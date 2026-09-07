@@ -32,22 +32,22 @@ namespace FarmMVP
             }
 
             // rug
-            var rug = loc.PlaceObject(AssetLibrary.Rug, loc.width / 2f - 0.5f, 3f, 50);
-            rug.sortingOrder = -50;
+            var rug = loc.PlaceObject(AssetLibrary.Rug, loc.width / 2f - 0.5f, 3f);
+            rug.sortingOrder = Depth.FloorDecor;   // 바닥에 깔리는 장식 — 아무도 가리지 않는다
 
             // bed (top-left interior)
             loc.bedTile = new Vector2Int(2, loc.height - 3);
-            loc.PlaceObject(AssetLibrary.Bed, 2f, loc.height - 3.0f, 500);
+            loc.PlaceObject(AssetLibrary.Bed, 2f, loc.height - 3.0f);
             loc.SetBlocked(2, loc.height - 3, true);
             loc.SetBlocked(2, loc.height - 4, true);
 
             // fireplace decor
-            loc.PlaceObject(AssetLibrary.Fireplace, 6f, loc.height - 3.0f, 500);
+            loc.PlaceObject(AssetLibrary.Fireplace, 6f, loc.height - 3.0f);
             loc.SetBlocked(6, loc.height - 3, true);
 
             // door (bottom) -> back to Farm1
             loc.doorExitTile = new Vector2Int(loc.width / 2, 1);
-            loc.PlaceObject(AssetLibrary.Door, loc.width / 2f, 0.6f, 500);
+            loc.PlaceObject(AssetLibrary.Door, loc.width / 2f, 0.6f, 1f);
             loc.SetBlocked(loc.doorExitTile.Value.x, 0, false);
         }
     }

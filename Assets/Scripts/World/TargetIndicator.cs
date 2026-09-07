@@ -26,7 +26,7 @@ namespace FarmMVP
             }
             _sr = gameObject.AddComponent<SpriteRenderer>();
             _sr.sprite = _sprite;
-            _sr.sortingOrder = 900; // 플레이어(1000)보다 아래, 타일보다 위
+            _sr.sortingOrder = Depth.Highlight; // 바닥 위, 서 있는 것들보다는 뒤
             gameObject.SetActive(false);
         }
 

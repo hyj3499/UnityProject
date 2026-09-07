@@ -87,7 +87,7 @@ namespace FarmMVP
             var pc = playerGo.AddComponent<PlayerController>();
             var psr = playerGo.AddComponent<SpriteRenderer>();
             psr.sprite = AssetLibrary.IdleDown.Length > 0 ? AssetLibrary.IdleDown[0] : null;
-            psr.sortingOrder = 1000;
+            psr.sortingOrder = Depth.YSort(0f);   // PlayerController가 매 프레임 다시 정한다
 
             // Location root
             var locationRoot = new GameObject("World").transform;

@@ -47,7 +47,11 @@ namespace FarmMVP
         /// <summary>발판을 막을지. 러그 같은 바닥 장식은 false.</summary>
         public bool blocks = true;
 
-        public int sortingOrder = 500;
+        /// <summary>러그처럼 바닥에 깔려 아무것도 가리지 않는 장식이면 true (y정렬에서 빠진다).</summary>
+        public bool floorDecor = false;
+
+        /// <summary>같은 줄에 있는 것들 사이의 앞뒤 미세 조정. 보통은 0.</summary>
+        public int sortBias = 0;
 
         public MarkerRole role = MarkerRole.None;
 
@@ -118,7 +122,6 @@ namespace FarmMVP
             {
                 spritePath = "Sprites/Environment/ShippingBox",
                 offset = new Vector2(0f, 0.15f),
-                sortingOrder = 600,
                 role = MarkerRole.ShippingBox,
             });
 
@@ -126,7 +129,6 @@ namespace FarmMVP
             {
                 spritePath = "Sprites/Environment/ShopCart",
                 offset = new Vector2(0f, 0.6f),
-                sortingOrder = 600,
                 role = MarkerRole.Shop,
             });
 
@@ -154,7 +156,7 @@ namespace FarmMVP
             {
                 spritePath = "Sprites/Interior/Rug",
                 blocks = false,
-                sortingOrder = -50,   // 바닥 장식이라 캐릭터 아래
+                floorDecor = true,   // 바닥에 깔리는 장식 — 아무도 가리지 않는다
             });
 
             // 오브젝트를 더 넣으려면 여기에 한 줄 (이름은 파일 이름이 된다):

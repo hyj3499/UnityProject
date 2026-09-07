@@ -20,6 +20,7 @@ namespace FarmMVP
         private const float BounceDistance = 0.6f;
 
         private GameManager _game;
+        private SpriteRenderer _sr;
         private string _itemId;
         private int _count;
         private float _grace;
@@ -57,7 +58,14 @@ namespace FarmMVP
 
             var sr = gameObject.AddComponent<SpriteRenderer>();
             sr.sprite = ItemDatabase.Get(itemId)?.GetSprite();
-            sr.sortingOrder = 700;
+            _sr = sr;
+            sr.sortingOrder = Depth.YSort(transform.position.y, Depth.DroppedItemBias);
+        }
+
+        private void LateUpdate()
+        {
+            // 플레이어에게 끌려오며 움직이므로 앞뒤도 따라가야 한다.
+            if (_sr != null) _sr.sortingOrder = Depth.YSort(transform.position.y, Depth.DroppedItemBias);
         }
 
         private void Update()

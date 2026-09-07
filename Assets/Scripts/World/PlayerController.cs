@@ -31,7 +31,7 @@ namespace FarmMVP
             _game = game;
             _sr = GetComponent<SpriteRenderer>();
             if (_sr == null) _sr = gameObject.AddComponent<SpriteRenderer>();
-            _sr.sortingOrder = 1000;
+            _sr.sortingOrder = Depth.YSort(transform.position.y);
             AssetLibrary.EnsureLoaded();
 
             _indicator = TargetIndicator.Create();
@@ -64,6 +64,15 @@ namespace FarmMVP
         private static bool IsPointerOverUI()
         {
             return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        }
+
+        /// <summary>
+        /// 서 있는 위치에 따라 앞뒤를 다시 정한다. 나무 위쪽으로 올라가면 나무에 가려지고
+        /// 아래로 내려오면 나무 앞으로 나온다. 움직이므로 매 프레임 갱신해야 한다.
+        /// </summary>
+        private void LateUpdate()
+        {
+            if (_sr != null) _sr.sortingOrder = Depth.YSort(transform.position.y);
         }
 
         private void HandleMovement()

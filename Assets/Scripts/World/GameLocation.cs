@@ -22,12 +22,8 @@ namespace FarmMVP
         /// </summary>
         public bool tillableByDefault = true;
 
-        /// <summary>코드가 까는 기본 바닥의 정렬 순서. 경작지(-50)/젖은 흙(-49)보다 반드시 아래여야 한다.</summary>
-        internal const int GroundOrder = -110;
-        /// <summary>타일 팔레트로 칠한 바닥(Tilemap)의 정렬 순서. 기본 바닥 위, 경작지 아래.</summary>
-        private const int PaintedGroundOrder = -100;
-        /// <summary>물 타일맵의 정렬 순서. 칠한 바닥 위에 덮이고, 경작지(-50)보다는 아래.</summary>
-        private const int WaterOrder = -90;
+        /// <summary>코드가 까는 기본 바닥의 정렬 순서 (빌더들이 쓴다). 자세한 규칙은 Depth 참고.</summary>
+        internal const int GroundOrder = Depth.Ground;
 
         public Dictionary<Vector2Int, HoeDirt> hoeDirts = new Dictionary<Vector2Int, HoeDirt>();
         public Dictionary<Vector2Int, TreeFeature> trees = new Dictionary<Vector2Int, TreeFeature>();
@@ -214,7 +210,7 @@ namespace FarmMVP
                 {
                     case TilemapLayer.Ground:
                         _groundMap = tm;
-                        if (tr != null) { tr.enabled = true; tr.sortingOrder = PaintedGroundOrder; }
+                        if (tr != null) { tr.enabled = true; tr.sortingOrder = Depth.PaintedGround; }
                         break;
                     case TilemapLayer.Blocked:
                         _blockedMask = tm;
@@ -227,7 +223,7 @@ namespace FarmMVP
                     case TilemapLayer.Water:
                         // 물은 눈에 보여야 하는 레이어다 — 마스크들과 달리 렌더러를 켜 둔다.
                         _waterMap = tm;
-                        if (tr != null) { tr.enabled = true; tr.sortingOrder = WaterOrder; }
+                        if (tr != null) { tr.enabled = true; tr.sortingOrder = Depth.Water; }
                         break;
                     case TilemapLayer.Objects:
                         _objectMarkers = tm;
@@ -385,17 +381,24 @@ namespace FarmMVP
             return sr;
         }
 
-        internal SpriteRenderer PlaceObject(Sprite sprite, float x, float y, int baseOrder)
+        /// <summary>
+        /// 오브젝트를 놓는다. 그리는 위치(x, y)와 <b>정렬 기준이 되는 발밑(footY)</b>을 따로 받는다 —
+        /// 나무처럼 그림이 발밑보다 훨씬 위로 올라가는 것을 그림 위치로 정렬하면 앞뒤가 어긋난다.
+        /// footY를 주지 않으면 그리는 위치를 그대로 발밑으로 본다.
+        /// </summary>
+        internal SpriteRenderer PlaceObject(Sprite sprite, float x, float y, float footY, int bias = 0)
         {
             var go = new GameObject("obj");
             go.transform.SetParent(_featureRoot, false);
             go.transform.position = new Vector3(x, y, 0);
             var sr = go.AddComponent<SpriteRenderer>();
             sr.sprite = sprite;
-            // y-sort so lower objects draw in front
-            sr.sortingOrder = baseOrder - Mathf.RoundToInt(y * 10);
+            sr.sortingOrder = Depth.YSort(footY, bias);
             return sr;
         }
+
+        internal SpriteRenderer PlaceObject(Sprite sprite, float x, float y)
+            => PlaceObject(sprite, x, y, y);
 
         /// <summary>
         /// Assets/Resources/Prefabs/{locId}Ground.prefab 가 있으면 그걸 인스턴스화해서 바닥으로 쓴다
@@ -410,7 +413,7 @@ namespace FarmMVP
             go.transform.localPosition = Vector3.zero;
             // 프리팹에 저장된 정렬 순서가 0이면 경작지를 덮어 버리므로 바닥 순서로 낮춘다.
             foreach (var tr in go.GetComponentsInChildren<TilemapRenderer>(true))
-                tr.sortingOrder = PaintedGroundOrder;
+                tr.sortingOrder = Depth.PaintedGround;
             return true;
         }
 
@@ -509,7 +512,7 @@ namespace FarmMVP
             // soil renderer — 대지마법으로 경작된 땅(Tilled Soil)
             if (!_hoeRenderers.TryGetValue(pos, out var soilSr))
             {
-                soilSr = PlaceTile(AssetLibrary.Tilled, pos.x, pos.y, -50, _featureRoot);
+                soilSr = PlaceTile(AssetLibrary.Tilled, pos.x, pos.y, Depth.Soil, _featureRoot);
                 _hoeRenderers[pos] = soilSr;
             }
             soilSr.sprite = autoTile
@@ -521,7 +524,7 @@ namespace FarmMVP
             {
                 if (!_wetRenderers.TryGetValue(pos, out var wetSr))
                 {
-                    wetSr = PlaceTile(null, pos.x, pos.y, -49, _featureRoot);
+                    wetSr = PlaceTile(null, pos.x, pos.y, Depth.WetSoil, _featureRoot);
                     wetSr.gameObject.name = $"wet_{pos.x}_{pos.y}";
                     _wetRenderers[pos] = wetSr;
                 }
@@ -542,7 +545,7 @@ namespace FarmMVP
                     go.transform.SetParent(_featureRoot, false);
                     go.transform.position = new Vector3(pos.x, pos.y + 0.25f, 0);
                     cropSr = go.AddComponent<SpriteRenderer>();
-                    cropSr.sortingOrder = 400 - pos.y * 10;
+                    cropSr.sortingOrder = Depth.YSort(pos.y, Depth.CropBias);
                     _cropRenderers[pos] = cropSr;
                 }
                 cropSr.sprite = dirt.crop.GetSprite();
@@ -612,7 +615,7 @@ namespace FarmMVP
             }
 
             if (!alive) return;
-            var created = PlaceObject(tree.GetSprite(), pos.x, pos.y + 0.6f, 600);
+            var created = PlaceObject(tree.GetSprite(), pos.x, pos.y + 0.6f, pos.y);
             _treeRenderers[pos] = created;
         }
 
@@ -632,7 +635,7 @@ namespace FarmMVP
             }
 
             if (!alive) return;
-            var created = PlaceObject(rock.GetSprite(), pos.x, pos.y, 600);
+            var created = PlaceObject(rock.GetSprite(), pos.x, pos.y, pos.y);
             _rockRenderers[pos] = created;
         }
 

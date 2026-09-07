@@ -33,7 +33,7 @@ namespace FarmMVP
             Tile = tile;
 
             _sr = gameObject.AddComponent<SpriteRenderer>();
-            _sr.sortingOrder = 700 - Mathf.RoundToInt(tile.y * 10);
+            _sr.sortingOrder = Depth.YSort(tile.y);   // 플레이어·나무와 같은 기준으로 앞뒤를 정한다
 
             _frames = NpcDatabase.IdleFrames(def.id);
             if (_frames.Length > 0) _sr.sprite = _frames[0];
