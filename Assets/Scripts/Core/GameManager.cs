@@ -28,6 +28,208 @@ namespace FarmMVP
         public event Action OnMoneyChanged;
         public event Action OnShippingChanged;
 
+        // ---------- NPC ----------
+        private const int AffectionPerHeart = 100;
+        private const int MaxAffection = 10 * AffectionPerHeart;
+        private const int TalkAffection = 12;
+        private const int GiftsPerWeek = 2;
+
+        private readonly List<NpcActor> _npcActors = new List<NpcActor>();
+
+        /// <summary>저장된 NPC 관계 상태를 가져온다 (없으면 새로 만든다).</summary>
+        public NpcStateData NpcState(string npcId)
+        {
+            foreach (var s in Data.npcs)
+                if (s.npcId == npcId) return s;
+
+            var created = new NpcStateData { npcId = npcId };
+            Data.npcs.Add(created);
+            return created;
+        }
+
+        public int HeartsOf(string npcId) => Mathf.Clamp(NpcState(npcId).affection / AffectionPerHeart, 0, 10);
+
+        private static int WeekOf(int day) => (day - 1) / 7;
+
+        public int GiftsLeftThisWeek(string npcId)
+        {
+            var st = NpcState(npcId);
+            if (st.giftWeek != WeekOf(Data.currentDay)) return GiftsPerWeek;
+            return Mathf.Max(0, GiftsPerWeek - st.giftsThisWeek);
+        }
+
+        private void ChangeAffection(NpcStateData state, int delta)
+        {
+            state.affection = Mathf.Clamp(state.affection + delta, 0, MaxAffection);
+        }
+
+        /// <summary>바라보는 쪽에 NPC가 있으면 그 NPC를 돌려준다.</summary>
+        public NpcActor NpcInFront(PlayerController pc)
+        {
+            var tile = pc.FacingTile();
+            var here = new Vector2Int(Mathf.RoundToInt(pc.transform.position.x), Mathf.RoundToInt(pc.transform.position.y));
+
+            foreach (var actor in _npcActors)
+            {
+                if (actor == null) continue;
+                if (Near(tile, actor.Tile) || Near(here, actor.Tile)) return actor;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 우클릭으로 NPC와 상호작용한다. 손에 아이템을 들고 있으면 선물할지 물어보고,
+        /// 빈손이면 바로 대화한다. 처리했으면 true.
+        /// </summary>
+        public bool TryInteractNpc(PlayerController pc)
+        {
+            if (Paused) return false;
+
+            var actor = NpcInFront(pc);
+            if (actor == null) return false;
+
+            var def = actor.Def;
+            var stack = SelectedStack;
+            bool holdingItem = stack != null && !stack.IsEmpty;
+
+            if (holdingItem)
+            {
+                string itemName = stack.Def != null ? stack.Def.displayName : stack.itemId;
+                int slot = Data.farmer.equippedHotbarIndex;
+                UIManager.Instance?.ShowYesNo(
+                    $"{def.displayName}에게 「{itemName}」을(를) 선물할까요?\n(아니오를 누르면 대화합니다)",
+                    onYes: () => GiveGift(def, slot),
+                    onNo: () => TalkTo(def));
+            }
+            else
+            {
+                TalkTo(def);
+            }
+            return true;
+        }
+
+        /// <summary>하루 한 번 대화. 호감도 구간에 맞는 대사 중 하나를 무작위로 고른다.</summary>
+        private void TalkTo(NpcDefinition def)
+        {
+            var state = NpcState(def.id);
+
+            if (state.lastTalkDay == Data.currentDay)
+            {
+                UIManager.Instance?.ShowDialogue(def, (int)NpcEmotion.Smile,
+                    PickLines(def.alreadyTalkedLines, "오늘은 이미 이야기를 나눴어요."), null, null);
+                return;
+            }
+
+            state.lastTalkDay = Data.currentDay;
+            ChangeAffection(state, TalkAffection);
+
+            var entry = PickDialogue(def, HeartsOf(def.id));
+            if (entry == null)
+            {
+                UIManager.Instance?.ShowDialogue(def, (int)NpcEmotion.Neutral, new[] { "..." }, null, null);
+                return;
+            }
+
+            UIManager.Instance?.ShowDialogue(def, entry.emotion, entry.lines, entry.choices,
+                choice =>
+                {
+                    ChangeAffection(NpcState(def.id), choice.affection);
+                    UIManager.Instance?.ContinueDialogue(def, choice.emotion,
+                        PickLines(choice.reply, "그렇군요."));
+                });
+        }
+
+        /// <summary>일주일에 두 번까지 선물. 아이템 전용 대사가 있으면 그것을, 없으면 등급별 대사를 쓴다.</summary>
+        private void GiveGift(NpcDefinition def, int slotIndex)
+        {
+            var stack = Inventory.GetSlot(slotIndex);
+            if (stack == null || stack.IsEmpty) { TalkTo(def); return; }
+
+            var state = NpcState(def.id);
+            int week = WeekOf(Data.currentDay);
+            if (state.giftWeek != week) { state.giftWeek = week; state.giftsThisWeek = 0; }
+
+            if (state.giftsThisWeek >= GiftsPerWeek)
+            {
+                UIManager.Instance?.ShowDialogue(def, (int)NpcEmotion.Think,
+                    PickLines(def.giftLimitLines, "이번 주엔 벌써 충분히 받았는걸요!"), null, null);
+                return;
+            }
+
+            string itemId = stack.itemId;
+            var tier = def.TierOf(itemId);
+
+            state.giftsThisWeek++;
+            ChangeAffection(state, GiftAffection(tier));
+            Inventory.ConsumeOne(slotIndex);
+
+            var custom = def.FindItemGiftLine(itemId);
+            int emotion = custom != null ? custom.emotion : GiftEmotion(tier);
+            string[] lines = custom != null ? custom.lines : PickLines(def.giftLines.For(tier), "고마워요.");
+
+            UIManager.Instance?.ShowDialogue(def, emotion, lines, null, null);
+        }
+
+        private static int GiftAffection(GiftTier tier)
+        {
+            switch (tier)
+            {
+                case GiftTier.Loved: return 80;
+                case GiftTier.Liked: return 45;
+                case GiftTier.Disliked: return -20;
+                case GiftTier.Hated: return -40;
+                default: return 20;
+            }
+        }
+
+        private static int GiftEmotion(GiftTier tier)
+        {
+            switch (tier)
+            {
+                case GiftTier.Loved: return (int)NpcEmotion.Happy;
+                case GiftTier.Liked: return (int)NpcEmotion.Smile;
+                case GiftTier.Disliked: return (int)NpcEmotion.Sad;
+                case GiftTier.Hated: return (int)NpcEmotion.Angry;
+                default: return (int)NpcEmotion.Neutral;
+            }
+        }
+
+        /// <summary>지금 호감도에서 나올 수 있는 대사 중 하나를 무작위로 고른다.</summary>
+        private static DialogueEntry PickDialogue(NpcDefinition def, int hearts)
+        {
+            if (def.dialogues == null || def.dialogues.Length == 0) return null;
+
+            var pool = new List<DialogueEntry>();
+            foreach (var e in def.dialogues)
+            {
+                if (e == null || e.lines == null || e.lines.Length == 0) continue;
+                if (hearts < e.minHearts || hearts > e.maxHearts) continue;
+                pool.Add(e);
+            }
+            if (pool.Count == 0) return null;
+            return pool[UnityEngine.Random.Range(0, pool.Count)];
+        }
+
+        private static string[] PickLines(string[] lines, string fallback)
+        {
+            if (lines == null || lines.Length == 0) return new[] { fallback };
+            return lines;
+        }
+
+        /// <summary>이 위치에 사는 NPC들을 배치한다 (위치가 다시 로드될 때마다 호출).</summary>
+        private void SpawnNpcs(LocationId locationId)
+        {
+            _npcActors.Clear();
+            foreach (var def in NpcDatabase.All)
+            {
+                if (def.HomeLocation != locationId) continue;
+
+                var tile = new Vector2Int(def.home.x, def.home.y);
+                _npcActors.Add(NpcActor.Spawn(CurrentLocation.FeatureRoot, def, tile));
+                CurrentLocation.SetNpcBlocked(tile);
+            }
+        }
+
         // ---------- 배송함 ----------
         /// <summary>배송함에 담긴 아이템들의 예상 판매 금액 합계.</summary>
         public int ShippingBoxValue
@@ -127,6 +329,7 @@ namespace FarmMVP
             ItemDatabase.Init();
             CropDatabase.Init();
             LootTableDatabase.Init();
+            NpcDatabase.Init();
             AssetLibrary.EnsureLoaded();
 
             // load or new game
@@ -219,6 +422,7 @@ namespace FarmMVP
             CurrentLocation.id = id;
             CurrentLocation.Build(Data);
             RestoreDroppedItems(Data.GetLocation(id));
+            SpawnNpcs(id);
 
             Data.currentLocation = id;
 
@@ -246,7 +450,11 @@ namespace FarmMVP
             if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Escape))
             {
                 var ui = UIManager.Instance;
-                if (ui != null && ui.IsShippingOpen)
+                if (ui != null && ui.IsDialogueOpen)
+                {
+                    // 대화 중에는 다른 창이 겹쳐 열리지 않게 무시한다.
+                }
+                else if (ui != null && ui.IsShippingOpen)
                     ui.CloseShippingBox();
                 else if (Input.GetKeyDown(KeyCode.I))
                     ui?.ToggleBook(BookUI.Page.Inventory);

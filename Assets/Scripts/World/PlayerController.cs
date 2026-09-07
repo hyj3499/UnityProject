@@ -258,7 +258,8 @@ namespace FarmMVP
             {
                 if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 상호작용으로 새는 것 방지
 
-                // 배송함은 조준 없이 그 자리에서 바로 열린다.
+                // NPC와 배송함은 조준 없이 그 자리에서 바로 상호작용한다.
+                if (_game.TryInteractNpc(this)) return;
                 if (_game.TryOpenShippingBox(this)) return;
 
                 if (!canAct) return;

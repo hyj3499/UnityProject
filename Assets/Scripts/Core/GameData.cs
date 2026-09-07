@@ -19,6 +19,9 @@ namespace FarmMVP
         /// <summary>배송함에 넣어 둔, 다음 날 아침에 팔릴 아이템들.</summary>
         public List<SlotData> shippingBox = new List<SlotData>();
 
+        /// <summary>NPC별 호감도와 대화/선물 기록.</summary>
+        public List<NpcStateData> npcs = new List<NpcStateData>();
+
         public LocationData farm1 = new LocationData();
         public LocationData farm2 = new LocationData();
         public LocationData farmHouse = new LocationData();
@@ -84,6 +87,17 @@ namespace FarmMVP
         public int x, y;
         public int hp;
         public string dropTableId = TreeFeature.DefaultDropTableId;
+    }
+
+    /// <summary>NPC 한 명과의 관계 상태. 호감도 100당 하트 1개.</summary>
+    [Serializable]
+    public class NpcStateData
+    {
+        public string npcId;
+        public int affection;         // 0 ~ 1000
+        public int lastTalkDay = -1;  // 마지막으로 대화한 날 (하루 한 번 제한)
+        public int giftWeek = -1;     // 선물 횟수를 세고 있는 주차
+        public int giftsThisWeek;     // 그 주에 준 선물 수 (주 2회 제한)
     }
 
     /// <summary>바닥에 떨어진 채 아직 줍지 않은 월드 아이템 하나 (WorldItem의 저장 형태).</summary>

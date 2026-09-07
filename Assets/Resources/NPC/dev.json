@@ -1,0 +1,203 @@
+{
+  "id": "dev",
+  "displayName": "데브",
+  "home": { "location": "Farm1", "x": 12, "y": 7 },
+
+  "lovedItems": ["strawberry"],
+  "likedItems": ["wood"],
+  "dislikedItems": ["strawberry_seed"],
+  "hatedItems": [],
+
+  "giftLines": {
+    "loved": [
+      "이건... 정말 제가 좋아하는 거예요!",
+      "고마워요. 오늘 하루가 통째로 좋아졌어요."
+    ],
+    "liked": [
+      "오, 이거 마침 필요했는데요.",
+      "잘 쓸게요. 고마워요!"
+    ],
+    "neutral": [
+      "음, 고마워요. 잘 받을게요."
+    ],
+    "disliked": [
+      "아... 마음은 고맙지만 이건 좀...",
+      "다음엔 다른 걸로 부탁드려도 될까요?"
+    ],
+    "hated": [
+      "저기, 이건 좀 곤란한데요...",
+      "제가 제일 싫어하는 거예요..."
+    ]
+  },
+
+  "itemGiftLines": [
+    {
+      "itemId": "strawberry",
+      "emotion": 2,
+      "lines": [
+        "딸기잖아요! 세상에, 제가 제일 좋아하는 거예요.",
+        "이거 하나면 밤샘 작업도 버틸 수 있어요. 정말 고마워요!"
+      ]
+    },
+    {
+      "itemId": "wood",
+      "emotion": 1,
+      "lines": [
+        "나무네요. 마침 작업대를 하나 더 만들려던 참이었어요.",
+        "딱 좋은 걸 주셨네요. 고마워요!"
+      ]
+    },
+    {
+      "itemId": "strawberry_seed",
+      "emotion": 5,
+      "lines": [
+        "씨앗이라... 저는 심는 재주가 영 없어서요.",
+        "이건 당신이 심는 게 훨씬 나을 거예요."
+      ]
+    }
+  ],
+
+  "alreadyTalkedLines": [
+    "오늘은 이미 실컷 이야기했잖아요.",
+    "내일 또 들러 주세요!"
+  ],
+
+  "giftLimitLines": [
+    "이번 주엔 벌써 두 번이나 받았는걸요.",
+    "너무 자주 받으면 미안해서요. 다음 주에 또 부탁해요!"
+  ],
+
+  "dialogues": [
+    {
+      "id": "any_greet",
+      "minHearts": 0,
+      "maxHearts": 10,
+      "emotion": 1,
+      "lines": [
+        "안녕하세요! 오늘도 밭일 하시나 봐요.",
+        "저는 여기서 이것저것 만들면서 지내고 있어요."
+      ]
+    },
+    {
+      "id": "any_bug",
+      "minHearts": 0,
+      "maxHearts": 10,
+      "emotion": 3,
+      "lines": [
+        "어제 만든 물건이 이상하게 동작하더라고요.",
+        "고쳤다 싶으면 또 다른 데가 말썽이에요. 원래 이런 건가요?"
+      ]
+    },
+    {
+      "id": "any_weather",
+      "minHearts": 0,
+      "maxHearts": 10,
+      "emotion": 0,
+      "lines": [
+        "오늘 날씨가 참 좋네요.",
+        "이런 날엔 밖에 나와 있는 게 최고예요."
+      ]
+    },
+    {
+      "id": "cold_start",
+      "minHearts": 0,
+      "maxHearts": 2,
+      "emotion": 0,
+      "lines": [
+        "아, 새로 오신 분이군요.",
+        "천천히 익숙해지시면 돼요. 급할 거 없어요."
+      ]
+    },
+    {
+      "id": "choice_strawberry",
+      "minHearts": 1,
+      "maxHearts": 10,
+      "emotion": 1,
+      "lines": [
+        "그러고 보니 궁금한 게 있었는데요.",
+        "혹시... 딸기 좋아하세요?"
+      ],
+      "choices": [
+        {
+          "text": "응, 완전 좋아해!",
+          "emotion": 2,
+          "affection": 15,
+          "reply": [
+            "역시! 저도예요.",
+            "딸기 좋아하는 사람치고 나쁜 사람 없더라고요."
+          ]
+        },
+        {
+          "text": "아니, 별로...",
+          "emotion": 5,
+          "affection": -5,
+          "reply": [
+            "아... 저랑은 좀 안 맞으시는군요.",
+            "뭐, 취향은 다 다른 거니까요."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "warm_talk",
+      "minHearts": 3,
+      "maxHearts": 10,
+      "emotion": 1,
+      "lines": [
+        "요즘 당신 밭이 점점 그럴싸해지던데요?",
+        "지나갈 때마다 슬쩍 구경하고 있었어요."
+      ]
+    },
+    {
+      "id": "choice_help",
+      "minHearts": 4,
+      "maxHearts": 10,
+      "emotion": 3,
+      "lines": [
+        "혹시 일손이 부족하면 말해 주세요.",
+        "제가 도와드려도 괜찮을까요?"
+      ],
+      "choices": [
+        {
+          "text": "고마워, 부탁할게!",
+          "emotion": 2,
+          "affection": 20,
+          "reply": [
+            "좋아요! 언제든 불러 주세요.",
+            "이래 봬도 힘은 좀 씁니다."
+          ]
+        },
+        {
+          "text": "괜찮아, 혼자 할 수 있어.",
+          "emotion": 0,
+          "affection": 5,
+          "reply": [
+            "역시 야무지시네요.",
+            "그래도 힘들면 언제든 말해 주세요."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "close_talk",
+      "minHearts": 6,
+      "maxHearts": 10,
+      "emotion": 2,
+      "lines": [
+        "당신이랑 이야기하면 이상하게 기운이 나요.",
+        "오늘도 들러 줘서 고마워요!"
+      ]
+    },
+    {
+      "id": "best_talk",
+      "minHearts": 8,
+      "maxHearts": 10,
+      "emotion": 2,
+      "lines": [
+        "이 마을에 오길 잘했다고 생각해요.",
+        "당신 같은 사람을 만났으니까요.",
+        "앞으로도 잘 부탁해요!"
+      ]
+    }
+  ]
+}

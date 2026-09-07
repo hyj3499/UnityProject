@@ -40,6 +40,9 @@ namespace FarmMVP
         private ShippingUI _shipping;
         private readonly List<SlotView> _shippingViews = new List<SlotView>();
 
+        // NPC 대화
+        private DialogueUI _dialogue;
+
         // Banner / toast
         private Text _bannerText;
         private Text _toastText;
@@ -63,6 +66,7 @@ namespace FarmMVP
             BuildHotbar();
             BuildBook();
             BuildShipping();
+            BuildDialogue();
             BuildBannerAndToast();
             BuildConfirmDialog();
 
@@ -280,8 +284,34 @@ namespace FarmMVP
             _shipping.Boot(this, _game, _canvas.transform as RectTransform);
         }
 
+        private void BuildDialogue()
+        {
+            var go = new GameObject("DialogueUI");
+            go.transform.SetParent(_canvas.transform, false);
+            _dialogue = go.AddComponent<DialogueUI>();
+            _dialogue.Boot(this, _canvas.transform as RectTransform);
+        }
+
         public bool IsBookOpen => _book != null && _book.IsOpen;
         public bool IsShippingOpen => _shipping != null && _shipping.IsOpen;
+        public bool IsDialogueOpen => _dialogue != null && _dialogue.IsOpen;
+
+        /// <summary>NPC 대사를 띄운다. 선택지가 있으면 마지막 줄 뒤에 버튼이 나온다.</summary>
+        public void ShowDialogue(NpcDefinition def, int emotion, string[] lines,
+            DialogueChoice[] choices, Action<DialogueChoice> onChoice)
+        {
+            if (_dialogue == null) return;
+            _dialogue.Show(def.id, def.displayName, emotion, lines, choices, onChoice, SyncPaused);
+            SyncPaused();
+        }
+
+        /// <summary>선택지를 고른 뒤 이어지는 반응 대사를 같은 창에 이어서 보여준다.</summary>
+        public void ContinueDialogue(NpcDefinition def, int emotion, string[] lines)
+        {
+            if (_dialogue == null) return;
+            _dialogue.Show(def.id, def.displayName, emotion, lines, null, null, SyncPaused);
+            SyncPaused();
+        }
 
         /// <summary>배송함을 우클릭했을 때 호출된다.</summary>
         public void OpenShippingBox()
@@ -334,7 +364,7 @@ namespace FarmMVP
         {
             if (_game == null) return;
             bool confirmOpen = _confirmPanel != null && _confirmPanel.activeSelf;
-            _game.Paused = confirmOpen || IsBookOpen || IsShippingOpen;
+            _game.Paused = confirmOpen || IsBookOpen || IsShippingOpen || IsDialogueOpen;
         }
 
         /// <summary>BookUI가 인벤토리 페이지의 칸을 만들 때 호출한다 (드래그&amp;드롭 및 갱신 대상에 등록).</summary>

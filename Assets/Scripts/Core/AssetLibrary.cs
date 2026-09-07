@@ -34,7 +34,7 @@ namespace FarmMVP
         public static Sprite Hoe, WateringCan, Axe;
         // UI (Farm RPG Tiny Asset Pack 에서 잘라낸 조각들)
         public static Sprite UiBook, UiHudInfo, UiHudMoney, UiIconSun, UiIconMoon;
-        public static Sprite UiSlot, UiSlotSelected, UiFrame;
+        public static Sprite UiSlot, UiSlotSelected, UiFrame, UiDialoguePanel;
         public static Sprite UiBookmarkGreen, UiBookmarkOrange, UiBookmarkBlue;
 
         public static void EnsureLoaded()
@@ -84,6 +84,7 @@ namespace FarmMVP
             UiSlot = Load("Sprites/UI/Slot");
             UiSlotSelected = Load("Sprites/UI/SlotSelected");
             UiFrame = Load("Sprites/UI/Frame");
+            UiDialoguePanel = Load("Sprites/UI/DialoguePanel");
             UiBookmarkGreen = Load("Sprites/UI/BookmarkGreen");
             UiBookmarkOrange = Load("Sprites/UI/BookmarkOrange");
             UiBookmarkBlue = Load("Sprites/UI/BookmarkBlue");

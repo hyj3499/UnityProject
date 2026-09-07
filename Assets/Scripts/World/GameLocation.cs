@@ -311,6 +311,9 @@ namespace FarmMVP
             return true;
         }
 
+        /// <summary>NPC가 서 있는 칸은 지나갈 수 없게 막는다.</summary>
+        public void SetNpcBlocked(Vector2Int tile) => SetBlocked(tile.x, tile.y, true);
+
         /// <summary>배송함 UI를 열고 닫을 때 뚜껑이 열린/닫힌 그림으로 바꾼다.</summary>
         public void SetShippingBoxOpen(bool open)
         {
