@@ -360,6 +360,9 @@ namespace FarmMVP
                 Data = NewGame();
             }
 
+            Seasons.SetSilently(Data.currentDay);   // 계절은 날짜에서 나온다 (따로 저장하지 않는다)
+            AssetLibrary.ApplySeason(Seasons.Current);
+
             // 저장된 선택 마법 복원
             CurrentMagic = (MagicType)Mathf.Clamp(Data.farmer.currentMagic, 0, MagicSystem.Count - 1);
 
@@ -711,6 +714,16 @@ namespace FarmMVP
             var tile = pc.FacingTile();
             var def = stack.Def;
 
+            if (!string.IsNullOrEmpty(def.cropId))
+            {
+                var crop = CropDatabase.Get(def.cropId);
+                if (crop != null && !Seasons.AllowsNow(crop.seasons))
+                {
+                    UIManager.Instance?.Toast($"{crop.name}은(는) {Seasons.Name(Seasons.Current)}에 심을 수 없다");
+                    return;
+                }
+            }
+
             bool planted = !string.IsNullOrEmpty(def.treeId)
                 ? CurrentLocation.PlantTree(tile.x, tile.y, def.treeId)
                 : CurrentLocation.Plant(tile.x, tile.y, def.cropId);
@@ -812,6 +825,17 @@ namespace FarmMVP
             Data.currentDay += 1;
             Data.currentMinutes = 6 * 60; // 06:00
 
+            // 계절이 바뀌면: 그림을 갈아 끼우고, 그 계절에 못 사는 작물을 걷어낸다.
+            int withered = 0;
+            bool seasonChanged = Seasons.SyncToDay(Data.currentDay);
+            if (seasonChanged)
+            {
+                AssetLibrary.ApplySeason(Seasons.Current);
+                withered = WitherOutOfSeasonCrops(Data.farm1)
+                         + WitherOutOfSeasonCrops(Data.farm2)
+                         + WitherOutOfSeasonCrops(Data.farmHouse);
+            }
+
             // 잠을 자면 MP 회복
             Data.farmer.mp = Data.farmer.maxMp;
 
@@ -827,6 +851,34 @@ namespace FarmMVP
 
             UIManager.Instance?.ShowDayBanner(Data.currentDay);
             if (income > 0) UIManager.Instance?.Toast($"배송함 판매 +{income:N0} G");
+            if (seasonChanged)
+            {
+                UIManager.Instance?.Toast($"{Seasons.Name(Seasons.Current)}이(가) 되었다"
+                                          + (withered > 0 ? $" — 철 지난 작물 {withered}개가 시들었다" : ""));
+            }
+        }
+
+        /// <summary>
+        /// 계절이 바뀌었을 때 그 계절에 못 사는 작물을 저장 데이터에서 걷어낸다. 다 자란 것도 예외 없이
+        /// 시든다 — 계절이 끝나기 전에 거두라는 압력이 이 시스템의 핵심이다.
+        /// 살아 있는 GameLocation이 아니라 데이터를 고치는 이유: 지금 서 있지 않은 맵도 함께 처리해야 하고,
+        /// 바로 뒤에서 위치를 다시 로드하기 때문에 화면은 저절로 맞춰진다.
+        /// </summary>
+        private static int WitherOutOfSeasonCrops(LocationData loc)
+        {
+            int withered = 0;
+            foreach (var hd in loc.hoeDirts)
+            {
+                if (!hd.hasCrop) continue;
+                var def = CropDatabase.Get(hd.cropId);
+                if (def != null && Seasons.AllowsNow(def.seasons)) continue;
+                hd.hasCrop = false;
+                hd.cropId = null;
+                hd.growthStage = 0;
+                hd.dayCounter = 0;
+                withered++;
+            }
+            return withered;
         }
 
         private void AdvanceAllCrops()

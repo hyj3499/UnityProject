@@ -21,6 +21,7 @@ namespace FarmMVP
                 daysPerStage = 1,
                 dropTableId = "crop_strawberry",
                 regrowStage = 4, // 다작: 수확하면 4단계로 되돌아가 하루만 더 자라면 다시 수확 가능
+                seasons = SeasonFlags.Spring | SeasonFlags.Summer,
                 stageSprites = () => { AssetLibrary.EnsureLoaded(); return AssetLibrary.StrawberryStages; }
             });
         }

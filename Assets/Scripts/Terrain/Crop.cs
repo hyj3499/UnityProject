@@ -21,6 +21,9 @@ namespace FarmMVP
         /// </summary>
         public int regrowStage = -1;
 
+        /// <summary>이 작물을 심을 수 있는 계절. 다른 계절이 되면 심어 둔 것이 시들어 사라진다.</summary>
+        public SeasonFlags seasons = SeasonFlags.All;
+
         public Func<Sprite[]> stageSprites;
     }
 

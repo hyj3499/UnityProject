@@ -600,7 +600,8 @@ namespace FarmMVP
         // ---------- refresh ----------
         private void RefreshTime()
         {
-            _dateText.text = $"{_game.Data.currentDay}일차";
+            int day = _game.Data.currentDay;
+            _dateText.text = $"{Seasons.Name(Seasons.Of(day))} {Seasons.DayOfSeason(day)}일";
             _timeText.text = _game.TimeString();
             _dayNightIcon.sprite = _game.IsDaytime ? AssetLibrary.UiIconSun : AssetLibrary.UiIconMoon;
 

@@ -131,6 +131,11 @@ namespace FarmMVP
             FindSceneTilemaps();
             if (_groundMap != null) AlignGridToMap(_groundMap);
 
+            // SeasonalTile이 지금 계절 그림을 내주도록 타일맵에 다시 물어보게 한다.
+            // (씬의 Tilemap은 위치를 다시 로드해도 살아 있으므로 직접 갱신해야 한다.)
+            _groundMap?.RefreshAllTiles();
+            _waterMap?.RefreshAllTiles();
+
             _blocked = new bool[width, height];
 
             switch (id)
@@ -174,16 +179,34 @@ namespace FarmMVP
         {
             _groundMap = _blockedMask = _tillableMask = _objectMarkers = _waterMap = null;
 
+            // 계절 전용 레이어가 있으면 기본 레이어보다 우선한다. 그래서 두 번 훑는다 —
+            // 첫 판에서 이번 계절 전용 레이어를 잡고, 둘째 판에서 빈 자리만 기본 레이어로 채운다.
+            var seasonal = new HashSet<TilemapLayer>();
+
+            for (int pass = 0; pass < 2; pass++)
             foreach (var tm in FindObjectsOfType<Tilemap>())
             {
-                if (!TryParseLayerName(tm.name, out var owner, out var layer)) continue;
+                if (!TryParseLayerName(tm.name, out var owner, out var layer, out var layerSeason)) continue;
                 var tr = tm.GetComponent<TilemapRenderer>();
 
+                bool isSeasonal = layerSeason.HasValue;
+                if (pass == 0 != isSeasonal) continue;              // 0번 판은 계절 전용만, 1번 판은 기본만
+                if (isSeasonal && layerSeason.Value != Seasons.Current)
+                {
+                    if (tr != null) tr.enabled = false;             // 지금 계절이 아닌 전용 레이어는 숨긴다
+                    continue;
+                }
                 if (owner != id)
                 {
                     if (tr != null) tr.enabled = false;   // 다른 위치의 레이어는 안 보이게
                     continue;
                 }
+                if (pass == 1 && seasonal.Contains(layer))
+                {
+                    if (tr != null) tr.enabled = false;   // 이번 계절 전용 레이어가 대신하고 있다
+                    continue;
+                }
+                if (isSeasonal) seasonal.Add(layer);
 
                 switch (layer)
                 {
@@ -450,6 +473,25 @@ namespace FarmMVP
         }
 
         private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water }
+
+        /// <summary>
+        /// 레이어 이름을 해석한다. 앞에 계절이 붙어 있으면("Winter_Location_Farm1") 그 계절 전용이다.
+        /// season이 null이면 계절과 무관한 기본 레이어.
+        /// </summary>
+        private static bool TryParseLayerName(string name, out LocationId locId, out TilemapLayer layer,
+                                              out Season? season)
+        {
+            season = null;
+            foreach (Season s in System.Enum.GetValues(typeof(Season)))
+            {
+                string prefix = Seasons.Key(s) + "_";
+                if (!name.StartsWith(prefix, System.StringComparison.Ordinal)) continue;
+                if (!TryParseLayerName(name.Substring(prefix.Length), out locId, out layer)) break;
+                season = s;
+                return true;
+            }
+            return TryParseLayerName(name, out locId, out layer);
+        }
 
         private static bool TryParseLayerName(string name, out LocationId locId, out TilemapLayer layer)
         {
@@ -759,6 +801,8 @@ namespace FarmMVP
         {
             var pos = new Vector2Int(x, y);
             if (!hoeDirts.TryGetValue(pos, out var d)) return false;
+            var def = CropDatabase.Get(cropId);
+            if (def != null && !Seasons.AllowsNow(def.seasons)) return false;   // 계절이 안 맞는다
             if (!d.Plant(cropId)) return false;
             RenderHoeDirt(pos);
             return true;
@@ -780,6 +824,14 @@ namespace FarmMVP
         /// <summary>지금 이 칸에 씨앗을 심을 수 있는지 (경작된 땅이고 아직 아무것도 안 심었을 때).</summary>
         public bool CanPlant(int x, int y)
             => hoeDirts.TryGetValue(new Vector2Int(x, y), out var d) && !d.HasCrop;
+
+        /// <summary>그 작물을 지금 계절에 이 칸에 심을 수 있는지.</summary>
+        public bool CanPlant(int x, int y, string cropId)
+        {
+            if (!CanPlant(x, y)) return false;
+            var def = CropDatabase.Get(cropId);
+            return def != null && Seasons.AllowsNow(def.seasons);
+        }
 
         /// <summary>지금 이 칸에 벨 수 있는 나무가 있는지.</summary>
         public bool HasChoppableTree(int x, int y)

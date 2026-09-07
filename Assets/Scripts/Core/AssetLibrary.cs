@@ -55,31 +55,25 @@ namespace FarmMVP
             WalkUp = LoadRange("Sprites/Player/Walk_Up_", 6);
             WalkSide = LoadRange("Sprites/Player/Walk_Side_", 6);
 
-            Grass = Load("Sprites/Tiles/Grass");
-            Dirt = Load("Sprites/Tiles/Dirt");
             Tilled = Load("Sprites/Tiles/Tilled");
             TilledWatered = Load("Sprites/Tiles/TilledWatered");
             Floor = Load("Sprites/Interior/Floor");
             Wall = Load("Sprites/Interior/Wall");
             Rug = Load("Sprites/Interior/Rug");
 
-            Tree = Load("Sprites/Environment/Tree");
             House = Load("Sprites/Environment/House");
             Wood = Load("Sprites/Environment/Wood");
             ShippingBox = Load("Sprites/Environment/ShippingBox");
             ShippingBoxOpen = Load("Sprites/Environment/ShippingBoxOpen");
             ShopCart = Load("Sprites/Environment/ShopCart");
-            RockVariants = LoadRange("Sprites/Environment/Rock_", 5);
             Stone = Load("Sprites/Environment/Stone");
             ApricotSeed = Load("Sprites/Environment/ApricotSeed");
-            ApricotStages = LoadRange("Sprites/Environment/Apricot_", 4);
 
             Bed = Load("Sprites/Interior/Bed");
             Door = Load("Sprites/Interior/Door");
             Fireplace = Load("Sprites/Interior/Fireplace");
             Plant = Load("Sprites/Interior/Plant");
 
-            StrawberryStages = LoadRange("Sprites/Crops/Strawberry_", 6);
             StrawberrySeed = Load("Sprites/Crops/StrawberrySeed");
             StrawberryFruit = Load("Sprites/Crops/StrawberryFruit");
 
@@ -106,6 +100,34 @@ namespace FarmMVP
             UiFishTrack = Load("Sprites/UI/FishTrack");
             UiFishZone = Load("Sprites/UI/FishZone");
             UiFishMarker = Load("Sprites/UI/FishMarker");
+
+            LoadSeasonalAssets(Seasons.Current);
+        }
+
+        /// <summary>
+        /// 계절이 바뀔 때 부른다. 계절에 따라 달라지는 스프라이트들만 다시 읽어 <b>같은 필드에</b> 넣으므로,
+        /// AssetLibrary.Tree 처럼 쓰는 쪽은 한 줄도 고칠 필요가 없다.
+        /// 그 다음 위치를 다시 로드하면 화면이 새 그림으로 바뀐다.
+        /// </summary>
+        public static void ApplySeason(Season season)
+        {
+            if (!_loaded) { EnsureLoaded(); return; }
+            LoadSeasonalAssets(season);
+        }
+
+        /// <summary>
+        /// 계절 그림이 있으면 그것, 없으면 기본 그림. 그래서 지금은 네 계절이 전부 같은 모습이고,
+        /// Tree_Winter.png 처럼 필요한 것만 나중에 넣으면 그 계절만 바뀐다.
+        /// (계절 접미사 규칙: 파일이름_Spring / _Summer / _Fall / _Winter)
+        /// </summary>
+        private static void LoadSeasonalAssets(Season season)
+        {
+            Grass = GetSeasonalRaw("Sprites/Tiles/Grass", season);
+            Dirt = GetSeasonalRaw("Sprites/Tiles/Dirt", season);
+            Tree = GetSeasonalRaw("Sprites/Environment/Tree", season);
+            RockVariants = LoadRangeSeasonal("Sprites/Environment/Rock_", 5, season);
+            ApricotStages = LoadRangeSeasonal("Sprites/Environment/Apricot_", 4, season);
+            StrawberryStages = LoadRangeSeasonal("Sprites/Crops/Strawberry_", 6, season);
         }
 
         /// <summary>
@@ -118,6 +140,37 @@ namespace FarmMVP
             return Load(resourcePath);
         }
 
+        /// <summary>
+        /// 계절별 스프라이트. "Sprites/Environment/Tree" 를 주면 겨울에는 "Tree_Winter"를 먼저 찾고,
+        /// 없으면 원본을 그대로 돌려준다.
+        ///
+        /// 지금은 계절 그림이 하나도 없어도 전부 기본 그림으로 나오므로, 같은 파일을 네 벌씩
+        /// 복사해 둘 필요가 없다. 나중에 Tree_Winter.png 만 넣으면 그때부터 겨울에만 그게 쓰인다.
+        /// </summary>
+        public static Sprite GetSeasonal(string resourcePath, Season season)
+        {
+            EnsureLoaded();
+            return GetSeasonalRaw(resourcePath, season);
+        }
+
+        /// <summary>EnsureLoaded 안에서도 쓸 수 있는 판(재진입하지 않는다).</summary>
+        private static Sprite GetSeasonalRaw(string resourcePath, Season season)
+        {
+            var seasonal = LoadQuiet(resourcePath + "_" + Seasons.Key(season));
+            return seasonal != null ? seasonal : Load(resourcePath);
+        }
+
+        public static Sprite GetSeasonal(string resourcePath) => GetSeasonal(resourcePath, Seasons.Current);
+
+        /// <summary>없어도 경고하지 않는 로드 — 계절 그림처럼 "있으면 쓰고 없으면 만다"에 쓴다.</summary>
+        private static Sprite LoadQuiet(string path)
+        {
+            if (_cache.TryGetValue(path, out var cached)) return cached;
+            var s = Resources.Load<Sprite>(path);
+            _cache[path] = s;
+            return s;
+        }
+
         private static Sprite Load(string path)
         {
             if (_cache.TryGetValue(path, out var s)) return s;
@@ -126,6 +179,18 @@ namespace FarmMVP
                 Debug.LogWarning($"[AssetLibrary] Missing sprite: {path}");
             _cache[path] = s;
             return s;
+        }
+
+        /// <summary>LoadRange의 계절판. "Apricot_0_Winter"가 있으면 그걸, 없으면 "Apricot_0".</summary>
+        private static Sprite[] LoadRangeSeasonal(string prefix, int count, Season season)
+        {
+            var list = new List<Sprite>();
+            for (int i = 0; i < count; i++)
+            {
+                var s = GetSeasonalRaw(prefix + i, season);
+                if (s != null) list.Add(s);
+            }
+            return list.ToArray();
         }
 
         private static Sprite[] LoadRange(string prefix, int count)
