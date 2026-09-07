@@ -35,7 +35,7 @@ namespace FarmMVP
         private readonly Dictionary<Page, GameObject> _pages = new Dictionary<Page, GameObject>();
         private readonly Dictionary<Page, Image> _tabs = new Dictionary<Page, Image>();
 
-        private Text _stMoney, _stDate, _stTime, _stHp, _stMp, _stMagic;
+        private Text _stMoney, _stDate, _stTime, _stHp, _stMp, _stMagic, _stBag;
         private Slider _volumeSlider;
 
         public bool IsOpen => _root != null && _root.gameObject.activeSelf;
@@ -98,6 +98,7 @@ namespace FarmMVP
             _stHp.text = $"{f.hp} / {f.maxHp}";
             _stMp.text = $"{f.mp} / {f.maxMp}";
             _stMagic.text = MagicSystem.Get(_game.CurrentMagic).displayName;
+            _stBag.text = $"{_game.UnlockedSlots}칸 (Lv.{_game.BackpackLevel})";
         }
 
         // ---------- 뼈대 ----------
@@ -176,15 +177,24 @@ namespace FarmMVP
             _stHp = AddStatusRow(left, ref y, "체력");
             _stMp = AddStatusRow(left, ref y, "마나");
             _stMagic = AddStatusRow(left, ref y, "마법");
+            _stBag = AddStatusRow(left, ref y, "가방");
 
             // 오른쪽: 아이템 격자 (윗줄 9칸이 곧 핫바)
             var right = Area(page, "Bag", RightPage);
             PageTitle(right, "가방");
 
+            // 배낭 한 페이지(10칸) = 5칸씩 2줄. 페이지 사이는 살짝 띄워 구분한다.
             const int cols = 5;
-            int rows = Mathf.CeilToInt(Inventory.TotalSlots / (float)cols);
-            // 페이지 안에 딱 들어차도록 가로/세로 중 더 빡빡한 쪽에 칸 크기를 맞춘다.
-            float pitch = Mathf.Min((right.sizeDelta.x - 10f) / cols, (right.sizeDelta.y - 74f) / rows);
+            const int rowsPerGroup = 2;
+            const float gapRatio = 0.45f;
+
+            int groups = Inventory.BackpackPages;
+            int rows = groups * rowsPerGroup;
+
+            float availW = right.sizeDelta.x - 10f;
+            float availH = right.sizeDelta.y - 74f;
+            float pitch = Mathf.Min(availW / cols, availH / (rows + (groups - 1) * gapRatio));
+            float groupGap = pitch * gapRatio;
             float slot = pitch - 5f;
 
             var grid = new GameObject("Grid").AddComponent<RectTransform>();
@@ -192,19 +202,22 @@ namespace FarmMVP
             grid.anchorMin = grid.anchorMax = new Vector2(0.5f, 1f);
             grid.pivot = new Vector2(0.5f, 1f);
             grid.anchoredPosition = new Vector2(0, -46);
-            grid.sizeDelta = new Vector2(cols * pitch, rows * pitch);
+            grid.sizeDelta = new Vector2(cols * pitch, rows * pitch + (groups - 1) * groupGap);
 
             for (int i = 0; i < Inventory.TotalSlots; i++)
             {
                 int c = i % cols;
                 int r = i / cols;
-                float x = -((cols - 1) * pitch) / 2f + c * pitch;
-                var sv = _ui.CreateInventorySlot(grid, i, x, -r * pitch, slot);
+                int group = r / rowsPerGroup;
 
-                // 앞의 9칸은 핫바이므로 몇 번 키인지 작게 적어 준다.
+                float slotX = -((cols - 1) * pitch) / 2f + c * pitch;
+                float slotY = -(r * pitch + group * groupGap);
+                var sv = _ui.CreateInventorySlot(grid, i, slotX, slotY, slot);
+
+                // 첫 10칸은 퀵바이므로 대응하는 숫자키를 적어 준다 (10번째는 0).
                 if (i < Inventory.HotbarSize)
                 {
-                    var num = _ui.Label(sv.frame.rectTransform, (i + 1).ToString(), 12, Vector2.zero, TextAnchor.UpperLeft);
+                    var num = _ui.Label(sv.frame.rectTransform, i == 9 ? "0" : (i + 1).ToString(), 12, Vector2.zero, TextAnchor.UpperLeft);
                     var nrt = num.rectTransform;
                     nrt.anchorMin = new Vector2(0, 1);
                     nrt.anchorMax = new Vector2(0, 1);
@@ -215,7 +228,7 @@ namespace FarmMVP
                 }
             }
 
-            var hint = _ui.Label(right, "1~9번 칸이 핫바입니다", 13, Vector2.zero, TextAnchor.UpperCenter);
+            var hint = _ui.Label(right, "1~0번이 퀵바 · TAB으로 배낭 전환", 13, Vector2.zero, TextAnchor.UpperCenter);
             hint.rectTransform.anchorMin = new Vector2(0, 0);
             hint.rectTransform.anchorMax = new Vector2(1, 0);
             hint.rectTransform.pivot = new Vector2(0.5f, 0);

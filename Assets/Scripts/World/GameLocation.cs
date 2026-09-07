@@ -28,6 +28,7 @@ namespace FarmMVP
 
         // Special interaction points
         public Vector2Int? shippingBoxTile; // Farm1 배송함
+        public Vector2Int? shopTile;        // Farm1 상점 수레
         private SpriteRenderer _shippingBoxSr;
 
         public Vector2Int? bedTile;       // FarmHouse
@@ -126,6 +127,11 @@ namespace FarmMVP
             _shippingBoxSr = PlaceObject(AssetLibrary.ShippingBox,
                 shippingBoxTile.Value.x, shippingBoxTile.Value.y + 0.15f, 600);
             SetBlocked(shippingBoxTile.Value.x, shippingBoxTile.Value.y, true);
+
+            // 상점 수레 — 우클릭해서 배낭을 살 수 있다
+            shopTile = new Vector2Int(13, 4);
+            PlaceObject(AssetLibrary.ShopCart, shopTile.Value.x, shopTile.Value.y + 0.6f, 600);
+            SetBlocked(shopTile.Value.x, shopTile.Value.y, true);
 
             // Trees (from data or defaults)
             var loc = data.GetLocation(LocationId.Farm1);

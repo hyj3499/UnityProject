@@ -10,18 +10,25 @@ namespace FarmMVP
     [Serializable]
     public class Inventory
     {
-        public const int HotbarSize = 9;
-        public const int TotalSlots = 27; // 9 hotbar + 18 backpack (3 rows)
-        public const int ShippingSlots = 18; // 배송함 (9칸 2줄)
+        public const int HotbarSize = 10;      // 퀵 인벤토리 한 줄 (숫자 1~0)
+        public const int BackpackPages = 3;    // 기본 1 + 증축 2
+        public const int TotalSlots = HotbarSize * BackpackPages; // 최대 30칸
+        public const int ShippingSlots = 20;   // 배송함 (10칸 2줄)
 
         public ItemStack[] slots;
+
+        /// <summary>실제로 쓸 수 있는 칸 수. 배낭을 증축하면 늘어난다 (잠긴 칸에는 아이템이 들어가지 않는다).</summary>
+        public int unlockedSlots;
 
         public event Action OnChanged;
 
         public Inventory(int slotCount = TotalSlots)
         {
             slots = new ItemStack[slotCount];
+            unlockedSlots = slotCount;
         }
+
+        private int Usable => Math.Min(slots.Length, unlockedSlots);
 
         public void RaiseChanged() => OnChanged?.Invoke();
 
@@ -32,7 +39,7 @@ namespace FarmMVP
             if (def == null) return count;
 
             // fill existing stacks
-            for (int i = 0; i < slots.Length && count > 0; i++)
+            for (int i = 0; i < Usable && count > 0; i++)
             {
                 var s = slots[i];
                 if (s != null && !s.IsEmpty && s.itemId == itemId && s.count < def.maxStack)
@@ -44,7 +51,7 @@ namespace FarmMVP
                 }
             }
             // new stacks in empty slots
-            for (int i = 0; i < slots.Length && count > 0; i++)
+            for (int i = 0; i < Usable && count > 0; i++)
             {
                 if (slots[i] == null || slots[i].IsEmpty)
                 {

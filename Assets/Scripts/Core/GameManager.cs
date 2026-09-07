@@ -262,6 +262,21 @@ namespace FarmMVP
             return true;
         }
 
+        /// <summary>우클릭으로 상점 수레를 열어 본다. 처리했으면 true.</summary>
+        public bool TryOpenShop(PlayerController pc)
+        {
+            if (Paused) return false;
+            if (CurrentLocation == null || !CurrentLocation.shopTile.HasValue) return false;
+
+            var shop = CurrentLocation.shopTile.Value;
+            var tile = pc.FacingTile();
+            var here = new Vector2Int(Mathf.RoundToInt(pc.transform.position.x), Mathf.RoundToInt(pc.transform.position.y));
+            if (!Near(tile, shop) && !Near(here, shop)) return false;
+
+            UIManager.Instance?.OpenShop();
+            return true;
+        }
+
         /// <summary>아침이 될 때 배송함을 비우고 판매 대금을 소지금에 더한다. 번 금액을 반환.</summary>
         private int SellShippingBox()
         {
@@ -344,6 +359,7 @@ namespace FarmMVP
 
             Inventory = new Inventory();
             ShippingBox = new Inventory(Inventory.ShippingSlots);
+            ApplyBackpackLevel();
             RestoreInventory();
             Inventory.OnChanged += () => { SaveInventory(); OnHotbarChanged?.Invoke(); };
             ShippingBox.OnChanged += () => { StoreSlots(ShippingBox, Data.shippingBox); OnShippingChanged?.Invoke(); };
@@ -454,6 +470,8 @@ namespace FarmMVP
                 {
                     // 대화 중에는 다른 창이 겹쳐 열리지 않게 무시한다.
                 }
+                else if (ui != null && ui.IsShopOpen)
+                    ui.CloseShop();
                 else if (ui != null && ui.IsShippingOpen)
                     ui.CloseShippingBox();
                 else if (Input.GetKeyDown(KeyCode.I))
@@ -502,12 +520,71 @@ namespace FarmMVP
             _cam.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y, -10);
         }
 
-        // ---------- hotbar ----------
-        public void SelectHotbar(int index)
+        // ---------- 배낭 / 퀵바 ----------
+        /// <summary>배낭 증축 단계별 가격. 인덱스 = 사려는 단계 - 1.</summary>
+        public static readonly int[] BackpackPrices = { 300, 500 };
+
+        public int BackpackLevel => Data.farmer.backpackLevel;
+
+        /// <summary>지금 쓸 수 있는 칸 수 (기본 10칸 + 증축 단계마다 10칸).</summary>
+        public int UnlockedSlots => (Data.farmer.backpackLevel + 1) * Inventory.HotbarSize;
+
+        /// <summary>증축으로 열린 퀵바 페이지 수.</summary>
+        public int HotbarPageCount => Data.farmer.backpackLevel + 1;
+
+        public int HotbarPage => Mathf.Clamp(Data.farmer.hotbarPage, 0, HotbarPageCount - 1);
+
+        /// <summary>다음에 살 수 있는 배낭 가격. 더 살 게 없으면 -1.</summary>
+        public int NextBackpackPrice =>
+            Data.farmer.backpackLevel < BackpackPrices.Length ? BackpackPrices[Data.farmer.backpackLevel] : -1;
+
+        /// <summary>배낭을 한 단계 증축한다. 성공하면 true.</summary>
+        public bool BuyBackpack()
         {
-            Data.farmer.equippedHotbarIndex = Mathf.Clamp(index, 0, Inventory.HotbarSize - 1);
+            int price = NextBackpackPrice;
+            if (price < 0) return false;
+            if (Money < price) return false;
+
+            AddMoney(-price);
+            Data.farmer.backpackLevel++;
+            ApplyBackpackLevel();
+            OnHotbarChanged?.Invoke();
+            return true;
+        }
+
+        /// <summary>배낭 단계에 맞춰 실제 사용 가능한 칸 수를 인벤토리에 반영한다.</summary>
+        private void ApplyBackpackLevel()
+        {
+            Inventory.unlockedSlots = UnlockedSlots;
+            Data.farmer.hotbarPage = HotbarPage; // 범위 보정
+        }
+
+        /// <summary>TAB: 증축한 배낭 페이지를 순환한다.</summary>
+        public void CycleHotbarPage()
+        {
+            if (HotbarPageCount <= 1) return;
+
+            int next = (HotbarPage + 1) % HotbarPageCount;
+            Data.farmer.hotbarPage = next;
+
+            // 같은 칸 번호를 유지한 채 페이지만 옮긴다.
+            int column = Data.farmer.equippedHotbarIndex % Inventory.HotbarSize;
+            Data.farmer.equippedHotbarIndex = next * Inventory.HotbarSize + column;
+
             OnHotbarChanged?.Invoke();
         }
+
+        // ---------- hotbar ----------
+        /// <summary>전체 슬롯 번호로 선택 (UI 클릭).</summary>
+        public void SelectHotbar(int index)
+        {
+            Data.farmer.equippedHotbarIndex = Mathf.Clamp(index, 0, UnlockedSlots - 1);
+            OnHotbarChanged?.Invoke();
+        }
+
+        /// <summary>숫자키 1~0: 지금 보고 있는 페이지의 몇 번째 칸인지로 선택.</summary>
+        public void SelectHotbarColumn(int column)
+            => SelectHotbar(HotbarPage * Inventory.HotbarSize + column);
 
         public ItemStack SelectedStack => Inventory.GetSlot(Data.farmer.equippedHotbarIndex);
 

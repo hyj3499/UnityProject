@@ -10,7 +10,7 @@ namespace FarmMVP
     /// </summary>
     public class ShippingUI : MonoBehaviour
     {
-        private const int Cols = 9;
+        private const int Cols = Inventory.HotbarSize; // 퀵바와 같은 10칸 폭
         private const float Slot = 40f;
         private const float Pitch = 46f;
         // 9-slice 나무 테두리(약 18px)에 칸이나 글자가 물리지 않도록 넉넉히 띄운다.

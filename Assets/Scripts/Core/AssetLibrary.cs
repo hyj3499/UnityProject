@@ -24,7 +24,7 @@ namespace FarmMVP
         public static Sprite Floor, Wall, Rug;
         // Environment
         public static Sprite Tree, House, Wood;
-        public static Sprite ShippingBox, ShippingBoxOpen;
+        public static Sprite ShippingBox, ShippingBoxOpen, ShopCart;
         // Interior furniture
         public static Sprite Bed, Door, Fireplace, Plant;
         // Crops
@@ -36,6 +36,7 @@ namespace FarmMVP
         public static Sprite UiBook, UiHudInfo, UiHudMoney, UiIconSun, UiIconMoon;
         public static Sprite UiSlot, UiSlotSelected, UiFrame, UiDialoguePanel;
         public static Sprite UiBookmarkGreen, UiBookmarkOrange, UiBookmarkBlue;
+        public static Sprite UiBagLv1, UiBagLv2;
 
         public static void EnsureLoaded()
         {
@@ -62,6 +63,7 @@ namespace FarmMVP
             Wood = Load("Sprites/Environment/Wood");
             ShippingBox = Load("Sprites/Environment/ShippingBox");
             ShippingBoxOpen = Load("Sprites/Environment/ShippingBoxOpen");
+            ShopCart = Load("Sprites/Environment/ShopCart");
 
             Bed = Load("Sprites/Interior/Bed");
             Door = Load("Sprites/Interior/Door");
@@ -88,6 +90,8 @@ namespace FarmMVP
             UiBookmarkGreen = Load("Sprites/UI/BookmarkGreen");
             UiBookmarkOrange = Load("Sprites/UI/BookmarkOrange");
             UiBookmarkBlue = Load("Sprites/UI/BookmarkBlue");
+            UiBagLv1 = Load("Sprites/UI/BagLv1");
+            UiBagLv2 = Load("Sprites/UI/BagLv2");
         }
 
         private static Sprite Load(string path)

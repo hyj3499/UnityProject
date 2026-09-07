@@ -165,14 +165,25 @@ namespace FarmMVP
             }
         }
 
+        /// <summary>퀵바 10칸에 대응하는 숫자키 (1~9 다음이 0).</summary>
+        private static readonly KeyCode[] HotbarKeys =
+        {
+            KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5,
+            KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0
+        };
+
         private void HandleHotbarKeys()
         {
-            // 숫자키 1~9: 인벤토리(핫바) 아이템 선택 (씨앗 등)
-            for (int i = 0; i < Inventory.HotbarSize; i++)
+            // 숫자키 1~0: 지금 보고 있는 배낭 페이지에서 그 번째 칸 선택
+            for (int i = 0; i < HotbarKeys.Length && i < Inventory.HotbarSize; i++)
             {
-                if (Input.GetKeyDown(KeyCode.Alpha1 + i))
-                    _game.SelectHotbar(i);
+                if (Input.GetKeyDown(HotbarKeys[i]))
+                    _game.SelectHotbarColumn(i);
             }
+
+            // TAB: 증축한 배낭 페이지 전환
+            if (Input.GetKeyDown(KeyCode.Tab))
+                _game.CycleHotbarPage();
 
             // Q키: 마법 변경 (대지 → 물 → 칼날)
             if (Input.GetKeyDown(KeyCode.Q))
@@ -258,9 +269,10 @@ namespace FarmMVP
             {
                 if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 상호작용으로 새는 것 방지
 
-                // NPC와 배송함은 조준 없이 그 자리에서 바로 상호작용한다.
+                // NPC / 배송함 / 상점은 조준 없이 그 자리에서 바로 상호작용한다.
                 if (_game.TryInteractNpc(this)) return;
                 if (_game.TryOpenShippingBox(this)) return;
+                if (_game.TryOpenShop(this)) return;
 
                 if (!canAct) return;
                 _seedHeld = true;

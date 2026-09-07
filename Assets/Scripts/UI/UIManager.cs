@@ -31,6 +31,7 @@ namespace FarmMVP
         private readonly List<SlotView> _hotbarViews = new List<SlotView>();
         private RectTransform _hotbarRoot;
         private Text _toolLabel;
+        private Text _hotbarPageLabel;
 
         // 책(인벤토리/설정/도움말)
         private BookUI _book;
@@ -42,6 +43,9 @@ namespace FarmMVP
 
         // NPC 대화
         private DialogueUI _dialogue;
+
+        // 상점
+        private ShopUI _shop;
 
         // Banner / toast
         private Text _bannerText;
@@ -66,6 +70,7 @@ namespace FarmMVP
             BuildHotbar();
             BuildBook();
             BuildShipping();
+            BuildShop();
             BuildDialogue();
             BuildBannerAndToast();
             BuildConfirmDialog();
@@ -258,7 +263,24 @@ namespace FarmMVP
                 float x = i * (slot + pad);
                 var sv = BuildSlot(_hotbarRoot, i, x, 0, slot, isHotbar: true);
                 _hotbarViews.Add(sv);
+
+                // 어떤 숫자키에 대응하는 칸인지 (10번째는 0)
+                var key = Label(sv.frame.rectTransform, i == 9 ? "0" : (i + 1).ToString(), 12, Vector2.zero, TextAnchor.UpperLeft);
+                var krt = key.rectTransform;
+                krt.anchorMin = krt.anchorMax = new Vector2(0, 1);
+                krt.pivot = new Vector2(0, 1);
+                krt.anchoredPosition = new Vector2(3, -2);
+                krt.sizeDelta = new Vector2(16, 16);
+                key.color = new Color(1f, 0.93f, 0.75f, 0.9f);
             }
+
+            _hotbarPageLabel = Label(_hotbarRoot, "", 14, Vector2.zero, TextAnchor.MiddleCenter);
+            _hotbarPageLabel.rectTransform.anchorMin = new Vector2(0, 1);
+            _hotbarPageLabel.rectTransform.anchorMax = new Vector2(1, 1);
+            _hotbarPageLabel.rectTransform.pivot = new Vector2(0.5f, 0);
+            _hotbarPageLabel.rectTransform.anchoredPosition = new Vector2(0, 4);
+            _hotbarPageLabel.rectTransform.sizeDelta = new Vector2(0, 20);
+            _hotbarPageLabel.color = new Color(1f, 0.95f, 0.8f, 0.9f);
 
             // equipped tool indicator (bottom-right)
             var toolPanel = Panel("ToolIndicator", new Vector2(1, 0), new Vector2(1, 0),
@@ -282,6 +304,30 @@ namespace FarmMVP
             go.transform.SetParent(_canvas.transform, false);
             _shipping = go.AddComponent<ShippingUI>();
             _shipping.Boot(this, _game, _canvas.transform as RectTransform);
+        }
+
+        private void BuildShop()
+        {
+            var go = new GameObject("ShopUI");
+            go.transform.SetParent(_canvas.transform, false);
+            _shop = go.AddComponent<ShopUI>();
+            _shop.Boot(this, _game, _canvas.transform as RectTransform);
+        }
+
+        public bool IsShopOpen => _shop != null && _shop.IsOpen;
+
+        public void OpenShop()
+        {
+            if (_shop == null || IsBookOpen) return;
+            _shop.Open();
+            SyncPaused();
+        }
+
+        public void CloseShop()
+        {
+            if (_shop == null) return;
+            _shop.Close();
+            SyncPaused();
         }
 
         private void BuildDialogue()
@@ -364,7 +410,7 @@ namespace FarmMVP
         {
             if (_game == null) return;
             bool confirmOpen = _confirmPanel != null && _confirmPanel.activeSelf;
-            _game.Paused = confirmOpen || IsBookOpen || IsShippingOpen || IsDialogueOpen;
+            _game.Paused = confirmOpen || IsBookOpen || IsShippingOpen || IsDialogueOpen || IsShopOpen;
         }
 
         /// <summary>BookUI가 인벤토리 페이지의 칸을 만들 때 호출한다 (드래그&amp;드롭 및 갱신 대상에 등록).</summary>
@@ -575,18 +621,36 @@ namespace FarmMVP
 
         public void RefreshSlots()
         {
-            // 같은 인벤토리를 여러 화면(핫바 / 책 / 배송함)에서 동시에 보여주므로,
+            // 같은 인벤토리를 여러 화면(퀵바 / 책 / 배송함)에서 동시에 보여주므로,
             // 리스트 순번이 아니라 각 칸이 가리키는 실제 슬롯 번호를 기준으로 갱신한다.
             int equipped = _game.Data.farmer.equippedHotbarIndex;
+            int unlocked = _game.UnlockedSlots;
+            int page = _game.HotbarPage;
 
-            foreach (var v in _hotbarViews)
-                UpdateSlotView(v, _game.Inventory.GetSlot(v.index), v.index == equipped);
+            // 퀵바는 지금 보고 있는 배낭 페이지의 10칸을 비춘다.
+            for (int i = 0; i < _hotbarViews.Count; i++)
+            {
+                var v = _hotbarViews[i];
+                v.index = page * Inventory.HotbarSize + i;
+                UpdateSlotView(v, _game.Inventory.GetSlot(v.index), v.index == equipped, v.index >= unlocked);
+            }
 
             foreach (var v in _invViews)
-                UpdateSlotView(v, _game.Inventory.GetSlot(v.index), v.index == equipped && v.index < Inventory.HotbarSize);
+                UpdateSlotView(v, _game.Inventory.GetSlot(v.index), v.index == equipped, v.index >= unlocked);
 
             foreach (var v in _shippingViews)
                 UpdateSlotView(v, _game.ShippingBox.GetSlot(v.index), false);
+
+            RefreshHotbarPageLabel();
+        }
+
+        private void RefreshHotbarPageLabel()
+        {
+            if (_hotbarPageLabel == null) return;
+            bool multiplePages = _game.HotbarPageCount > 1;
+            _hotbarPageLabel.enabled = multiplePages;
+            if (multiplePages)
+                _hotbarPageLabel.text = $"가방 {_game.HotbarPage + 1}/{_game.HotbarPageCount}  (TAB)";
         }
 
         /// <summary>우측 하단에 현재 선택된 마법 이름과 MP 소모량을 표시.</summary>
@@ -596,8 +660,23 @@ namespace FarmMVP
             _toolLabel.text = $"{def.displayName}\nMP {def.mpCost}";
         }
 
-        private void UpdateSlotView(SlotView v, ItemStack stack, bool selected)
+        private void UpdateSlotView(SlotView v, ItemStack stack, bool selected, bool locked = false)
         {
+            if (locked)
+            {
+                // 아직 증축하지 않은 칸: 흐리게 보여 주고 아이템이 들어오지 못하게 막는다.
+                v.icon.enabled = false;
+                v.count.text = "";
+                v.selection.enabled = false;
+                v.frame.sprite = AssetLibrary.UiSlot;
+                v.frame.color = new Color(1f, 1f, 1f, 0.25f);
+                v.frame.raycastTarget = false;
+                return;
+            }
+
+            v.frame.color = Color.white;
+            v.frame.raycastTarget = true;
+
             if (stack != null && !stack.IsEmpty)
             {
                 var def = stack.Def;
