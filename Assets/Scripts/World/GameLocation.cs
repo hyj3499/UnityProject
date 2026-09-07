@@ -15,6 +15,13 @@ namespace FarmMVP
         public int width = 20;
         public int height = 15;
 
+        /// <summary>
+        /// 경작 마스크 레이어("Tillable_{id}")가 없을 때 이 위치를 경작할 수 있다고 볼지.
+        /// 실내(FarmHouse)처럼 밭을 갈 수 없는 곳은 빌더가 false로 둔다.
+        /// 마스크 레이어를 칠하면 이 값과 상관없이 칠한 칸만 경작할 수 있다.
+        /// </summary>
+        public bool tillableByDefault = true;
+
         /// <summary>코드가 까는 기본 바닥의 정렬 순서. 경작지(-50)/젖은 흙(-49)보다 반드시 아래여야 한다.</summary>
         internal const int GroundOrder = -110;
         /// <summary>타일 팔레트로 칠한 바닥(Tilemap)의 정렬 순서. 기본 바닥 위, 경작지 아래.</summary>
@@ -28,6 +35,8 @@ namespace FarmMVP
         public Transform FeatureRoot => _featureRoot;
 
         private bool[,] _blocked;
+        /// <summary>경작 마스크. null이면 마스크 레이어가 없다는 뜻이라 어디든 경작할 수 있다.</summary>
+        private bool[,] _tillable;
         private Transform _tileRoot, _featureRoot;
         private readonly Dictionary<Vector2Int, SpriteRenderer> _hoeRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _wetRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
@@ -66,66 +75,139 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 씬에 타일 팔레트로 칠해 둔 바닥 Tilemap을 이 위치의 바닥으로 쓴다.
-        /// 이름이 "Location_{id}" 또는 "{id}Ground" 인 Tilemap을 찾는다.
+        /// 씬에 타일 팔레트로 칠해 둔 Tilemap들을 이 위치에 연결한다. 이름으로 역할을 구분한다:
         ///
-        ///  - 칠해 둔 영역의 왼쪽 아래 칸이 맵의 (0,0) 칸 위에 오도록 옮긴다. 코드가 놓는 타일
-        ///    스프라이트는 "중심"이 정수 좌표에 오지만 Tilemap 칸은 "왼쪽 아래 모서리"가 정수
-        ///    좌표라 그냥 두면 반 칸이 어긋난다 — 칸 중심 기준으로 맞추면 두 격자가 정확히 겹친다.
-        ///  - 경작지/젖은 흙(-50/-49)보다 아래에 그려지도록 정렬 순서를 내린다.
-        ///    (기본값 0이면 타일맵이 경작지를 덮어 버려서 경작한 땅이 안 보인다.)
-        ///  - 지금 위치가 아닌 Tilemap은 렌더러만 꺼 둔다.
+        ///   바닥   "Location_{id}"  또는 "{id}Ground"    — 눈에 보이는 바닥
+        ///   충돌   "Blocked_{id}"   또는 "{id}Blocked"   — 칠한 칸은 지나갈 수 없다
+        ///   경작   "Tillable_{id}"  또는 "{id}Tillable"  — 칠한 칸에서만 대지마법을 쓸 수 있다
+        ///
+        /// 마스크 레이어는 "어떤 타일을 칠했는지"는 보지 않고 "칠했는지 아닌지"만 본다. 그래서
+        /// 아무 타일이나 하나 골라 영역만 쓱 칠하면 되고, 타일셋의 타일을 하나씩 분류할 필요가 없다.
+        /// 화면에 나오면 안 되므로 마스크 레이어의 렌더러는 꺼 둔다.
+        /// 경작 레이어가 아예 없으면 _tillable이 null로 남아 지금까지처럼 어디든 경작할 수 있다.
         ///
         /// 이름으로 GameObject.Find를 하지 않고 Tilemap 컴포넌트로 찾는 이유: GameManager가
         /// 런타임에 만드는 위치 루트도 이름이 "Location_{id}"라서 이름만으로는 구분되지 않는다.
         /// </summary>
         private void UseSceneTilemaps()
         {
+            Tilemap ground = null, blockedMask = null, tillableMask = null;
+
             foreach (var tm in FindObjectsOfType<Tilemap>())
             {
-                if (!TryParseLocationName(tm.name, out var owner)) continue;
-
+                if (!TryParseLayerName(tm.name, out var owner, out var layer)) continue;
                 var tr = tm.GetComponent<TilemapRenderer>();
-                if (tr == null) continue;
 
-                if (owner != id) { tr.enabled = false; continue; }
-
-                tr.enabled = true;
-                tr.sortingOrder = PaintedGroundOrder;
-
-                tm.CompressBounds();
-                var b = tm.cellBounds;
-                if (b.size.x <= 0 || b.size.y <= 0) continue; // 아직 아무것도 안 칠했다
-
-                // 이미 맞춰져 있으면 오프셋이 0이라 아무 일도 일어나지 않는다 (여러 번 불려도 안전).
-                var center = tm.GetCellCenterWorld(b.min);
-                var shift = new Vector3(center.x, center.y, 0f);
-                if (shift.sqrMagnitude > 0.0001f)
+                if (owner != id)
                 {
-                    tm.transform.position -= shift;
-                    Debug.Log($"[GameLocation] {tm.name}: 칠한 영역의 왼쪽 아래 칸이 맵의 (0,0)에 오도록 " +
-                              $"({-shift.x}, {-shift.y}) 만큼 옮겼습니다.");
+                    if (tr != null) tr.enabled = false;   // 다른 위치의 레이어는 안 보이게
+                    continue;
                 }
 
-                if (b.size.x < width || b.size.y < height)
+                switch (layer)
                 {
-                    Debug.Log($"[GameLocation] {tm.name}: 칠한 영역이 {b.size.x}x{b.size.y} 칸인데 " +
-                              $"{id} 맵은 {width}x{height} 칸입니다. 남는 곳은 기본 바닥으로 채웁니다.");
+                    case TilemapLayer.Ground:
+                        ground = tm;
+                        if (tr != null) { tr.enabled = true; tr.sortingOrder = PaintedGroundOrder; }
+                        break;
+                    case TilemapLayer.Blocked:
+                        blockedMask = tm;
+                        if (tr != null) tr.enabled = false;
+                        break;
+                    case TilemapLayer.Tillable:
+                        tillableMask = tm;
+                        if (tr != null) tr.enabled = false;
+                        break;
                 }
+            }
+
+            if (ground != null) AlignGridToMap(ground);
+            ApplyMaskTilemaps(blockedMask, tillableMask);
+        }
+
+        /// <summary>
+        /// 칠해 둔 바닥의 왼쪽 아래 칸이 맵의 (0,0) 칸 위에 오도록 Grid를 통째로 옮긴다.
+        ///
+        /// 코드가 놓는 타일 스프라이트는 "중심"이 정수 좌표에 오지만 Tilemap 칸은 "왼쪽 아래
+        /// 모서리"가 정수 좌표라 좌표만 맞추면 반 칸이 어긋난다 — 칸 중심을 기준으로 맞춰야
+        /// 두 격자가 정확히 겹친다. Tilemap 하나가 아니라 Grid를 옮기는 이유는 마스크 레이어들이
+        /// 바닥과 같은 격자에 붙어 있어야 하기 때문이다.
+        /// 이미 맞춰져 있으면 이동량이 0이라 여러 번 불려도 안전하다.
+        /// </summary>
+        private void AlignGridToMap(Tilemap ground)
+        {
+            ground.CompressBounds();
+            var b = ground.cellBounds;
+            if (b.size.x <= 0 || b.size.y <= 0) return;   // 아직 아무것도 안 칠했다
+
+            var grid = ground.GetComponentInParent<Grid>();
+            var root = grid != null ? grid.transform : ground.transform;
+
+            var center = ground.GetCellCenterWorld(b.min);
+            var shift = new Vector3(center.x, center.y, 0f);
+            if (shift.sqrMagnitude > 0.0001f)
+            {
+                root.position -= shift;
+                Debug.Log($"[GameLocation] {ground.name}: 칠한 영역의 왼쪽 아래 칸이 맵의 (0,0)에 오도록 " +
+                          $"({-shift.x}, {-shift.y}) 만큼 옮겼습니다.");
+            }
+
+            if (b.size.x < width || b.size.y < height)
+            {
+                Debug.Log($"[GameLocation] {ground.name}: 칠한 영역이 {b.size.x}x{b.size.y} 칸인데 " +
+                          $"{id} 맵은 {width}x{height} 칸입니다. 남는 곳은 기본 바닥으로 채웁니다.");
             }
         }
 
-        private static bool TryParseLocationName(string name, out LocationId locId)
+        /// <summary>
+        /// 마스크 레이어를 읽어 충돌/경작 가능 여부에 반영한다. 격자를 맞춘 뒤라 맵의 (x,y) 칸
+        /// 중심이 곧 월드 좌표 (x,y)이므로, WorldToCell로 각 레이어의 칸을 바로 찾을 수 있다
+        /// (부모가 달라도 안전하고, 칸 경계에서 0.5칸 떨어져 있어 반올림 문제도 없다).
+        /// 충돌은 코드가 이미 막아 둔 칸(집/나무/바위/맵 테두리)에 더해서 적용된다.
+        /// </summary>
+        private void ApplyMaskTilemaps(Tilemap blockedMask, Tilemap tillableMask)
+        {
+            _tillable = tillableMask != null ? new bool[width, height] : null;
+            if (blockedMask == null && tillableMask == null) return;
+
+            int blockedCount = 0, tillableCount = 0;
+            for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
+                {
+                    var world = new Vector3(x, y, 0f);
+                    if (blockedMask != null && blockedMask.HasTile(blockedMask.WorldToCell(world)))
+                    {
+                        SetBlocked(x, y, true);
+                        blockedCount++;
+                    }
+                    if (tillableMask != null && tillableMask.HasTile(tillableMask.WorldToCell(world)))
+                    {
+                        _tillable[x, y] = true;
+                        tillableCount++;
+                    }
+                }
+
+            if (blockedMask != null)
+                Debug.Log($"[GameLocation] {blockedMask.name}: {blockedCount}칸을 통행 불가로 표시했습니다.");
+            if (tillableMask != null)
+                Debug.Log($"[GameLocation] {tillableMask.name}: {tillableCount}칸만 경작할 수 있습니다.");
+        }
+
+        private enum TilemapLayer { Ground, Blocked, Tillable }
+
+        private static bool TryParseLayerName(string name, out LocationId locId, out TilemapLayer layer)
         {
             foreach (LocationId candidate in System.Enum.GetValues(typeof(LocationId)))
             {
                 if (name == $"Location_{candidate}" || name == $"{candidate}Ground")
-                {
-                    locId = candidate;
-                    return true;
-                }
+                { locId = candidate; layer = TilemapLayer.Ground; return true; }
+                if (name == $"Blocked_{candidate}" || name == $"{candidate}Blocked")
+                { locId = candidate; layer = TilemapLayer.Blocked; return true; }
+                if (name == $"Tillable_{candidate}" || name == $"{candidate}Tillable")
+                { locId = candidate; layer = TilemapLayer.Tillable; return true; }
             }
             locId = default;
+            layer = TilemapLayer.Ground;
             return false;
         }
 
@@ -181,6 +263,16 @@ namespace FarmMVP
         internal void SetBlocked(int x, int y, bool v)
         {
             if (InBounds(x, y)) _blocked[x, y] = v;
+        }
+
+        /// <summary>
+        /// 이 칸에서 대지마법(경작)을 쓸 수 있는지. "Tillable_{id}" 마스크 레이어를 칠해 두면
+        /// 거기 칠한 칸만 경작할 수 있고, 레이어가 없으면 (예전처럼) 어디든 경작할 수 있다.
+        /// </summary>
+        public bool IsTillable(int x, int y)
+        {
+            if (!InBounds(x, y)) return false;
+            return _tillable != null ? _tillable[x, y] : tillableByDefault;
         }
 
         /// <summary>맵 크기(width/height)가 바뀐 뒤 충돌 배열을 다시 만든다 (FarmHouseBuilder에서 사용).</summary>
@@ -361,13 +453,21 @@ namespace FarmMVP
         }
 
         // ---------- gameplay actions ----------
-        public bool Till(int x, int y)
+        /// <summary>지금 이 칸을 경작할 수 있는지 (실제로 갈지는 않는다 — 조준 표시가 쓴다).</summary>
+        public bool CanTill(int x, int y)
         {
             var pos = new Vector2Int(x, y);
-            if (id != LocationId.Farm1) return false;              // farming only on Farm1 in MVP
             if (IsBlocked(x, y)) return false;
+            if (!IsTillable(x, y)) return false;    // 경작 마스크 밖이거나 원래 못 가는 위치
             if (hoeDirts.ContainsKey(pos)) return false;
             if (trees.ContainsKey(pos)) return false;
+            return true;
+        }
+
+        public bool Till(int x, int y)
+        {
+            if (!CanTill(x, y)) return false;
+            var pos = new Vector2Int(x, y);
             hoeDirts[pos] = new HoeDirt(x, y);
             RefreshSoilAround(pos);
             return true;
@@ -382,15 +482,30 @@ namespace FarmMVP
             return true;
         }
 
+        /// <summary>지금 이 칸에 물을 줄 수 있는지 (경작된 땅이고 아직 안 젖었을 때).</summary>
+        public bool CanWater(int x, int y)
+            => hoeDirts.TryGetValue(new Vector2Int(x, y), out var d) && !d.watered;
+
         public bool Water(int x, int y)
         {
             var pos = new Vector2Int(x, y);
-            if (!hoeDirts.TryGetValue(pos, out var d)) return false;
-            if (d.watered) return false;
-            d.Water();
+            if (!CanWater(x, y)) return false;
+            hoeDirts[pos].Water();
             RefreshSoilAround(pos);
             return true;
         }
+
+        /// <summary>지금 이 칸에 씨앗을 심을 수 있는지 (경작된 땅이고 아직 아무것도 안 심었을 때).</summary>
+        public bool CanPlant(int x, int y)
+            => hoeDirts.TryGetValue(new Vector2Int(x, y), out var d) && !d.HasCrop;
+
+        /// <summary>지금 이 칸에 벨 수 있는 나무가 있는지.</summary>
+        public bool HasChoppableTree(int x, int y)
+            => trees.TryGetValue(new Vector2Int(x, y), out var t) && t.IsAlive;
+
+        /// <summary>지금 이 칸에 부술 수 있는 바위가 있는지.</summary>
+        public bool HasBreakableRock(int x, int y)
+            => rocks.TryGetValue(new Vector2Int(x, y), out var r) && r.IsAlive;
 
         /// <summary>NPC가 서 있는 칸은 지나갈 수 없게 막는다.</summary>
         public void SetNpcBlocked(Vector2Int tile) => SetBlocked(tile.x, tile.y, true);
@@ -428,8 +543,9 @@ namespace FarmMVP
         {
             destroyed = false;
             dropTableId = null;
+            if (!HasChoppableTree(x, y)) return false;
             var pos = new Vector2Int(x, y);
-            if (!trees.TryGetValue(pos, out var t) || !t.IsAlive) return false;
+            var t = trees[pos];
 
             bool wasMature = t.IsMature;
             destroyed = t.Chop();
@@ -447,10 +563,10 @@ namespace FarmMVP
         {
             broken = false;
             dropTableId = null;
+            if (!HasBreakableRock(x, y)) return false;
             var pos = new Vector2Int(x, y);
-            if (!rocks.TryGetValue(pos, out var r) || !r.IsAlive) return false;
 
-            broken = r.Hit();
+            broken = rocks[pos].Hit();
             if (broken)
             {
                 dropTableId = RockFeature.DropTableId;

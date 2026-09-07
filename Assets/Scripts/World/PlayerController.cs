@@ -219,11 +219,11 @@ namespace FarmMVP
                 }
 
                 _magicHeld = true;
-                _indicator.Show(FacingTile(), MagicSystem.Get(_game.CurrentMagic).previewColor);
+                ShowMagicIndicator();
             }
             else if (_magicHeld && Input.GetMouseButton(0))
             {
-                _indicator.Show(FacingTile(), MagicSystem.Get(_game.CurrentMagic).previewColor);
+                ShowMagicIndicator();
 
                 if (_game.CurrentMagic == MagicType.Water)
                 {
@@ -275,7 +275,7 @@ namespace FarmMVP
 
                 if (!isSeed) return;
                 _seedHeld = true;
-                _indicator.Show(FacingTile(), SeedPreviewColor);
+                ShowSeedIndicator();
             }
             else if (_seedHeld && Input.GetMouseButton(1))
             {
@@ -286,7 +286,7 @@ namespace FarmMVP
                 }
                 else
                 {
-                    _indicator.Show(FacingTile(), SeedPreviewColor);
+                    ShowSeedIndicator();
                 }
             }
 
@@ -302,6 +302,27 @@ namespace FarmMVP
         {
             var stack = _game.SelectedStack;
             return stack != null && !stack.IsEmpty && stack.Def.type == ItemType.Seed;
+        }
+
+        /// <summary>
+        /// 조준 사각형을 바라보는 칸에 띄운다. 지금 그 칸에 마법이 먹히지 않으면 —
+        /// 경작 마스크 밖이거나, 이미 갈아 둔 땅이거나, 벨 나무가 없거나 — 어두운 색으로 바꿔
+        /// 클릭해 보기 전에 알 수 있게 한다.
+        /// </summary>
+        private void ShowMagicIndicator()
+        {
+            var tile = FacingTile();
+            bool ok = MagicSystem.CanApply(_game.CurrentMagic, _game.CurrentLocation, tile.x, tile.y);
+            _indicator.Show(tile, ok ? MagicSystem.Get(_game.CurrentMagic).previewColor
+                                     : MagicSystem.InvalidPreviewColor);
+        }
+
+        /// <summary>씨앗 조준도 같은 방식으로 — 경작된 빈 땅이 아니면 어둡게 표시한다.</summary>
+        private void ShowSeedIndicator()
+        {
+            var tile = FacingTile();
+            bool ok = _game.CurrentLocation != null && _game.CurrentLocation.CanPlant(tile.x, tile.y);
+            _indicator.Show(tile, ok ? SeedPreviewColor : MagicSystem.InvalidPreviewColor);
         }
 
         public Vector2Int FacingTile()

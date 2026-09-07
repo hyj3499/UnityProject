@@ -62,8 +62,30 @@ namespace FarmMVP
             previewColor = new Color(0.55f, 0.55f, 0.6f, 0.45f),
         };
 
+        /// <summary>지금 이 칸에는 쓸 수 없다는 표시 — 조준 사각형을 어둡게 덮는다.</summary>
+        public static readonly Color InvalidPreviewColor = new Color(0.08f, 0.08f, 0.1f, 0.45f);
+
         /// <summary>마법 종류 수 (Q키 순환에 쓰인다).</summary>
         public static readonly int Count = System.Enum.GetValues(typeof(MagicType)).Length;
+
+        /// <summary>
+        /// 지금 이 칸에 이 마법이 실제로 먹히는지 미리 물어본다 (아무것도 바꾸지 않는다).
+        /// 조준 표시가 이걸 보고 색을 바꾼다. MP는 보지 않는다 — 그건 호출자(GameManager) 몫.
+        /// TryApply와 같은 조건을 쓰도록 GameLocation의 Can* 판정을 공유한다.
+        /// </summary>
+        public static bool CanApply(MagicType type, GameLocation location, int x, int y)
+        {
+            if (location == null) return false;
+
+            switch (type)
+            {
+                case MagicType.Earth: return location.CanTill(x, y);
+                case MagicType.Water: return location.CanWater(x, y);
+                case MagicType.Blade: return location.HasChoppableTree(x, y);
+                case MagicType.Rock: return location.HasBreakableRock(x, y);
+                default: return false;
+            }
+        }
 
         public static MagicDef Get(MagicType type)
         {

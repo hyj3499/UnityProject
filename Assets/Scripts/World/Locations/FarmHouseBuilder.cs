@@ -10,6 +10,7 @@ namespace FarmMVP
             loc.width = 12;
             loc.height = 9;
             loc.ResetBlocked();
+            loc.tillableByDefault = false;   // 실내 바닥은 밭이 될 수 없다 ("Tillable_FarmHouse"를 칠하면 예외)
 
             // wall row at top, wood floor elsewhere
             for (int x = 0; x < loc.width; x++)
