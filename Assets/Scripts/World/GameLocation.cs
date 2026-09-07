@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace FarmMVP
 {
@@ -13,6 +14,11 @@ namespace FarmMVP
         public LocationId id;
         public int width = 20;
         public int height = 15;
+
+        /// <summary>코드가 까는 기본 바닥의 정렬 순서. 경작지(-50)/젖은 흙(-49)보다 반드시 아래여야 한다.</summary>
+        internal const int GroundOrder = -110;
+        /// <summary>타일 팔레트로 칠한 바닥(Tilemap)의 정렬 순서. 기본 바닥 위, 경작지 아래.</summary>
+        private const int PaintedGroundOrder = -100;
 
         public Dictionary<Vector2Int, HoeDirt> hoeDirts = new Dictionary<Vector2Int, HoeDirt>();
         public Dictionary<Vector2Int, TreeFeature> trees = new Dictionary<Vector2Int, TreeFeature>();
@@ -55,6 +61,72 @@ namespace FarmMVP
                 case LocationId.Farm2: Farm2Builder.Build(this, data); break;
                 case LocationId.FarmHouse: FarmHouseBuilder.Build(this, data); break;
             }
+
+            UseSceneTilemaps();
+        }
+
+        /// <summary>
+        /// 씬에 타일 팔레트로 칠해 둔 바닥 Tilemap을 이 위치의 바닥으로 쓴다.
+        /// 이름이 "Location_{id}" 또는 "{id}Ground" 인 Tilemap을 찾는다.
+        ///
+        ///  - 칠해 둔 영역의 왼쪽 아래 칸이 맵의 (0,0) 칸 위에 오도록 옮긴다. 코드가 놓는 타일
+        ///    스프라이트는 "중심"이 정수 좌표에 오지만 Tilemap 칸은 "왼쪽 아래 모서리"가 정수
+        ///    좌표라 그냥 두면 반 칸이 어긋난다 — 칸 중심 기준으로 맞추면 두 격자가 정확히 겹친다.
+        ///  - 경작지/젖은 흙(-50/-49)보다 아래에 그려지도록 정렬 순서를 내린다.
+        ///    (기본값 0이면 타일맵이 경작지를 덮어 버려서 경작한 땅이 안 보인다.)
+        ///  - 지금 위치가 아닌 Tilemap은 렌더러만 꺼 둔다.
+        ///
+        /// 이름으로 GameObject.Find를 하지 않고 Tilemap 컴포넌트로 찾는 이유: GameManager가
+        /// 런타임에 만드는 위치 루트도 이름이 "Location_{id}"라서 이름만으로는 구분되지 않는다.
+        /// </summary>
+        private void UseSceneTilemaps()
+        {
+            foreach (var tm in FindObjectsOfType<Tilemap>())
+            {
+                if (!TryParseLocationName(tm.name, out var owner)) continue;
+
+                var tr = tm.GetComponent<TilemapRenderer>();
+                if (tr == null) continue;
+
+                if (owner != id) { tr.enabled = false; continue; }
+
+                tr.enabled = true;
+                tr.sortingOrder = PaintedGroundOrder;
+
+                tm.CompressBounds();
+                var b = tm.cellBounds;
+                if (b.size.x <= 0 || b.size.y <= 0) continue; // 아직 아무것도 안 칠했다
+
+                // 이미 맞춰져 있으면 오프셋이 0이라 아무 일도 일어나지 않는다 (여러 번 불려도 안전).
+                var center = tm.GetCellCenterWorld(b.min);
+                var shift = new Vector3(center.x, center.y, 0f);
+                if (shift.sqrMagnitude > 0.0001f)
+                {
+                    tm.transform.position -= shift;
+                    Debug.Log($"[GameLocation] {tm.name}: 칠한 영역의 왼쪽 아래 칸이 맵의 (0,0)에 오도록 " +
+                              $"({-shift.x}, {-shift.y}) 만큼 옮겼습니다.");
+                }
+
+                if (b.size.x < width || b.size.y < height)
+                {
+                    Debug.Log($"[GameLocation] {tm.name}: 칠한 영역이 {b.size.x}x{b.size.y} 칸인데 " +
+                              $"{id} 맵은 {width}x{height} 칸입니다. 남는 곳은 기본 바닥으로 채웁니다.");
+                }
+            }
+        }
+
+        private static bool TryParseLocationName(string name, out LocationId locId)
+        {
+            foreach (LocationId candidate in System.Enum.GetValues(typeof(LocationId)))
+            {
+                if (name == $"Location_{candidate}" || name == $"{candidate}Ground")
+                {
+                    locId = candidate;
+                    return true;
+                }
+            }
+            locId = default;
+            return false;
         }
 
         // ---------- tile helpers (Locations/*Builder.cs 에서 사용) ----------
@@ -83,8 +155,8 @@ namespace FarmMVP
 
         /// <summary>
         /// Assets/Resources/Prefabs/{locId}Ground.prefab 가 있으면 그걸 인스턴스화해서 바닥으로 쓴다
-        /// (Unity 에디터의 Tile Palette로 손으로 칠한 Tilemap). 없으면 false를 반환해서
-        /// 호출부가 기존 단색 잔디 루프로 대체(fallback)하게 한다.
+        /// (Unity 에디터의 Tile Palette로 손으로 칠한 Tilemap). 없으면 false.
+        /// 기본 바닥은 호출부가 항상 먼저 깔아 두므로, 칠하지 않은 칸이 비어 보이지는 않는다.
         /// </summary>
         internal bool TryPlaceGroundTilemap(LocationId locId)
         {
@@ -92,6 +164,9 @@ namespace FarmMVP
             if (prefab == null) return false;
             var go = Instantiate(prefab, _tileRoot);
             go.transform.localPosition = Vector3.zero;
+            // 프리팹에 저장된 정렬 순서가 0이면 경작지를 덮어 버리므로 바닥 순서로 낮춘다.
+            foreach (var tr in go.GetComponentsInChildren<TilemapRenderer>(true))
+                tr.sortingOrder = PaintedGroundOrder;
             return true;
         }
 

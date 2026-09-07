@@ -7,13 +7,12 @@ namespace FarmMVP
     {
         public static void Build(GameLocation loc, GameData data)
         {
-            // grass ground (에디터에서 칠한 Tilemap 프리팹이 있으면 그걸 쓰고, 없으면 단색 잔디로 대체)
-            if (!loc.TryPlaceGroundTilemap(LocationId.Farm1))
-            {
-                for (int x = 0; x < loc.width; x++)
-                    for (int y = 0; y < loc.height; y++)
-                        loc.PlaceTile(AssetLibrary.Grass, x, y, -100);
-            }
+            // 기본 잔디를 항상 먼저 깔아 둔다 — 에디터에서 칠한 Tilemap이 맵 전체를 덮지 않아도
+            // 빈 칸이 생기지 않는다. 칠한 Tilemap은 GameLocation.Build가 이 위에 얹어 준다.
+            for (int x = 0; x < loc.width; x++)
+                for (int y = 0; y < loc.height; y++)
+                    loc.PlaceTile(AssetLibrary.Grass, x, y, GameLocation.GroundOrder);
+            loc.TryPlaceGroundTilemap(LocationId.Farm1);
 
             // border blocking (except right exit)
             for (int x = 0; x < loc.width; x++) { loc.SetBlocked(x, 0, true); loc.SetBlocked(x, loc.height - 1, true); }

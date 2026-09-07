@@ -7,12 +7,10 @@ namespace FarmMVP
     {
         public static void Build(GameLocation loc, GameData data)
         {
-            if (!loc.TryPlaceGroundTilemap(LocationId.Farm2))
-            {
-                for (int x = 0; x < loc.width; x++)
-                    for (int y = 0; y < loc.height; y++)
-                        loc.PlaceTile(AssetLibrary.Grass, x, y, -100);
-            }
+            for (int x = 0; x < loc.width; x++)
+                for (int y = 0; y < loc.height; y++)
+                    loc.PlaceTile(AssetLibrary.Grass, x, y, GameLocation.GroundOrder);
+            loc.TryPlaceGroundTilemap(LocationId.Farm2);
 
             for (int x = 0; x < loc.width; x++) { loc.SetBlocked(x, 0, true); loc.SetBlocked(x, loc.height - 1, true); }
             for (int y = 0; y < loc.height; y++) { loc.SetBlocked(loc.width - 1, y, true); }

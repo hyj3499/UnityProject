@@ -16,9 +16,9 @@ namespace FarmMVP
                 for (int y = 0; y < loc.height; y++)
                 {
                     if (y >= loc.height - 2)
-                        loc.PlaceTile(AssetLibrary.Wall, x, y, -100);
+                        loc.PlaceTile(AssetLibrary.Wall, x, y, GameLocation.GroundOrder);
                     else
-                        loc.PlaceTile(AssetLibrary.Floor, x, y, -100);
+                        loc.PlaceTile(AssetLibrary.Floor, x, y, GameLocation.GroundOrder);
                 }
 
             // border walls
