@@ -20,18 +20,25 @@ namespace FarmMVP
         private Canvas _canvas;
         private Font _font;
 
+        public Font UiFont => _font;
+
         // HUD
         private Slider _hpBar, _mpBar;
-        private Text _dateText, _timeText;
+        private Text _dateText, _timeText, _moneyText;
+        private Image _dayNightIcon;
 
         // Hotbar
         private readonly List<SlotView> _hotbarViews = new List<SlotView>();
         private RectTransform _hotbarRoot;
         private Text _toolLabel;
 
-        // Inventory panel
-        private GameObject _inventoryPanel;
+        // 책(인벤토리/설정/도움말)
+        private BookUI _book;
         private readonly List<SlotView> _invViews = new List<SlotView>();
+
+        // 배송함
+        private ShippingUI _shipping;
+        private readonly List<SlotView> _shippingViews = new List<SlotView>();
 
         // Banner / toast
         private Text _bannerText;
@@ -49,10 +56,13 @@ namespace FarmMVP
             _game = game;
             _font = BuildFont();
 
+            AssetLibrary.EnsureLoaded();
+
             BuildCanvas();
             BuildHUD();
             BuildHotbar();
-            BuildInventoryPanel();
+            BuildBook();
+            BuildShipping();
             BuildBannerAndToast();
             BuildConfirmDialog();
 
@@ -60,12 +70,21 @@ namespace FarmMVP
             _game.OnDayChanged += RefreshTime;
             _game.OnHotbarChanged += RefreshSlots;
             _game.OnMagicChanged += RefreshMagic;
+            _game.OnMoneyChanged += RefreshMoney;
+            _game.OnShippingChanged += OnShippingInventoryChanged;
             _game.Inventory.OnChanged += RefreshSlots;
 
             RefreshTime();
+            RefreshMoney();
             RefreshSlots();
             RefreshMagic();
-            SetInventoryOpen(false);
+        }
+
+        private void OnDestroy()
+        {
+            // 타이틀로 돌아갈 때 UIManager와 함께 캔버스도 정리한다 (캔버스는 별도 오브젝트로 만들어짐).
+            if (Instance == this) Instance = null;
+            if (_canvas != null) Destroy(_canvas.gameObject);
         }
 
         private Font BuildFont()
@@ -103,17 +122,78 @@ namespace FarmMVP
             _hpBar = MakeBar(panel, "HP", 0, new Color(0.85f, 0.2f, 0.2f));
             _mpBar = MakeBar(panel, "MP", -26, new Color(0.25f, 0.5f, 0.95f));
 
-            // top-right date/time
-            var tr = Panel("TimePanel", new Vector2(1, 1), new Vector2(1, 1),
-                new Vector2(-12, -12), new Vector2(150, 60), new Color(0, 0, 0, 0.45f));
-            _dateText = Label(tr, "1일차", 20, new Vector2(0, -6), TextAnchor.UpperCenter);
-            _dateText.rectTransform.anchorMin = new Vector2(0, 1);
-            _dateText.rectTransform.anchorMax = new Vector2(1, 1);
-            _dateText.rectTransform.sizeDelta = new Vector2(0, 26);
-            _timeText = Label(tr, "06:00", 22, new Vector2(0, -32), TextAnchor.UpperCenter);
-            _timeText.rectTransform.anchorMin = new Vector2(0, 1);
-            _timeText.rectTransform.anchorMax = new Vector2(1, 1);
-            _timeText.rectTransform.sizeDelta = new Vector2(0, 26);
+            BuildTopRightHud();
+        }
+
+        /// <summary>
+        /// 우측 상단: 날짜/시간 패널(왼쪽 칸에 낮=해, 밤=달 아이콘)과 그 아래 소지금 바.
+        /// 자식 위젯은 원본 아트의 픽셀 좌표를 앵커로 환산해 배치하므로 패널 크기를 바꿔도 어긋나지 않는다.
+        /// </summary>
+        private void BuildTopRightHud()
+        {
+            const float hudScale = 3f;
+
+            // --- 날짜 / 시간 패널 (아트 59x28) ---
+            var infoSize = new Vector2(59, 28);
+            var info = SpritePanel("HudInfo", AssetLibrary.UiHudInfo, new Vector2(1, 1),
+                new Vector2(-12, -12), infoSize * hudScale);
+
+            var iconRt = Child(info, "DayNightIcon");
+            PlaceInArt(iconRt, infoSize, new Rect(3, 4, 19, 20));
+            _dayNightIcon = iconRt.gameObject.AddComponent<Image>();
+            _dayNightIcon.preserveAspect = true;
+            _dayNightIcon.raycastTarget = false;
+            _dayNightIcon.sprite = AssetLibrary.UiIconSun;
+
+            _dateText = Label(info, "1일차", 17, Vector2.zero, TextAnchor.MiddleCenter);
+            PlaceInArt(_dateText.rectTransform, infoSize, new Rect(25, 5, 31, 9));
+            _dateText.color = new Color(0.24f, 0.13f, 0.11f);
+
+            _timeText = Label(info, "06:00", 17, Vector2.zero, TextAnchor.MiddleCenter);
+            PlaceInArt(_timeText.rectTransform, infoSize, new Rect(25, 15, 31, 9));
+            _timeText.color = new Color(0.24f, 0.13f, 0.11f);
+
+            // --- 소지금 바 (아트 60x16) ---
+            var moneySize = new Vector2(60, 16);
+            var money = SpritePanel("HudMoney", AssetLibrary.UiHudMoney, new Vector2(1, 1),
+                new Vector2(-12, -12 - infoSize.y * hudScale - 6), moneySize * hudScale);
+
+            _moneyText = Label(money, "0", 16, Vector2.zero, TextAnchor.MiddleRight);
+            PlaceInArt(_moneyText.rectTransform, moneySize, new Rect(19, 3, 35, 10));
+            _moneyText.color = new Color(0.24f, 0.13f, 0.11f);
+        }
+
+        /// <summary>스프라이트를 배경으로 쓰는 HUD 패널 (화면 모서리 기준 배치).</summary>
+        private RectTransform SpritePanel(string name, Sprite sprite, Vector2 anchor, Vector2 pos, Vector2 size)
+        {
+            var go = new GameObject(name);
+            var rt = go.AddComponent<RectTransform>();
+            rt.SetParent(_canvas.transform, false);
+            rt.anchorMin = rt.anchorMax = anchor;
+            rt.pivot = anchor;
+            rt.anchoredPosition = pos;
+            rt.sizeDelta = size;
+            var img = go.AddComponent<Image>();
+            img.sprite = sprite;
+            img.raycastTarget = false;
+            return rt;
+        }
+
+        /// <summary>부모 스프라이트의 원본 픽셀 좌표(artRect)에 맞춰 자식을 앵커로 배치한다.</summary>
+        private static void PlaceInArt(RectTransform child, Vector2 artSize, Rect artRect)
+        {
+            child.anchorMin = new Vector2(artRect.xMin / artSize.x, 1f - artRect.yMax / artSize.y);
+            child.anchorMax = new Vector2(artRect.xMax / artSize.x, 1f - artRect.yMin / artSize.y);
+            child.offsetMin = Vector2.zero;
+            child.offsetMax = Vector2.zero;
+        }
+
+        private RectTransform Child(RectTransform parent, string name)
+        {
+            var go = new GameObject(name);
+            var rt = go.AddComponent<RectTransform>();
+            rt.SetParent(parent, false);
+            return rt;
         }
 
         private Slider MakeBar(RectTransform parent, string label, float yOff, Color fill)
@@ -183,50 +263,86 @@ namespace FarmMVP
             Stretch(_toolLabel.rectTransform, 0, 0, 0, 0);
         }
 
-        // ---------- Inventory panel ----------
-        private void BuildInventoryPanel()
+        // ---------- 책 UI ----------
+        private void BuildBook()
         {
-            _inventoryPanel = new GameObject("InventoryPanel");
-            var rt = _inventoryPanel.AddComponent<RectTransform>();
-            rt.SetParent(_canvas.transform, false);
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
+            var go = new GameObject("BookUI");
+            go.transform.SetParent(_canvas.transform, false);
+            _book = go.AddComponent<BookUI>();
+            _book.Boot(this, _game, _canvas.transform as RectTransform);
+        }
 
-            int cols = 9;
-            int rows = Inventory.TotalSlots / cols;
-            float slot = 50, pad = 6;
-            float w = cols * slot + (cols - 1) * pad + 24;
-            float h = rows * slot + (rows - 1) * pad + 60;
-            rt.sizeDelta = new Vector2(w, h);
+        private void BuildShipping()
+        {
+            var go = new GameObject("ShippingUI");
+            go.transform.SetParent(_canvas.transform, false);
+            _shipping = go.AddComponent<ShippingUI>();
+            _shipping.Boot(this, _game, _canvas.transform as RectTransform);
+        }
 
-            var bg = _inventoryPanel.AddComponent<Image>();
-            bg.color = new Color(0.08f, 0.08f, 0.10f, 0.94f);
+        public bool IsBookOpen => _book != null && _book.IsOpen;
+        public bool IsShippingOpen => _shipping != null && _shipping.IsOpen;
 
-            var title = Label(rt, "인벤토리 (I 로 닫기)", 18, new Vector2(0, -8), TextAnchor.UpperCenter);
-            title.rectTransform.anchorMin = new Vector2(0, 1);
-            title.rectTransform.anchorMax = new Vector2(1, 1);
-            title.rectTransform.pivot = new Vector2(0.5f, 1);
-            title.rectTransform.sizeDelta = new Vector2(0, 30);
+        /// <summary>배송함을 우클릭했을 때 호출된다.</summary>
+        public void OpenShippingBox()
+        {
+            if (_shipping == null || IsBookOpen) return;
+            _shipping.Open();
+            _game.CurrentLocation?.SetShippingBoxOpen(true);
+            RefreshSlots();
+            RefreshShippingValue();
+            SyncPaused();
+        }
 
-            var grid = new GameObject("Grid");
-            var grt = grid.AddComponent<RectTransform>();
-            grt.SetParent(rt, false);
-            grt.anchorMin = new Vector2(0.5f, 1);
-            grt.anchorMax = new Vector2(0.5f, 1);
-            grt.pivot = new Vector2(0.5f, 1);
-            grt.anchoredPosition = new Vector2(0, -40);
-            grt.sizeDelta = new Vector2(w - 24, h - 60);
+        public void CloseShippingBox()
+        {
+            if (_shipping == null) return;
+            _shipping.Close();
+            _game.CurrentLocation?.SetShippingBoxOpen(false);
+            SyncPaused();
+        }
 
-            for (int i = 0; i < Inventory.TotalSlots; i++)
-            {
-                int c = i % cols;
-                int r = i / cols;
-                float x = -((cols - 1) * (slot + pad)) / 2f + c * (slot + pad);
-                float y = -r * (slot + pad);
-                var sv = BuildSlot(grt, i, x, y, slot, isHotbar: false, centered: true);
-                _invViews.Add(sv);
-            }
+        private void RefreshShippingValue()
+        {
+            _shipping?.SetExpectedValue(_game.ShippingBoxValue);
+        }
+
+        /// <summary>ShippingUI가 배송함 칸을 만들 때 호출한다.</summary>
+        public SlotView CreateShippingSlot(RectTransform parent, int index, float x, float y, float size)
+        {
+            var sv = BuildSlot(parent, index, x, y, size, isHotbar: false, centered: true, container: SlotContainer.Shipping);
+            _shippingViews.Add(sv);
+            return sv;
+        }
+
+        /// <summary>ShippingUI가 아래쪽 "내 가방" 칸을 만들 때 호출한다.</summary>
+        public SlotView CreatePlayerSlot(RectTransform parent, int index, float x, float y, float size)
+            => CreateInventorySlot(parent, index, x, y, size);
+
+        /// <summary>I / ESC: 해당 페이지로 책을 연다. 이미 그 페이지가 열려 있으면 닫는다.</summary>
+        public void ToggleBook(BookUI.Page page)
+        {
+            if (_book == null) return;
+            if (_confirmPanel != null && _confirmPanel.activeSelf) return; // 팝업이 떠 있으면 무시
+            _book.Toggle(page);
+            RefreshSlots();
+            SyncPaused();
+        }
+
+        /// <summary>책이나 팝업이 하나라도 떠 있으면 게임 입력을 멈춘다.</summary>
+        public void SyncPaused()
+        {
+            if (_game == null) return;
+            bool confirmOpen = _confirmPanel != null && _confirmPanel.activeSelf;
+            _game.Paused = confirmOpen || IsBookOpen || IsShippingOpen;
+        }
+
+        /// <summary>BookUI가 인벤토리 페이지의 칸을 만들 때 호출한다 (드래그&amp;드롭 및 갱신 대상에 등록).</summary>
+        public SlotView CreateInventorySlot(RectTransform parent, int index, float x, float y, float size)
+        {
+            var sv = BuildSlot(parent, index, x, y, size, isHotbar: false, centered: true);
+            _invViews.Add(sv);
+            return sv;
         }
 
         private void BuildBannerAndToast()
@@ -316,13 +432,14 @@ namespace FarmMVP
             _confirmYesAction = onYes;
             _confirmNoAction = onNo;
             _confirmPanel.SetActive(true);
-            if (_game != null) _game.Paused = true;
+            _confirmPanel.transform.SetAsLastSibling(); // 책 위에 표시
+            SyncPaused();
         }
 
         private void OnConfirmClicked(bool yes)
         {
             _confirmPanel.SetActive(false);
-            if (_game != null) _game.Paused = false;
+            SyncPaused();
 
             var action = yes ? _confirmYesAction : _confirmNoAction;
             _confirmYesAction = null;
@@ -332,9 +449,9 @@ namespace FarmMVP
 
         // ---------- slot construction ----------
         private SlotView BuildSlot(RectTransform parent, int index, float x, float y, float size,
-            bool isHotbar, bool centered = false)
+            bool isHotbar, bool centered = false, SlotContainer container = SlotContainer.Player)
         {
-            var go = new GameObject($"Slot_{(isHotbar ? "H" : "I")}_{index}");
+            var go = new GameObject($"Slot_{container}_{index}");
             var rt = go.AddComponent<RectTransform>();
             rt.SetParent(parent, false);
             if (centered)
@@ -353,7 +470,7 @@ namespace FarmMVP
             rt.sizeDelta = new Vector2(size, size);
 
             var frame = go.AddComponent<Image>();
-            frame.color = new Color(0.2f, 0.2f, 0.24f, 0.9f);
+            frame.sprite = AssetLibrary.UiSlot;
 
             var iconGo = new GameObject("Icon");
             var iconRt = iconGo.AddComponent<RectTransform>();
@@ -388,6 +505,7 @@ namespace FarmMVP
             {
                 index = index,
                 isHotbar = isHotbar,
+                container = container,
                 frame = frame,
                 icon = icon,
                 count = count,
@@ -405,18 +523,40 @@ namespace FarmMVP
         {
             _dateText.text = $"{_game.Data.currentDay}일차";
             _timeText.text = _game.TimeString();
+            _dayNightIcon.sprite = _game.IsDaytime ? AssetLibrary.UiIconSun : AssetLibrary.UiIconMoon;
 
             _hpBar.value = Mathf.Clamp01((float)_game.Data.farmer.hp / _game.Data.farmer.maxHp);
             _mpBar.value = Mathf.Clamp01((float)_game.Data.farmer.mp / _game.Data.farmer.maxMp);
+
+            _book?.RefreshStatus();
+        }
+
+        private void OnShippingInventoryChanged()
+        {
+            RefreshSlots();
+            RefreshShippingValue();
+        }
+
+        private void RefreshMoney()
+        {
+            _moneyText.text = _game.Money.ToString("N0");
+            _book?.RefreshStatus();
         }
 
         public void RefreshSlots()
         {
-            for (int i = 0; i < _hotbarViews.Count; i++)
-                UpdateSlotView(_hotbarViews[i], _game.Inventory.GetSlot(i), i == _game.Data.farmer.equippedHotbarIndex);
+            // 같은 인벤토리를 여러 화면(핫바 / 책 / 배송함)에서 동시에 보여주므로,
+            // 리스트 순번이 아니라 각 칸이 가리키는 실제 슬롯 번호를 기준으로 갱신한다.
+            int equipped = _game.Data.farmer.equippedHotbarIndex;
 
-            for (int i = 0; i < _invViews.Count; i++)
-                UpdateSlotView(_invViews[i], _game.Inventory.GetSlot(i), i == _game.Data.farmer.equippedHotbarIndex && i < Inventory.HotbarSize);
+            foreach (var v in _hotbarViews)
+                UpdateSlotView(v, _game.Inventory.GetSlot(v.index), v.index == equipped);
+
+            foreach (var v in _invViews)
+                UpdateSlotView(v, _game.Inventory.GetSlot(v.index), v.index == equipped && v.index < Inventory.HotbarSize);
+
+            foreach (var v in _shippingViews)
+                UpdateSlotView(v, _game.ShippingBox.GetSlot(v.index), false);
         }
 
         /// <summary>우측 하단에 현재 선택된 마법 이름과 MP 소모량을 표시.</summary>
@@ -442,21 +582,36 @@ namespace FarmMVP
                 v.count.text = "";
             }
             v.selection.enabled = selected;
-            v.frame.color = selected ? new Color(0.32f, 0.3f, 0.18f, 0.95f) : new Color(0.2f, 0.2f, 0.24f, 0.9f);
-        }
-
-        public void SetInventoryOpen(bool open)
-        {
-            _inventoryPanel.SetActive(open);
-            if (open) RefreshSlots();
+            v.frame.sprite = selected ? AssetLibrary.UiSlotSelected : AssetLibrary.UiSlot;
         }
 
         // drag & drop callback from SlotDragHandler
-        public void OnSlotDrop(int from, int to)
+        public void OnSlotDrop(SlotView from, SlotView to)
         {
-            _game.Inventory.MoveSlot(from, to);
+            var fromInv = InventoryOf(from.container);
+            var toInv = InventoryOf(to.container);
+
+            if (ReferenceEquals(fromInv, toInv)) fromInv.MoveSlot(from.index, to.index);
+            else Inventory.MoveBetween(fromInv, from.index, toInv, to.index);
+
             RefreshSlots();
         }
+
+        /// <summary>쉬프트+좌클릭: 배송함이 열려 있을 때 반대편 인벤토리로 한 번에 옮긴다.</summary>
+        public bool QuickTransfer(SlotView view)
+        {
+            if (!IsShippingOpen) return false;
+
+            var from = InventoryOf(view.container);
+            var to = view.container == SlotContainer.Player ? _game.ShippingBox : _game.Inventory;
+            Inventory.QuickMove(from, view.index, to);
+
+            RefreshSlots();
+            return true;
+        }
+
+        private Inventory InventoryOf(SlotContainer container)
+            => container == SlotContainer.Shipping ? _game.ShippingBox : _game.Inventory;
 
         public void OnHotbarClicked(int index)
         {
@@ -520,7 +675,7 @@ namespace FarmMVP
             return rt;
         }
 
-        private Text Label(RectTransform parent, string text, int size, Vector2 pos, TextAnchor anchor)
+        public Text Label(RectTransform parent, string text, int size, Vector2 pos, TextAnchor anchor)
         {
             var go = new GameObject("Label");
             var rt = go.AddComponent<RectTransform>();
@@ -539,7 +694,7 @@ namespace FarmMVP
             return t;
         }
 
-        private void Stretch(RectTransform rt, float top, float bottom, float left, float right)
+        public void Stretch(RectTransform rt, float top, float bottom, float left, float right)
         {
             rt.anchorMin = new Vector2(0, 0);
             rt.anchorMax = new Vector2(1, 1);
@@ -548,11 +703,15 @@ namespace FarmMVP
         }
     }
 
+    /// <summary>슬롯이 어느 인벤토리를 보여주는지.</summary>
+    public enum SlotContainer { Player, Shipping }
+
     /// <summary>Lightweight view holder for a slot's widgets.</summary>
     public class SlotView
     {
         public int index;
         public bool isHotbar;
+        public SlotContainer container;
         public Image frame;
         public Image icon;
         public Text count;

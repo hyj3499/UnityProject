@@ -257,6 +257,10 @@ namespace FarmMVP
             if (Input.GetMouseButtonDown(1))
             {
                 if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 상호작용으로 새는 것 방지
+
+                // 배송함은 조준 없이 그 자리에서 바로 열린다.
+                if (_game.TryOpenShippingBox(this)) return;
+
                 if (!canAct) return;
                 _seedHeld = true;
                 _indicator.Show(FacingTile(), canHarvest ? HarvestPreviewColor : SeedPreviewColor);

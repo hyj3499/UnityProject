@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace FarmMVP
@@ -11,17 +12,80 @@ namespace FarmMVP
     {
         public GameData Data { get; private set; }
         public Inventory Inventory { get; private set; }
+
+        /// <summary>배송함. 여기에 넣어 둔 아이템은 다음 날 아침에 팔려 소지금이 된다.</summary>
+        public Inventory ShippingBox { get; private set; }
         public GameLocation CurrentLocation { get; private set; }
         public PlayerController Player { get; private set; }
 
-        public bool Paused;              // set true while inventory UI open
-        public bool InventoryOpen;
+        public bool Paused;              // 책(인벤토리/설정) 이나 팝업이 열려 있는 동안 true
 
         public event Action OnTimeChanged;
         public event Action OnDayChanged;
         public event Action OnHotbarChanged;
         public event Action OnStatsChanged;
         public event Action OnMagicChanged;
+        public event Action OnMoneyChanged;
+        public event Action OnShippingChanged;
+
+        // ---------- 배송함 ----------
+        /// <summary>배송함에 담긴 아이템들의 예상 판매 금액 합계.</summary>
+        public int ShippingBoxValue
+        {
+            get
+            {
+                int total = 0;
+                foreach (var s in ShippingBox.slots)
+                {
+                    if (s == null || s.IsEmpty) continue;
+                    var def = s.Def;
+                    if (def != null) total += def.sellPrice * s.count;
+                }
+                return total;
+            }
+        }
+
+        /// <summary>우클릭으로 배송함을 열어 본다. 바라보는 타일이 배송함이면 UI를 열고 true.</summary>
+        public bool TryOpenShippingBox(PlayerController pc)
+        {
+            if (Paused) return false;
+            if (CurrentLocation == null || !CurrentLocation.shippingBoxTile.HasValue) return false;
+
+            var box = CurrentLocation.shippingBoxTile.Value;
+            var tile = pc.FacingTile();
+            var here = new Vector2Int(Mathf.RoundToInt(pc.transform.position.x), Mathf.RoundToInt(pc.transform.position.y));
+            if (!Near(tile, box) && !Near(here, box)) return false;
+
+            UIManager.Instance?.OpenShippingBox();
+            return true;
+        }
+
+        /// <summary>아침이 될 때 배송함을 비우고 판매 대금을 소지금에 더한다. 번 금액을 반환.</summary>
+        private int SellShippingBox()
+        {
+            int income = ShippingBoxValue;
+            if (income <= 0) return 0;
+
+            for (int i = 0; i < ShippingBox.slots.Length; i++)
+                ShippingBox.slots[i] = null;
+            ShippingBox.RaiseChanged();
+
+            AddMoney(income);
+            return income;
+        }
+
+        // ---------- 소지금 ----------
+        public int Money => Data.farmer.money;
+
+        /// <summary>소지금을 더하거나(양수) 뺀다(음수). 0 밑으로는 내려가지 않는다.</summary>
+        public void AddMoney(int amount)
+        {
+            Data.farmer.money = Mathf.Max(0, Data.farmer.money + amount);
+            OnMoneyChanged?.Invoke();
+        }
+
+        /// <summary>낮(06:00~18:00)이면 true — HUD의 해/달 아이콘에 쓰인다.</summary>
+        public bool IsDaytime => Data.currentMinutes >= 6 * 60 && Data.currentMinutes < 18 * 60;
 
         // ---------- 마법 (스펙/발동 로직은 MagicSystem 참고) ----------
         public MagicType CurrentMagic { get; private set; } = MagicType.Earth;
@@ -76,8 +140,10 @@ namespace FarmMVP
             CurrentMagic = (MagicType)Mathf.Clamp(Data.farmer.currentMagic, 0, 2);
 
             Inventory = new Inventory();
+            ShippingBox = new Inventory(Inventory.ShippingSlots);
             RestoreInventory();
             Inventory.OnChanged += () => { SaveInventory(); OnHotbarChanged?.Invoke(); };
+            ShippingBox.OnChanged += () => { StoreSlots(ShippingBox, Data.shippingBox); OnShippingChanged?.Invoke(); };
 
             Player.Init(this);
             LoadLocation(Data.currentLocation, new Vector2(Data.farmer.posX, Data.farmer.posY), firstBoot: true);
@@ -102,23 +168,35 @@ namespace FarmMVP
         // ---------- inventory persistence ----------
         private void RestoreInventory()
         {
-            foreach (var slot in Data.farmer.slots)
-            {
-                if (slot.index >= 0 && slot.index < Inventory.slots.Length && !string.IsNullOrEmpty(slot.itemId))
-                    Inventory.slots[slot.index] = new ItemStack(slot.itemId, slot.count);
-            }
+            RestoreSlots(Inventory, Data.farmer.slots);
+            RestoreSlots(ShippingBox, Data.shippingBox);
         }
 
         private void SaveInventory()
         {
-            Data.farmer.slots.Clear();
-            for (int i = 0; i < Inventory.slots.Length; i++)
-            {
-                var s = Inventory.slots[i];
-                if (s != null && !s.IsEmpty)
-                    Data.farmer.slots.Add(new SlotData { index = i, itemId = s.itemId, count = s.count });
-            }
+            StoreSlots(Inventory, Data.farmer.slots);
+            StoreSlots(ShippingBox, Data.shippingBox);
             Data.farmer.currentMagic = (int)CurrentMagic;
+        }
+
+        private static void RestoreSlots(Inventory inv, List<SlotData> data)
+        {
+            foreach (var slot in data)
+            {
+                if (slot.index >= 0 && slot.index < inv.slots.Length && !string.IsNullOrEmpty(slot.itemId))
+                    inv.slots[slot.index] = new ItemStack(slot.itemId, slot.count);
+            }
+        }
+
+        private static void StoreSlots(Inventory inv, List<SlotData> data)
+        {
+            data.Clear();
+            for (int i = 0; i < inv.slots.Length; i++)
+            {
+                var s = inv.slots[i];
+                if (s != null && !s.IsEmpty)
+                    data.Add(new SlotData { index = i, itemId = s.itemId, count = s.count });
+            }
         }
 
         // ---------- location ----------
@@ -163,8 +241,18 @@ namespace FarmMVP
         // ---------- update loop ----------
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.I))
-                ToggleInventory();
+            // I = 인벤토리 책, ESC = 설정 책 (같은 페이지를 다시 누르면 닫힌다).
+            // 배송함이 열려 있을 때는 두 키 모두 배송함을 닫는다.
+            if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                var ui = UIManager.Instance;
+                if (ui != null && ui.IsShippingOpen)
+                    ui.CloseShippingBox();
+                else if (Input.GetKeyDown(KeyCode.I))
+                    ui?.ToggleBook(BookUI.Page.Inventory);
+                else
+                    ui?.ToggleBook(BookUI.Page.Settings);
+            }
 
             if (!Paused)
             {
@@ -316,6 +404,9 @@ namespace FarmMVP
             // advance all locations' crops
             AdvanceAllCrops();
 
+            // 배송함에 넣어 둔 물건은 밤새 팔린다
+            int income = SellShippingBox();
+
             Data.currentDay += 1;
             Data.currentMinutes = 6 * 60; // 06:00
 
@@ -333,6 +424,7 @@ namespace FarmMVP
             LoadLocation(Data.currentLocation, new Vector2(Player.transform.position.x, Player.transform.position.y), false);
 
             UIManager.Instance?.ShowDayBanner(Data.currentDay);
+            if (income > 0) UIManager.Instance?.Toast($"배송함 판매 +{income:N0} G");
         }
 
         private void AdvanceAllCrops()
@@ -358,11 +450,12 @@ namespace FarmMVP
             }
         }
 
-        public void ToggleInventory()
+        /// <summary>현재 상태를 즉시 저장한다 (F5 단축키와 설정창의 저장 버튼이 공유).</summary>
+        public void SaveNow()
         {
-            InventoryOpen = !InventoryOpen;
-            Paused = InventoryOpen;
-            UIManager.Instance?.SetInventoryOpen(InventoryOpen);
+            SaveInventory();
+            CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
+            SaveSystem.Save(Data);
         }
 
         // manual save hotkey
@@ -370,9 +463,7 @@ namespace FarmMVP
         {
             if (Input.GetKeyDown(KeyCode.F5))
             {
-                SaveInventory();
-                CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
-                SaveSystem.Save(Data);
+                SaveNow();
                 UIManager.Instance?.Toast("저장됨");
             }
         }

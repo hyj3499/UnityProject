@@ -23,7 +23,8 @@ namespace FarmMVP
                 type = ItemType.Seed,
                 maxStack = 99,
                 spriteKey = "StrawberrySeed",
-                cropId = "strawberry"
+                cropId = "strawberry",
+                sellPrice = 20
             });
 
             Register(new ItemDef
@@ -32,7 +33,8 @@ namespace FarmMVP
                 displayName = "딸기",
                 type = ItemType.Crop,
                 maxStack = 99,
-                spriteKey = "StrawberryFruit"
+                spriteKey = "StrawberryFruit",
+                sellPrice = 80
             });
 
             Register(new ItemDef
@@ -41,7 +43,8 @@ namespace FarmMVP
                 displayName = "나무",
                 type = ItemType.Resource,
                 maxStack = 99,
-                spriteKey = "Wood"
+                spriteKey = "Wood",
+                sellPrice = 12
             });
 
             Register(new ItemDef

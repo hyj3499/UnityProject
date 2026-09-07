@@ -15,6 +15,10 @@ namespace FarmMVP
         public LocationId currentLocation = LocationId.Farm1;
 
         public FarmerData farmer = new FarmerData();
+
+        /// <summary>배송함에 넣어 둔, 다음 날 아침에 팔릴 아이템들.</summary>
+        public List<SlotData> shippingBox = new List<SlotData>();
+
         public LocationData farm1 = new LocationData();
         public LocationData farm2 = new LocationData();
         public LocationData farmHouse = new LocationData();
@@ -38,6 +42,7 @@ namespace FarmMVP
         public int direction = (int)Direction.Down;
         public int hp = 100, maxHp = 100;
         public int mp = 50, maxMp = 50;
+        public int money = 500;
         public int equippedHotbarIndex = 0;
         public int currentMagic = 0; // 0=Earth, 1=Water, 2=Blade
 

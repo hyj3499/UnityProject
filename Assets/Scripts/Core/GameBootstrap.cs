@@ -35,15 +35,33 @@ namespace FarmMVP
             DontDestroyOnLoad(gameObject);
         }
 
+        // StartGame()이 만든 오브젝트들 — 타이틀로 돌아갈 때 통째로 정리한다.
+        private GameObject _playerGo, _worldGo, _gameManagerGo, _uiManagerGo;
+
         private void Start()
         {
             AssetLibrary.EnsureLoaded();
+            ShowTitle();
+        }
 
-            // Show the title screen first; gameplay is built once the player
-            // picks 새 게임/이어하기 from MainMenuController.
+        private void ShowTitle()
+        {
+            // 타이틀 화면을 먼저 띄우고, 새 게임/이어하기를 고르면 StartGame()이 실제 게임을 만든다.
             var menuGo = new GameObject("MainMenu");
             var menu = menuGo.AddComponent<MainMenuController>();
             menu.Boot(this);
+        }
+
+        /// <summary>설정창의 "타이틀로 나가기": 진행 중인 게임을 정리하고 타이틀 화면으로 되돌아간다.</summary>
+        public void ReturnToTitle()
+        {
+            if (_uiManagerGo != null) Destroy(_uiManagerGo);
+            if (_gameManagerGo != null) Destroy(_gameManagerGo);
+            if (_playerGo != null) Destroy(_playerGo);
+            if (_worldGo != null) Destroy(_worldGo);
+            _uiManagerGo = _gameManagerGo = _playerGo = _worldGo = null;
+
+            ShowTitle();
         }
 
         /// <summary>Called by MainMenuController once 새 게임/이어하기 is chosen.</summary>
@@ -80,6 +98,11 @@ namespace FarmMVP
 
             var uiGo = new GameObject("UIManager");
             var ui = uiGo.AddComponent<UIManager>();
+
+            _playerGo = playerGo;
+            _worldGo = locationRoot.gameObject;
+            _gameManagerGo = gmGo;
+            _uiManagerGo = uiGo;
 
             // Boot order: game first (creates Inventory/Data), then UI reads them.
             gm.Boot(cam, pc, locationRoot);

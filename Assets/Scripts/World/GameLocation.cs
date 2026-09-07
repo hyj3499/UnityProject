@@ -27,6 +27,9 @@ namespace FarmMVP
         private readonly Dictionary<Vector2Int, SpriteRenderer> _treeRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
 
         // Special interaction points
+        public Vector2Int? shippingBoxTile; // Farm1 배송함
+        private SpriteRenderer _shippingBoxSr;
+
         public Vector2Int? bedTile;       // FarmHouse
         public Vector2Int? doorExitTile;  // FarmHouse door -> Farm1 ; Farm1 house -> FarmHouse
         public RectInt? rightExit;        // Farm1 -> Farm2 region
@@ -117,6 +120,12 @@ namespace FarmMVP
             // door tile (walk into it to enter house)
             doorExitTile = new Vector2Int(4, height - 5);
             SetBlocked(doorExitTile.Value.x, doorExitTile.Value.y, false);
+
+            // 배송함 (집 옆) — 우클릭해서 열고, 넣어 둔 물건은 다음 날 아침에 팔린다
+            shippingBoxTile = new Vector2Int(8, height - 5);
+            _shippingBoxSr = PlaceObject(AssetLibrary.ShippingBox,
+                shippingBoxTile.Value.x, shippingBoxTile.Value.y + 0.15f, 600);
+            SetBlocked(shippingBoxTile.Value.x, shippingBoxTile.Value.y, true);
 
             // Trees (from data or defaults)
             var loc = data.GetLocation(LocationId.Farm1);
@@ -300,6 +309,13 @@ namespace FarmMVP
             d.Water();
             RenderHoeDirt(pos);
             return true;
+        }
+
+        /// <summary>배송함 UI를 열고 닫을 때 뚜껑이 열린/닫힌 그림으로 바꾼다.</summary>
+        public void SetShippingBoxOpen(bool open)
+        {
+            if (_shippingBoxSr == null) return;
+            _shippingBoxSr.sprite = open ? AssetLibrary.ShippingBoxOpen : AssetLibrary.ShippingBox;
         }
 
         /// <summary>지금 이 타일에 수확 가능한(다 자란) 작물이 있는지 (실제로 캐지 않고 확인만).</summary>

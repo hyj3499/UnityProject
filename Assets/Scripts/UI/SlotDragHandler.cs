@@ -26,6 +26,12 @@ namespace FarmMVP
 
         public void OnPointerClick(PointerEventData e)
         {
+            // 쉬프트+클릭: 배송함이 열려 있으면 반대편 인벤토리로 한 번에 옮긴다.
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                if (_ui.QuickTransfer(_view)) return;
+            }
+
             if (_view.isHotbar)
                 _ui.OnHotbarClicked(_view.index);
         }
@@ -68,7 +74,7 @@ namespace FarmMVP
         {
             var from = e.pointerDrag != null ? e.pointerDrag.GetComponent<SlotDragHandler>() : null;
             if (from != null && from != this)
-                _ui.OnSlotDrop(from._view.index, _view.index);
+                _ui.OnSlotDrop(from._view, _view);
         }
 
         private void MoveDragIcon(PointerEventData e)

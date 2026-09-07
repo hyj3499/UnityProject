@@ -24,6 +24,7 @@ namespace FarmMVP
         public static Sprite Floor, Wall, Rug;
         // Environment
         public static Sprite Tree, House, Wood;
+        public static Sprite ShippingBox, ShippingBoxOpen;
         // Interior furniture
         public static Sprite Bed, Door, Fireplace, Plant;
         // Crops
@@ -31,6 +32,10 @@ namespace FarmMVP
         public static Sprite StrawberrySeed, StrawberryFruit;
         // Tools
         public static Sprite Hoe, WateringCan, Axe;
+        // UI (Farm RPG Tiny Asset Pack 에서 잘라낸 조각들)
+        public static Sprite UiBook, UiHudInfo, UiHudMoney, UiIconSun, UiIconMoon;
+        public static Sprite UiSlot, UiSlotSelected, UiFrame;
+        public static Sprite UiBookmarkGreen, UiBookmarkOrange, UiBookmarkBlue;
 
         public static void EnsureLoaded()
         {
@@ -55,6 +60,8 @@ namespace FarmMVP
             Tree = Load("Sprites/Environment/Tree");
             House = Load("Sprites/Environment/House");
             Wood = Load("Sprites/Environment/Wood");
+            ShippingBox = Load("Sprites/Environment/ShippingBox");
+            ShippingBoxOpen = Load("Sprites/Environment/ShippingBoxOpen");
 
             Bed = Load("Sprites/Interior/Bed");
             Door = Load("Sprites/Interior/Door");
@@ -68,6 +75,18 @@ namespace FarmMVP
             Hoe = Load("Sprites/Tools/Hoe");
             WateringCan = Load("Sprites/Tools/WateringCan");
             Axe = Load("Sprites/Tools/Axe");
+
+            UiBook = Load("Sprites/UI/Book");
+            UiHudInfo = Load("Sprites/UI/HudInfo");
+            UiHudMoney = Load("Sprites/UI/HudMoney");
+            UiIconSun = Load("Sprites/UI/IconSun");
+            UiIconMoon = Load("Sprites/UI/IconMoon");
+            UiSlot = Load("Sprites/UI/Slot");
+            UiSlotSelected = Load("Sprites/UI/SlotSelected");
+            UiFrame = Load("Sprites/UI/Frame");
+            UiBookmarkGreen = Load("Sprites/UI/BookmarkGreen");
+            UiBookmarkOrange = Load("Sprites/UI/BookmarkOrange");
+            UiBookmarkBlue = Load("Sprites/UI/BookmarkBlue");
         }
 
         private static Sprite Load(string path)

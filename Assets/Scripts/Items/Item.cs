@@ -17,6 +17,7 @@ namespace FarmMVP
         public string spriteKey;   // key into AssetLibrary
         public ToolType toolType;  // only for tools
         public string cropId;      // only for seeds -> which crop to plant
+        public int sellPrice;      // 배송함에 넣었을 때 개당 판매 가격 (0이면 팔 수 없음)
 
         public Sprite GetSprite()
         {

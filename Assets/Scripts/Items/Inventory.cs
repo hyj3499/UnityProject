@@ -12,10 +12,16 @@ namespace FarmMVP
     {
         public const int HotbarSize = 9;
         public const int TotalSlots = 27; // 9 hotbar + 18 backpack (3 rows)
+        public const int ShippingSlots = 18; // 배송함 (9칸 2줄)
 
-        public ItemStack[] slots = new ItemStack[TotalSlots];
+        public ItemStack[] slots;
 
         public event Action OnChanged;
+
+        public Inventory(int slotCount = TotalSlots)
+        {
+            slots = new ItemStack[slotCount];
+        }
 
         public void RaiseChanged() => OnChanged?.Invoke();
 
@@ -106,6 +112,49 @@ namespace FarmMVP
                 slots[to] = a;
             }
             RaiseChanged();
+        }
+
+        /// <summary>
+        /// 서로 다른 인벤토리(예: 가방 ↔ 배송함) 사이에서 한 칸을 옮긴다.
+        /// 같은 아이템이면 합치고, 아니면 두 칸을 맞바꾼다.
+        /// </summary>
+        public static void MoveBetween(Inventory from, int fromIndex, Inventory to, int toIndex)
+        {
+            var a = from.GetSlot(fromIndex);
+            if (a == null || a.IsEmpty) return;
+            var b = to.GetSlot(toIndex);
+
+            if (b != null && !b.IsEmpty && a.itemId == b.itemId)
+            {
+                int space = b.Def.maxStack - b.count;
+                int move = Math.Min(space, a.count);
+                b.count += move;
+                a.count -= move;
+                if (a.count <= 0) from.slots[fromIndex] = null;
+            }
+            else
+            {
+                to.slots[toIndex] = a;
+                from.slots[fromIndex] = b;
+            }
+
+            from.RaiseChanged();
+            if (!ReferenceEquals(from, to)) to.RaiseChanged();
+        }
+
+        /// <summary>
+        /// 한 칸을 통째로 다른 인벤토리에 밀어 넣는다 (쉬프트+클릭). 자리가 부족하면 들어간 만큼만 옮긴다.
+        /// </summary>
+        public static void QuickMove(Inventory from, int fromIndex, Inventory to)
+        {
+            var stack = from.GetSlot(fromIndex);
+            if (stack == null || stack.IsEmpty) return;
+
+            int leftover = to.Add(stack.itemId, stack.count);
+            if (leftover <= 0) from.slots[fromIndex] = null;
+            else stack.count = leftover;
+
+            from.RaiseChanged();
         }
 
         public void ConsumeOne(int slotIndex)
