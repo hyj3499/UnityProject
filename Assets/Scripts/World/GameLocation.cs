@@ -33,14 +33,30 @@ namespace FarmMVP
         public Transform FeatureRoot => _featureRoot;
 
         private bool[,] _blocked;
+        /// <summary>
+        /// 오브젝트 발판처럼 <b>치울 수 없는</b> 이유로 막힌 칸. 나무를 베거나 바위를 부술 때 그 칸을
+        /// 무조건 열어 버리면, 집 발판 위에 서 있던 나무를 벤 순간 집에 구멍이 뚫린다.
+        /// </summary>
+        private bool[,] _objectBlocked;
         /// <summary>경작 마스크. null이면 마스크 레이어가 없다는 뜻이라 어디든 경작할 수 있다.</summary>
         private bool[,] _tillable;
         /// <summary>맵 크기를 씬에 칠한 바닥에서 가져왔는지. true면 빌더의 기본 크기를 무시한다.</summary>
         private bool _sizeFromTilemap;
 
         private Tilemap _groundMap, _blockedMask, _tillableMask, _objectMarkers, _waterMap;
+        private Tilemap _cliffMap;
         /// <summary>물 칸. null이면 물 레이어가 없다.</summary>
         private bool[,] _water;
+        /// <summary>절벽 칸. null이면 절벽 레이어가 없다.</summary>
+        private bool[,] _cliff;
+
+        /// <summary>
+        /// 눈에 보이는(렌더러를 켜 두는) 레이어들. 계절 타일 교체는 레이어 종류를 따지지 않고
+        /// 여기 담긴 것을 전부 훑는다 — 바닥이든 장식이든 절벽이든, 계절 짝이 있는 타일을 칠했으면
+        /// 계절마다 그림이 바뀐다. 보이지 않는 마스크는 바꿔도 보이는 게 없어서 넣지 않고,
+        /// 마커 레이어는 <b>타일 이름</b>이 곧 무엇을 놓을지 정하는 약속이라 건드리면 안 된다.
+        /// </summary>
+        private readonly List<Tilemap> _visibleMaps = new List<Tilemap>();
 
         // 맵 밖으로 밀려난 저장 데이터. 지우지 않고 들고 있다가 저장할 때 그대로 되돌려 준다 —
         // 나중에 바닥을 더 칠해서 맵이 커지면 그 시설/작물이 다시 살아난다.
@@ -129,10 +145,11 @@ namespace FarmMVP
 
             // 칠해 둔 평범한 타일을 계절 타일로 바꾸고(이미 바뀐 칸은 건너뛴다) 다시 그리게 한다.
             // 씬의 Tilemap은 위치를 다시 로드해도 살아 있으므로 직접 갱신해야 한다.
-            SeasonalTileset.Apply(_groundMap);
-            SeasonalTileset.Apply(_waterMap);
-            _groundMap?.RefreshAllTiles();
-            _waterMap?.RefreshAllTiles();
+            foreach (var map in _visibleMaps)
+            {
+                SeasonalTileset.Apply(map);
+                map.RefreshAllTiles();
+            }
 
             _blocked = new bool[width, height];
 
@@ -144,6 +161,11 @@ namespace FarmMVP
             }
 
             ApplyMaskTilemaps();
+
+            // 문 칸은 무슨 일이 있어도 걸어 들어갈 수 있어야 한다. 집이 막는 칸을 Blocked 레이어로
+            // 칠하다 보면 문까지 함께 칠하기 쉬운데, 그러면 집에 들어갈 방법이 없어진다.
+            if (doorExitTile.HasValue)
+                SetBlocked(doorExitTile.Value.x, doorExitTile.Value.y, false);
         }
 
         /// <summary>
@@ -164,6 +186,8 @@ namespace FarmMVP
         ///   경작   "Tillable_{id}"  또는 "{id}Tillable"  — 칠한 칸에서만 대지마법을 쓸 수 있다
         ///   물건   "Objects_{id}"   또는 "{id}Objects"    — 집/배송함/나무... 를 놓을 자리
         ///   물     "Water_{id}"     또는 "{id}Water"      — 칠한 칸은 물. 못 지나가고, 낚시할 수 있다
+        ///   장식   "Decor_{id}"     또는 "{id}Decor"      — 꽃·잔디 장식. 막지 않고, 경작지에 덮인다
+        ///   절벽   "Cliff_{id}"     또는 "{id}Cliff"      — 칠한 칸은 절벽. 못 지나가고, 덮을 수 없다
         ///
         /// 마스크 레이어는 "어떤 타일을 칠했는지"는 보지 않고 "칠했는지 아닌지"만 본다. 그래서
         /// 아무 타일이나 하나 골라 영역만 쓱 칠하면 되고, 타일셋의 타일을 하나씩 분류할 필요가 없다.
@@ -176,6 +200,8 @@ namespace FarmMVP
         private void FindSceneTilemaps()
         {
             _groundMap = _blockedMask = _tillableMask = _objectMarkers = _waterMap = null;
+            _cliffMap = null;
+            _visibleMaps.Clear();
 
             // 계절 전용 레이어가 있으면 기본 레이어보다 우선한다. 그래서 두 번 훑는다 —
             // 첫 판에서 이번 계절 전용 레이어를 잡고, 둘째 판에서 빈 자리만 기본 레이어로 채운다.
@@ -210,7 +236,7 @@ namespace FarmMVP
                 {
                     case TilemapLayer.Ground:
                         _groundMap = tm;
-                        if (tr != null) { tr.enabled = true; tr.sortingOrder = Depth.PaintedGround; }
+                        Show(tm, tr, Depth.PaintedGround);
                         break;
                     case TilemapLayer.Blocked:
                         _blockedMask = tm;
@@ -223,7 +249,16 @@ namespace FarmMVP
                     case TilemapLayer.Water:
                         // 물은 눈에 보여야 하는 레이어다 — 마스크들과 달리 렌더러를 켜 둔다.
                         _waterMap = tm;
-                        if (tr != null) { tr.enabled = true; tr.sortingOrder = Depth.Water; }
+                        Show(tm, tr, Depth.Water);
+                        break;
+                    case TilemapLayer.Decor:
+                        // 장식은 경작지(Depth.Soil)보다 뒤에 그린다 — 밭을 갈면 흙에 덮여 사라지고,
+                        // 흙을 없애면 그대로 다시 드러난다. 숨겼다 되살리는 상태가 아예 없다.
+                        Show(tm, tr, Depth.Decor);
+                        break;
+                    case TilemapLayer.Cliff:
+                        _cliffMap = tm;
+                        Show(tm, tr, Depth.Cliff);
                         break;
                     case TilemapLayer.Objects:
                         _objectMarkers = tm;
@@ -233,6 +268,13 @@ namespace FarmMVP
                         break;
                 }
             }
+        }
+
+        /// <summary>보이는 레이어로 등록한다. 계절 타일 교체는 여기 등록된 것만 훑는다.</summary>
+        private void Show(Tilemap tm, TilemapRenderer tr, int sortingOrder)
+        {
+            if (tr != null) { tr.enabled = true; tr.sortingOrder = sortingOrder; }
+            _visibleMaps.Add(tm);
         }
 
         /// <summary>
@@ -278,11 +320,13 @@ namespace FarmMVP
         private void ApplyMaskTilemaps()
         {
             Tilemap blockedMask = _blockedMask, tillableMask = _tillableMask, waterMap = _waterMap;
+            Tilemap cliffMap = _cliffMap;
             _tillable = tillableMask != null ? new bool[width, height] : null;
             _water = waterMap != null ? new bool[width, height] : null;
-            if (blockedMask == null && tillableMask == null && waterMap == null) return;
+            _cliff = cliffMap != null ? new bool[width, height] : null;
+            if (blockedMask == null && tillableMask == null && waterMap == null && cliffMap == null) return;
 
-            int blockedCount = 0, tillableCount = 0, waterCount = 0;
+            int blockedCount = 0, tillableCount = 0, waterCount = 0, cliffCount = 0;
             for (int x = 0; x < width; x++)
                 for (int y = 0; y < height; y++)
                 {
@@ -305,6 +349,14 @@ namespace FarmMVP
                         SetBlocked(x, y, true);
                         waterCount++;
                     }
+                    // 절벽도 칠하기만 하면 못 지나가는 칸이 된다. 경작·씨앗·오브젝트가 덮지 못하는 것은
+                    // CanTill이 IsBlocked를 먼저 보기 때문에 따로 막을 필요가 없다.
+                    if (cliffMap != null && cliffMap.HasTile(cliffMap.WorldToCell(world)))
+                    {
+                        _cliff[x, y] = true;
+                        SetBlocked(x, y, true);
+                        cliffCount++;
+                    }
                 }
 
             if (blockedMask != null)
@@ -313,6 +365,8 @@ namespace FarmMVP
                 Debug.Log($"[GameLocation] {tillableMask.name}: {tillableCount}칸만 경작할 수 있습니다.");
             if (waterMap != null)
                 Debug.Log($"[GameLocation] {waterMap.name}: 물 {waterCount}칸 (통행 불가, 물마법으로 낚시).");
+            if (cliffMap != null)
+                Debug.Log($"[GameLocation] {cliffMap.name}: 절벽 {cliffCount}칸 (통행 불가, 덮을 수 없음).");
         }
 
         // ---------- 오브젝트 마커 레이어 ----------
@@ -328,7 +382,7 @@ namespace FarmMVP
         public void ApplyObjectMarkers(LocationData locData)
             => ObjectMarkerPlacer.Apply(this, _objectMarkers, locData);
 
-        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water }
+        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff }
 
         /// <summary>
         /// 레이어 이름을 해석한다. 앞에 계절이 붙어 있으면("Winter_Location_Farm1") 그 계절 전용이다.
@@ -363,6 +417,10 @@ namespace FarmMVP
                 { locId = candidate; layer = TilemapLayer.Objects; return true; }
                 if (name == $"Water_{candidate}" || name == $"{candidate}Water")
                 { locId = candidate; layer = TilemapLayer.Water; return true; }
+                if (name == $"Decor_{candidate}" || name == $"{candidate}Decor")
+                { locId = candidate; layer = TilemapLayer.Decor; return true; }
+                if (name == $"Cliff_{candidate}" || name == $"{candidate}Cliff")
+                { locId = candidate; layer = TilemapLayer.Cliff; return true; }
             }
             locId = default;
             layer = TilemapLayer.Ground;
@@ -427,8 +485,27 @@ namespace FarmMVP
 
         internal void SetBlocked(int x, int y, bool v)
         {
-            if (InBounds(x, y)) _blocked[x, y] = v;
+            if (!InBounds(x, y)) return;
+            _blocked[x, y] = v;
+            // 일부러 연 칸(문·출구)은 오브젝트 발판에서도 빼야 다시 막히지 않는다.
+            if (!v && _objectBlocked != null) _objectBlocked[x, y] = false;
         }
+
+        /// <summary>
+        /// 오브젝트 발판으로 막는다. 그냥 SetBlocked와 달리, 이 칸에 있던 나무/바위를 치워도
+        /// 계속 막힌 채로 남는다.
+        /// </summary>
+        internal void SetObjectBlocked(int x, int y)
+        {
+            if (!InBounds(x, y)) return;
+            if (_objectBlocked == null) _objectBlocked = new bool[width, height];
+            _objectBlocked[x, y] = true;
+            _blocked[x, y] = true;
+        }
+
+        /// <summary>나무/바위가 사라진 칸을 연다. 그 칸이 오브젝트 발판이면 막힌 채로 둔다.</summary>
+        private void ClearFeatureBlock(Vector2Int pos)
+            => SetBlocked(pos.x, pos.y, _objectBlocked != null && _objectBlocked[pos.x, pos.y]);
 
         /// <summary>
         /// 이 칸에서 대지마법(경작)을 쓸 수 있는지. "Tillable_{id}" 마스크 레이어를 칠해 두면
@@ -437,7 +514,7 @@ namespace FarmMVP
         public bool IsTillable(int x, int y)
         {
             if (!InBounds(x, y)) return false;
-            if (IsWater(x, y)) return false;
+            if (IsWater(x, y) || IsCliff(x, y)) return false;
             return _tillable != null ? _tillable[x, y] : tillableByDefault;
         }
 
@@ -451,8 +528,21 @@ namespace FarmMVP
             return _water[x, y];
         }
 
+        /// <summary>
+        /// 절벽 칸인지. "Cliff_{id}" 타일맵에 칠한 칸이다. 지나갈 수도, 무언가로 덮을 수도 없다.
+        /// </summary>
+        public bool IsCliff(int x, int y)
+        {
+            if (!InBounds(x, y) || _cliff == null) return false;
+            return _cliff[x, y];
+        }
+
         /// <summary>맵 크기(width/height)가 바뀐 뒤 충돌 배열을 다시 만든다 (FarmHouseBuilder에서 사용).</summary>
-        internal void ResetBlocked() => _blocked = new bool[width, height];
+        internal void ResetBlocked()
+        {
+            _blocked = new bool[width, height];
+            _objectBlocked = null;
+        }
 
         /// <summary>배송함 스프라이트 렌더러를 등록한다 (Farm1Builder에서 사용).</summary>
         internal void SetShippingBoxRenderer(SpriteRenderer sr) => _shippingBoxSr = sr;
@@ -474,8 +564,9 @@ namespace FarmMVP
             RefreshAllSoil(); // 이웃 모양(오토타일)을 보려면 전부 채운 뒤에 그려야 한다
             foreach (var t in loc.trees)
             {
-                // 맵 밖이거나, 맵이 줄어들면서 집/테두리 속이 된 자리는 건너뛴다.
-                if (!InBounds(t.x, t.y) || IsBlocked(t.x, t.y)) { _outOfBoundsTrees.Add(t); continue; }
+                // 맵 밖의 자리만 건너뛴다. 집 발판처럼 이미 막힌 칸이어도 그린다 — 집 뒤에 칠해 둔
+                // 나무가 통째로 사라지지 않게. 베고 나서도 발판은 ClearFeatureBlock이 지켜 준다.
+                if (!InBounds(t.x, t.y)) { _outOfBoundsTrees.Add(t); continue; }
                 var pos = new Vector2Int(t.x, t.y);
                 trees[pos] = new TreeFeature(t.x, t.y, t.treeId, t.growthStage)
                 {
@@ -488,7 +579,7 @@ namespace FarmMVP
 
             foreach (var r in loc.rocks)
             {
-                if (!InBounds(r.x, r.y) || IsBlocked(r.x, r.y)) { _outOfBoundsRocks.Add(r); continue; }
+                if (!InBounds(r.x, r.y)) { _outOfBoundsRocks.Add(r); continue; }
                 var pos = new Vector2Int(r.x, r.y);
                 rocks[pos] = new RockFeature(r.x, r.y, r.variant) { hp = r.hp };
                 SetBlocked(r.x, r.y, true);
@@ -498,7 +589,7 @@ namespace FarmMVP
             int outside = _outOfBoundsHoeDirts.Count + _outOfBoundsTrees.Count + _outOfBoundsRocks.Count;
             if (outside > 0)
             {
-                Debug.Log($"[GameLocation] {id}: 시설 {outside}개가 지금 맵({width}x{height}) 밖이거나 막힌 자리라 " +
+                Debug.Log($"[GameLocation] {id}: 시설 {outside}개가 지금 맵({width}x{height}) 밖이라 " +
                           "표시하지 않습니다. 저장 데이터에는 그대로 남아 있어서, 바닥을 더 칠해 맵을 넓히면 다시 나옵니다.");
             }
         }
@@ -605,7 +696,7 @@ namespace FarmMVP
                 {
                     Destroy(sr.gameObject);
                     _treeRenderers.Remove(pos);
-                    SetBlocked(pos.x, pos.y, false);
+                    ClearFeatureBlock(pos);
                 }
                 else
                 {
@@ -629,7 +720,7 @@ namespace FarmMVP
                 {
                     Destroy(sr.gameObject);
                     _rockRenderers.Remove(pos);
-                    SetBlocked(pos.x, pos.y, false);
+                    ClearFeatureBlock(pos);
                 }
                 return;
             }

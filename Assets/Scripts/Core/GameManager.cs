@@ -568,14 +568,40 @@ namespace FarmMVP
         private void FollowCamera()
         {
             if (_cam == null) return;
-            Vector3 target = new Vector3(Player.transform.position.x, Player.transform.position.y, -10);
+            Vector3 target = ClampToMap(new Vector3(Player.transform.position.x, Player.transform.position.y, -10));
             _cam.transform.position = Vector3.Lerp(_cam.transform.position, target, Time.deltaTime * 6f);
         }
 
         private void CenterCameraInstant()
         {
             if (_cam == null) return;
-            _cam.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y, -10);
+            _cam.transform.position = ClampToMap(new Vector3(Player.transform.position.x, Player.transform.position.y, -10));
+        }
+
+        /// <summary>
+        /// 화면이 맵 바깥(아무것도 칠하지 않은 회색 배경)을 비추지 않도록 카메라 위치를 맵 안으로 밀어 넣는다.
+        /// 칸 (x,y)의 중심이 월드 좌표 (x,y)라서 맵이 실제로 차지하는 범위는 -0.5 ~ width-0.5 다.
+        /// 맵이 화면보다 작은 축은 밀어 넣을 곳이 없으므로 맵을 화면 가운데에 둔다.
+        /// </summary>
+        private Vector3 ClampToMap(Vector3 pos)
+        {
+            var loc = CurrentLocation;
+            if (_cam == null || loc == null || !_cam.orthographic) return pos;
+
+            float halfH = _cam.orthographicSize;
+            float halfW = halfH * _cam.aspect;
+
+            const float edge = 0.5f;   // 칸 중심 기준 좌표라 테두리 칸의 절반이 더 있다
+            float minX = -edge, maxX = loc.width - edge;
+            float minY = -edge, maxY = loc.height - edge;
+
+            pos.x = (maxX - minX) <= halfW * 2f
+                ? (minX + maxX) * 0.5f
+                : Mathf.Clamp(pos.x, minX + halfW, maxX - halfW);
+            pos.y = (maxY - minY) <= halfH * 2f
+                ? (minY + maxY) * 0.5f
+                : Mathf.Clamp(pos.y, minY + halfH, maxY - halfH);
+            return pos;
         }
 
         // ---------- 배낭 / 퀵바 ----------

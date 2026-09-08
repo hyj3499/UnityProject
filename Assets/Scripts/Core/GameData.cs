@@ -74,6 +74,23 @@ namespace FarmMVP
 
         /// <summary>바위는 나중에 추가된 기능이라, 기존 세이브에도 한 번은 깔리도록 따로 표시한다.</summary>
         public bool rocksInitialized = false;
+
+        /// <summary>
+        /// 마커로 이미 한 번 만들어 낸 칸들. 나무·바위는 저장되는 지형지물이라 맵에 들어올 때마다
+        /// 다시 만들면 베어 낸 나무가 되살아난다. 그렇다고 맵 전체에 "한 번 했음" 표시 하나만 두면
+        /// 세이브가 생긴 뒤에 새로 칠한 마커가 영영 나오지 않는다 — 그래서 <b>칸 단위</b>로 기억한다.
+        /// </summary>
+        public List<MarkerSpawnData> spawnedMarkers = new List<MarkerSpawnData>();
+
+        /// <summary>spawnedMarkers가 없던 예전 세이브를 한 번 옮겼는지.</summary>
+        public bool markersMigrated = false;
+    }
+
+    /// <summary>마커로 이미 만들어 낸 칸 하나 (LocationData.spawnedMarkers).</summary>
+    [Serializable]
+    public class MarkerSpawnData
+    {
+        public int x, y;
     }
 
     [Serializable]

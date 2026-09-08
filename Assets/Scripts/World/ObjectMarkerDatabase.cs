@@ -112,8 +112,10 @@ namespace FarmMVP
             Register(new ObjectMarkerDef
             {
                 spritePath = "Sprites/Environment/House",
-                // 마커 칸이 집의 왼쪽 아래. 5x5를 차지하고 그림은 그 가운데쯤에 놓인다.
-                size = new Vector2Int(5, 5),
+                // 마커 칸이 집의 왼쪽 아래. 발판은 그림에 맞춘다 — House.png는 72x95px(PPU 16)라
+                // 4.5x5.94칸이고, offset 때문에 마커 칸 기준 x는 -0.75~3.75칸을 덮는다.
+                // 가로를 5칸으로 두면 그림이 25%만 걸치는 x+4 열까지 막힌다.
+                size = new Vector2Int(4, 5),
                 offset = new Vector2(1.5f, 2.0f),
                 role = MarkerRole.House,
             });

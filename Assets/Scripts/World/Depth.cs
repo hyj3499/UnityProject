@@ -25,6 +25,16 @@ namespace FarmMVP
         /// 기본 코드 바닥(-110)보다는 앞이므로 물이 바닥색에 가려지지는 않는다.
         /// </summary>
         public const int Water = -101;
+        /// <summary>
+        /// 꽃·잔디 같은 바닥 장식("Decor_{맵}" 레이어). 칠한 바닥보다 앞, <b>경작지보다 뒤</b>다 —
+        /// 밭을 갈면 불투명한 흙 타일에 덮여 저절로 사라지고, 흙이 없어지면 다시 드러난다.
+        /// 그래서 장식을 숨겼다 되살리는 상태도, 저장할 것도 없다.
+        /// </summary>
+        public const int Decor = -60;
+
+        /// <summary>절벽("Cliff_{맵}" 레이어). 장식 위에 얹히지만 서 있는 것들보다는 뒤.</summary>
+        public const int Cliff = -55;
+
         /// <summary>경작된 흙.</summary>
         public const int Soil = -50;
         /// <summary>젖은 흙 (경작지 위에 덧그린다).</summary>
