@@ -30,7 +30,8 @@ namespace FarmMVP
         public void Boot(GameBootstrap bootstrap)
         {
             _bootstrap = bootstrap;
-            _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            _font = Resources.Load<Font>("Fonts/PF스타더스트 3.0");
+            if (_font == null) _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             if (_font == null) _font = Resources.GetBuiltinResource<Font>("Arial.ttf");
 
             AudioListener.volume = PlayerPrefs.GetFloat(VolumePrefKey, 1f);

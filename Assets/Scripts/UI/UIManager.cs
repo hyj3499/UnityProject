@@ -103,7 +103,8 @@ namespace FarmMVP
 
         private Font BuildFont()
         {
-            var f = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            var f = Resources.Load<Font>("Fonts/PF스타더스트 3.0");
+            if (f == null) f = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             if (f == null) f = Resources.GetBuiltinResource<Font>("Arial.ttf");
             return f;
         }
