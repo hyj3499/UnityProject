@@ -66,16 +66,23 @@ namespace FarmMVP
             string key = source.sprite.name;
             if (_tiles.TryGetValue(key, out var cached)) return cached;
 
-            var sprites = new Sprite[Seasons.SeasonCount];
+            var anim = TileAnimationDatabase.ForSheet(source.sprite.texture != null
+                                                      ? source.sprite.texture.name : null);
+
+            var frames = new SeasonalTile.Frames[Seasons.SeasonCount];
             int found = 0;
+            bool animated = false;
             for (int i = 0; i < Seasons.SeasonCount; i++)
             {
-                sprites[i] = FindSeasonalSprite(source.sprite, i);
-                if (sprites[i] != null) found++;
+                var sprites = FindSeasonalFrames(source.sprite, i, anim);
+                if (sprites == null) continue;
+                frames[i] = new SeasonalTile.Frames { sprites = sprites };
+                found++;
+                if (sprites.Length > 1) animated = true;
             }
 
-            // 자기 계절 하나만 찾았으면 바꿀 이유가 없다 — 평범한 타일 그대로 두는 게 싸다.
-            if (found <= 1)
+            // 자기 계절 하나뿐이고 움직이지도 않으면 바꿀 이유가 없다 — 평범한 타일이 더 싸다.
+            if (found <= 1 && !animated)
             {
                 _tiles[key] = null;
                 return null;
@@ -83,26 +90,61 @@ namespace FarmMVP
 
             var tile = ScriptableObject.CreateInstance<SeasonalTile>();
             tile.name = "Seasonal_" + key;
-            tile.seasonSprites = sprites;
+            tile.seasonFrames = frames;
+            tile.fps = anim != null ? anim.fps : 4f;
             tile.colliderType = source.colliderType;
             _tiles[key] = tile;
             return tile;
         }
 
-        private static Sprite FindSeasonalSprite(Sprite source, int seasonIndex)
+        /// <summary>
+        /// 이 계절에 해당하는 그림들. 애니메이션 시트면 한 벌(여러 장), 아니면 한 장.
+        /// 짝이 되는 시트를 못 찾으면 null.
+        /// </summary>
+        private static Sprite[] FindSeasonalFrames(Sprite source, int seasonIndex, TileAnimationDef anim)
         {
             var texture = source.texture;
             if (texture == null || string.IsNullOrEmpty(texture.name)) return null;
 
-            string wanted = IndexKey(source.name);
             foreach (string path in Candidates(texture.name, SeasonWords[seasonIndex]))
             {
                 var sheet = LoadSheet(path);
                 if (sheet == null) continue;
-                if (sheet.TryGetValue(wanted, out var sprite)) return sprite;
-                return null;   // 시트는 있는데 번호가 없다 = 아직 같은 격자로 자르지 않았다
+                return CollectFrames(sheet, source.name, anim);
             }
             return null;
+        }
+
+        /// <summary>
+        /// 시트에서 이 타일의 프레임들을 모은다. 애니메이션 시트가 아니면 한 장짜리 배열.
+        ///
+        /// 다음 프레임은 스프라이트 이름 번호의 일정한 간격 뒤에 있다 (TileAnimationDatabase 참고).
+        /// </summary>
+        private static Sprite[] CollectFrames(Dictionary<string, Sprite> sheet, string sourceName,
+                                              TileAnimationDef anim)
+        {
+            string wanted = IndexKey(sourceName);
+            if (!sheet.TryGetValue(wanted, out var first)) return null;
+            if (anim == null) return new[] { first };
+
+            if (anim.frameIndexStride <= 0 || !int.TryParse(wanted.TrimStart('_'), out int index))
+                return new[] { first };
+
+            // _93, _186, _279을 칠했어도 _0 계열의 같은 애니메이션으로 보정한다.
+            int baseIndex = index % anim.frameIndexStride;
+
+            var frames = new List<Sprite>(anim.frameCount);
+            for (int k = 0; k < anim.frameCount; k++)
+            {
+                int frameIndex = baseIndex + k * anim.frameIndexStride;
+                if (sheet.TryGetValue("_" + frameIndex, out var s)) frames.Add(s);
+            }
+
+            // Unity Tilemap은 배열 끝에서 처음으로 되돌아가므로, 역방향 프레임을 배열에 넣어
+            // 0 -> 93 -> 186 -> 279 -> 186 -> 93 -> 0 순환을 데이터만으로 만든다.
+            if (anim.pingPong)
+                for (int k = frames.Count - 2; k > 0; k--) frames.Add(frames[k]);
+            return frames.Count > 0 ? frames.ToArray() : new[] { first };
         }
 
         /// <summary>찾아볼 시트 경로들. 폴더로 나눈 경우와 이름에 계절을 붙인 경우를 모두 받는다.</summary>

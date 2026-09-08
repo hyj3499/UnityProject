@@ -26,6 +26,9 @@ namespace FarmMVP
         private float _waterTickTimer;
         private bool _seedHeld;
 
+        /// <summary>지난 프레임에 서 있던 칸. 칸이 바뀔 때만 작물을 스치게 하려고 들고 있다.</summary>
+        private Vector2Int _lastTile = new Vector2Int(int.MinValue, int.MinValue);
+
         public void Init(GameManager game)
         {
             _game = game;
@@ -73,6 +76,13 @@ namespace FarmMVP
         private void LateUpdate()
         {
             if (_sr != null) _sr.sortingOrder = Depth.YSort(transform.position.y);
+
+            // 밟고 선 칸이 바뀌는 순간에만 작물을 스친다 (매 프레임 흔들면 계속 떨린다)
+            var tile = new Vector2Int(Mathf.RoundToInt(transform.position.x),
+                                      Mathf.RoundToInt(transform.position.y));
+            if (tile == _lastTile) return;
+            _lastTile = tile;
+            _game?.CurrentLocation?.BrushCropAt(tile);
         }
 
         private void HandleMovement()

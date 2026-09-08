@@ -20,8 +20,11 @@ namespace FarmMVP
         public const int Ground = -110;
         /// <summary>타일 팔레트로 칠한 바닥.</summary>
         public const int PaintedGround = -100;
-        /// <summary>물 타일. 칠한 바닥 위에 덮인다.</summary>
-        public const int Water = -90;
+        /// <summary>
+        /// 물 타일. 칠한 바닥보다 뒤에 그려져, Location 바닥 스프라이트의 투명한 부분에서만 보인다.
+        /// 기본 코드 바닥(-110)보다는 앞이므로 물이 바닥색에 가려지지는 않는다.
+        /// </summary>
+        public const int Water = -101;
         /// <summary>경작된 흙.</summary>
         public const int Soil = -50;
         /// <summary>젖은 흙 (경작지 위에 덧그린다).</summary>

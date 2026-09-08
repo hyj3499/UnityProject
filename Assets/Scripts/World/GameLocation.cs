@@ -704,6 +704,13 @@ namespace FarmMVP
         public bool HasBreakableRock(int x, int y)
             => rocks.TryGetValue(new Vector2Int(x, y), out var r) && r.IsAlive;
 
+        /// <summary>이 칸에 자란 작물을 스치고 지나간다 — 잎이 잠깐 흔들린다.</summary>
+        public void BrushCropAt(Vector2Int pos)
+        {
+            if (_cropRenderers.TryGetValue(pos, out var sr) && sr.enabled)
+                Wobble.Play(sr, 6f, 0.3f, 2.5f);
+        }
+
         /// <summary>NPC가 서 있는 칸은 지나갈 수 없게 막는다.</summary>
         public void SetNpcBlocked(Vector2Int tile) => SetBlocked(tile.x, tile.y, true);
 
@@ -792,6 +799,11 @@ namespace FarmMVP
 
             bool wasMature = t.IsMature;
             destroyed = t.Chop();
+
+            // 아직 안 쓰러졌으면 휘청인다 (쓰러지면 그림 자체가 사라지므로 흔들 것이 없다)
+            if (!destroyed && _treeRenderers.TryGetValue(pos, out var treeSr))
+                Wobble.Play(treeSr, 8f, 0.35f);
+
             if (destroyed)
             {
                 if (wasMature) dropTableId = t.Def.dropTableId;
@@ -810,6 +822,10 @@ namespace FarmMVP
             var pos = new Vector2Int(x, y);
 
             broken = rocks[pos].Hit();
+
+            if (!broken && _rockRenderers.TryGetValue(pos, out var rockSr))
+                Wobble.Play(rockSr, 5f, 0.22f, 4f);   // 바위는 짧고 뻣뻣하게
+
             if (broken)
             {
                 dropTableId = RockFeature.DropTableId;
