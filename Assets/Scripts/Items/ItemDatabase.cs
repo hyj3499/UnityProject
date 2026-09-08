@@ -68,6 +68,37 @@ namespace FarmMVP
                 sellPrice = 30
             });
 
+            // ---- 설치물 (작업대에서 만든다). 아이템 id와 설치물 id는 같은 값을 쓴다. ----
+            Register(new ItemDef
+            {
+                id = FenceDatabase.WhiteFenceId,
+                displayName = "하얀 울타리",
+                type = ItemType.Resource,
+                maxStack = 99,
+                spriteKey = "Placeable/" + FenceDatabase.WhiteFenceId,
+                sellPrice = 8
+            });
+
+            Register(new ItemDef
+            {
+                id = FenceDatabase.WhiteGateId,
+                displayName = "하얀 울타리 문",
+                type = ItemType.Resource,
+                maxStack = 99,
+                spriteKey = "Placeable/" + FenceDatabase.WhiteGateId,
+                sellPrice = 20
+            });
+
+            Register(new ItemDef
+            {
+                id = RoadDatabase.WoodRoadId,
+                displayName = "나무 길",
+                type = ItemType.Resource,
+                maxStack = 99,
+                spriteKey = "Placeable/" + RoadDatabase.WoodRoadId,
+                sellPrice = 6
+            });
+
             Register(new ItemDef
             {
                 id = "hoe",

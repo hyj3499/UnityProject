@@ -49,6 +49,7 @@ namespace FarmMVP
 
         // 상점
         private ShopUI _shop;
+        private CraftingUI _crafting;
 
         // Banner / toast
         private Text _bannerText;
@@ -74,6 +75,7 @@ namespace FarmMVP
             BuildBook();
             BuildShipping();
             BuildShop();
+            BuildCrafting();
             BuildDialogue();
             BuildBannerAndToast();
             BuildConfirmDialog();
@@ -333,6 +335,30 @@ namespace FarmMVP
             SyncPaused();
         }
 
+        private void BuildCrafting()
+        {
+            var go = new GameObject("CraftingUI");
+            go.transform.SetParent(_canvas.transform, false);
+            _crafting = go.AddComponent<CraftingUI>();
+            _crafting.Boot(this, _game, _canvas.transform as RectTransform);
+        }
+
+        public bool IsCraftingOpen => _crafting != null && _crafting.IsOpen;
+
+        public void OpenCrafting()
+        {
+            if (_crafting == null || IsBookOpen) return;
+            _crafting.Open();
+            SyncPaused();
+        }
+
+        public void CloseCrafting()
+        {
+            if (_crafting == null) return;
+            _crafting.Close();
+            SyncPaused();
+        }
+
         private void BuildDialogue()
         {
             var go = new GameObject("DialogueUI");
@@ -413,7 +439,8 @@ namespace FarmMVP
         {
             if (_game == null) return;
             bool confirmOpen = _confirmPanel != null && _confirmPanel.activeSelf;
-            _game.Paused = confirmOpen || IsBookOpen || IsShippingOpen || IsDialogueOpen || IsShopOpen;
+            _game.Paused = confirmOpen || IsBookOpen || IsShippingOpen || IsDialogueOpen
+                           || IsShopOpen || IsCraftingOpen;
         }
 
         /// <summary>BookUI가 인벤토리 페이지의 칸을 만들 때 호출한다 (드래그&amp;드롭 및 갱신 대상에 등록).</summary>

@@ -39,6 +39,9 @@ namespace FarmMVP
         public const int Soil = -50;
         /// <summary>젖은 흙 (경작지 위에 덧그린다).</summary>
         public const int WetSoil = -49;
+        /// <summary>깔아 놓은 길(설치물). 경작지·장식 위에 덮이고, 서 있는 것들보다는 뒤.</summary>
+        public const int Road = -45;
+
         /// <summary>러그처럼 바닥에 깔려 아무것도 가리지 않는 장식.</summary>
         public const int FloorDecor = -40;
         /// <summary>조준 표시. 바닥 위, 하지만 서 있는 모든 것보다는 뒤.</summary>

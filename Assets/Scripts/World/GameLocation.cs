@@ -9,7 +9,7 @@ namespace FarmMVP
     /// features (HoeDirt / Trees) and their rendering GameObjects. Rebuilt from
     /// LocationData whenever the player enters (design doc §15/§17).
     /// </summary>
-    public class GameLocation : MonoBehaviour
+    public partial class GameLocation : MonoBehaviour
     {
         public LocationId id;
         public int width = 20;
@@ -586,6 +586,8 @@ namespace FarmMVP
                 RenderRock(pos);
             }
 
+            RestorePlaced(loc);
+
             int outside = _outOfBoundsHoeDirts.Count + _outOfBoundsTrees.Count + _outOfBoundsRocks.Count;
             if (outside > 0)
             {
@@ -1010,6 +1012,8 @@ namespace FarmMVP
             loc.hoeDirts.AddRange(_outOfBoundsHoeDirts);
             loc.trees.AddRange(_outOfBoundsTrees);
             loc.rocks.AddRange(_outOfBoundsRocks);
+
+            SavePlacedInto(loc);
 
             loc.droppedItems.Clear();
             foreach (var wi in _featureRoot.GetComponentsInChildren<WorldItem>())

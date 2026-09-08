@@ -164,6 +164,10 @@ namespace FarmMVP
                     loc.shopTile = new Vector2Int(x, y);
                     break;
 
+                case MarkerRole.Workbench:
+                    loc.workbenchTile = new Vector2Int(x, y);
+                    break;
+
                 case MarkerRole.Bed:
                     loc.bedTile = new Vector2Int(x, y);
                     break;

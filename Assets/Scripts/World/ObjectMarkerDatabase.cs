@@ -13,6 +13,7 @@ namespace FarmMVP
         House,          // 아래줄 가운데 칸이 농가로 들어가는 문이 된다
         ShippingBox,    // 배송함으로 등록 (뚜껑 여닫기)
         Shop,           // 상점 수레로 등록
+        Workbench,      // 작업대로 등록 (울타리·길 제작)
         Bed,            // 잠자는 자리로 등록
         Door,           // 실내 출입문
         Tree,           // 저장되는 나무 — 새 게임일 때만 데이터로 들어간다
@@ -125,6 +126,14 @@ namespace FarmMVP
                 spritePath = "Sprites/Environment/ShippingBox",
                 offset = new Vector2(0f, 0.15f),
                 role = MarkerRole.ShippingBox,
+            });
+
+            Register(new ObjectMarkerDef
+            {
+                spritePath = "Sprites/Environment/Workbench",
+                // 그림이 2칸 높이라 위로 반 칸 올려 그린다. 발판은 마커 칸 하나.
+                offset = new Vector2(0f, 0.5f),
+                role = MarkerRole.Workbench,
             });
 
             Register(new ObjectMarkerDef

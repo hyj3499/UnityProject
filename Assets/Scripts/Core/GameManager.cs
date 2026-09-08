@@ -113,6 +113,15 @@ namespace FarmMVP
                 return true;
             }
 
+            if (CurrentLocation.workbenchTile == clicked)
+            {
+                UIManager.Instance?.OpenCrafting();
+                return true;
+            }
+
+            // 울타리 문은 우클릭 한 번에 바로 열리고, 다시 누르면 닫힌다 (확인 창 없음).
+            if (CurrentLocation.ToggleGate(clicked.x, clicked.y)) return true;
+
             if (CurrentLocation.bedTile == clicked)
             {
                 UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
@@ -358,6 +367,8 @@ namespace FarmMVP
             LootTableDatabase.Init();
             NpcDatabase.Init();
             FishingZoneDatabase.Init();   // FishDatabase도 함께 초기화된다
+            PlaceableDatabase.Init();     // 울타리·길 (FenceDatabase + RoadDatabase)
+            RecipeDatabase.Init();        // 작업대 제작표
             AssetLibrary.EnsureLoaded();
 
             // load or new game
@@ -530,6 +541,8 @@ namespace FarmMVP
                 }
                 else if (ui != null && ui.IsShopOpen)
                     ui.CloseShop();
+                else if (ui != null && ui.IsCraftingOpen)
+                    ui.CloseCrafting();
                 else if (ui != null && ui.IsShippingOpen)
                     ui.CloseShippingBox();
                 else if (Input.GetKeyDown(KeyCode.I))
@@ -784,6 +797,69 @@ namespace FarmMVP
                 Inventory.ConsumeOne(Data.farmer.equippedHotbarIndex);
                 SpendTime(5);
             }
+        }
+
+        // ---------- 설치물 (울타리·길) ----------
+        /// <summary>지금 든 것이 설치물이면 그 정의를, 아니면 null.</summary>
+        public PlaceableDef SelectedPlaceable
+        {
+            get
+            {
+                var stack = SelectedStack;
+                if (stack == null || stack.IsEmpty) return null;
+                return PlaceableDatabase.Get(stack.itemId);
+            }
+        }
+
+        /// <summary>지금 든 설치물을 이 칸에 놓을 수 있는지 (조준 표시가 쓴다).</summary>
+        public bool CanPlaceSelectedAt(Vector2Int tile)
+        {
+            if (Paused || CurrentLocation == null || !InReach(tile)) return false;
+            var def = SelectedPlaceable;
+            if (def == null) return false;
+            // 서 있는 칸에 막는 것을 세우면 그 자리에 갇힌다.
+            if (def.blocks && tile == PlayerTile()) return false;
+            return CurrentLocation.CanPlace(tile.x, tile.y, def);
+        }
+
+        /// <summary>우클릭: 지금 든 설치물을 이 칸에 놓는다. 하나 놓을 때마다 한 개가 빠진다.</summary>
+        public void PlaceSelectedAt(Vector2Int tile)
+        {
+            if (!CanPlaceSelectedAt(tile)) return;
+
+            var def = SelectedPlaceable;
+            if (!CurrentLocation.PlaceAt(tile.x, tile.y, def.id)) return;
+
+            Inventory.ConsumeOne(Data.farmer.equippedHotbarIndex);
+            SpendTime(2);
+        }
+
+        /// <summary>
+        /// 작업대 제작. 재료를 인벤토리에서 빼고 결과물을 가방에 넣는다.
+        /// 가방이 꽉 차서 다 못 들어가면 발밑에 떨어뜨린다 (낚시·수확과 같은 규칙).
+        /// </summary>
+        public bool Craft(CraftingRecipe recipe)
+        {
+            // Paused를 보면 안 된다 — 제작 창이 열려 있는 동안은 항상 Paused라서 아무것도 못 만든다.
+            // (상점의 BuyBackpack도 같은 이유로 Paused를 보지 않는다.)
+            if (recipe == null) return false;
+            if (!recipe.CanCraft(Inventory))
+            {
+                UIManager.Instance?.Toast("재료가 부족합니다");
+                return false;
+            }
+
+            foreach (var cost in recipe.costs)
+                Inventory.Remove(cost.itemId, cost.count);
+
+            int left = Inventory.Add(recipe.resultItemId, recipe.resultCount);
+            if (left > 0 && CurrentLocation != null)
+                WorldItem.Create(CurrentLocation.FeatureRoot, this, recipe.resultItemId, left,
+                                 new Vector2(Player.transform.position.x, Player.transform.position.y));
+
+            SpendTime(5);
+            UIManager.Instance?.Toast($"{recipe.DisplayName} x{recipe.resultCount} 을(를) 만들었다");
+            return true;
         }
 
         /// <summary>대상이 없어 행동이 무산되면 소모한 MP를 되돌린다.</summary>

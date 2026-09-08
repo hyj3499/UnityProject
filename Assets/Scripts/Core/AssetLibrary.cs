@@ -27,7 +27,7 @@ namespace FarmMVP
         public static Sprite Floor, Wall, Rug;
         // Environment
         public static Sprite Tree, House, Wood;
-        public static Sprite ShippingBox, ShippingBoxOpen, ShopCart;
+        public static Sprite ShippingBox, ShippingBoxOpen, ShopCart, Workbench;
         public static Sprite[] RockVariants;      // 이끼 없는 바위 5종
         public static Sprite Stone, ApricotSeed;
         public static Sprite[] ApricotStages;     // 씨앗 → 묘목 → 성장 → 다 자람
@@ -69,6 +69,7 @@ namespace FarmMVP
             ShippingBox = Load("Sprites/Environment/ShippingBox");
             ShippingBoxOpen = Load("Sprites/Environment/ShippingBoxOpen");
             ShopCart = Load("Sprites/Environment/ShopCart");
+            Workbench = Load("Sprites/Environment/Workbench");
             Stone = Load("Sprites/Environment/Stone");
             ApricotSeed = Load("Sprites/Environment/ApricotSeed");
 

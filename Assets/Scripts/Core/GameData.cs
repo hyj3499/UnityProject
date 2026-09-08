@@ -70,6 +70,10 @@ namespace FarmMVP
         public List<TreeData> trees = new List<TreeData>();
         public List<RockData> rocks = new List<RockData>();
         public List<WorldItemData> droppedItems = new List<WorldItemData>();
+
+        /// <summary>플레이어가 깔아 둔 울타리·길.</summary>
+        public List<PlacedData> placed = new List<PlacedData>();
+
         public bool initialized = false;
 
         /// <summary>바위는 나중에 추가된 기능이라, 기존 세이브에도 한 번은 깔리도록 따로 표시한다.</summary>
@@ -112,6 +116,15 @@ namespace FarmMVP
         public string treeId = TreeDatabase.DefaultTreeId;
         public int growthStage = 3; // 예전 세이브의 나무는 다 자란 상태로 본다
         public int dayCounter;
+    }
+
+    /// <summary>플레이어가 설치한 울타리·길 한 칸.</summary>
+    [Serializable]
+    public class PlacedData
+    {
+        public int x, y;
+        public string defId;
+        public bool open;   // 문일 때만 의미가 있다
     }
 
     /// <summary>맵에 놓인 바위 하나.</summary>

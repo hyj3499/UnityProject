@@ -34,6 +34,11 @@ namespace FarmMVP
                 case "WateringCan": return AssetLibrary.WateringCan;
                 case "Axe": return AssetLibrary.Axe;
                 default:
+                    // "Placeable/white_fence" — 설치물 아이콘은 그 설치물을 홀로 놓았을 때의 모습을 쓴다.
+                    // 그림이 시트 안에 있어서 파일 하나로 떼어 둘 필요가 없다.
+                    if (spriteKey != null && spriteKey.StartsWith("Placeable/"))
+                        return PlaceableDatabase.Get(spriteKey.Substring(10))?.GetIcon();
+
                     // "Fish/Carp" 처럼 폴더가 붙은 키는 Resources에서 직접 찾는다.
                     // 물고기처럼 종류가 많은 것을 여기 switch에 한 줄씩 늘리지 않기 위한 통로.
                     return spriteKey != null && spriteKey.Contains("/")

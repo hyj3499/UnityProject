@@ -265,13 +265,14 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 우클릭 = 인벤토리 아이템 상호작용 키. 바라보는 타일에 수확 가능한 작물이 있으면
-        /// 수확하고(우선), 아니면 씨앗이 선택되어 있을 때만 심는다.
+        /// 우클릭 = 인벤토리 아이템 상호작용 키. 오브젝트(작업대·울타리 문·NPC...)가 먼저고,
+        /// 그다음 수확, 마지막으로 손에 든 것을 쓴다 — 씨앗은 심고, 울타리·길은 설치한다.
         /// 대지/칼날마법과 동일하게 누르는 동안 범위를 표시하며 이동할 수 있고, 뗄 때 실행한다.
         /// </summary>
         private void HandleSeedInput()
         {
             bool isSeed = IsSeedSelected();
+            bool isPlaceable = _game.SelectedPlaceable != null;
 
             if (Input.GetMouseButtonDown(1))
             {
@@ -282,15 +283,16 @@ namespace FarmMVP
                 if (_game.TryInteractAt(_game.MouseTile())) return;
 
                 // 2) 수확은 조준 없이 즉시 — 바라보는 방향과 상관없이 주변에서 가장 가까운 작물을 캔다.
-                if (_game.TryHarvestNearby(this)) return;
+                //    단, 울타리·길을 들고 있으면 설치가 먼저다 (옆의 작물 때문에 설치가 막히면 답답하다).
+                if (!isPlaceable && _game.TryHarvestNearby(this)) return;
 
-                if (!isSeed) return;
+                if (!isSeed && !isPlaceable) return;
                 _seedHeld = true;
                 ShowSeedIndicator();
             }
             else if (_seedHeld && Input.GetMouseButton(1))
             {
-                if (!isSeed)
+                if (!isSeed && !isPlaceable)
                 {
                     _seedHeld = false;
                     _indicator.Hide();
@@ -305,7 +307,8 @@ namespace FarmMVP
             {
                 _seedHeld = false;
                 _indicator.Hide();
-                _game.PlantSelectedAt(_game.MouseTile());
+                if (isPlaceable) _game.PlaceSelectedAt(_game.MouseTile());
+                else _game.PlantSelectedAt(_game.MouseTile());
             }
         }
 
@@ -335,7 +338,9 @@ namespace FarmMVP
         private void ShowSeedIndicator()
         {
             var tile = _game.MouseTile();
-            bool ok = _game.CanPlantSelectedAt(tile);
+            bool ok = _game.SelectedPlaceable != null
+                ? _game.CanPlaceSelectedAt(tile)
+                : _game.CanPlantSelectedAt(tile);
             _indicator.Show(tile, ok ? SeedPreviewColor : MagicSystem.InvalidPreviewColor);
         }
 
