@@ -67,30 +67,66 @@ namespace FarmMVP
         }
 
         /// <summary>바라보는 쪽에 NPC가 있으면 그 NPC를 돌려준다.</summary>
-        public NpcActor NpcInFront(PlayerController pc)
+        /// <summary>마우스 커서가 가리키는 칸. 카메라가 없으면 플레이어가 선 칸.</summary>
+        public Vector2Int MouseTile()
         {
-            var tile = pc.FacingTile();
-            var here = new Vector2Int(Mathf.RoundToInt(pc.transform.position.x), Mathf.RoundToInt(pc.transform.position.y));
+            if (_cam == null) return PlayerTile();
+            var world = _cam.ScreenToWorldPoint(Input.mousePosition);
+            return new Vector2Int(Mathf.RoundToInt(world.x), Mathf.RoundToInt(world.y));
+        }
+
+        /// <summary>플레이어가 서 있는 칸.</summary>
+        public Vector2Int PlayerTile()
+            => Player == null ? Vector2Int.zero
+             : new Vector2Int(Mathf.RoundToInt(Player.transform.position.x),
+                              Mathf.RoundToInt(Player.transform.position.y));
+
+        /// <summary>손이 닿는 범위인지 — 플레이어가 선 칸과 그 둘레 8칸.</summary>
+        public bool InReach(Vector2Int tile) => Near(PlayerTile(), tile);
+
+        /// <summary>
+        /// 우클릭한 칸에 있는 오브젝트와 상호작용한다. 처리했으면 true.
+        ///
+        /// 규칙 두 가지:
+        ///  - 바라보는 방향은 <b>보지 않는다</b>. 어느 쪽을 보고 있든 그 오브젝트를 누르면 된다.
+        ///  - <b>정확히 그 오브젝트가 있는 칸</b>을 눌러야 한다. 오브젝트와 나 사이의 빈 칸을 눌러도
+        ///    아무 일도 일어나지 않는다 (예전에는 바라보는 칸이 오브젝트 옆이기만 하면 열렸다).
+        /// 손이 닿는 범위(선 칸 + 둘레 8칸)를 벗어난 칸은 무시한다.
+        /// </summary>
+        public bool TryInteractAt(Vector2Int clicked)
+        {
+            if (Paused || CurrentLocation == null) return false;
+            if (!InReach(clicked)) return false;
 
             foreach (var actor in _npcActors)
+                if (actor != null && actor.Tile == clicked) return InteractNpc(actor);
+
+            if (CurrentLocation.shippingBoxTile == clicked)
             {
-                if (actor == null) continue;
-                if (Near(tile, actor.Tile) || Near(here, actor.Tile)) return actor;
+                UIManager.Instance?.OpenShippingBox();
+                return true;
             }
-            return null;
+
+            if (CurrentLocation.shopTile == clicked)
+            {
+                UIManager.Instance?.OpenShop();
+                return true;
+            }
+
+            if (CurrentLocation.bedTile == clicked)
+            {
+                UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
-        /// 우클릭으로 NPC와 상호작용한다. 손에 아이템을 들고 있으면 선물할지 물어보고,
-        /// 빈손이면 바로 대화한다. 처리했으면 true.
+        /// NPC와 상호작용. 손에 아이템을 들고 있으면 선물할지 물어보고, 빈손이면 바로 대화한다.
         /// </summary>
-        public bool TryInteractNpc(PlayerController pc)
+        private bool InteractNpc(NpcActor actor)
         {
-            if (Paused) return false;
-
-            var actor = NpcInFront(pc);
-            if (actor == null) return false;
-
             var def = actor.Def;
             var stack = SelectedStack;
             bool holdingItem = stack != null && !stack.IsEmpty;
@@ -252,35 +288,6 @@ namespace FarmMVP
         }
 
         /// <summary>우클릭으로 배송함을 열어 본다. 바라보는 타일이 배송함이면 UI를 열고 true.</summary>
-        public bool TryOpenShippingBox(PlayerController pc)
-        {
-            if (Paused) return false;
-            if (CurrentLocation == null || !CurrentLocation.shippingBoxTile.HasValue) return false;
-
-            var box = CurrentLocation.shippingBoxTile.Value;
-            var tile = pc.FacingTile();
-            var here = new Vector2Int(Mathf.RoundToInt(pc.transform.position.x), Mathf.RoundToInt(pc.transform.position.y));
-            if (!Near(tile, box) && !Near(here, box)) return false;
-
-            UIManager.Instance?.OpenShippingBox();
-            return true;
-        }
-
-        /// <summary>우클릭으로 상점 수레를 열어 본다. 처리했으면 true.</summary>
-        public bool TryOpenShop(PlayerController pc)
-        {
-            if (Paused) return false;
-            if (CurrentLocation == null || !CurrentLocation.shopTile.HasValue) return false;
-
-            var shop = CurrentLocation.shopTile.Value;
-            var tile = pc.FacingTile();
-            var here = new Vector2Int(Mathf.RoundToInt(pc.transform.position.x), Mathf.RoundToInt(pc.transform.position.y));
-            if (!Near(tile, shop) && !Near(here, shop)) return false;
-
-            UIManager.Instance?.OpenShop();
-            return true;
-        }
-
         /// <summary>아침이 될 때 배송함을 비우고 판매 대금을 소지금에 더한다. 번 금액을 반환.</summary>
         private int SellShippingBox()
         {
@@ -680,6 +687,24 @@ namespace FarmMVP
         }
 
         /// <summary>
+        /// 지금 든 씨앗을 이 칸에 심을 수 있는지 (실제로 심지는 않는다 — 조준 표시가 쓴다).
+        /// </summary>
+        public bool CanPlantSelectedAt(Vector2Int tile)
+        {
+            if (Paused || CurrentLocation == null || !InReach(tile)) return false;
+
+            var stack = SelectedStack;
+            if (stack == null || stack.IsEmpty || stack.Def.type != ItemType.Seed) return false;
+
+            var def = stack.Def;
+            if (!string.IsNullOrEmpty(def.treeId)) return CurrentLocation.CanPlantTree(tile.x, tile.y);
+
+            var crop = CropDatabase.Get(def.cropId);
+            if (crop != null && !Seasons.AllowsNow(crop.seasons)) return false;
+            return CurrentLocation.CanPlant(tile.x, tile.y);
+        }
+
+        /// <summary>
         /// 미니게임을 성공했을 때 FishingController가 부른다. 인벤토리에 넣고, 자리가 없으면
         /// 발밑에 떨어뜨린다 (다른 획득 경로와 같은 규칙).
         /// </summary>
@@ -704,14 +729,14 @@ namespace FarmMVP
         /// 우클릭: 선택된 인벤토리 아이템이 씨앗일 때 바라보는 타일에 심는다.
         /// 나무 씨앗(treeId가 있는 것)은 빈 땅에, 작물 씨앗은 갈아 둔 밭에 심긴다.
         /// </summary>
-        public void PlantSelectedOnFacingTile(PlayerController pc)
+        public void PlantSelectedAt(Vector2Int tile)
         {
-            if (Paused) return;
+            if (Paused || CurrentLocation == null) return;
+            if (!InReach(tile)) return;   // 주변 8칸 밖에는 못 심는다
 
             var stack = SelectedStack;
             if (stack == null || stack.IsEmpty || stack.Def.type != ItemType.Seed) return;
 
-            var tile = pc.FacingTile();
             var def = stack.Def;
 
             if (!string.IsNullOrEmpty(def.cropId))
@@ -746,17 +771,12 @@ namespace FarmMVP
         /// <summary>E/Space: 침대와 상호작용해 잠들기.</summary>
         public void TryContextInteract(PlayerController pc)
         {
-            if (Paused) return;
-            var tile = pc.FacingTile();
-            var here = new Vector2Int(Mathf.RoundToInt(pc.transform.position.x), Mathf.RoundToInt(pc.transform.position.y));
+            if (Paused || CurrentLocation == null) return;
 
-            // bed?
-            if (CurrentLocation.id == LocationId.FarmHouse && CurrentLocation.bedTile.HasValue)
-            {
-                var bed = CurrentLocation.bedTile.Value;
-                if (Near(tile, bed) || Near(here, bed))
-                    UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
-            }
+            // 침대 옆에 서 있을 때만. 예전에는 "바라보는 칸이 침대 옆이기만 해도" 열려서,
+            // 두 칸 떨어져 침대 쪽을 보기만 해도 잠들 수 있었다.
+            if (CurrentLocation.bedTile.HasValue && InReach(CurrentLocation.bedTile.Value))
+                UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
         }
 
         /// <summary>

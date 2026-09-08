@@ -820,12 +820,18 @@ namespace FarmMVP
         }
 
         /// <summary>빈 땅에 나무 씨앗을 심는다.</summary>
+        /// <summary>빈 땅에 나무 씨앗을 심을 수 있는지 (조준 표시가 쓴다).</summary>
+        public bool CanPlantTree(int x, int y)
+        {
+            var pos = new Vector2Int(x, y);
+            if (!InBounds(x, y) || IsBlocked(x, y)) return false;
+            return !trees.ContainsKey(pos) && !rocks.ContainsKey(pos) && !hoeDirts.ContainsKey(pos);
+        }
+
         public bool PlantTree(int x, int y, string treeId)
         {
             var pos = new Vector2Int(x, y);
-            if (!InBounds(x, y)) return false;
-            if (IsBlocked(x, y)) return false;
-            if (trees.ContainsKey(pos) || rocks.ContainsKey(pos) || hoeDirts.ContainsKey(pos)) return false;
+            if (!CanPlantTree(x, y)) return false;
 
             trees[pos] = new TreeFeature(x, y, treeId, 0);
             SetBlocked(x, y, true);

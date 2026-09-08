@@ -267,12 +267,11 @@ namespace FarmMVP
             {
                 if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 상호작용으로 새는 것 방지
 
-                // NPC / 배송함 / 상점은 조준 없이 그 자리에서 바로 상호작용한다.
-                if (_game.TryInteractNpc(this)) return;
-                if (_game.TryOpenShippingBox(this)) return;
-                if (_game.TryOpenShop(this)) return;
+                // 1) 오브젝트(NPC·배송함·상점·침대)는 "그 오브젝트가 있는 칸"을 눌러야 반응한다.
+                //    바라보는 방향은 상관없고, 오브젝트와 나 사이의 빈 칸을 눌러도 아무 일도 없다.
+                if (_game.TryInteractAt(_game.MouseTile())) return;
 
-                // 수확도 조준 없이 즉시 — 바라보는 방향과 상관없이 주변에서 가장 가까운 작물을 캔다.
+                // 2) 수확은 조준 없이 즉시 — 바라보는 방향과 상관없이 주변에서 가장 가까운 작물을 캔다.
                 if (_game.TryHarvestNearby(this)) return;
 
                 if (!isSeed) return;
@@ -296,7 +295,7 @@ namespace FarmMVP
             {
                 _seedHeld = false;
                 _indicator.Hide();
-                _game.PlantSelectedOnFacingTile(this);
+                _game.PlantSelectedAt(_game.MouseTile());
             }
         }
 
@@ -319,11 +318,14 @@ namespace FarmMVP
                                      : MagicSystem.InvalidPreviewColor);
         }
 
-        /// <summary>씨앗 조준도 같은 방식으로 — 경작된 빈 땅이 아니면 어둡게 표시한다.</summary>
+        /// <summary>
+        /// 씨앗 조준은 <b>마우스가 가리키는 칸</b>을 따라간다 (바라보는 방향과 무관).
+        /// 주변 8칸 밖이거나 심을 수 없는 자리면 어둡게 표시한다.
+        /// </summary>
         private void ShowSeedIndicator()
         {
-            var tile = FacingTile();
-            bool ok = _game.CurrentLocation != null && _game.CurrentLocation.CanPlant(tile.x, tile.y);
+            var tile = _game.MouseTile();
+            bool ok = _game.CanPlantSelectedAt(tile);
             _indicator.Show(tile, ok ? SeedPreviewColor : MagicSystem.InvalidPreviewColor);
         }
 
