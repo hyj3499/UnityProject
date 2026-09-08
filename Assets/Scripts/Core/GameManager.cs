@@ -1003,6 +1003,7 @@ namespace FarmMVP
                 hd.cropId = null;
                 hd.growthStage = 0;
                 hd.dayCounter = 0;
+                hd.variant = 0;
                 withered++;
             }
             return withered;

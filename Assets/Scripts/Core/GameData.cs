@@ -106,6 +106,9 @@ namespace FarmMVP
         public string cropId;
         public int growthStage;
         public int dayCounter;
+
+        /// <summary>색이 여러 가지인 작물(파프리카)이 몇 번째 색으로 자랐는지. 그 외에는 항상 0.</summary>
+        public int variant;
     }
 
     [Serializable]

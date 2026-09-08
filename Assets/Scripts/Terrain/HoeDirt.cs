@@ -46,7 +46,7 @@ namespace FarmMVP
         public string Harvest()
         {
             if (crop == null || !crop.IsHarvestable) return null;
-            string dropTableId = crop.Def.dropTableId;
+            string dropTableId = crop.DropTableId;
             if (!crop.HarvestAndRegrow())
                 crop = null; // 단일 수확 작물
             return dropTableId;

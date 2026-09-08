@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace FarmMVP
 {
@@ -15,27 +16,6 @@ namespace FarmMVP
         {
             if (_init) return;
             _init = true;
-
-            Register(new ItemDef
-            {
-                id = "strawberry_seed",
-                displayName = "딸기 씨앗",
-                type = ItemType.Seed,
-                maxStack = 99,
-                spriteKey = "StrawberrySeed",
-                cropId = "strawberry",
-                sellPrice = 20
-            });
-
-            Register(new ItemDef
-            {
-                id = "strawberry",
-                displayName = "딸기",
-                type = ItemType.Crop,
-                maxStack = 99,
-                spriteKey = "StrawberryFruit",
-                sellPrice = 80
-            });
 
             Register(new ItemDef
             {
@@ -140,7 +120,42 @@ namespace FarmMVP
             // 물고기를 추가할 때 두 군데를 고치지 않도록.
             foreach (var fish in FishDatabase.All)
                 Register(fish.ToItemDef());
+
+            // 작물도 마찬가지 — CropDatabase에 한 줄 추가하면 씨앗과 수확물 아이템이 따라 생긴다.
+            foreach (var crop in CropDatabase.All)
+            {
+                Register(SeedItem(crop));
+                foreach (var harvest in crop.Harvests) Register(HarvestItem(crop, harvest));
+            }
         }
+
+        /// <summary>씨앗 아이템. 아이콘은 All Crops.png 안의 씨앗 봉지("{시트}Seed")를 쓴다.</summary>
+        private static ItemDef SeedItem(CropDef crop) => new ItemDef
+        {
+            id = crop.SeedItemId,
+            displayName = crop.name + " 씨앗",
+            type = ItemType.Seed,
+            maxStack = 99,
+            spriteKey = "Crops/" + crop.SeedSpriteName,
+            cropId = crop.cropId,
+            sellPrice = Mathf.Max(1, crop.seedPrice / 3)   // 되팔면 산 값의 1/3
+        };
+
+        /// <summary>
+        /// 수확물 아이템. 인벤토리 아이콘은 작물 시트의 마지막 번호를 그대로 쓰고,
+        /// 바닥에 떨어졌을 때만 Sprites/Crops/Drops/ 의 그림으로 바뀐다 (있을 때).
+        /// </summary>
+        private static ItemDef HarvestItem(CropDef crop, CropVariant harvest) => new ItemDef
+        {
+            id = harvest.id,
+            displayName = harvest.name,
+            type = ItemType.Crop,
+            maxStack = 99,
+            spriteKey = $"Crops/{crop.sheet}_{harvest.fruitIndex}",
+            //dropSpriteKey = "Crops/Drops/" + (harvest.dropSpriteName ?? crop.DefaultDropSpriteName),
+            dropSpriteKey = $"Crops/{crop.sheet}_Drop",
+            sellPrice = crop.sellPrice
+        };
 
         /// <summary>
         /// 설치물 아이템 하나. 아이템 id와 설치물 id를 같은 값으로 쓰기 때문에 이 한 줄이면 된다

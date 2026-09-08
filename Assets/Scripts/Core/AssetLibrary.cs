@@ -33,9 +33,6 @@ namespace FarmMVP
         public static Sprite[] ApricotStages;     // 씨앗 → 묘목 → 성장 → 다 자람
         // Interior furniture
         public static Sprite Bed, Door, Fireplace, Plant;
-        // Crops
-        public static Sprite[] StrawberryStages;
-        public static Sprite StrawberrySeed, StrawberryFruit;
         // Tools
         public static Sprite Hoe, WateringCan, Axe;
         // UI (Farm RPG Tiny Asset Pack 에서 잘라낸 조각들)
@@ -77,9 +74,6 @@ namespace FarmMVP
             Door = Load("Sprites/Interior/Door");
             Fireplace = Load("Sprites/Interior/Fireplace");
             Plant = Load("Sprites/Interior/Plant");
-
-            StrawberrySeed = Load("Sprites/Crops/StrawberrySeed");
-            StrawberryFruit = Load("Sprites/Crops/StrawberryFruit");
 
             Hoe = Load("Sprites/Tools/Hoe");
             WateringCan = Load("Sprites/Tools/WateringCan");
@@ -130,7 +124,6 @@ namespace FarmMVP
             Tree = GetSeasonalRaw("Sprites/Environment/Tree", season);
             RockVariants = LoadRangeSeasonal("Sprites/Environment/Rock_", 5, season);
             ApricotStages = LoadRangeSeasonal("Sprites/Environment/Apricot_", 4, season);
-            StrawberryStages = LoadRangeSeasonal("Sprites/Crops/Strawberry_", 6, season);
         }
 
         /// <summary>
@@ -141,6 +134,16 @@ namespace FarmMVP
         {
             EnsureLoaded();
             return Load(resourcePath);
+        }
+
+        /// <summary>
+        /// GetSprite와 같지만 <b>없어도 경고하지 않는다</b>. 나중에 채워 넣을 그림
+        /// (예: Sprites/Crops/Drops/Carrot — 아직 안 만든 드랍 그림)을 찾을 때 쓴다.
+        /// </summary>
+        public static Sprite GetSpriteOptional(string resourcePath)
+        {
+            EnsureLoaded();
+            return LoadQuiet(resourcePath);
         }
 
         /// <summary>

@@ -28,7 +28,10 @@ namespace FarmMVP
 
             Register("tree_apricot", new LootTable().Add("wood", 3, 3).Add("apricot_seed", 1, 1, 0.3f));
             Register("rock_basic", new LootTable().Add("stone", 1, 3));
-            Register("crop_strawberry", new LootTable().Add("strawberry", 1, 1));
+            // 작물은 CropDatabase 하나만 보면 되도록 여기서 자동 등록한다 (색이 여러 개면 색마다).
+            foreach (var crop in CropDatabase.All)
+                foreach (var harvest in crop.Harvests)
+                    Register("crop_" + harvest.id, new LootTable().Add(harvest.id, 1, 1));
 
             // 설치물은 철거하면 쓴 것을 그대로 돌려준다 — 종류를 추가해도 여기는 손대지 않는다.
             foreach (var p in PlaceableDatabase.All)

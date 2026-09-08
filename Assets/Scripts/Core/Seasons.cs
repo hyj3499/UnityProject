@@ -78,6 +78,20 @@ namespace FarmMVP
             }
         }
 
+        /// <summary>"봄", "봄·여름", "사계절" 처럼 여러 계절을 한 줄로 (작물이 자라는 계절 표시).</summary>
+        public static string Label(SeasonFlags mask)
+        {
+            if (mask == SeasonFlags.None || mask == SeasonFlags.All) return "사계절";
+
+            var parts = new System.Collections.Generic.List<string>(SeasonCount);
+            for (int i = 0; i < SeasonCount; i++)
+            {
+                var s = (Season)i;
+                if (Allows(mask, s)) parts.Add(Name(s));
+            }
+            return string.Join("·", parts);
+        }
+
         /// <summary>스프라이트/타일맵 이름에 붙는 접두사 ("Winter_Location_Farm1").</summary>
         public static string Key(Season s) => s.ToString();   // Spring / Summer / Fall / Winter
 

@@ -557,7 +557,7 @@ namespace FarmMVP
                 var dirt = new HoeDirt(hd.x, hd.y) { watered = hd.watered };
                 if (hd.hasCrop)
                 {
-                    dirt.crop = new Crop(hd.cropId) { growthStage = hd.growthStage, dayCounter = hd.dayCounter };
+                    dirt.crop = new Crop(hd.cropId, hd.variant) { growthStage = hd.growthStage, dayCounter = hd.dayCounter };
                 }
                 hoeDirts[pos] = dirt;
             }
@@ -636,12 +636,14 @@ namespace FarmMVP
                 {
                     var go = new GameObject($"crop_{pos.x}_{pos.y}");
                     go.transform.SetParent(_featureRoot, false);
-                    go.transform.position = new Vector3(pos.x, pos.y + 0.25f, 0);
                     cropSr = go.AddComponent<SpriteRenderer>();
                     cropSr.sortingOrder = Depth.YSort(pos.y, Depth.CropBias);
                     _cropRenderers[pos] = cropSr;
                 }
-                cropSr.sprite = dirt.crop.GetSprite();
+                var cropSprite = dirt.crop.GetSprite();
+                cropSr.sprite = cropSprite;
+                // 단계마다 그림 높이가 달라질 수 있으므로(16px / 32px) 그릴 때마다 다시 맞춘다.
+                cropSr.transform.position = new Vector3(pos.x, pos.y + 0.25f + CropSpriteLift(cropSprite), 0);
                 cropSr.enabled = true;
             }
             else if (_cropRenderers.TryGetValue(pos, out var cropSr2))
@@ -649,6 +651,13 @@ namespace FarmMVP
                 cropSr2.enabled = false;
             }
         }
+
+        /// <summary>
+        /// 한 칸(16px)보다 높은 작물 그림을 얼마나 위로 올릴지. 스프라이트는 가운데를 기준으로
+        /// 그려지므로, 그냥 두면 키 큰 단계일수록 밑동이 땅 밑으로 내려간다.
+        /// </summary>
+        private static float CropSpriteLift(Sprite sprite)
+            => sprite == null ? 0f : (sprite.rect.height - 16f) / 32f;
 
         /// <summary>
         /// 이웃 8칸이 같은 종류인지(경작지끼리 / 젖은 흙끼리) 검사해 오토타일 비트마스크를 만든다.
@@ -988,7 +997,8 @@ namespace FarmMVP
                     hasCrop = d.HasCrop,
                     cropId = d.HasCrop ? d.crop.cropId : null,
                     growthStage = d.HasCrop ? d.crop.growthStage : 0,
-                    dayCounter = d.HasCrop ? d.crop.dayCounter : 0
+                    dayCounter = d.HasCrop ? d.crop.dayCounter : 0,
+                    variant = d.HasCrop ? d.crop.variant : 0
                 });
             }
             loc.trees.Clear();

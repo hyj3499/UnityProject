@@ -20,13 +20,17 @@ namespace FarmMVP
         public string treeId;      // 나무 씨앗일 때 어떤 나무가 자라는지
         public int sellPrice;      // 배송함에 넣었을 때 개당 판매 가격 (0이면 팔 수 없음)
 
+        /// <summary>
+        /// 바닥에 떨어져 있을 때만 쓰는 그림. 인벤토리 아이콘(spriteKey)과 다르게 보이고 싶을 때
+        /// 채운다. 비었거나 그 그림이 아직 없으면 인벤토리 아이콘을 그대로 쓴다.
+        /// </summary>
+        public string dropSpriteKey;
+
         public Sprite GetSprite()
         {
             AssetLibrary.EnsureLoaded();
             switch (spriteKey)
             {
-                case "StrawberrySeed": return AssetLibrary.StrawberrySeed;
-                case "StrawberryFruit": return AssetLibrary.StrawberryFruit;
                 case "Wood": return AssetLibrary.Wood;
                 case "Stone": return AssetLibrary.Stone;
                 case "ApricotSeed": return AssetLibrary.ApricotSeed;
@@ -45,6 +49,22 @@ namespace FarmMVP
                         ? AssetLibrary.GetSprite("Sprites/" + spriteKey)
                         : null;
             }
+        }
+
+        /// <summary>
+        /// 바닥에 떨어졌을 때 보일 그림. 따로 정해 둔 것이 없거나 그 그림이 아직 프로젝트에
+        /// 없으면 인벤토리 아이콘으로 돌아간다 — 그래서 드랍 그림은 준비된 것부터 하나씩
+        /// 넣어도 아무것도 깨지지 않는다.
+        /// </summary>
+        public Sprite GetDropSprite()
+        {
+            if (!string.IsNullOrEmpty(dropSpriteKey))
+            {
+                AssetLibrary.EnsureLoaded();
+                var s = AssetLibrary.GetSpriteOptional("Sprites/" + dropSpriteKey);
+                if (s != null) return s;
+            }
+            return GetSprite();
         }
     }
 

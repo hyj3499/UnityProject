@@ -57,7 +57,7 @@ namespace FarmMVP
             _grace = SpawnGraceTime;
 
             var sr = gameObject.AddComponent<SpriteRenderer>();
-            sr.sprite = ItemDatabase.Get(itemId)?.GetSprite();
+            sr.sprite = ItemDatabase.Get(itemId)?.GetDropSprite();
             _sr = sr;
             sr.sortingOrder = Depth.YSort(transform.position.y, Depth.DroppedItemBias);
         }
