@@ -4,24 +4,38 @@ using UnityEngine;
 namespace FarmMVP
 {
     /// <summary>
-    /// 울타리 카탈로그. 울타리를 한 종류 더 넣으려면 <b>여기에 Register 한 덩어리</b>만 더하면 되고,
+    /// 울타리 카탈로그. 울타리를 한 종류 더 넣으려면 <b>Register 한 덩어리</b>만 더하면 되고,
     /// 제작·설치·오토타일·철거 로직은 그대로 재사용된다 (TreeDatabase와 같은 방식).
     ///
-    /// 시트 칸 번호는 왼쪽 위가 (0,0)이고 16px 단위다. WhiteFence.png(5x5칸)의 배치:
+    /// 코드에 좌표를 적지 않는다 — 그림은 <b>스프라이트 이름</b>으로 찾는다.
+    /// 시트(예: Sprites/Fence/WhiteFence.png)를 스프라이트 에디터에서 16x16으로 자르고,
+    /// 조각마다 아래 이름을 지어 두면 끝이다 (이름은 북→동→남→서 순서로 이어진 방향만 적는다):
     ///
-    ///        col0        col1        col2        col3        col4
-    ///   row0 ┌ 동+남     문(열림)    ┐ 서+남      -           -
-    ///   row1 │ 세로       -          │ 세로       (가로 표본)  (가로 표본)
-    ///   row2 └ 북+동     ─ 동+서     ┘ 북+서      (끝 표본)    (끝 표본)
-    ///   row3 홀로        ╴ 동만      ╶ 서만       -           -
-    ///   row4 ┬ 동서남    ┴ 북동서    ├ 북동남     ┤ 북서남     -
+    ///   WhiteFence_None  홀로        WhiteFence_E   ╴동만      WhiteFence_W   ╶서만
+    ///   WhiteFence_NS  │ 세로        WhiteFence_EW  ─ 가로
+    ///   WhiteFence_NE  └ 북+동       WhiteFence_NW  ┘ 북+서
+    ///   WhiteFence_ES  ┌ 동+남       WhiteFence_SW  ┐ 남+서
+    ///   WhiteFence_NES ├             WhiteFence_NEW ┴
+    ///   WhiteFence_NSW ┤             WhiteFence_ESW ┬
+    ///   WhiteFence_NESW ✚ 십자       WhiteFence_GateOpen  열린 문
     ///
-    /// 십자(북동남서)와 세로 끝맺음 칸은 이 시트에 없어서 가장 가까운 칸으로 대신한다.
+    /// 없는 이름은 알아서 물러선다 — 딱 맞는 것이 없으면 Junction, 곧게 이어져 있으면 EW/NS,
+    /// 그다음엔 이어진 방향을 하나씩 빼 가며 가장 비슷한 그림을 쓴다. 그래서 16장을 다 그릴 필요가 없다
+    /// (돌담·철제 울타리는 여섯 장뿐이지만 모든 조합이 그림으로 이어진다).
+    ///
+    /// 이름 뒤에 계절을 더 붙이면 그 계절에만 쓰인다: WoodFence_EW_Winter (눈 덮인 나무 울타리).
+    /// 다른 울타리(Fence Moon...)도 접두사만 바꿔 같은 꼬리표를 쓰면 된다.
     /// </summary>
     public static class FenceDatabase
     {
         public const string WhiteFenceId = "white_fence";
         public const string WhiteGateId = "white_fence_gate";
+        public const string WoodFenceId = "wood_fence";
+        public const string StoneFenceId = "stone_fence";
+        public const string IronFenceId = "iron_fence";
+        public const string WoodGateId = "wood_fence_gate";
+        public const string StoneGateId = "stone_fence_gate";
+        public const string IronGateId = "iron_fence_gate";
 
         private static readonly List<PlaceableDef> _all = new List<PlaceableDef>();
         private static bool _init;
@@ -45,7 +59,6 @@ namespace FarmMVP
                 dropTableId = "placed_" + WhiteFenceId,
                 // 울타리는 칸보다 키가 커 보이도록 살짝 올려 그린다.
                 offset = new Vector2(0f, 0.15f),
-                tiles = WhiteFenceTiles(),
             });
 
             Register(new PlaceableDef
@@ -56,34 +69,54 @@ namespace FarmMVP
                 sheetPath = sheet,
                 blocks = true,
                 isGate = true,
-                openCell = new AutoTileCell(1, 0),   // 활짝 열린 문
-                iconCell = new AutoTileCell(1, 0),   // 닫힌 문은 울타리와 똑같이 생겨서 아이콘은 열린 모습
+                // 닫혀 있는 동안에는 울타리와 똑같이 이어진다 (같은 꼬리표를 그대로 쓴다).
+                // 그래서 아이콘만 열린 문으로 두어야 인벤토리에서 구분된다.
+                iconSuffix = Connect.GateOpenSuffix,
                 dropTableId = "placed_" + WhiteGateId,
                 offset = new Vector2(0f, 0.15f),
-                // 닫혀 있는 동안에는 울타리와 똑같이 이어진다 — 줄 한복판에 두어도 어긋나지 않는다.
-                tiles = WhiteFenceTiles(),
+            });
+
+            // 아래 셋은 시트만 다르고 나머지는 같다. 새 울타리도 이 다섯 줄이면 끝난다.
+            RegisterSimple(WoodFenceId, "나무 울타리", "Sprites/Fence/WoodFence");
+            RegisterSimple(StoneFenceId, "돌담", "Sprites/Fence/StoneFence");
+            RegisterSimple(IronFenceId, "철제 울타리", "Sprites/Fence/IronFence");
+
+            // 문. 두 칸짜리인지 한 칸짜리인지는 시트에 GateClosedL 조각이 있는지로 저절로 갈린다.
+            RegisterGate(WoodGateId, "나무 울타리 문", "Sprites/Fence/WoodFence");
+            RegisterGate(StoneGateId, "돌담 문", "Sprites/Fence/StoneFence");
+            RegisterGate(IronGateId, "철제 울타리 문", "Sprites/Fence/IronFence");
+        }
+
+        /// <summary>울타리 문 하나. 시트의 문 조각 이름만 있으면 나머지는 다 따라온다.</summary>
+        private static void RegisterGate(string id, string displayName, string sheetPath)
+        {
+            Register(new PlaceableDef
+            {
+                id = id,
+                displayName = displayName,
+                kind = PlaceableKind.Fence,
+                sheetPath = sheetPath,
+                blocks = true,
+                isGate = true,
+                iconSuffix = Connect.GateClosedSuffix,
+                dropTableId = "placed_" + id,
+                offset = new Vector2(0f, 0.15f),
             });
         }
 
-        /// <summary>WhiteFence.png의 연결 표. 문도 닫혀 있을 때는 이 표를 그대로 쓴다.</summary>
-        private static AutoTileMap WhiteFenceTiles()
+        /// <summary>문이 없는 평범한 울타리 하나. 시트 이름이 곧 조각 이름의 앞부분이 된다.</summary>
+        private static void RegisterSimple(string id, string displayName, string sheetPath)
         {
-            const int N = Connect.N, E = Connect.E, S = Connect.S, W = Connect.W;
-            return new AutoTileMap()
-                .Set(0, 0, 3)                    // 홀로
-                .Set(E, 1, 3)                    // 동쪽으로만
-                .Set(W, 2, 3)                    // 서쪽으로만
-                .Set(E | W, 1, 2)                // ─ 가로
-                .SetMany(new[] { N, S, N | S }, 0, 1)   // │ 세로 (세로 끝맺음 칸이 없어 세로 레일로 대신)
-                .Set(E | S, 0, 0)                // ┌
-                .Set(S | W, 2, 0)                // ┐
-                .Set(N | E, 0, 2)                // └
-                .Set(N | W, 2, 2)                // ┘
-                .Set(E | S | W, 0, 4)            // ┬
-                .Set(N | E | W, 1, 4)            // ┴
-                .Set(N | E | S, 2, 4)            // ├
-                .Set(N | S | W, 3, 4)            // ┤
-                .Set(N | E | S | W, 0, 4);       // ✚ 전용 칸이 없어 ┬로 대신
+            Register(new PlaceableDef
+            {
+                id = id,
+                displayName = displayName,
+                kind = PlaceableKind.Fence,
+                sheetPath = sheetPath,
+                blocks = true,
+                dropTableId = "placed_" + id,
+                offset = new Vector2(0f, 0.15f),
+            });
         }
 
         private static void Register(PlaceableDef def)

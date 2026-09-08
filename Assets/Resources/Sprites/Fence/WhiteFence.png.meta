@@ -93,7 +93,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WhiteFence_0
+      name: WhiteFence_ES
       rect:
         serializedVersion: 2
         x: 0
@@ -101,7 +101,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -114,7 +114,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_1
+      name: WhiteFence_0
       rect:
         serializedVersion: 2
         x: 16
@@ -122,7 +122,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -135,7 +135,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_2
+      name: WhiteFence_SW
       rect:
         serializedVersion: 2
         x: 32
@@ -143,7 +143,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -156,7 +156,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_3
+      name: WhiteFence_NS_L
       rect:
         serializedVersion: 2
         x: 0
@@ -164,7 +164,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -177,7 +177,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_4
+      name: WhiteFence_NS_R
       rect:
         serializedVersion: 2
         x: 32
@@ -185,7 +185,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -198,7 +198,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_5
+      name: WhiteFence_GateClosedL
       rect:
         serializedVersion: 2
         x: 48
@@ -206,7 +206,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -219,7 +219,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_6
+      name: WhiteFence_GateClosedR
       rect:
         serializedVersion: 2
         x: 64
@@ -227,7 +227,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -240,7 +240,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_7
+      name: WhiteFence_NE
       rect:
         serializedVersion: 2
         x: 0
@@ -248,7 +248,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -261,7 +261,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_8
+      name: WhiteFence_EW
       rect:
         serializedVersion: 2
         x: 16
@@ -269,7 +269,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -282,7 +282,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_9
+      name: WhiteFence_NW
       rect:
         serializedVersion: 2
         x: 32
@@ -290,7 +290,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -303,7 +303,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_10
+      name: WhiteFence_GateOpenL
       rect:
         serializedVersion: 2
         x: 48
@@ -311,7 +311,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -324,7 +324,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_11
+      name: WhiteFence_GateOpenR
       rect:
         serializedVersion: 2
         x: 64
@@ -332,7 +332,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -345,7 +345,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_12
+      name: WhiteFence_None
       rect:
         serializedVersion: 2
         x: 0
@@ -353,7 +353,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -366,7 +366,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_13
+      name: WhiteFence_E
       rect:
         serializedVersion: 2
         x: 16
@@ -374,7 +374,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -387,7 +387,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_14
+      name: WhiteFence_W
       rect:
         serializedVersion: 2
         x: 32
@@ -395,7 +395,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -408,7 +408,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_15
+      name: WhiteFence_ESW
       rect:
         serializedVersion: 2
         x: 0
@@ -416,7 +416,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -429,7 +429,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_16
+      name: WhiteFence_NEW
       rect:
         serializedVersion: 2
         x: 16
@@ -437,7 +437,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -450,7 +450,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_17
+      name: WhiteFence_NES
       rect:
         serializedVersion: 2
         x: 32
@@ -458,7 +458,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -471,7 +471,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteFence_18
+      name: WhiteFence_NSW
       rect:
         serializedVersion: 2
         x: 48
@@ -479,7 +479,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -502,25 +502,25 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      WhiteFence_0: -669795882
-      WhiteFence_1: -696822180
-      WhiteFence_10: 606014390
-      WhiteFence_11: 731576536
-      WhiteFence_12: 404423960
-      WhiteFence_13: 896061575
-      WhiteFence_14: -1964000017
-      WhiteFence_15: -1817596531
-      WhiteFence_16: -352166208
-      WhiteFence_17: -567511078
-      WhiteFence_18: -782683164
-      WhiteFence_2: -1317175720
-      WhiteFence_3: -683727466
-      WhiteFence_4: 201223291
-      WhiteFence_5: 595167325
-      WhiteFence_6: -1409093053
-      WhiteFence_7: 916799613
-      WhiteFence_8: 1124891130
-      WhiteFence_9: 1711952535
+      WhiteFence_0: -696822180
+      WhiteFence_E: 896061575
+      WhiteFence_ES: -669795882
+      WhiteFence_ESW: -1817596531
+      WhiteFence_EW: 1124891130
+      WhiteFence_GateClosedL: 595167325
+      WhiteFence_GateClosedR: -1409093053
+      WhiteFence_GateOpenL: 606014390
+      WhiteFence_GateOpenR: 731576536
+      WhiteFence_NE: 916799613
+      WhiteFence_NES: -567511078
+      WhiteFence_NEW: -352166208
+      WhiteFence_NSW: -782683164
+      WhiteFence_NS_L: -683727466
+      WhiteFence_NS_R: 201223291
+      WhiteFence_NW: 1711952535
+      WhiteFence_None: 404423960
+      WhiteFence_SW: -1317175720
+      WhiteFence_W: -1964000017
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

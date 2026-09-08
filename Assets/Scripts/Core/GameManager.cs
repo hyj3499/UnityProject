@@ -120,7 +120,12 @@ namespace FarmMVP
             }
 
             // 울타리 문은 우클릭 한 번에 바로 열리고, 다시 누르면 닫힌다 (확인 창 없음).
-            if (CurrentLocation.ToggleGate(clicked.x, clicked.y)) return true;
+            if (CurrentLocation.HasGate(clicked.x, clicked.y))
+            {
+                if (!CurrentLocation.ToggleGate(clicked.x, clicked.y))
+                    UIManager.Instance?.Toast("문은 두 개를 나란히 놓아야 열립니다");
+                return true;
+            }
 
             if (CurrentLocation.bedTile == clicked)
             {

@@ -89,6 +89,13 @@ namespace FarmMVP
                 sellPrice = 20
             });
 
+            RegisterPlaceable(FenceDatabase.WoodFenceId, "나무 울타리", 8);
+            RegisterPlaceable(FenceDatabase.StoneFenceId, "돌담", 10);
+            RegisterPlaceable(FenceDatabase.IronFenceId, "철제 울타리", 16);
+            RegisterPlaceable(FenceDatabase.WoodGateId, "나무 울타리 문", 20);
+            RegisterPlaceable(FenceDatabase.StoneGateId, "돌담 문", 24);
+            RegisterPlaceable(FenceDatabase.IronGateId, "철제 울타리 문", 32);
+
             Register(new ItemDef
             {
                 id = RoadDatabase.WoodRoadId,
@@ -134,6 +141,21 @@ namespace FarmMVP
             foreach (var fish in FishDatabase.All)
                 Register(fish.ToItemDef());
         }
+
+        /// <summary>
+        /// 설치물 아이템 하나. 아이템 id와 설치물 id를 같은 값으로 쓰기 때문에 이 한 줄이면 된다
+        /// (그림은 그 설치물이 홀로 놓였을 때의 모습을 그대로 쓴다).
+        /// </summary>
+        private static void RegisterPlaceable(string id, string displayName, int sellPrice)
+            => Register(new ItemDef
+            {
+                id = id,
+                displayName = displayName,
+                type = ItemType.Resource,
+                maxStack = 99,
+                spriteKey = "Placeable/" + id,
+                sellPrice = sellPrice
+            });
 
         private static void Register(ItemDef def) => _defs[def.id] = def;
 

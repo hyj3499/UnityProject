@@ -78,6 +78,13 @@ namespace FarmMVP
 
             Register(FenceDatabase.WhiteFenceId, 1, new Ingredient("wood", 2));
             Register(FenceDatabase.WhiteGateId, 1, new Ingredient("wood", 4), new Ingredient("stone", 1));
+            Register(FenceDatabase.WoodFenceId, 1, new Ingredient("wood", 2));
+            Register(FenceDatabase.StoneFenceId, 1, new Ingredient("stone", 2));
+            // 철광석 아이템이 생기면 재료만 바꿔 주면 된다.
+            Register(FenceDatabase.IronFenceId, 1, new Ingredient("stone", 3), new Ingredient("wood", 2));
+            Register(FenceDatabase.WoodGateId, 1, new Ingredient("wood", 4), new Ingredient("stone", 1));
+            Register(FenceDatabase.StoneGateId, 1, new Ingredient("stone", 4), new Ingredient("wood", 2));
+            Register(FenceDatabase.IronGateId, 1, new Ingredient("stone", 6), new Ingredient("wood", 3));
             Register(RoadDatabase.WoodRoadId, 2, new Ingredient("wood", 1), new Ingredient("stone", 1));
         }
 

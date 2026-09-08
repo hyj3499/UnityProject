@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 80d420bda771a72f5c497096d2cdfb3b
+guid: 3fb56686a19837cf5c77ec1bb6e128a7
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -80,11 +80,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WoodRoad_EW
+      name: StoneFence_ES
       rect:
         serializedVersion: 2
         x: 0
-        y: 112
+        y: 64
         width: 16
         height: 16
       alignment: 0
@@ -94,39 +94,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8dd0936f2c03883cdcc2cbdc016ce81c
-      internalID: 472850689
+      spriteID: 6c1bc0a6aa29c27776a0e7503fcfd65a
+      internalID: 1222337427
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WoodRoad_NS
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 112
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7cf2cae7d02b427961d1861be642f940
-      internalID: -1245551365
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: WoodRoad_None
+      name: StoneFence_SW
       rect:
         serializedVersion: 2
         x: 32
-        y: 112
+        y: 64
         width: 16
         height: 16
       alignment: 0
@@ -136,18 +115,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 14fab897e7d0e47c507859ca212ae609
-      internalID: 1941529940
+      spriteID: 803d0c4e025c9e59582121ea1437a962
+      internalID: -1202861981
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WoodRoad_Junction
+      name: StoneFence_NS_L
       rect:
         serializedVersion: 2
-        x: 48
-        y: 112
+        x: 0
+        y: 48
         width: 16
         height: 16
       alignment: 0
@@ -157,8 +136,134 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0f6591253d1649706784c15ddc75785c
-      internalID: 644573086
+      spriteID: 4dd29ad6bd99a33b765278e2ffc26c9a
+      internalID: 1511745794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFence_NS_R
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78aeebf5ecfdbfeffa4aed9e6990171e
+      internalID: 1224048847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFence_NE
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 331f60827241f75ebc2b48133585fd2d
+      internalID: 1873060374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFence_EW
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5891887e26feb73fd466dbad1bcd6d27
+      internalID: 1904758844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFence_NW
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c258f9ca75c6f2062905eb96ed438098
+      internalID: 717165331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFence_GateClosed
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5808f25a0a2ca2db99c3a33057132707
+      internalID: -354724432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StoneFence_GateOpen
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0c6453effaf9f9ff11c76160d7dc5dc
+      internalID: 2071352624
       vertices: []
       indices: 
       edges: []
@@ -174,10 +279,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      WoodRoad_EW: 472850689
-      WoodRoad_NS: -1245551365
-      WoodRoad_None: 1941529940
-      WoodRoad_Junction: 644573086
+      StoneFence_ES: 1222337427
+      StoneFence_SW: -1202861981
+      StoneFence_NS_L: 1511745794
+      StoneFence_NS_R: 1224048847
+      StoneFence_NE: 1873060374
+      StoneFence_EW: 1904758844
+      StoneFence_NW: 717165331
+      StoneFence_GateClosed: -354724432
+      StoneFence_GateOpen: 2071352624
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

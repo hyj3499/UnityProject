@@ -7,8 +7,9 @@ namespace FarmMVP
     /// GameLocation의 설치물(울타리·길) 담당 부분. 나무·바위와 나란한 개념이지만 <b>플레이어가
     /// 놓고 걷어내는</b> 것이라 규칙이 제법 달라서 파일을 나눠 두었다.
     ///
-    /// 이웃과 이어진 모양(오토타일)은 저장하지 않는다 — 저장하는 것은 "어디에 무엇이 있는지"뿐이고,
-    /// 모양은 그릴 때마다 이웃을 보고 다시 고른다. 그래서 옆 칸을 놓거나 걷어내면 저절로 맞춰진다.
+    /// 이웃과 이어진 모양(오토타일)도, 문이 짝을 이뤘는지도 <b>저장하지 않는다</b> — 저장하는 것은
+    /// "어디에 무엇이 있는지"뿐이고 나머지는 그릴 때마다 이웃을 보고 다시 정한다.
+    /// 그래서 옆 칸을 놓거나 걷어내면 저절로 맞춰진다.
     /// </summary>
     public partial class GameLocation
     {
@@ -31,7 +32,7 @@ namespace FarmMVP
         /// <summary>이 칸에 걷어낼 수 있는 설치물이 있는지 (바위마법의 대상).</summary>
         public bool HasPlaced(int x, int y) => placed.ContainsKey(new Vector2Int(x, y));
 
-        /// <summary>이 칸에 여닫을 수 있는 문이 있는지.</summary>
+        /// <summary>이 칸에 문이 있는지 (열 수 있는지와는 별개 — 짝이 없으면 못 연다).</summary>
         public bool HasGate(int x, int y)
         {
             var p = GetPlaced(x, y);
@@ -57,7 +58,7 @@ namespace FarmMVP
             return true;
         }
 
-        /// <summary>설치물을 놓는다. 성공하면 true.</summary>
+        /// <summary>설치물을 놓는다. 문도 <b>한 칸씩</b> 놓인다. 성공하면 true.</summary>
         public bool PlaceAt(int x, int y, string defId)
         {
             var def = PlaceableDatabase.Get(defId);
@@ -66,7 +67,9 @@ namespace FarmMVP
             var pos = new Vector2Int(x, y);
             placed[pos] = new PlacedFeature(x, y, defId);
             if (def.BlocksNow(false)) SetBlocked(x, y, true);
+
             RefreshPlacedAround(pos);
+            RefreshGateRun(pos, defId);   // 옆에 문이 있으면 이제 짝이 될 수 있다
             return true;
         }
 
@@ -81,8 +84,9 @@ namespace FarmMVP
             if (!placed.TryGetValue(pos, out var feature)) return false;
 
             dropTableId = feature.Def != null ? feature.Def.dropTableId : null;
-            placed.Remove(pos);
+            string defId = feature.defId;
 
+            placed.Remove(pos);
             if (_placedRenderers.TryGetValue(pos, out var sr))
             {
                 Destroy(sr.gameObject);
@@ -90,22 +94,97 @@ namespace FarmMVP
             }
             // 오브젝트 발판 위에 놓여 있었다면 그 막힘은 그대로 둔다.
             ClearFeatureBlock(pos);
+
             RefreshPlacedAround(pos);
+            RefreshGateRun(pos, defId);   // 짝을 잃은 문은 다시 홀로 선 모습이 된다
             return true;
         }
 
-        /// <summary>문을 여닫는다. 문이 없으면 false.</summary>
+        // ---------- 문 ----------
+        /// <summary>
+        /// 문을 여닫는다. <b>나란히 놓인 두 짝이 함께</b> 움직이고, 열려 있는 동안에는 두 칸 다
+        /// 지나갈 수 있다. 짝이 없는 문(혼자 서 있는 문)은 열리지 않으므로 false를 돌려준다.
+        /// </summary>
         public bool ToggleGate(int x, int y)
         {
             var pos = new Vector2Int(x, y);
             if (!placed.TryGetValue(pos, out var feature) || !feature.IsGate) return false;
 
-            feature.open = !feature.open;
-            if (feature.BlocksNow) SetBlocked(x, y, true);
-            else ClearFeatureBlock(pos);
+            var def = feature.Def;
+            bool paired = TryGetGatePartner(pos, feature, out var partner);
+            if (def != null && def.IsWideGate && !paired) return false;   // 짝이 있어야 열 수 있다
 
-            RenderPlaced(pos);
+            bool open = !feature.open;
+            SetGateOpen(pos, feature, open);
+            if (paired) SetGateOpen(partner, placed[partner], open);
             return true;
+        }
+
+        private void SetGateOpen(Vector2Int pos, PlacedFeature feature, bool open)
+        {
+            feature.open = open;
+            ApplyBlocked(pos, feature);
+            RenderPlaced(pos);
+        }
+
+        /// <summary>
+        /// 나란히 붙은 같은 문끼리 <b>왼쪽부터 둘씩</b> 짝을 짓는다. 왼쪽 짝이면 0, 오른쪽 짝이면 1,
+        /// 짝이 없으면 -1 (혼자 서 있는 문은 울타리를 홀로 놓은 모습이 된다).
+        /// 한 칸짜리 문 그림만 있는 시트는 짝이 필요 없으므로 언제나 -1이다.
+        /// </summary>
+        private int GatePart(Vector2Int pos, PlacedFeature feature)
+        {
+            var def = feature.Def;
+            if (def == null || !def.isGate || !def.IsWideGate) return -1;
+
+            int start = pos.x;
+            while (IsSameGate(new Vector2Int(start - 1, pos.y), feature.defId)) start--;
+
+            if ((pos.x - start) % 2 == 1) return 1;   // 짝의 오른쪽
+            return IsSameGate(new Vector2Int(pos.x + 1, pos.y), feature.defId) ? 0 : -1;
+        }
+
+        private bool IsSameGate(Vector2Int pos, string defId)
+            => placed.TryGetValue(pos, out var other) && other.defId == defId;
+
+        /// <summary>짝이 되는 칸을 찾는다.</summary>
+        private bool TryGetGatePartner(Vector2Int pos, PlacedFeature feature, out Vector2Int partner)
+        {
+            int part = GatePart(pos, feature);
+            partner = pos + (part == 0 ? Vector2Int.right : Vector2Int.left);
+            return part >= 0 && IsSameGate(partner, feature.defId);
+        }
+
+        /// <summary>
+        /// 가로로 이어진 문 한 줄을 통째로 다시 정리한다. 한 칸을 놓거나 걷어내면 줄 전체의
+        /// 짝이 밀리기 때문에, 옆 네 칸만 다시 그려서는 모자란다.
+        /// </summary>
+        private void RefreshGateRun(Vector2Int pos, string defId)
+        {
+            var def = PlaceableDatabase.Get(defId);
+            if (def == null || !def.isGate) return;
+
+            int left = pos.x, right = pos.x;
+            while (IsSameGate(new Vector2Int(left - 1, pos.y), defId)) left--;
+            while (IsSameGate(new Vector2Int(right + 1, pos.y), defId)) right++;
+
+            for (int x = left; x <= right; x++)
+            {
+                var p = new Vector2Int(x, pos.y);
+                if (!placed.TryGetValue(p, out var f)) continue;
+
+                // 짝을 잃은 문은 다시 닫힌 것으로 본다 — 혼자 열려 있는 문은 없다.
+                if (GatePart(p, f) < 0 && f.open) f.open = false;
+                ApplyBlocked(p, f);
+                RenderPlaced(p);
+            }
+        }
+
+        /// <summary>지금 상태에 맞게 막힘을 다시 정한다 (오브젝트 발판 위라면 그 막힘은 남긴다).</summary>
+        private void ApplyBlocked(Vector2Int pos, PlacedFeature feature)
+        {
+            if (feature.BlocksNow) SetBlocked(pos.x, pos.y, true);
+            else ClearFeatureBlock(pos);
         }
 
         // ---------- 저장 / 복원 ----------
@@ -119,11 +198,16 @@ namespace FarmMVP
 
                 var pos = new Vector2Int(p.x, p.y);
                 placed[pos] = new PlacedFeature(p.x, p.y, p.defId, p.open);
-                if (def.BlocksNow(p.open)) SetBlocked(p.x, p.y, true);
             }
 
-            // 이웃을 다 채운 뒤에 그려야 이어지는 모양이 맞다 (경작지 오토타일과 같은 이유).
-            foreach (var key in new List<Vector2Int>(placed.Keys)) RenderPlaced(key);
+            // 이웃과 짝을 다 채운 뒤에 정리해야 이어지는 모양과 여닫힘이 맞는다.
+            foreach (var key in new List<Vector2Int>(placed.Keys))
+            {
+                var f = placed[key];
+                if (f.IsGate && GatePart(key, f) < 0) f.open = false;
+                ApplyBlocked(key, f);
+                RenderPlaced(key);
+            }
         }
 
         internal void SavePlacedInto(LocationData loc)
@@ -163,8 +247,8 @@ namespace FarmMVP
                 return;
             }
 
-            var cell = def.CellFor(PlacedMask(pos, def), feature.open);
-            var sprite = PlaceableSheet.Get(def.sheetPath, cell);
+            var sprite = def.GetSprite(PlacedMask(pos, def), feature.open,
+                                       GatePart(pos, feature), VerticalSide(pos, def));
 
             if (!_placedRenderers.TryGetValue(pos, out var sr))
             {
@@ -176,8 +260,6 @@ namespace FarmMVP
             }
 
             sr.sprite = sprite;
-            sr.flipX = cell.flipX;
-            sr.flipY = cell.flipY;
         }
 
         /// <summary>붙어 있는 같은 종류의 설치물을 비트로 모은다 (울타리는 울타리끼리만 이어진다).</summary>
@@ -193,5 +275,25 @@ namespace FarmMVP
 
         private bool Connects(Vector2Int pos, PlaceableDef def)
             => placed.TryGetValue(pos, out var other) && def.ConnectsTo(other.Def);
+
+        /// <summary>
+        /// 세로 담이 어느 쪽 판을 써야 하는지. 위나 아래 이웃이 <b>동쪽으로만</b> 꺾이면(┌ └)
+        /// 왼쪽 담(-1), <b>서쪽으로만</b> 꺾이면(┐ ┘) 오른쪽 담(+1)이다.
+        /// 판단할 수 없으면 0 — 둘 중 아무거나 쓴다 (담 두 칸만 이어 놓았을 때가 그렇다).
+        /// </summary>
+        private int VerticalSide(Vector2Int pos, PlaceableDef def)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                var n = pos + (i == 0 ? Vector2Int.up : Vector2Int.down);
+                if (!placed.TryGetValue(n, out var other) || !def.ConnectsTo(other.Def)) continue;
+
+                int m = PlacedMask(n, other.Def);
+                bool east = (m & Connect.E) != 0, west = (m & Connect.W) != 0;
+                if (east && !west) return -1;
+                if (west && !east) return 1;
+            }
+            return 0;
+        }
     }
 }
