@@ -68,7 +68,7 @@ namespace FarmMVP
             ShopCart = Load("Sprites/Environment/ShopCart");
             Workbench = Load("Sprites/Environment/Workbench");
             Stone = Load("Sprites/Environment/Stone");
-            ApricotSeed = Load("Sprites/Environment/ApricotSeed");
+            ApricotSeed = Load("Sprites/Crops/ApricotSeed");
 
             Bed = Load("Sprites/Interior/Bed");
             Door = Load("Sprites/Interior/Door");
