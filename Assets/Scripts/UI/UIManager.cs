@@ -114,6 +114,7 @@ namespace FarmMVP
             var go = new GameObject("UICanvas");
             _canvas = go.AddComponent<Canvas>();
             _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            _canvas.sortingOrder = UILayers.Gameplay;
             var scaler = go.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(960, 540);

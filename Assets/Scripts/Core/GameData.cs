@@ -51,6 +51,9 @@ namespace FarmMVP
         public int hotbarPage = 0;          // 퀵바가 지금 보여주는 배낭 페이지
         public int currentMagic = 0; // 0=Earth, 1=Water, 2=Blade
 
+        /// <summary>새 게임을 시작할 때 고른 캐릭터 외형 (피부·눈·머리·옷·장식).</summary>
+        public PlayerAppearance appearance = new PlayerAppearance();
+
         // Inventory stored as parallel arrays for robust JSON serialization
         public List<SlotData> slots = new List<SlotData>();
     }

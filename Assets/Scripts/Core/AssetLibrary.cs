@@ -17,10 +17,6 @@ namespace FarmMVP
             new Dictionary<string, Dictionary<string, Sprite>>();
         private static bool _loaded;
 
-        // Player animation frame arrays
-        public static Sprite[] IdleDown, IdleUp, IdleSide;
-        public static Sprite[] WalkDown, WalkUp, WalkSide;
-
         // Tiles
         public static Sprite Grass, Dirt, Tilled, TilledWatered;
         // Interior tiles
@@ -47,13 +43,6 @@ namespace FarmMVP
         {
             if (_loaded) return;
             _loaded = true;
-
-            IdleDown = LoadRange("Sprites/Player/Idle_Down_", 4);
-            IdleUp = LoadRange("Sprites/Player/Idle_Up_", 4);
-            IdleSide = LoadRange("Sprites/Player/Idle_Side_", 4);
-            WalkDown = LoadRange("Sprites/Player/Walk_Down_", 6);
-            WalkUp = LoadRange("Sprites/Player/Walk_Up_", 6);
-            WalkSide = LoadRange("Sprites/Player/Walk_Side_", 6);
 
             Tilled = Load("Sprites/Tiles/Tilled");
             TilledWatered = Load("Sprites/Tiles/TilledWatered");
@@ -212,6 +201,9 @@ namespace FarmMVP
         private static Dictionary<string, Sprite> FolderSpriteIndex(string folder)
         {
             if (folder.StartsWith("Sprites/Tiles")) return null;
+            // 플레이어 그림은 층마다 1200장이 넘고 PlayerSpriteLibrary가 시트째 따로 읽는다 —
+            // 여기서 통째로 훑으면 쓰지도 않을 것을 전부 메모리에 올린다.
+            if (folder.StartsWith("Sprites/Player")) return null;
             if (_folderIndex.TryGetValue(folder, out var cached)) return cached;
 
             var all = Resources.LoadAll<Sprite>(folder);

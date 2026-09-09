@@ -945,7 +945,7 @@ namespace FarmMVP
 
             // 아직 안 쓰러졌으면 휘청인다 (쓰러지면 그림 자체가 사라지므로 흔들 것이 없다)
             if (!destroyed && _treeRenderers.TryGetValue(pos, out var treeSr))
-                Wobble.Play(treeSr, 8f, 0.35f);
+                Wobble.Play(treeSr, 3f, 0.35f);
 
             if (destroyed)
             {

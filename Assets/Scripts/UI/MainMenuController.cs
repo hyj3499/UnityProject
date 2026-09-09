@@ -48,6 +48,9 @@ namespace FarmMVP
             var go = new GameObject("TitleCanvas");
             _canvas = go.AddComponent<Canvas>();
             _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            // 화면 겹침 순서를 손으로 정해 둔다. 같은 Overlay 캔버스가 둘 다 0이면 어느 쪽이
+            // 위로 갈지 정해져 있지 않아서, 이 캔버스의 불투명한 배경이 다른 화면을 덮어 버린다.
+            _canvas.sortingOrder = UILayers.Title;
             var scaler = go.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(960, 540);
@@ -96,16 +99,40 @@ namespace FarmMVP
                 ShowConfirm("기존 저장 데이터를 삭제하고 새로 시작하시겠습니까?", () =>
                 {
                     SaveSystem.DeleteSave();
-                    StartGame();
+                    ShowCharacterCreator();
                 });
             }
             else
             {
-                StartGame();
+                ShowCharacterCreator();
             }
         }
 
-        private void OnContinueClicked() => StartGame();
+        /// <summary>
+        /// 새 게임은 캐릭터 만들기를 거쳐 시작한다. 고른 외형은 게임을 만든 뒤 플레이어에게 넘기고,
+        /// 그대로 세이브에도 들어간다 (이어하기는 저장된 외형을 그대로 쓰므로 이 화면을 지나지 않는다).
+        /// </summary>
+        private void ShowCharacterCreator()
+        {
+            // 타이틀 화면은 통째로 감춘다 — 배경이 불투명해서 위에 뜬 화면을 가리고,
+            // 살아 있으면 클릭도 가로챈다.
+            _canvas.gameObject.SetActive(false);
+
+            var creator = CharacterCreatorUI.Create(_font, new PlayerAppearance(),
+                onDone: appearance => StartGame(appearance),
+                onCancel: ReturnFromCharacterCreator);
+
+            // 만들다 실패했으면(그림을 못 읽는 등) 아무것도 못 하는 빈 화면이 되지 않도록 되돌린다.
+            if (creator == null) ReturnFromCharacterCreator();
+        }
+
+        private void ReturnFromCharacterCreator()
+        {
+            if (_canvas != null) _canvas.gameObject.SetActive(true);
+            _mainPanel.SetActive(true);
+        }
+
+        private void OnContinueClicked() => StartGame(null);
 
         private void OnSettingsClicked()
         {
@@ -123,10 +150,11 @@ namespace FarmMVP
 #endif
         }
 
-        private void StartGame()
+        /// <summary>appearance가 null이면 저장된(또는 기본) 외형을 그대로 쓴다.</summary>
+        private void StartGame(PlayerAppearance appearance)
         {
             Destroy(_canvas.gameObject);
-            _bootstrap.StartGame();
+            _bootstrap.StartGame(appearance);
             Destroy(gameObject);
         }
 

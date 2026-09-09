@@ -361,6 +361,11 @@ namespace FarmMVP
         // 1 real second = this many in-game minutes when idle (time passes with actions primarily)
         public float minutesPerRealSecond = 1.0f;
 
+        /// <summary>새 게임에서 캐릭터를 만들었을 때 그 외형. Boot이 세이브를 읽은 뒤에 덮어쓴다.</summary>
+        private PlayerAppearance _pendingAppearance;
+
+        public void SetPendingAppearance(PlayerAppearance appearance) => _pendingAppearance = appearance;
+
         public void Boot(Camera cam, PlayerController player, Transform locationRoot)
         {
             _cam = cam;
@@ -383,6 +388,11 @@ namespace FarmMVP
             {
                 Data = NewGame();
             }
+
+            // 캐릭터 만들기에서 고른 외형이 있으면 세이브 값보다 우선한다 (플레이어를 만들기 전에).
+            if (_pendingAppearance != null) Data.farmer.appearance = _pendingAppearance.Clone();
+            if (Data.farmer.appearance == null) Data.farmer.appearance = new PlayerAppearance();
+            _pendingAppearance = null;
 
             Seasons.SetSilently(Data.currentDay);   // 계절은 날짜에서 나온다 (따로 저장하지 않는다)
             AssetLibrary.ApplySeason(Seasons.Current);

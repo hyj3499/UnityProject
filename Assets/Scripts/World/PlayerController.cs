@@ -4,19 +4,22 @@ using UnityEngine.EventSystems;
 namespace FarmMVP
 {
     /// <summary>
-    /// Handles WASD movement, 4-directional idle/walk animation, and left-click
-    /// tool/interaction on the facing tile (design doc §3).
+    /// WASD 이동(평소 뛰기 · Shift 걷기), 좌클릭 마법, 우클릭 상호작용을 맡는다.
+    /// 그림은 하나도 다루지 않는다 — <b>무엇을 하고 있는지</b>만 PlayerAnimator에 넘기고,
+    /// 어떤 프레임이 나올지는 그쪽이 정한다 (design doc §3).
     /// </summary>
     public class PlayerController : MonoBehaviour
     {
-        public float moveSpeed = 4f;
+        /// <summary>평소 속도(뛰기)와 Shift를 눌렀을 때의 속도(걷기).</summary>
+        public float runSpeed = 5.2f;
+        public float walkSpeed = 2.6f;
+
         public Direction facing = Direction.Down;
 
-        private SpriteRenderer _sr;
         private GameManager _game;
-        private float _animTimer;
-        private int _animFrame;
+        private PlayerAnimator _anim;
         private bool _moving;
+        private bool _running;
 
         // ---------- 마법(좌클릭) / 씨앗·수확(우클릭) 조준 상태 ----------
         private static readonly Color SeedPreviewColor = new Color(0.35f, 0.85f, 0.35f, 0.45f);
@@ -32,12 +35,21 @@ namespace FarmMVP
         public void Init(GameManager game)
         {
             _game = game;
-            _sr = GetComponent<SpriteRenderer>();
-            if (_sr == null) _sr = gameObject.AddComponent<SpriteRenderer>();
-            _sr.sortingOrder = Depth.YSort(transform.position.y);
             AssetLibrary.EnsureLoaded();
 
+            // 그림은 층을 겹쳐 그리는 PlayerAnimator가 전부 맡는다 (플레이어 본체에는 그림이 없다).
+            _anim = GetComponent<PlayerAnimator>();
+            if (_anim == null) _anim = gameObject.AddComponent<PlayerAnimator>();
+            _anim.Init(game.Data.farmer.appearance);
+
             _indicator = TargetIndicator.Create();
+        }
+
+        /// <summary>캐릭터 외형을 바꾼다 (세이브에도 반영된다).</summary>
+        public void SetAppearance(PlayerAppearance appearance)
+        {
+            if (_game != null) _game.Data.farmer.appearance = appearance.Clone();
+            _anim?.SetAppearance(appearance);
         }
 
         private void Update()
@@ -45,7 +57,8 @@ namespace FarmMVP
             if (_game == null || _game.Paused)
             {
                 CancelHolds();
-                UpdateAnimation(0);
+                _moving = false;
+                UpdateAnimation();
                 return;
             }
 
@@ -75,7 +88,7 @@ namespace FarmMVP
         /// </summary>
         private void LateUpdate()
         {
-            if (_sr != null) _sr.sortingOrder = Depth.YSort(transform.position.y);
+            _anim?.SetSortingOrder(Depth.YSort(transform.position.y));
 
             // 밟고 선 칸이 바뀌는 순간에만 작물을 스친다 (매 프레임 흔들면 계속 떨린다)
             var tile = new Vector2Int(Mathf.RoundToInt(transform.position.x),
@@ -96,6 +109,9 @@ namespace FarmMVP
             var move = new Vector2(h, v);
             _moving = move.sqrMagnitude > 0.001f;
 
+            // 평소에는 뛰고, Shift를 누르고 있는 동안만 걷는다 (조심스럽게 움직이고 싶을 때).
+            _running = !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+
             if (_moving)
             {
                 // update facing (prioritise vertical for animation rows like the sheets)
@@ -104,11 +120,11 @@ namespace FarmMVP
                 else
                     facing = v > 0 ? Direction.Up : Direction.Down;
 
-                move = move.normalized * moveSpeed * Time.deltaTime;
+                move = move.normalized * (_running ? runSpeed : walkSpeed) * Time.deltaTime;
                 TryMove(move);
             }
 
-            UpdateAnimation(Time.deltaTime);
+            UpdateAnimation();
         }
 
         private void TryMove(Vector2 delta)
@@ -228,6 +244,7 @@ namespace FarmMVP
                 if (_game.CurrentMagic == MagicType.Water)
                 {
                     if (!_game.CastMagicOnFacingTile(this)) return; // MP 부족 - 조준 시작조차 하지 않음
+                    PlayMagicAnimation();
                 }
 
                 _magicHeld = true;
@@ -244,7 +261,11 @@ namespace FarmMVP
                     if (_waterTickTimer >= interval)
                     {
                         _waterTickTimer -= interval;
-                        if (!_game.CastMagicOnFacingTile(this))
+                        if (_game.CastMagicOnFacingTile(this))
+                        {
+                            PlayMagicAnimation();
+                        }
+                        else
                         {
                             _magicHeld = false;
                             _indicator.Hide();
@@ -259,8 +280,8 @@ namespace FarmMVP
                 _indicator.Hide();
 
                 // 물마법은 누르는 동안 이미 시전했으므로 뗄 때 추가로 시전하지 않는다.
-                if (_game.CurrentMagic != MagicType.Water)
-                    _game.CastMagicOnFacingTile(this);
+                if (_game.CurrentMagic != MagicType.Water && _game.CastMagicOnFacingTile(this))
+                    PlayMagicAnimation();
             }
         }
 
@@ -284,7 +305,11 @@ namespace FarmMVP
 
                 // 2) 수확은 조준 없이 즉시 — 바라보는 방향과 상관없이 주변에서 가장 가까운 작물을 캔다.
                 //    단, 울타리·길을 들고 있으면 설치가 먼저다 (옆의 작물 때문에 설치가 막히면 답답하다).
-                if (!isPlaceable && _game.TryHarvestNearby(this)) return;
+                if (!isPlaceable && _game.TryHarvestNearby(this))
+                {
+                    _anim?.PlayOnce(PlayerAnim.CarryPickUp);   // 허리 굽혀 집어 드는 자세
+                    return;
+                }
 
                 if (!isSeed && !isPlaceable) return;
                 _seedHeld = true;
@@ -309,6 +334,8 @@ namespace FarmMVP
                 _indicator.Hide();
                 if (isPlaceable) _game.PlaceSelectedAt(_game.MouseTile());
                 else _game.PlantSelectedAt(_game.MouseTile());
+                // 씨앗을 뿌리는 것도 울타리를 내려놓는 것도 "손에 든 것을 던지는" 동작이다.
+                _anim?.PlayOnce(PlayerAnim.CarryThrow);
             }
         }
 
@@ -359,50 +386,57 @@ namespace FarmMVP
         }
 
         // ---------- animation ----------
-        private void UpdateAnimation(float dt)
+        /// <summary>
+        /// 지금 무엇을 하고 있는지만 애니메이터에 알려 준다. 실제로 어떤 그림이 나올지는
+        /// PlayerAnimator가 정한다 (한 번짜리 동작 > 눌러 둔 동작 > 이동 순).
+        /// </summary>
+        private void UpdateAnimation()
         {
-            Sprite[] frames = GetFrames();
-            if (frames == null || frames.Length == 0) return;
+            if (_anim == null) return;
 
-            if (_moving)
-            {
-                _animTimer += dt;
-                if (_animTimer >= 0.12f)
-                {
-                    _animTimer = 0;
-                    _animFrame = (_animFrame + 1) % frames.Length;
-                }
-            }
+            // 낚시는 여러 초에 걸쳐 단계가 바뀌므로, 그 단계를 그대로 눌러 둔 동작으로 넘긴다.
+            var fishing = _game?.Fishing;
+            if (fishing != null && fishing.IsActive)
+                _anim.SetOverride(PlayerAnimations.ForFishing(fishing.State));
             else
-            {
-                _animFrame = 0;
-            }
+                _anim.ClearOverride();
 
-            _sr.sprite = frames[_animFrame % frames.Length];
-            // flip for left (side sheet faces right)
-            _sr.flipX = facing == Direction.Left;
+            var carried = CarriedSprite();
+            _anim.SetCarriedItem(carried);
+            _anim.SetLocomotion(_moving, _running, carried != null, facing);
         }
 
-        private Sprite[] GetFrames()
+        /// <summary>
+        /// 지금 퀵바에서 고른 아이템의 그림 (도구는 제외). 이것이 있으면 머리 위로 들고 다니는
+        /// 자세가 되고, 그 그림이 머리 위에 그려진다.
+        /// </summary>
+        private Sprite CarriedSprite()
         {
-            if (_moving)
+            var stack = _game?.SelectedStack;
+            if (stack == null || stack.IsEmpty) return null;
+
+            var def = stack.Def;
+            if (def == null || def.type == ItemType.Tool) return null;
+            return def.GetSprite();
+        }
+
+        /// <summary>낚시에 성공했을 때 (FishingController가 부른다).</summary>
+        public void PlayFishCatch() => _anim?.PlayOnce(PlayerAnim.FishCatch, PlayerAnimations.WeaponRod);
+
+        /// <summary>마법을 성공적으로 썼을 때 그 마법에 맞는 동작을 한 번 재생한다.</summary>
+        private void PlayMagicAnimation()
+        {
+            if (_anim == null || _game == null) return;
+
+            // 물마법으로 낚시를 시작했으면 물주기가 아니라 던지는 동작이다.
+            var fishing = _game.Fishing;
+            if (fishing != null && fishing.IsActive)
             {
-                switch (facing)
-                {
-                    case Direction.Up: return AssetLibrary.WalkUp;
-                    case Direction.Down: return AssetLibrary.WalkDown;
-                    default: return AssetLibrary.WalkSide;
-                }
+                _anim.PlayOnce(PlayerAnim.FishCast);
+                return;
             }
-            else
-            {
-                switch (facing)
-                {
-                    case Direction.Up: return AssetLibrary.IdleUp;
-                    case Direction.Down: return AssetLibrary.IdleDown;
-                    default: return AssetLibrary.IdleSide;
-                }
-            }
+
+            _anim.PlayOnce(PlayerAnimations.ForMagic(_game.CurrentMagic));
         }
     }
 }

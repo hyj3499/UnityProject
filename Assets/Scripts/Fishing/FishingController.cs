@@ -230,6 +230,8 @@ namespace FarmMVP
             State = FishingState.Idle;
             _fish = null;
             _ui.Hide();
+            // 낚아 올리는 동작을 한 번 보여 준 뒤에 평소 자세로 돌아간다.
+            _player?.PlayFishCatch();
             _game.OnFishCaught(fish);
         }
 

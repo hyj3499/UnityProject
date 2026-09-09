@@ -64,8 +64,14 @@ namespace FarmMVP
             ShowTitle();
         }
 
-        /// <summary>Called by MainMenuController once 새 게임/이어하기 is chosen.</summary>
-        public void StartGame()
+        public void StartGame() => StartGame(null);
+
+        /// <summary>
+        /// Called by MainMenuController once 새 게임/이어하기 is chosen.
+        /// appearance를 주면 (새 게임에서 캐릭터를 만들었을 때) 그 외형으로 시작하고,
+        /// null이면 세이브에 담긴 외형을 그대로 쓴다.
+        /// </summary>
+        public void StartGame(PlayerAppearance appearance)
         {
             AssetLibrary.EnsureLoaded();
 
@@ -82,12 +88,11 @@ namespace FarmMVP
             cam.backgroundColor = new Color(0.15f, 0.18f, 0.20f);
             cam.transform.position = new Vector3(8, 7, -10);
 
-            // Player
+            // Player. 그림은 층을 겹쳐 그리는 PlayerAnimator가 맡으므로 본체에는 SpriteRenderer가 없다
+            // (PlayerController.Init이 저장된 외형으로 층을 만든다).
             var playerGo = new GameObject("Player");
             var pc = playerGo.AddComponent<PlayerController>();
-            var psr = playerGo.AddComponent<SpriteRenderer>();
-            psr.sprite = AssetLibrary.IdleDown.Length > 0 ? AssetLibrary.IdleDown[0] : null;
-            psr.sortingOrder = Depth.YSort(0f);   // PlayerController가 매 프레임 다시 정한다
+            playerGo.AddComponent<PlayerAnimator>();
 
             // Location root
             var locationRoot = new GameObject("World").transform;
@@ -105,6 +110,8 @@ namespace FarmMVP
             _uiManagerGo = uiGo;
 
             // Boot order: game first (creates Inventory/Data), then UI reads them.
+            // 고른 외형은 Boot이 세이브를 읽은 다음, 플레이어가 만들어지기 전에 넣어야 한다.
+            gm.SetPendingAppearance(appearance);
             gm.Boot(cam, pc, locationRoot);
             ui.Boot(gm);
             gm.InitFishing(ui);   // 미니게임 바가 UI 캔버스에 붙으므로 UI 다음에
