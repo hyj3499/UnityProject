@@ -14,9 +14,9 @@ namespace FarmMVP
     /// ◀ 값 ▶ 로 고르고, 피부·눈·머리·옷의 <b>색</b>은 네모난 색 견본을 눌러 색상 그래프
     /// (채도·명도 사각형 + 색상 띠 + HEX 입력)에서 직접 고른다.
     ///
-    /// 미리보기는 게임과 <b>같은 PlayerAnimator</b>를 쓴다 — 화면 전용 그리기 코드를 따로 두면
+    /// 미리보기는 게임과 <b>같은 FarmerAnimator</b>를 쓴다 — 화면 전용 그리기 코드를 따로 두면
     /// 실제 모습과 어긋나기 때문에, 카메라 앞에 진짜 캐릭터를 하나 세워 두고 보여 준다.
-    /// 색 역시 게임과 같은 PlayerPaletteSwap이 입히므로, 여기서 고른 색이 곧 게임 속 모습이다.
+    /// 색 역시 게임과 같은 방식(FarmerSheet·FarmerClothes)으로 입히므로, 여기서 고른 색이 곧 게임 속 모습이다.
     /// </summary>
     public class CharacterCreatorUI : MonoBehaviour
     {
@@ -32,7 +32,7 @@ namespace FarmMVP
         private PlayerAppearance _appearance = new PlayerAppearance();
 
         private GameObject _previewGo;
-        private PlayerAnimator _preview;
+        private FarmerAnimator _preview;
         private Camera _previewCam;
         private RenderTexture _previewTexture;
         private RawImage _previewImage;
@@ -119,13 +119,17 @@ namespace FarmMVP
                      Func<PlayerAppearance, string> get, Action<PlayerAppearance, string> set)
                 => _colorRows.Add(new ColorRow { label = label, swatches = swatches, get = get, set = set });
 
+            Shape("성별", AppearanceCatalog.Genders, a => a.gender, (a, v) => a.gender = v);
+            Shape("머리 모양", AppearanceCatalog.HairStyles,
+                  a => a.hairStyle.ToString(),
+                  (a, v) => a.hairStyle = int.TryParse(v, out var i) ? i : 0);
+
             Col("피부색", AppearanceCatalog.SkinSwatches, a => a.skin, (a, v) => a.skin = v);
-            Shape("눈매", AppearanceCatalog.EyeSets, a => a.eyeSet, (a, v) => a.eyeSet = v);
-            Col("눈 색", AppearanceCatalog.EyeColorSwatches, a => a.eyeColor, (a, v) => a.eyeColor = v);
-            Shape("머리 모양", AppearanceCatalog.HairStyles, a => a.hairStyle, (a, v) => a.hairStyle = v);
-            Col("머리색", AppearanceCatalog.HairColorSwatches, a => a.hairColor, (a, v) => a.hairColor = v);
-            Col("옷 색", AppearanceCatalog.ClothesSwatches, a => a.clothes, (a, v) => a.clothes = v);
-            Shape("장식", AppearanceCatalog.Accessories, a => a.acc, (a, v) => a.acc = v);
+            Col("머리색", AppearanceCatalog.HairSwatches, a => a.hair, (a, v) => a.hair = v);
+            Col("눈 색", AppearanceCatalog.EyeSwatches, a => a.eyes, (a, v) => a.eyes = v);
+            Col("상의 색", AppearanceCatalog.ClothSwatches, a => a.shirt, (a, v) => a.shirt = v);
+            Col("하의 색", AppearanceCatalog.ClothSwatches, a => a.pants, (a, v) => a.pants = v);
+            Col("신발 색", AppearanceCatalog.BootsSwatches, a => a.boots, (a, v) => a.boots = v);
         }
 
         /// <summary>모양 항목을 앞뒤로 넘긴다 (목록 끝에서 반대쪽으로 돌아간다).</summary>
@@ -170,7 +174,7 @@ namespace FarmMVP
         // ---------- 미리보기 ----------
         /// <summary>
         /// 실제 캐릭터를 화면 밖 빈자리에 세워 두고 전용 카메라로 찍어 RenderTexture에 담은 뒤,
-        /// 그것을 화면 왼쪽에 붙인다. UI 이미지로 흉내 내지 않고 게임과 <b>같은 PlayerAnimator</b>를
+        /// 그것을 화면 왼쪽에 붙인다. UI 이미지로 흉내 내지 않고 게임과 <b>같은 FarmerAnimator</b>를
         /// 쓰기 때문에, 여기서 보이는 모습이 곧 게임에서의 모습이다.
         ///
         /// (카메라를 화면에 바로 비추지 않는 이유: 이 화면의 캔버스가 ScreenSpaceOverlay라
@@ -193,10 +197,10 @@ namespace FarmMVP
 
             _previewGo = new GameObject("PreviewCharacter");
             _previewGo.transform.position = new Vector3(500f, 499.7f, 0f);
-            _preview = _previewGo.AddComponent<PlayerAnimator>();
+            _preview = _previewGo.AddComponent<FarmerAnimator>();
             _preview.Init(_appearance);
             _preview.SetSortingOrder(0);
-            _preview.SetLocomotion(false, false, false, _previewFacing);
+            _preview.SetLocomotion(false, false, _previewFacing);
 
             var go = new GameObject("Preview");
             var rt = go.AddComponent<RectTransform>();
@@ -216,7 +220,7 @@ namespace FarmMVP
             if (i < 0) i = 0;
             int n = order.Length;
             _previewFacing = order[((i + delta) % n + n) % n];
-            _preview?.SetLocomotion(false, false, false, _previewFacing);
+            _preview?.SetLocomotion(false, false, _previewFacing);
         }
 
         // ---------- 화면 ----------
@@ -264,8 +268,8 @@ namespace FarmMVP
         /// <summary>줄 목록. 색 줄은 ◀▶ 대신 네모난 색 견본 버튼 하나로 색상 그래프를 연다.</summary>
         private void BuildRowList()
         {
-            const float rowH = 44f;
-            float top = -96f;
+            const float rowH = 36f;
+            float top = -92f;
 
             void NextRow(out RectTransform rt, string name)
             {
@@ -277,7 +281,7 @@ namespace FarmMVP
                 rt.pivot = new Vector2(0.5f, 1f);
                 rt.offsetMin = new Vector2(0, top - rowH);
                 rt.offsetMax = new Vector2(0, top);
-                top -= rowH + 6f;
+                top -= rowH + 4f;
             }
 
             Text NameLabel(RectTransform rt, string text)
@@ -291,9 +295,9 @@ namespace FarmMVP
                 return name;
             }
 
-            // 순서는 "피부색 · 눈매 · 눈 색 · 머리 모양 · 머리색 · 옷 색 · 장식" — BuildRowDefs와 같다.
+            // 성별 · 머리 모양 · 피부색 · 머리색 · 눈 색 · 상의 색 · 하의 색 · 신발 색
             int shapeI = 0, colorI = 0;
-            var order = new[] { 'C', 'S', 'C', 'S', 'C', 'C', 'S' }; // C=색, S=모양 — BuildRowDefs 순서 그대로
+            var order = new[] { 'S', 'S', 'C', 'C', 'C', 'C', 'C', 'C' }; // S=모양, C=색 — BuildRowDefs 순서 그대로
 
             foreach (var kind in order)
             {

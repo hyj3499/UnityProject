@@ -201,7 +201,7 @@ namespace FarmMVP
         private static Dictionary<string, Sprite> FolderSpriteIndex(string folder)
         {
             if (folder.StartsWith("Sprites/Tiles")) return null;
-            // 플레이어 그림은 층마다 1200장이 넘고 PlayerSpriteLibrary가 시트째 따로 읽는다 —
+            // 플레이어 그림은 FarmerSheet·FarmerClothes가 시트째 따로 읽는다 —
             // 여기서 통째로 훑으면 쓰지도 않을 것을 전부 메모리에 올린다.
             if (folder.StartsWith("Sprites/Player")) return null;
             if (_folderIndex.TryGetValue(folder, out var cached)) return cached;

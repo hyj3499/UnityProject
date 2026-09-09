@@ -88,11 +88,11 @@ namespace FarmMVP
             cam.backgroundColor = new Color(0.15f, 0.18f, 0.20f);
             cam.transform.position = new Vector3(8, 7, -10);
 
-            // Player. 그림은 층을 겹쳐 그리는 PlayerAnimator가 맡으므로 본체에는 SpriteRenderer가 없다
+            // Player. 그림은 층을 겹쳐 그리는 FarmerAnimator가 맡으므로 본체에는 SpriteRenderer가 없다
             // (PlayerController.Init이 저장된 외형으로 층을 만든다).
             var playerGo = new GameObject("Player");
             var pc = playerGo.AddComponent<PlayerController>();
-            playerGo.AddComponent<PlayerAnimator>();
+            playerGo.AddComponent<FarmerAnimator>();
 
             // Location root
             var locationRoot = new GameObject("World").transform;

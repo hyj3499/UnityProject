@@ -5,7 +5,7 @@ namespace FarmMVP
 {
     /// <summary>
     /// WASD 이동(평소 뛰기 · Shift 걷기), 좌클릭 마법, 우클릭 상호작용을 맡는다.
-    /// 그림은 하나도 다루지 않는다 — <b>무엇을 하고 있는지</b>만 PlayerAnimator에 넘기고,
+    /// 그림은 하나도 다루지 않는다 — <b>무엇을 하고 있는지</b>만 FarmerAnimator에 넘기고,
     /// 어떤 프레임이 나올지는 그쪽이 정한다 (design doc §3).
     /// </summary>
     public class PlayerController : MonoBehaviour
@@ -17,7 +17,7 @@ namespace FarmMVP
         public Direction facing = Direction.Down;
 
         private GameManager _game;
-        private PlayerAnimator _anim;
+        private FarmerAnimator _anim;
         private bool _moving;
         private bool _running;
 
@@ -37,9 +37,9 @@ namespace FarmMVP
             _game = game;
             AssetLibrary.EnsureLoaded();
 
-            // 그림은 층을 겹쳐 그리는 PlayerAnimator가 전부 맡는다 (플레이어 본체에는 그림이 없다).
-            _anim = GetComponent<PlayerAnimator>();
-            if (_anim == null) _anim = gameObject.AddComponent<PlayerAnimator>();
+            // 그림은 층을 겹쳐 그리는 FarmerAnimator가 전부 맡는다 (플레이어 본체에는 그림이 없다).
+            _anim = GetComponent<FarmerAnimator>();
+            if (_anim == null) _anim = gameObject.AddComponent<FarmerAnimator>();
             _anim.Init(game.Data.farmer.appearance);
 
             _indicator = TargetIndicator.Create();
@@ -307,7 +307,7 @@ namespace FarmMVP
                 //    단, 울타리·길을 들고 있으면 설치가 먼저다 (옆의 작물 때문에 설치가 막히면 답답하다).
                 if (!isPlaceable && _game.TryHarvestNearby(this))
                 {
-                    _anim?.PlayOnce(PlayerAnim.CarryPickUp);   // 허리 굽혀 집어 드는 자세
+                    _anim?.PlayOnce(FarmerAnim.Harvest);   // 허리 굽혀 집어 드는 자세
                     return;
                 }
 
@@ -334,8 +334,8 @@ namespace FarmMVP
                 _indicator.Hide();
                 if (isPlaceable) _game.PlaceSelectedAt(_game.MouseTile());
                 else _game.PlantSelectedAt(_game.MouseTile());
-                // 씨앗을 뿌리는 것도 울타리를 내려놓는 것도 "손에 든 것을 던지는" 동작이다.
-                _anim?.PlayOnce(PlayerAnim.CarryThrow);
+                // 씨앗을 뿌리는 것도 울타리를 내려놓는 것도 "손에 든 것을 내려놓는" 동작이다.
+                _anim?.PlayOnce(FarmerAnim.Harvest);
             }
         }
 
@@ -388,7 +388,7 @@ namespace FarmMVP
         // ---------- animation ----------
         /// <summary>
         /// 지금 무엇을 하고 있는지만 애니메이터에 알려 준다. 실제로 어떤 그림이 나올지는
-        /// PlayerAnimator가 정한다 (한 번짜리 동작 > 눌러 둔 동작 > 이동 순).
+        /// FarmerAnimator가 정한다 (한 번짜리 동작 > 눌러 둔 동작 > 이동 순).
         /// </summary>
         private void UpdateAnimation()
         {
@@ -397,13 +397,12 @@ namespace FarmMVP
             // 낚시는 여러 초에 걸쳐 단계가 바뀌므로, 그 단계를 그대로 눌러 둔 동작으로 넘긴다.
             var fishing = _game?.Fishing;
             if (fishing != null && fishing.IsActive)
-                _anim.SetOverride(PlayerAnimations.ForFishing(fishing.State));
+                _anim.SetOverride(FarmerAnimations.ForFishing(fishing.State));
             else
                 _anim.ClearOverride();
 
-            var carried = CarriedSprite();
-            _anim.SetCarriedItem(carried);
-            _anim.SetLocomotion(_moving, _running, carried != null, facing);
+            _anim.SetCarriedItem(CarriedSprite());
+            _anim.SetLocomotion(_moving, _running, facing);
         }
 
         /// <summary>
@@ -421,7 +420,7 @@ namespace FarmMVP
         }
 
         /// <summary>낚시에 성공했을 때 (FishingController가 부른다).</summary>
-        public void PlayFishCatch() => _anim?.PlayOnce(PlayerAnim.FishCatch, PlayerAnimations.WeaponRod);
+        public void PlayFishCatch() => _anim?.PlayOnce(FarmerAnim.FishCaught);
 
         /// <summary>마법을 성공적으로 썼을 때 그 마법에 맞는 동작을 한 번 재생한다.</summary>
         private void PlayMagicAnimation()
@@ -432,11 +431,11 @@ namespace FarmMVP
             var fishing = _game.Fishing;
             if (fishing != null && fishing.IsActive)
             {
-                _anim.PlayOnce(PlayerAnim.FishCast);
+                _anim.PlayOnce(FarmerAnim.FishCast);
                 return;
             }
 
-            _anim.PlayOnce(PlayerAnimations.ForMagic(_game.CurrentMagic));
+            _anim.PlayOnce(FarmerAnimations.ForMagic(_game.CurrentMagic));
         }
     }
 }
