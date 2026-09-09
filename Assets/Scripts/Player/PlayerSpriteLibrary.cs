@@ -113,8 +113,11 @@ namespace FarmMVP
         /// <summary>
         /// 시트 한 장을 네 방향 × 프레임으로 자른다. Texture2D에서 바로 만들기 때문에
         /// 텍스처의 Read/Write를 켜 둘 필요가 없다 (픽셀을 읽지는 않는다).
+        ///
+        /// PlayerPaletteSwap이 색을 새로 입힌 텍스처를 자를 때도 이 메서드를 그대로 쓴다
+        /// (한 장을 네 방향으로 나누는 규칙은 원본이든 색을 새로 입힌 것이든 같다).
         /// </summary>
-        private static Sprite[][] Slice(Texture2D tex)
+        public static Sprite[][] Slice(Texture2D tex)
         {
             int frameSize = tex.height;
             if (frameSize <= 0) return null;

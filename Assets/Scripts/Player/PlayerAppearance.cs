@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace FarmMVP
 {
@@ -9,53 +10,86 @@ namespace FarmMVP
     /// </summary>
     public enum PlayerLayer
     {
-        Skin,      // Skins/{1..4}
-        Clothes,   // Clothers/Farm/{색}
-        Eyes,      // Eyes/{Male|Female}/{색}
-        Hair,      // Hair's/{모양}/{색}
+        Skin,      // Skins/{1..4} 밑그림 + 색상 그래프에서 고른 피부색
+        Clothes,   // Clothers/Farm/{색} 밑그림 + 고른 옷 색
+        Eyes,      // Eyes/{Male|Female}/{색} 밑그림 + 고른 눈 색
+        Hair,      // Hair's/{모양}/{색} 밑그림 + 고른 머리색
         Acc,       // Acc/{장식}          — 없을 수 있다
         Weapon,    // Weapons/{도구}      — 동작에 따라 있을 수도, 없을 수도
     }
 
     /// <summary>
     /// 플레이어의 외형. 새 게임을 시작할 때 고르고 세이브에 그대로 담긴다.
-    /// 값은 전부 <b>Resources 폴더 이름 그대로</b>라서, 새 머리 모양이나 옷을 넣으면
-    /// 폴더만 추가하고 아래 목록에 한 줄 적으면 된다.
+    ///
+    /// 피부·눈·머리·옷의 <b>색</b>은 캐릭터 만들기의 색상 그래프에서 고른 "#RRGGBB" 그대로 저장한다 —
+    /// 프리셋 파일 이름이 아니다. 실제로 그 색을 입히는 일은 PlayerPaletteSwap이 맡는다: 미리 있는
+    /// 그림 한 장(예: Clothers/Farm/Blue)을 밑그림 삼아, 사용자가 고른 색으로 다시 칠한다.
+    /// 그래서 새 색을 추가하는 데 그림이 한 장도 필요 없다.
+    ///
+    /// 눈매(Male/Female)·머리 모양·장식은 <b>모양</b> 선택이라 여전히 폴더 이름(프리셋)을 쓴다 —
+    /// 이건 그림 자체가 다르므로 색상 그래프로 바꿀 수 있는 것이 아니다.
     /// </summary>
     [Serializable]
     public class PlayerAppearance
     {
-        public string skin = "1";           // Skins/1.png
-        public string eyeSet = "Male";      // Eyes/Male 또는 Eyes/Female
-        public string eyeColor = "Black";
-        public string hairStyle = "Standard";
-        public string hairColor = "Brown";
-        public string clothes = "Blue";     // Clothers/Farm/Blue.png
-        public string acc = "";             // Acc 아래의 상대 경로. 빈 값이면 장식 없음.
+        // 기본값 = 예전 프리셋(피부 1 / 검은 눈 / 갈색 머리 / 파란 옷)의 대표색.
+        public const string DefaultSkin = "#F9E6CF";
+        public const string DefaultEyeColor = "#1D1D1D";
+        public const string DefaultHairColor = "#8A3625";
+        public const string DefaultClothes = "#1A3473";
+
+        public string skin = DefaultSkin;
+        public string eyeSet = "Male";          // Eyes/Male 또는 Eyes/Female (모양)
+        public string eyeColor = DefaultEyeColor;
+        public string hairStyle = "Standard";   // 모양
+        public string hairColor = DefaultHairColor;
+        public string clothes = DefaultClothes;
+        public string acc = "";                 // Acc 아래의 상대 경로. 빈 값이면 장식 없음.
 
         public PlayerAppearance Clone() => (PlayerAppearance)MemberwiseClone();
 
-        /// <summary>
-        /// 이 층이 쓸 그림의 <b>동작 폴더 안에서의 상대 경로</b>. 쓰지 않는 층이면 null.
-        /// (예: Hair -> "Hair's/Standard/Brown")
-        /// </summary>
+        public Color SkinColor => ParseHex(skin, AppearanceCatalog.LegacySkins, DefaultSkin);
+        public Color EyeColorValue => ParseHex(eyeColor, AppearanceCatalog.LegacyEyeColors, DefaultEyeColor);
+        public Color HairColorValue => ParseHex(hairColor, AppearanceCatalog.LegacyHairColors, DefaultHairColor);
+        public Color ClothesColorValue => ParseHex(clothes, AppearanceCatalog.LegacyClothes, DefaultClothes);
+
+        /// <summary>도구·장식처럼 파일을 그대로 쓰는 층의 동작 폴더 안 상대 경로. 색을 입히는 층은
+        /// PlayerPaletteSwap이 따로 처리하므로 여기 포함하지 않는다.</summary>
         public string PathFor(PlayerLayer layer)
+            => layer == PlayerLayer.Acc && !string.IsNullOrEmpty(acc) ? "Acc/" + acc : null;
+
+        /// <summary>색을 입힐 층이 어느 폴더의 그림을 밑그림으로 쓸지 (모양 선택이 반영된다).</summary>
+        public string FolderFor(PlayerLayer layer)
         {
             switch (layer)
             {
-                case PlayerLayer.Skin: return "Skins/" + Or(skin, "1");
-                case PlayerLayer.Clothes: return "Clothers/Farm/" + Or(clothes, "Blue");
-                case PlayerLayer.Eyes: return $"Eyes/{Or(eyeSet, "Male")}/{Or(eyeColor, "Black")}";
-                case PlayerLayer.Hair: return $"Hair's/{Or(hairStyle, "Standard")}/{Or(hairColor, "Brown")}";
-                case PlayerLayer.Acc: return string.IsNullOrEmpty(acc) ? null : "Acc/" + acc;
+                case PlayerLayer.Skin: return "Skins";
+                case PlayerLayer.Clothes: return "Clothers/Farm";
+                case PlayerLayer.Eyes: return "Eyes/" + Or(eyeSet, "Male");
+                case PlayerLayer.Hair: return "Hair's/" + Or(hairStyle, "Standard");
                 default: return null;
             }
         }
 
         private static string Or(string v, string fallback) => string.IsNullOrEmpty(v) ? fallback : v;
+
+        /// <summary>
+        /// "#RRGGBB"를 Color로 바꾼다. 예전 세이브에 남아 있는 프리셋 이름("Blue", "Brown", "1" 등)이
+        /// 들어오면 그때 그 이름이 뜻하던 색으로 옮겨 준다 — 그래야 예전에 만든 캐릭터가 업데이트
+        /// 후에 갑자기 색이 바뀌어 보이지 않는다.
+        /// </summary>
+        private static Color ParseHex(string value, IReadOnlyDictionary<string, string> legacy, string fallback)
+        {
+            string hex = value;
+            if (!string.IsNullOrEmpty(hex) && legacy != null && legacy.TryGetValue(hex, out var mapped)) hex = mapped;
+
+            if (!string.IsNullOrEmpty(hex) && ColorUtility.TryParseHtmlString(hex, out var c)) return c;
+            ColorUtility.TryParseHtmlString(fallback, out var d);
+            return d;
+        }
     }
 
-    /// <summary>고를 수 있는 항목 하나 (보여 줄 이름 + 실제 폴더 이름).</summary>
+    /// <summary>모양 선택지 하나 (보여 줄 이름 + 실제 폴더 이름).</summary>
     public struct AppearanceOption
     {
         public string value;
@@ -78,22 +112,11 @@ namespace FarmMVP
     /// </summary>
     public static class AppearanceCatalog
     {
-        public static readonly AppearanceOption[] Skins =
-        {
-            new AppearanceOption("1", "1"), new AppearanceOption("2", "2"),
-            new AppearanceOption("3", "3"), new AppearanceOption("4", "4"),
-        };
-
+        // ---------- 모양(그림 자체가 다른 것) — 색상 그래프로 바꿀 수 없어 프리셋 그대로 ----------
         public static readonly AppearanceOption[] EyeSets =
         {
             new AppearanceOption("Male", "남성"),
             new AppearanceOption("Female", "여성"),
-        };
-
-        public static readonly AppearanceOption[] EyeColors =
-        {
-            new AppearanceOption("Black", "검정"), new AppearanceOption("Blue", "파랑"),
-            new AppearanceOption("Brown", "갈색"), new AppearanceOption("Green", "초록"),
         };
 
         public static readonly AppearanceOption[] HairStyles =
@@ -105,19 +128,6 @@ namespace FarmMVP
             new AppearanceOption("Lyria", "리리아"),
             new AppearanceOption("Sebastian", "세바스찬"),
             new AppearanceOption("Silvermist", "실버미스트"),
-        };
-
-        public static readonly AppearanceOption[] HairColors =
-        {
-            new AppearanceOption("Black", "검정"), new AppearanceOption("Blonde", "금발"),
-            new AppearanceOption("Brown", "갈색"), new AppearanceOption("Ginger", "빨강"),
-        };
-
-        public static readonly AppearanceOption[] Clothes =
-        {
-            new AppearanceOption("Blue", "파랑"), new AppearanceOption("Green", "초록"),
-            new AppearanceOption("Pink", "분홍"), new AppearanceOption("Purple", "보라"),
-            new AppearanceOption("Red", "빨강"),
         };
 
         /// <summary>
@@ -159,6 +169,54 @@ namespace FarmMVP
                 Add("Elf/" + i, "요정 귀 " + i);
 
             return list.ToArray();
+        }
+
+        // ---------- 색(HEX 그래프로 자유롭게 고른다) — 아래는 그 그래프의 "빠른 선택" 버튼과
+        // 예전 세이브 호환용으로만 쓰는 대표색 표다. 실제 색 선택 범위는 이 목록에 갇히지 않는다. ----------
+
+        /// <summary>피부색 빠른 선택 (그림 1~4번의 대표색).</summary>
+        public static readonly (string label, string hex)[] SkinSwatches =
+        {
+            ("1", "#F9E6CF"), ("2", "#FFD59A"), ("3", "#FFC68B"), ("4", "#E68E5B"),
+        };
+
+        public static readonly (string label, string hex)[] EyeColorSwatches =
+        {
+            ("검정", "#1D1D1D"), ("파랑", "#1A3473"), ("갈색", "#8A3625"), ("초록", "#115536"),
+        };
+
+        public static readonly (string label, string hex)[] HairColorSwatches =
+        {
+            ("검정", "#0E0E0E"), ("금발", "#FFC71B"), ("갈색", "#8A3625"), ("빨강", "#EE6A0E"),
+        };
+
+        public static readonly (string label, string hex)[] ClothesSwatches =
+        {
+            ("파랑", "#1A3473"), ("초록", "#3D993D"), ("분홍", "#FFAAB0"),
+            ("보라", "#B83EAB"), ("빨강", "#C41B24"),
+        };
+
+        // 예전 세이브가 파일 프리셋 이름("Blue", "Brown", "1" ...)을 그대로 들고 있을 때 옮겨 줄 색.
+        public static readonly IReadOnlyDictionary<string, string> LegacySkins = ToLegacyMap(SkinSwatches);
+        public static readonly IReadOnlyDictionary<string, string> LegacyEyeColors = new Dictionary<string, string>
+        {
+            { "Black", "#1D1D1D" }, { "Blue", "#1A3473" }, { "Brown", "#8A3625" }, { "Green", "#115536" },
+        };
+        public static readonly IReadOnlyDictionary<string, string> LegacyHairColors = new Dictionary<string, string>
+        {
+            { "Black", "#0E0E0E" }, { "Blonde", "#FFC71B" }, { "Brown", "#8A3625" }, { "Ginger", "#EE6A0E" },
+        };
+        public static readonly IReadOnlyDictionary<string, string> LegacyClothes = new Dictionary<string, string>
+        {
+            { "Blue", "#1A3473" }, { "Green", "#3D993D" }, { "Pink", "#FFAAB0" },
+            { "Purple", "#B83EAB" }, { "Red", "#C41B24" },
+        };
+
+        private static Dictionary<string, string> ToLegacyMap((string label, string hex)[] swatches)
+        {
+            var map = new Dictionary<string, string>();
+            foreach (var (label, hex) in swatches) map[label] = hex;
+            return map;
         }
 
         /// <summary>목록에서 지금 값이 몇 번째인지 (없으면 0).</summary>

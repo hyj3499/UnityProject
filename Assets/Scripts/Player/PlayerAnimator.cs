@@ -197,15 +197,12 @@ namespace FarmMVP
                 var sr = _layers[i];
                 if (sr == null) continue;
 
-                string path = DrawOrder[i] == PlayerLayer.Weapon
-                    ? _currentWeapon
-                    : _appearance.PathFor(DrawOrder[i]);
-
-                // 몸을 이루는 층은 색 하나가 빠졌으면 같은 폴더의 다른 색으로라도 그린다.
-                // 장식과 도구는 없으면 없는 것이 맞으므로 그냥 비워 둔다.
-                bool bodyLayer = DrawOrder[i] != PlayerLayer.Acc && DrawOrder[i] != PlayerLayer.Weapon;
-                var frames = path == null ? null
-                           : PlayerSpriteLibrary.Frames(def.folder, path, _facing, bodyLayer);
+                var layer = DrawOrder[i];
+                Sprite[] frames = layer == PlayerLayer.Weapon
+                    ? WeaponFrames(def.folder)
+                    : layer == PlayerLayer.Acc
+                        ? AccFrames(def.folder)
+                        : ColorLayerFrames(def.folder, layer);
 
                 if (frames == null || frames.Length == 0)
                 {
@@ -215,6 +212,54 @@ namespace FarmMVP
 
                 sr.sprite = frames[Mathf.Clamp(_frame, 0, frames.Length - 1)];
                 sr.enabled = true;
+            }
+        }
+
+        private Sprite[] WeaponFrames(string animFolder)
+            => _currentWeapon == null ? null : PlayerSpriteLibrary.Frames(animFolder, _currentWeapon, _facing);
+
+        private Sprite[] AccFrames(string animFolder)
+        {
+            string path = _appearance.PathFor(PlayerLayer.Acc);
+            // 장식은 동작마다 다 갖춰져 있지 않다 — 없으면 그냥 안 그린다 (다른 색으로 대신하지 않는다).
+            return path == null ? null : PlayerSpriteLibrary.Frames(animFolder, path, _facing, allowSibling: false);
+        }
+
+        /// <summary>
+        /// 피부·옷·눈·머리는 사용자가 고른 색(HEX)을 PlayerPaletteSwap으로 입힌다 — 파일을 그대로
+        /// 찾는 게 아니라, 그 폴더의 밑그림 하나를 골라 색만 다시 계산한다.
+        /// </summary>
+        private Sprite[] ColorLayerFrames(string animFolder, PlayerLayer layer)
+        {
+            string folder = _appearance.FolderFor(layer);
+            if (folder == null) return null;
+
+            var (presetA, presetB) = ReferencePair(layer);
+            Color target = TargetColor(layer);
+            return PlayerPaletteSwap.Frames(animFolder, folder, presetA, presetB, _facing, target);
+        }
+
+        private (string, string) ReferencePair(PlayerLayer layer)
+        {
+            switch (layer)
+            {
+                case PlayerLayer.Skin: return ("1", "2");
+                case PlayerLayer.Clothes: return ("Blue", "Green");
+                case PlayerLayer.Eyes: return ("Black", "Blue");
+                case PlayerLayer.Hair: return ("Brown", "Black");
+                default: return (null, null);
+            }
+        }
+
+        private Color TargetColor(PlayerLayer layer)
+        {
+            switch (layer)
+            {
+                case PlayerLayer.Skin: return _appearance.SkinColor;
+                case PlayerLayer.Clothes: return _appearance.ClothesColorValue;
+                case PlayerLayer.Eyes: return _appearance.EyeColorValue;
+                case PlayerLayer.Hair: return _appearance.HairColorValue;
+                default: return Color.white;
             }
         }
 
