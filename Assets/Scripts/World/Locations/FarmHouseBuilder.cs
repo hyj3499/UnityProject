@@ -27,7 +27,10 @@ namespace FarmMVP
 
             if (loc.HasObjectMarkers)
             {
-                loc.ApplyObjectMarkers(data.GetLocation(LocationId.FarmHouse));
+                var locData = data.GetLocation(LocationId.FarmHouse);
+                loc.ApplyObjectMarkers(locData);
+                // 실내에 놓아 둔 울타리·가구도 되살려야 한다 (농장 빌더들과 같은 흐름).
+                loc.RestoreFeatures(locData);
                 return;
             }
 

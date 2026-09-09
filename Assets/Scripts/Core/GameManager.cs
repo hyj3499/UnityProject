@@ -107,13 +107,14 @@ namespace FarmMVP
                 return true;
             }
 
-            if (CurrentLocation.shopTile == clicked)
+            // 상점·작업대·침대는 맵에 박아 둔 것일 수도, 플레이어가 놓은 가구일 수도 있다.
+            if (CurrentLocation.IsShopAt(clicked.x, clicked.y))
             {
                 UIManager.Instance?.OpenShop();
                 return true;
             }
 
-            if (CurrentLocation.workbenchTile == clicked)
+            if (CurrentLocation.IsWorkbenchAt(clicked.x, clicked.y))
             {
                 UIManager.Instance?.OpenCrafting();
                 return true;
@@ -127,7 +128,7 @@ namespace FarmMVP
                 return true;
             }
 
-            if (CurrentLocation.bedTile == clicked)
+            if (CurrentLocation.IsBedAt(clicked.x, clicked.y))
             {
                 UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
                 return true;
@@ -882,7 +883,8 @@ namespace FarmMVP
 
             // 침대 옆에 서 있을 때만. 예전에는 "바라보는 칸이 침대 옆이기만 해도" 열려서,
             // 두 칸 떨어져 침대 쪽을 보기만 해도 잠들 수 있었다.
-            if (CurrentLocation.bedTile.HasValue && InReach(CurrentLocation.bedTile.Value))
+            var bed = CurrentLocation.FindBedTile();
+            if (bed.HasValue && InReach(bed.Value))
                 UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
         }
 

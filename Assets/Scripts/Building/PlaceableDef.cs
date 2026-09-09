@@ -3,8 +3,18 @@ using UnityEngine;
 
 namespace FarmMVP
 {
-    /// <summary>설치물의 큰 갈래. 울타리는 막고, 길은 밟고 지나간다.</summary>
-    public enum PlaceableKind { Fence, Road }
+    /// <summary>
+    /// 설치물의 큰 갈래. 울타리는 막고, 길은 밟고 지나가고, 가구는 그림 한 장짜리로 홀로 서 있다
+    /// (상점 수레·작업대·침대처럼 이웃과 이어지지 않는 것들).
+    /// </summary>
+    public enum PlaceableKind { Fence, Road, Furniture }
+
+    /// <summary>
+    /// 설치물이 놓였을 때 <b>추가로</b> 하는 일. 대부분은 None이고, 우클릭했을 때 화면이 열리는
+    /// 것들만 여기 들어간다. 마커로 놓든 플레이어가 놓든 같은 값을 쓰므로, 침대를 걷어서
+    /// 다른 자리에 다시 놓아도 그 자리가 잠자는 자리가 된다.
+    /// </summary>
+    public enum PlaceableRole { None, Shop, Workbench, Bed }
 
     /// <summary>
     /// 이웃 연결 상태를 나타내는 비트와, 그 상태에 붙이는 <b>이름 꼬리표</b>.
@@ -108,6 +118,15 @@ namespace FarmMVP
         /// <summary>인벤토리 아이콘에 쓸 꼬리표. 비우면 홀로 놓인 모습(None)을 쓴다.</summary>
         public string iconSuffix;
 
+        /// <summary>우클릭했을 때 하는 일 (상점·작업대·침대). 가구에만 쓴다.</summary>
+        public PlaceableRole role = PlaceableRole.None;
+
+        /// <summary>제작대에 걸릴 때의 값. 0이면 상점/제작 목록에 올리지 않는다.</summary>
+        public int sellPrice;
+
+        /// <summary>가구는 그림이 한 장뿐이라 꼬리표를 붙이지 않는다.</summary>
+        public bool IsFurniture => kind == PlaceableKind.Furniture;
+
         /// <summary>스프라이트 이름 앞부분 (spritePrefix가 비어 있으면 시트 파일 이름).</summary>
         public string Prefix
         {
@@ -120,8 +139,12 @@ namespace FarmMVP
             }
         }
 
-        /// <summary>이 종류끼리 이어진 것으로 볼지 판단한다. 울타리는 울타리끼리, 길은 길끼리.</summary>
-        public bool ConnectsTo(PlaceableDef other) => other != null && other.kind == kind;
+        /// <summary>
+        /// 이 종류끼리 이어진 것으로 볼지 판단한다. 울타리는 울타리끼리, 길은 길끼리.
+        /// 가구는 무엇과도 이어지지 않는다 — 그림이 한 장뿐이라 이어 붙일 모양이 없다.
+        /// </summary>
+        public bool ConnectsTo(PlaceableDef other)
+            => other != null && other.kind == kind && !IsFurniture;
 
         /// <summary>지금 상태에서 지나갈 수 없는지 (열린 문은 지나갈 수 있다).</summary>
         public bool BlocksNow(bool open) => blocks && !(isGate && open);
@@ -135,6 +158,9 @@ namespace FarmMVP
         /// <param name="verticalSide">세로 담의 판 (-1=왼쪽 담, +1=오른쪽 담, 0=아무거나).</param>
         public Sprite GetSprite(int mask, bool open, int part = -1, int verticalSide = 0)
         {
+            // 가구는 이웃에 따라 모양이 바뀌지 않는다 — 시트 경로가 곧 그림 한 장이다.
+            if (IsFurniture) return AssetLibrary.GetSeasonal(sheetPath);
+
             if (isGate)
             {
                 var gate = FindGate(open, part);
@@ -227,6 +253,8 @@ namespace FarmMVP
         /// <summary>인벤토리에 보여 줄 그림.</summary>
         public Sprite GetIcon()
         {
+            if (IsFurniture) return AssetLibrary.GetSeasonal(sheetPath);
+
             if (!string.IsNullOrEmpty(iconSuffix))
             {
                 var icon = Find(iconSuffix);
@@ -242,6 +270,37 @@ namespace FarmMVP
                 if (gate != null) return gate;
             }
             return GetSprite(0, false);
+        }
+
+        /// <summary>
+        /// 이 정의가 시트에서 쓰는 조각 이름들 ("WhiteFence_NS", "WhiteFence_GateOpenL" ...).
+        /// 오브젝트 팔레트에 칠한 타일 이름으로 <b>어느 설치물인지 되짚을 때</b> 쓴다.
+        /// 문과 울타리가 시트 한 장을 나눠 쓰지만 서로 다른 꼬리표를 가지므로 겹치지 않는다.
+        /// </summary>
+        public IEnumerable<string> SpriteNames()
+        {
+            if (IsFurniture)
+            {
+                yield return Prefix;
+                yield break;
+            }
+
+            if (isGate)
+            {
+                yield return Prefix + "_" + Connect.GateClosedSuffix;
+                yield return Prefix + "_" + Connect.GateOpenSuffix;
+                yield return Prefix + "_" + Connect.GateClosedLeft;
+                yield return Prefix + "_" + Connect.GateClosedRight;
+                yield return Prefix + "_" + Connect.GateOpenLeft;
+                yield return Prefix + "_" + Connect.GateOpenRight;
+                yield break;
+            }
+
+            for (int mask = 0; mask < Connect.Count; mask++)
+                yield return Prefix + "_" + Connect.Suffix(mask);
+            yield return Prefix + "_" + Connect.JunctionSuffix;
+            yield return Prefix + "_" + Connect.VerticalLeft;
+            yield return Prefix + "_" + Connect.VerticalRight;
         }
 
         /// <summary>

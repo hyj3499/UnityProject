@@ -48,44 +48,6 @@ namespace FarmMVP
                 sellPrice = 30
             });
 
-            // ---- 설치물 (작업대에서 만든다). 아이템 id와 설치물 id는 같은 값을 쓴다. ----
-            Register(new ItemDef
-            {
-                id = FenceDatabase.WhiteFenceId,
-                displayName = "하얀 울타리",
-                type = ItemType.Resource,
-                maxStack = 99,
-                spriteKey = "Placeable/" + FenceDatabase.WhiteFenceId,
-                sellPrice = 8
-            });
-
-            Register(new ItemDef
-            {
-                id = FenceDatabase.WhiteGateId,
-                displayName = "하얀 울타리 문",
-                type = ItemType.Resource,
-                maxStack = 99,
-                spriteKey = "Placeable/" + FenceDatabase.WhiteGateId,
-                sellPrice = 20
-            });
-
-            RegisterPlaceable(FenceDatabase.WoodFenceId, "나무 울타리", 8);
-            RegisterPlaceable(FenceDatabase.StoneFenceId, "돌담", 10);
-            RegisterPlaceable(FenceDatabase.IronFenceId, "철제 울타리", 16);
-            RegisterPlaceable(FenceDatabase.WoodGateId, "나무 울타리 문", 20);
-            RegisterPlaceable(FenceDatabase.StoneGateId, "돌담 문", 24);
-            RegisterPlaceable(FenceDatabase.IronGateId, "철제 울타리 문", 32);
-
-            Register(new ItemDef
-            {
-                id = RoadDatabase.WoodRoadId,
-                displayName = "나무 길",
-                type = ItemType.Resource,
-                maxStack = 99,
-                spriteKey = "Placeable/" + RoadDatabase.WoodRoadId,
-                sellPrice = 6
-            });
-
             Register(new ItemDef
             {
                 id = "hoe",
@@ -127,7 +89,25 @@ namespace FarmMVP
                 Register(SeedItem(crop));
                 foreach (var harvest in crop.Harvests) Register(HarvestItem(crop, harvest));
             }
+
+            // 설치물(울타리·길·가구)도 표 하나만 보면 되도록 여기서 만든다. 아이템 id와 설치물 id가
+            // 같은 값이라, 가구를 하나 더 넣어도 아이템·드랍·재설치가 저절로 따라온다.
+            foreach (var p in PlaceableDatabase.All) Register(PlaceableItem(p));
         }
+
+        /// <summary>
+        /// 설치물 아이템 하나. 그림은 그 설치물이 홀로 놓였을 때의 모습을 그대로 쓴다
+        /// (가구는 그림이 한 장뿐이라 그것이 곧 아이콘이다).
+        /// </summary>
+        private static ItemDef PlaceableItem(PlaceableDef def) => new ItemDef
+        {
+            id = def.id,
+            displayName = def.displayName,
+            type = ItemType.Resource,
+            maxStack = def.IsFurniture ? 1 : 99,   // 가구는 부피가 커서 한 칸에 하나만
+            spriteKey = "Placeable/" + def.id,
+            sellPrice = def.sellPrice
+        };
 
         /// <summary>씨앗 아이템. 아이콘은 All Crops.png 안의 씨앗 봉지("{시트}Seed")를 쓴다.</summary>
         private static ItemDef SeedItem(CropDef crop) => new ItemDef
@@ -156,21 +136,6 @@ namespace FarmMVP
             dropSpriteKey = $"Crops/{crop.sheet}_Drop",
             sellPrice = crop.sellPrice
         };
-
-        /// <summary>
-        /// 설치물 아이템 하나. 아이템 id와 설치물 id를 같은 값으로 쓰기 때문에 이 한 줄이면 된다
-        /// (그림은 그 설치물이 홀로 놓였을 때의 모습을 그대로 쓴다).
-        /// </summary>
-        private static void RegisterPlaceable(string id, string displayName, int sellPrice)
-            => Register(new ItemDef
-            {
-                id = id,
-                displayName = displayName,
-                type = ItemType.Resource,
-                maxStack = 99,
-                spriteKey = "Placeable/" + id,
-                sellPrice = sellPrice
-            });
 
         private static void Register(ItemDef def) => _defs[def.id] = def;
 

@@ -83,8 +83,8 @@ namespace FarmMVP
                 // 물 타일이면 물을 주는 대신 낚시가 시작된다 — 조준 표시도 켜져야 한다.
                 case MagicType.Water: return location.CanWater(x, y) || FishingController.CanFishAt(location, x, y);
                 case MagicType.Blade: return location.HasChoppableTree(x, y);
-                // 바위마법은 바위를 부수고, 깔아 둔 울타리·길을 걷어낸다.
-                // (마커로 놓인 오브젝트는 여기 걸리지 않으므로 부술 수 없다.)
+                // 바위마법은 바위를 부수고, 놓아 둔 설치물(울타리·길·가구)을 걷어낸다.
+                // "Fixed_{맵}"에 칠한 배경 오브젝트와 마커로 놓인 것은 여기 걸리지 않아 부술 수 없다.
                 case MagicType.Rock: return location.HasBreakableRock(x, y) || location.HasPlaced(x, y);
                 default: return false;
             }
@@ -128,13 +128,13 @@ namespace FarmMVP
                     }
                     return false;
 
-                case MagicType.Rock: // 바위마법: 바위 부수기 + 설치물 철거
+                case MagicType.Rock: // 바위마법: 바위 부수기 + 설치물(울타리·길·가구) 철거
                     if (location.BreakRock(x, y, out bool broken, out string rockTable))
                     {
                         if (broken) dropTableId = rockTable;
                         return true;
                     }
-                    // 걷어낸 울타리·길은 그 자리에 떨어져서 다시 주울 수 있다.
+                    // 걷어낸 울타리·길·가구는 그 자리에 떨어져서 다시 주워 놓을 수 있다.
                     return location.RemovePlaced(x, y, out dropTableId);
 
                 default:

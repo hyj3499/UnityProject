@@ -32,6 +32,35 @@ namespace FarmMVP
         /// <summary>이 칸에 걷어낼 수 있는 설치물이 있는지 (바위마법의 대상).</summary>
         public bool HasPlaced(int x, int y) => placed.ContainsKey(new Vector2Int(x, y));
 
+        /// <summary>이 칸에 놓인 설치물이 맡은 역할 (상점·작업대·침대). 없으면 None.</summary>
+        public PlaceableRole RoleAt(int x, int y)
+        {
+            var def = GetPlaced(x, y)?.Def;
+            return def != null ? def.role : PlaceableRole.None;
+        }
+
+        /// <summary>
+        /// 우클릭했을 때 이 칸이 그 역할을 하는지. 맵에 마커로 박아 둔 것과 플레이어가 놓은 가구를
+        /// <b>함께</b> 본다 — 그래서 침대를 걷어 다른 자리에 다시 놓아도 그 자리에서 잘 수 있다.
+        /// </summary>
+        public bool IsShopAt(int x, int y)
+            => shopTile == new Vector2Int(x, y) || RoleAt(x, y) == PlaceableRole.Shop;
+
+        public bool IsWorkbenchAt(int x, int y)
+            => workbenchTile == new Vector2Int(x, y) || RoleAt(x, y) == PlaceableRole.Workbench;
+
+        public bool IsBedAt(int x, int y)
+            => bedTile == new Vector2Int(x, y) || RoleAt(x, y) == PlaceableRole.Bed;
+
+        /// <summary>지금 이 맵에서 잘 수 있는 자리 (마커 침대가 없으면 놓아 둔 침대를 찾는다).</summary>
+        public Vector2Int? FindBedTile()
+        {
+            if (bedTile.HasValue) return bedTile;
+            foreach (var kv in placed)
+                if (kv.Value.Def != null && kv.Value.Def.role == PlaceableRole.Bed) return kv.Key;
+            return null;
+        }
+
         /// <summary>이 칸에 문이 있는지 (열 수 있는지와는 별개 — 짝이 없으면 못 연다).</summary>
         public bool HasGate(int x, int y)
         {
@@ -250,16 +279,23 @@ namespace FarmMVP
             var sprite = def.GetSprite(PlacedMask(pos, def), feature.open,
                                        GatePart(pos, feature), VerticalSide(pos, def));
 
+            // 가구는 그림 크기가 제각각이라 올려 그릴 양을 그림에서 바로 구한다 (울타리·길은 정해진 값).
+            float lift = def.offset.y + (def.IsFurniture ? BottomAlignLift(sprite) : 0f);
+
             if (!_placedRenderers.TryGetValue(pos, out var sr))
             {
-                // 울타리는 서 있는 물건이라 y정렬(뒤로 돌아가면 가려진다), 길은 바닥에 깔린다.
-                sr = PlaceObject(sprite, pos.x + def.offset.x, pos.y + def.offset.y, pos.y);
+                // 울타리·가구는 서 있는 물건이라 y정렬(뒤로 돌아가면 가려진다), 길은 바닥에 깔린다.
+                sr = PlaceObject(sprite, pos.x + def.offset.x, pos.y + lift, pos.y);
                 if (def.kind == PlaceableKind.Road) sr.sortingOrder = Depth.Road;
+                // 러그처럼 밟고 지나가는 가구는 바닥에 깔린 것이라 아무도 가리지 않는다.
+                else if (def.IsFurniture && !def.blocks) sr.sortingOrder = Depth.FloorDecor;
                 sr.gameObject.name = $"placed_{def.id}_{pos.x}_{pos.y}";
                 _placedRenderers[pos] = sr;
             }
 
             sr.sprite = sprite;
+            // 계절이 바뀌면 그림도 바뀔 수 있으므로 자리도 그때마다 다시 맞춘다.
+            sr.transform.position = new Vector3(pos.x + def.offset.x, pos.y + lift, 0f);
         }
 
         /// <summary>붙어 있는 같은 종류의 설치물을 비트로 모은다 (울타리는 울타리끼리만 이어진다).</summary>

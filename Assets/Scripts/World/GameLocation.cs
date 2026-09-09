@@ -44,6 +44,7 @@ namespace FarmMVP
         private bool _sizeFromTilemap;
 
         private Tilemap _groundMap, _blockedMask, _tillableMask, _objectMarkers, _waterMap;
+        private Tilemap _fixedObjects, _breakableObjects;
         private Tilemap _cliffMap;
         /// <summary>물 칸. null이면 물 레이어가 없다.</summary>
         private bool[,] _water;
@@ -200,7 +201,9 @@ namespace FarmMVP
         private void FindSceneTilemaps()
         {
             _groundMap = _blockedMask = _tillableMask = _objectMarkers = _waterMap = null;
+            _fixedObjects = _breakableObjects = null;
             _cliffMap = null;
+            HasObjectMarkers = false;
             _visibleMaps.Clear();
 
             // 계절 전용 레이어가 있으면 기본 레이어보다 우선한다. 그래서 두 번 훑는다 —
@@ -262,9 +265,21 @@ namespace FarmMVP
                         break;
                     case TilemapLayer.Objects:
                         _objectMarkers = tm;
-                        tm.CompressBounds();
-                        HasObjectMarkers = tm.cellBounds.size.x > 0 && tm.cellBounds.size.y > 0;
+                        if (HasTiles(tm)) HasObjectMarkers = true;
                         if (tr != null) tr.enabled = false;   // 마커는 에디터에서만 보이면 된다
+                        break;
+                    // 오브젝트 레이어 둘은 칠한 타일을 그대로 스프라이트로 옮겨 놓는다
+                    // (PaintedObjectPlacer). 타일맵 자체는 앞뒤 정렬을 칸마다 다르게 할 수 없어서
+                    // 플레이어가 뒤로 돌아갔을 때 가려지지 않기 때문이다 — 그래서 렌더러는 끈다.
+                    case TilemapLayer.Fixed:
+                        _fixedObjects = tm;
+                        if (HasTiles(tm)) HasObjectMarkers = true;
+                        if (tr != null) tr.enabled = false;
+                        break;
+                    case TilemapLayer.Breakable:
+                        _breakableObjects = tm;
+                        if (HasTiles(tm)) HasObjectMarkers = true;
+                        if (tr != null) tr.enabled = false;
                         break;
                 }
             }
@@ -371,18 +386,37 @@ namespace FarmMVP
 
         // ---------- 오브젝트 마커 레이어 ----------
 
-        /// <summary>"Objects_{id}" 레이어에 뭔가 칠해져 있으면 true. 빌더는 이때 하드코딩 배치를 건너뛴다.</summary>
+        /// <summary>이 타일맵에 뭐라도 칠해져 있는지.</summary>
+        private static bool HasTiles(Tilemap tm)
+        {
+            if (tm == null) return false;
+            tm.CompressBounds();
+            return tm.cellBounds.size.x > 0 && tm.cellBounds.size.y > 0;
+        }
+
+        /// <summary>
+        /// 오브젝트 레이어(Objects / Fixed / Breakable) 중 하나라도 칠해져 있으면 true.
+        /// 빌더는 이때 하드코딩 배치를 통째로 건너뛴다.
+        /// </summary>
         public bool HasObjectMarkers { get; private set; }
 
         /// <summary>
-        /// "Objects_{id}" 레이어를 읽어 집·배송함·나무 같은 것들을 놓는다.
-        /// 무엇을 놓을지는 ObjectMarkerDatabase의 표가, 놓는 일은 ObjectMarkerPlacer가 한다 —
-        /// 오브젝트를 아무리 추가해도 이 파일은 길어지지 않는다.
+        /// 칠해 둔 오브젝트 레이어 셋을 차례로 읽어 실제 오브젝트를 놓는다.
+        ///
+        ///   "Objects_{맵}"    특별한 일을 하는 마커 — 집·문·맵 이동 출구·나무·바위
+        ///                     (ObjectMarkerDatabase에 등록된 이름만 알아본다)
+        ///   "Fixed_{맵}"      부술 수 없는 배경 오브젝트 — 칠한 그림을 그대로 놓고 그 칸을 막는다.
+        ///                     아무 png나 팔레트에 넣어 칠하면 되고, 등록할 것이 없다.
+        ///   "Breakable_{맵}"  부술 수 있는 오브젝트 — 울타리·길·가구. 진짜 설치물로 바뀌므로
+        ///                     바위마법으로 걷어내 주워 가고 다시 놓을 수 있다.
         /// </summary>
         public void ApplyObjectMarkers(LocationData locData)
-            => ObjectMarkerPlacer.Apply(this, _objectMarkers, locData);
+        {
+            ObjectMarkerPlacer.Apply(this, _objectMarkers, locData);
+            PaintedObjectPlacer.Apply(this, _fixedObjects, _breakableObjects, locData);
+        }
 
-        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff }
+        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff, Fixed, Breakable }
 
         /// <summary>
         /// 레이어 이름을 해석한다. 앞에 계절이 붙어 있으면("Winter_Location_Farm1") 그 계절 전용이다.
@@ -421,6 +455,10 @@ namespace FarmMVP
                 { locId = candidate; layer = TilemapLayer.Decor; return true; }
                 if (name == $"Cliff_{candidate}" || name == $"{candidate}Cliff")
                 { locId = candidate; layer = TilemapLayer.Cliff; return true; }
+                if (name == $"Fixed_{candidate}" || name == $"{candidate}Fixed")
+                { locId = candidate; layer = TilemapLayer.Fixed; return true; }
+                if (name == $"Breakable_{candidate}" || name == $"{candidate}Breakable")
+                { locId = candidate; layer = TilemapLayer.Breakable; return true; }
             }
             locId = default;
             layer = TilemapLayer.Ground;
@@ -457,6 +495,15 @@ namespace FarmMVP
 
         internal SpriteRenderer PlaceObject(Sprite sprite, float x, float y)
             => PlaceObject(sprite, x, y, y);
+
+        /// <summary>
+        /// 한 칸(16px)보다 큰 그림을 얼마나 위로 올려 그려야 밑동이 칸 바닥에 붙는지.
+        /// 스프라이트는 가운데를 기준으로 그려지므로, 그냥 두면 키가 큰 그림일수록 아래로 파묻힌다.
+        /// 작물·칠해 둔 오브젝트·가구가 모두 이 한 가지 규칙을 쓴다 — 그래서 그림 크기가 제각각인
+        /// png를 팔레트에 그냥 넣어도 발밑이 저절로 맞는다.
+        /// </summary>
+        public static float BottomAlignLift(Sprite sprite)
+            => sprite == null ? 0f : (sprite.rect.height - 16f) / 32f;
 
         /// <summary>
         /// Assets/Resources/Prefabs/{locId}Ground.prefab 가 있으면 그걸 인스턴스화해서 바닥으로 쓴다
@@ -643,7 +690,7 @@ namespace FarmMVP
                 var cropSprite = dirt.crop.GetSprite();
                 cropSr.sprite = cropSprite;
                 // 단계마다 그림 높이가 달라질 수 있으므로(16px / 32px) 그릴 때마다 다시 맞춘다.
-                cropSr.transform.position = new Vector3(pos.x, pos.y + 0.25f + CropSpriteLift(cropSprite), 0);
+                cropSr.transform.position = new Vector3(pos.x, pos.y + 0.25f + BottomAlignLift(cropSprite), 0);
                 cropSr.enabled = true;
             }
             else if (_cropRenderers.TryGetValue(pos, out var cropSr2))
@@ -652,12 +699,6 @@ namespace FarmMVP
             }
         }
 
-        /// <summary>
-        /// 한 칸(16px)보다 높은 작물 그림을 얼마나 위로 올릴지. 스프라이트는 가운데를 기준으로
-        /// 그려지므로, 그냥 두면 키 큰 단계일수록 밑동이 땅 밑으로 내려간다.
-        /// </summary>
-        private static float CropSpriteLift(Sprite sprite)
-            => sprite == null ? 0f : (sprite.rect.height - 16f) / 32f;
 
         /// <summary>
         /// 이웃 8칸이 같은 종류인지(경작지끼리 / 젖은 흙끼리) 검사해 오토타일 비트마스크를 만든다.

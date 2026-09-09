@@ -38,6 +38,7 @@ namespace FarmMVP
                 spritePrefix = "WoodRoad",   // 시트 한 장에 여러 길이 있어서 접두사로 가른다
                 blocks = false,
                 dropTableId = "placed_" + WoodRoadId,
+                sellPrice = 6,
             });
         }
 

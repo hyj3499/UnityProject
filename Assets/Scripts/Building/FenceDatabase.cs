@@ -57,6 +57,7 @@ namespace FarmMVP
                 sheetPath = sheet,
                 blocks = true,
                 dropTableId = "placed_" + WhiteFenceId,
+                sellPrice = 8,
                 // 울타리는 칸보다 키가 커 보이도록 살짝 올려 그린다.
                 offset = new Vector2(0f, 0.15f),
             });
@@ -73,22 +74,23 @@ namespace FarmMVP
                 // 그래서 아이콘만 열린 문으로 두어야 인벤토리에서 구분된다.
                 iconSuffix = Connect.GateOpenSuffix,
                 dropTableId = "placed_" + WhiteGateId,
+                sellPrice = 20,
                 offset = new Vector2(0f, 0.15f),
             });
 
             // 아래 셋은 시트만 다르고 나머지는 같다. 새 울타리도 이 다섯 줄이면 끝난다.
-            RegisterSimple(WoodFenceId, "나무 울타리", "Sprites/Fence/WoodFence");
-            RegisterSimple(StoneFenceId, "돌담", "Sprites/Fence/StoneFence");
-            RegisterSimple(IronFenceId, "철제 울타리", "Sprites/Fence/IronFence");
+            RegisterSimple(WoodFenceId, "나무 울타리", "Sprites/Fence/WoodFence", 8);
+            RegisterSimple(StoneFenceId, "돌담", "Sprites/Fence/StoneFence", 10);
+            RegisterSimple(IronFenceId, "철제 울타리", "Sprites/Fence/IronFence", 16);
 
             // 문. 두 칸짜리인지 한 칸짜리인지는 시트에 GateClosedL 조각이 있는지로 저절로 갈린다.
-            RegisterGate(WoodGateId, "나무 울타리 문", "Sprites/Fence/WoodFence");
-            RegisterGate(StoneGateId, "돌담 문", "Sprites/Fence/StoneFence");
-            RegisterGate(IronGateId, "철제 울타리 문", "Sprites/Fence/IronFence");
+            RegisterGate(WoodGateId, "나무 울타리 문", "Sprites/Fence/WoodFence", 20);
+            RegisterGate(StoneGateId, "돌담 문", "Sprites/Fence/StoneFence", 24);
+            RegisterGate(IronGateId, "철제 울타리 문", "Sprites/Fence/IronFence", 32);
         }
 
         /// <summary>울타리 문 하나. 시트의 문 조각 이름만 있으면 나머지는 다 따라온다.</summary>
-        private static void RegisterGate(string id, string displayName, string sheetPath)
+        private static void RegisterGate(string id, string displayName, string sheetPath, int sellPrice)
         {
             Register(new PlaceableDef
             {
@@ -100,12 +102,13 @@ namespace FarmMVP
                 isGate = true,
                 iconSuffix = Connect.GateClosedSuffix,
                 dropTableId = "placed_" + id,
+                sellPrice = sellPrice,
                 offset = new Vector2(0f, 0.15f),
             });
         }
 
         /// <summary>문이 없는 평범한 울타리 하나. 시트 이름이 곧 조각 이름의 앞부분이 된다.</summary>
-        private static void RegisterSimple(string id, string displayName, string sheetPath)
+        private static void RegisterSimple(string id, string displayName, string sheetPath, int sellPrice)
         {
             Register(new PlaceableDef
             {
@@ -115,6 +118,7 @@ namespace FarmMVP
                 sheetPath = sheetPath,
                 blocks = true,
                 dropTableId = "placed_" + id,
+                sellPrice = sellPrice,
                 offset = new Vector2(0f, 0.15f),
             });
         }

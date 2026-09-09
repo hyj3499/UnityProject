@@ -87,11 +87,14 @@ namespace FarmMVP
     }
 
     /// <summary>
-    /// "Objects_{맵}" 레이어에 칠할 수 있는 오브젝트들의 카탈로그.
+    /// "Objects_{맵}" 레이어에 칠할 수 있는 <b>특별한</b> 오브젝트들의 카탈로그 —
+    /// 집(문이 생긴다)·실내문·배송함·나무·바위처럼 코드가 알아야 하는 것들만 들어 있다.
     ///
-    /// 오브젝트를 하나 더 넣는 데 필요한 것은 <b>여기 Register 한 줄</b>뿐이다 —
-    /// 배치 코드(ObjectMarkerPlacer)도, 마커 타일 생성기도 이 표를 그대로 읽는다.
-    /// 나무와 바위는 아예 적지 않는다 — TreeDatabase/바위 변종에서 자동으로 만들어지므로,
+    /// 그냥 놓아 두는 오브젝트는 여기 등록하지 않는다. "Fixed_{맵}"(부술 수 없음) 또는
+    /// "Breakable_{맵}"(부수고 다시 놓을 수 있음) 레이어에 png를 그대로 칠하면 되고,
+    /// 그 둘은 PaintedObjectPlacer가 칠한 그림을 그대로 쓰므로 등록할 표가 아예 없다.
+    ///
+    /// 나무와 바위는 여기에도 적지 않는다 — TreeDatabase/바위 변종에서 자동으로 만들어지므로,
     /// 나무 종류를 추가하면 Obj_{그 나무} 마커가 저절로 생긴다.
     /// </summary>
     public static class ObjectMarkerDatabase
@@ -170,9 +173,9 @@ namespace FarmMVP
                 floorDecor = true,   // 바닥에 깔리는 장식 — 아무도 가리지 않는다
             });
 
-            // 오브젝트를 더 넣으려면 여기에 한 줄 (이름은 파일 이름이 된다):
-            //   Register(new ObjectMarkerDef { spritePath = "Sprites/Environment/Barrel" });
-            // 그러면 Tools/Farm 메뉴가 Obj_Barrel 마커 타일을 만들어 주고, 칠하면 그대로 놓인다.
+            // 평범한 오브젝트는 여기 등록하지 않는다 — "Fixed_{맵}" / "Breakable_{맵}" 레이어에
+            // 그림을 그대로 칠하면 되기 때문이다. 이 표에는 <b>코드가 알아야 하는 것</b>만 남긴다
+            // (집처럼 문이 생기는 것, 배송함·상점처럼 마커로 박아 두고 싶은 것, 나무·바위).
 
             RegisterTrees();
             RegisterRocks();

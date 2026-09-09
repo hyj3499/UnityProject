@@ -14,6 +14,11 @@ namespace FarmMVP
     ///   Obj_{그림 파일 이름}  ObjectMarkerDatabase에 등록된 오브젝트 (Obj_ShopCart, Obj_Rock_0)
     ///   Obj_{나무 id}         TreeDatabase의 나무 (Obj_Apricot)
     ///   Obj_Exit{맵이름}      밟으면 그 맵으로 넘어가는 칸 (Obj_ExitFarm2)
+    ///
+    /// 이 레이어에는 <b>특별한 일을 하는 것만</b> 칠한다 — 집·문·맵 이동 출구·나무·바위처럼
+    /// 코드가 알아야 하는 것들. 평범한 배경 오브젝트는 "Fixed_{맵}", 부수고 다시 놓을 수 있는
+    /// 것은 "Breakable_{맵}" 레이어에 칠하면 되고 그 둘은 등록할 표가 없다
+    /// (PaintedObjectPlacer가 칠한 그림을 그대로 쓴다).
     /// </summary>
     internal static class ObjectMarkerPlacer
     {
@@ -60,9 +65,10 @@ namespace FarmMVP
             if (unknown.Count > 0)
             {
                 Debug.LogWarning($"[ObjectMarkers] {markers.name}: 이름을 알 수 없는 마커 타일 — " +
-                                 string.Join(", ", unknown) + " — 마커 이름은 그림 파일 이름 그대로입니다 " +
-                                 "(Sprites/Environment/ShopCart.png -> Obj_ShopCart). " +
-                                 "Tools/Farm 메뉴로 다시 만들면 이름이 맞춰집니다.");
+                                 string.Join(", ", unknown) + ". 이 레이어는 특별한 일을 하는 마커만 " +
+                                 "알아봅니다 (집·문·맵 이동 출구·나무·바위). 그냥 놓아 두는 장식이라면 " +
+                                 $"\"Fixed_{loc.id}\" 레이어에, 부수고 다시 놓을 수 있는 것이라면 " +
+                                 $"\"Breakable_{loc.id}\" 레이어에 칠하세요 — 그 둘은 등록이 필요 없습니다.");
             }
 
             if (!loc.doorExitTile.HasValue && (loc.id == LocationId.Farm1 || loc.id == LocationId.FarmHouse))

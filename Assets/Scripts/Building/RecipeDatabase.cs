@@ -86,6 +86,15 @@ namespace FarmMVP
             Register(FenceDatabase.StoneGateId, 1, new Ingredient("stone", 4), new Ingredient("wood", 2));
             Register(FenceDatabase.IronGateId, 1, new Ingredient("stone", 6), new Ingredient("wood", 3));
             Register(RoadDatabase.WoodRoadId, 2, new Ingredient("wood", 1), new Ingredient("stone", 1));
+
+            // 가구. 바위마법으로 걷어내 다른 자리에 옮겨 놓는 것이 보통이지만, 잃어버려도
+            // 다시 만들 수 있어야 상점·작업대·침대가 없는 채로 갇히지 않는다.
+            Register(FurnitureDatabase.WorkbenchId, 1, new Ingredient("wood", 10));
+            Register(FurnitureDatabase.BedId, 1, new Ingredient("wood", 15), new Ingredient("stone", 2));
+            Register(FurnitureDatabase.ShopCartId, 1, new Ingredient("wood", 20), new Ingredient("stone", 10));
+            Register(FurnitureDatabase.FireplaceId, 1, new Ingredient("stone", 12));
+            Register(FurnitureDatabase.PlantId, 1, new Ingredient("wood", 2));
+            Register(FurnitureDatabase.RugId, 1, new Ingredient("wood", 3));
         }
 
         private static void Register(string resultItemId, int resultCount, params Ingredient[] costs)

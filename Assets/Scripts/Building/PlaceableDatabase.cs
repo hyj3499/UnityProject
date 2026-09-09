@@ -22,7 +22,61 @@ namespace FarmMVP
             _init = true;
             FenceDatabase.Init();
             RoadDatabase.Init();
+            FurnitureDatabase.Init();
         }
+
+        /// <summary>
+        /// 오브젝트 팔레트에 칠한 타일 이름으로 설치물을 되짚는다 — "Breakable_{맵}" 레이어가 쓴다.
+        ///
+        /// 팔레트 타일은 그림 조각에서 그대로 만들어지므로 이름이 조각 이름과 같다
+        /// ("ShopCart", "WhiteFence_NS_L", "WoodRoad_EW"). 그래서 각 설치물이 <b>쓰는 조각 이름</b>을
+        /// 한 번 훑어 표로 만들어 두고 거기서 찾는다. 대소문자와 밑줄은 무시한다.
+        ///
+        /// 울타리는 어느 조각을 칠했든 상관없다 — 이어진 모양은 놓인 뒤에 이웃을 보고 다시 정해지므로
+        /// 여기서는 "어떤 울타리인지"만 알면 된다. 문 조각(GateOpenL ...)만 문으로 갈린다.
+        /// </summary>
+        public static PlaceableDef FindByTileName(string tileName)
+        {
+            Init();
+            if (string.IsNullOrEmpty(tileName)) return null;
+            if (_byTileName == null) BuildTileNameIndex();
+
+            string key = Key(tileName);
+            if (_byTileName.TryGetValue(key, out var exact)) return exact;
+
+            // 딱 맞는 조각 이름이 없으면 뒤에서부터 한 마디씩 떼어 본다
+            // ("WhiteFence_NS_Winter" -> "WhiteFence_NS" -> "WhiteFence").
+            var parts = tileName.Split('_');
+            for (int keep = parts.Length - 1; keep >= 1; keep--)
+            {
+                string shorter = Key(string.Join("_", parts, 0, keep));
+                if (_byTileName.TryGetValue(shorter, out var def)) return def;
+            }
+            return null;
+        }
+
+        private static Dictionary<string, PlaceableDef> _byTileName;
+
+        private static void BuildTileNameIndex()
+        {
+            _byTileName = new Dictionary<string, PlaceableDef>();
+            foreach (var def in _all)
+            {
+                // id로도 찾을 수 있게 해 둔다 ("shop_cart" 라는 이름의 타일을 만들어도 통하도록).
+                _byTileName[Key(def.id)] = def;
+                foreach (var name in def.SpriteNames())
+                {
+                    string key = Key(name);
+                    // 울타리와 문이 시트를 나눠 쓰지만 꼬리표가 달라 겹치지 않는다. 그래도 만약
+                    // 겹치면 먼저 등록된 쪽을 남긴다 (Fence -> Gate 순서라 평범한 울타리가 이긴다).
+                    if (!_byTileName.ContainsKey(key)) _byTileName[key] = def;
+                }
+            }
+        }
+
+        /// <summary>대소문자와 밑줄을 무시한 비교용 이름. "WhiteFence_NS" 와 "whitefencens" 는 같다.</summary>
+        private static string Key(string name)
+            => string.IsNullOrEmpty(name) ? "" : name.Replace("_", "").ToLowerInvariant();
 
         /// <summary>FenceDatabase / RoadDatabase가 자기 항목을 넣을 때 부른다.</summary>
         internal static void Register(PlaceableDef def)
@@ -30,6 +84,7 @@ namespace FarmMVP
             if (def == null || string.IsNullOrEmpty(def.id)) return;
             _defs[def.id] = def;
             _all.Add(def);
+            _byTileName = null;   // 표를 다시 만들게 한다
         }
 
         public static PlaceableDef Get(string id)
