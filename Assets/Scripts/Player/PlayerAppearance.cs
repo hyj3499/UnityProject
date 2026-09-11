@@ -4,145 +4,173 @@ using UnityEngine;
 namespace FarmMVP
 {
     /// <summary>
+    /// 색 하나를 고른 상태. 그림에 딸린 색 대응표에서 한 색을 고르고, 그 위에 색상·채도·명도를
+    /// 더 틀어 쓴다. 그래서 표에 없는 색도 만들 수 있으면서 원래 음영은 그대로 살아난다.
+    /// </summary>
+    [Serializable]
+    public class AppearanceColor
+    {
+        /// <summary>대응표에서 몇 번째 색인지 (1부터).</summary>
+        public int palette = 1;
+
+        public float hue = 0f;          // -180 ~ 180
+        public float saturation = 1f;   // 0 ~ 2
+        public float value = 1f;        // 0 ~ 2
+
+        public AppearanceColor() { }
+        public AppearanceColor(int palette) { this.palette = palette; }
+
+        public AppearanceColor Clone() => (AppearanceColor)MemberwiseClone();
+
+        public FarmerTint ToTint(string lutPath) => new FarmerTint
+        {
+            lutPath = lutPath,
+            column = palette,
+            hueShift = hue,
+            saturation = saturation,
+            value = value,
+        };
+    }
+
+    /// <summary>
     /// 플레이어의 외형. 새 게임을 시작할 때 고르고 세이브에 그대로 담긴다.
     ///
-    /// 몸은 farmer_base(남) / farmer_girl_base(여) 시트에서 나오고, 피부·눈·부츠 색은 그 시트의
-    /// 표식 색을 갈아 끼워 만든다 (FarmerSheet). 옷은 흰 그림 위에 색을 곱해 입힌다
-    /// (FarmerClothes). 그래서 여기 담기는 것은 "#RRGGBB" 색값들과 성별뿐이고, 색깔별 그림은
-    /// 한 장도 필요 없다.
+    /// 담기는 것은 <b>고른 품목의 경로</b>와 <b>색</b>뿐이다. 그림은 부위별로 이미 다 그려져 있고
+    /// (FarmerArt), 색은 대응표로 칠하므로 조합마다 그림을 따로 만들 필요가 없다.
+    /// 체형은 하나뿐이라 성별 구분이 없다.
     /// </summary>
     [Serializable]
     public class PlayerAppearance
     {
-        // 기본값 — 피부·눈·부츠는 시트에 원래 칠해져 있는 색이라 손대지 않으면 원본 그대로 나온다.
-        public const string DefaultSkin = "#F9AE89";
-        public const string DefaultEyes = "#1C964A";
-        public const string DefaultBoots = "#AD471B";
-        public const string DefaultPants = "#3A5FA8";
-        public const string DefaultShirt = "#C85A3C";
-        public const string DefaultHair = "#6B3A1F";
+        // 처음 시작할 때 걸치는 것. 비워 두면 맨몸으로 시작하고, 캐릭터 만들기에서 고른다.
+        public const string DefaultHair = "";
+        public const string DefaultEyes = "";
+        public const string DefaultTop = "";
+        public const string DefaultPants = "";
+        public const string DefaultShoes = "";
 
-        /// <summary>"male" 또는 "female" — 어느 시트를 쓸지 정한다.</summary>
-        public string gender = "female";
+        /// <summary>
+        /// 맨몸 그림이 있는 곳. 체형은 하나뿐이다.
+        /// 폴더로 끝나는 경로라 파일 이름이 부위 이름 그대로다 (Base/chest.png 처럼).
+        /// </summary>
+        public const string BasePath = "Base/";
 
-        public string skin = DefaultSkin;
-        public string eyes = DefaultEyes;
-        public string boots = DefaultBoots;
-        public string pants = DefaultPants;
-        public string shirt = DefaultShirt;
+        /// <summary>
+        /// 소매 그림이 있는 곳. 소매는 옷마다 있는 것이 아니라 <b>소매 갈래</b>마다 하나씩 있고
+        /// (Sleeves/arm_left_overshirts.png), 색만 입은 옷 것으로 칠해 쓴다.
+        /// </summary>
+        public const string SleevePath = "Sleeves/";
+
+        public const string BaseLut = "Base/lut";                     // 피부색 대응표
+        public const string EyesLut = "Eyes/lut";                     // 눈 색 대응표
+        public const string HairLut = "Hair/lut";                     // 머리색 대응표
+
+        // 고른 품목 (빈 문자열이면 걸치지 않은 것)
         public string hair = DefaultHair;
+        public string eyes = DefaultEyes;
+        public string facialHair = "";
+        public string top = DefaultTop;
+        public string pants = DefaultPants;
 
-        /// <summary>셔츠 무늬. 기본값은 무늬 없는 흰 티셔츠라 어떤 색으로 물들여도 깔끔하다.</summary>
-        public int shirtStyle = FarmerClothes.DefaultShirt;
+        /// <summary>드레스·정장·로브처럼 위아래가 한 벌인 옷. 이게 있으면 상·하의 대신 입는다.</summary>
+        public string outfit = "";
 
-        /// <summary>머리 모양 (0 ~ FarmerClothes.HairCount-1).</summary>
-        public int hairStyle = 0;
+        public string shoes = DefaultShoes;
+        public string headGear = "";
+        public string faceGear = "";
+        public string backGear = "";
 
-        public bool IsFemale => !string.Equals(gender, "male", StringComparison.OrdinalIgnoreCase);
+        // 색
+        public AppearanceColor skin = new AppearanceColor(1);
+        public AppearanceColor hairColor = new AppearanceColor(1);
+        public AppearanceColor eyeColor = new AppearanceColor(1);
+        public AppearanceColor shoesColor = new AppearanceColor(1);
 
-        public PlayerAppearance Clone() => (PlayerAppearance)MemberwiseClone();
-
-        public Color SkinColor => Parse(skin, DefaultSkin);
-        public Color EyeColor => Parse(eyes, DefaultEyes);
-        public Color BootsColor => Parse(boots, DefaultBoots);
-        public Color PantsColor => Parse(pants, DefaultPants);
-        public Color ShirtColor => Parse(shirt, DefaultShirt);
-        public Color HairColor => Parse(hair, DefaultHair);
-
-        /// <summary>시트를 칠할 색 묶음.</summary>
-        public FarmerSheet.Palette ToPalette() => new FarmerSheet.Palette
+        public PlayerAppearance Clone()
         {
-            skin = SkinColor,
-            boots = BootsColor,
-            eyes = EyeColor,
-            pants = PantsColor,
-            shirt = ShirtColor,
-        };
-
-        /// <summary>"#RRGGBB"를 Color로. 값이 비었거나 이상하면 기본값으로 돌아간다.</summary>
-        private static Color Parse(string value, string fallback)
-        {
-            if (!string.IsNullOrEmpty(value) && ColorUtility.TryParseHtmlString(value, out var c)) return c;
-            ColorUtility.TryParseHtmlString(fallback, out var d);
-            return d;
-        }
-    }
-
-    /// <summary>모양 선택지 하나 (보여 줄 이름 + 저장할 값).</summary>
-    public struct AppearanceOption
-    {
-        public string value;
-        public string label;
-
-        public AppearanceOption(string value, string label)
-        {
-            this.value = value;
-            this.label = label;
-        }
-    }
-
-    /// <summary>캐릭터 만들기 화면의 선택지와, 색상 그래프의 "빠른 선택" 견본들.</summary>
-    public static class AppearanceCatalog
-    {
-        public static readonly AppearanceOption[] Genders =
-        {
-            new AppearanceOption("female", "여성"),
-            new AppearanceOption("male", "남성"),
-        };
-
-        /// <summary>스타듀밸리 skinColors 표에서 각 톤의 가장 밝은 칸을 뽑아 온 것.</summary>
-        public static readonly (string label, string hex)[] SkinSwatches =
-        {
-            ("1", "#F9AE89"), ("2", "#E18C66"), ("3", "#F0A082"), ("4", "#F7B99A"),
-            ("5", "#C46447"), ("6", "#AE5F39"), ("7", "#A24612"), ("8", "#D28A3B"),
-            ("9", "#BD7944"), ("10", "#FFABB2"), ("11", "#D6B2A9"), ("12", "#8C5429"),
-        };
-
-        public static readonly (string label, string hex)[] EyeSwatches =
-        {
-            ("초록", "#1C964A"), ("파랑", "#2E6FC4"), ("갈색", "#7A4A22"),
-            ("검정", "#3A3A44"), ("보라", "#7A3FA8"), ("회색", "#8A9199"),
-        };
-
-        /// <summary>shoeColors 표에서 가장 밝은 칸을 뽑아 온 것.</summary>
-        public static readonly (string label, string hex)[] BootsSwatches =
-        {
-            ("빨강", "#D40000"), ("초록", "#88B24D"), ("갈색", "#B35500"),
-            ("황토", "#A3762A"), ("회청", "#96A2A2"), ("검정", "#424242"),
-            ("보라", "#BC00EB"), ("파랑", "#0B63B4"), ("흰색", "#F2F2F2"),
-        };
-
-        public static readonly (string label, string hex)[] HairSwatches =
-        {
-            ("갈색", "#6B3A1F"), ("검정", "#2B2B33"), ("금발", "#D9A441"),
-            ("빨강", "#B23A1E"), ("회색", "#9AA0A6"), ("흰색", "#E8E4DC"),
-            ("분홍", "#E08AA8"), ("파랑", "#4A6FB5"),
-        };
-
-        public static readonly (string label, string hex)[] ClothSwatches =
-        {
-            ("파랑", "#3A5FA8"), ("빨강", "#C85A3C"), ("초록", "#3D993D"),
-            ("보라", "#8E52C4"), ("노랑", "#E0B23C"), ("분홍", "#E88AA8"),
-            ("흰색", "#E8E8E8"), ("검정", "#39393F"),
-        };
-
-        /// <summary>머리 모양 선택지. 그림이 56벌 들어 있어 번호만 붙여 준다.</summary>
-        public static readonly AppearanceOption[] HairStyles = BuildHairStyles();
-
-        private static AppearanceOption[] BuildHairStyles()
-        {
-            var list = new AppearanceOption[FarmerClothes.HairCount];
-            for (int i = 0; i < list.Length; i++)
-                list[i] = new AppearanceOption(i.ToString(), (i + 1) + "번");
-            return list;
+            var c = (PlayerAppearance)MemberwiseClone();
+            c.skin = skin.Clone();
+            c.hairColor = hairColor.Clone();
+            c.eyeColor = eyeColor.Clone();
+            c.shoesColor = shoesColor.Clone();
+            return c;
         }
 
-        /// <summary>목록에서 지금 값이 몇 번째인지 (없으면 0).</summary>
-        public static int IndexOf(AppearanceOption[] options, string value)
+        /// <summary>
+        /// 이 부위를 어느 품목에서 가져올지. 한 벌짜리 옷을 입고 있으면 상·하의보다 그쪽이 이긴다.
+        /// 걸친 것이 없으면 null.
+        /// </summary>
+        public string ItemFor(FarmerSlot slot)
         {
-            for (int i = 0; i < options.Length; i++)
-                if (options[i].value == value) return i;
-            return 0;
+            switch (slot)
+            {
+                case FarmerSlot.Hair: return hair;
+
+                // 눈은 따로 고른 것이 없으면 맨몸에 딸린 것을 쓴다 (Base/eyes.png).
+                case FarmerSlot.Eyes: return string.IsNullOrEmpty(eyes) ? BasePath : eyes;
+
+                case FarmerSlot.Torso: return Worn;
+                case FarmerSlot.SleeveLeft: return SleeveOf("arm_left");
+                case FarmerSlot.SleeveRight: return SleeveOf("arm_right");
+
+                case FarmerSlot.LegsWear: return Dressed ? outfit : pants;
+
+                // 맨몸은 언제나 같은 곳에서 온다.
+                case FarmerSlot.Legs:
+                case FarmerSlot.Chest:
+                case FarmerSlot.Head:
+                case FarmerSlot.ArmLeft:
+                case FarmerSlot.ArmRight: return BasePath;
+
+                default: return null;
+            }
+        }
+
+        private bool Dressed => !string.IsNullOrEmpty(outfit);
+
+        /// <summary>윗도리로 입고 있는 것. 한 벌짜리 옷이 상의보다 이긴다.</summary>
+        private string Worn => Dressed ? outfit : top;
+
+        /// <summary>
+        /// 이쪽 소매 그림의 경로. 입은 옷이 정한 소매 갈래를 가져다 붙인다.
+        /// 소매가 없는 옷이거나 아무것도 안 입었으면 null.
+        /// </summary>
+        private string SleeveOf(string side)
+        {
+            var item = FarmerCatalog.Find(Worn);
+            if (item == null || string.IsNullOrEmpty(item.sleeve)) return null;
+            return SleevePath + side + "_" + item.sleeve;
+        }
+
+        /// <summary>이 부위를 어떤 색으로 칠할지.</summary>
+        public FarmerTint TintFor(FarmerSlot slot)
+        {
+            switch (slot)
+            {
+                case FarmerSlot.Legs:
+                case FarmerSlot.Chest:
+                case FarmerSlot.Head:
+                case FarmerSlot.ArmLeft:
+                case FarmerSlot.ArmRight: return skin.ToTint(BaseLut);
+
+                case FarmerSlot.Eyes: return eyeColor.ToTint(EyesLut);
+
+                case FarmerSlot.Hair: return hairColor.ToTint(FarmerArt.LutPathOr(hair, HairLut));
+
+                // 소매 그림은 검정·갈색 두 색뿐이라, 입은 옷에 적힌 색으로 갈아 칠해 쓴다.
+                case FarmerSlot.SleeveLeft:
+                case FarmerSlot.SleeveRight: return SleeveTint();
+
+                default: return FarmerTint.None;
+            }
+        }
+
+        private FarmerTint SleeveTint()
+        {
+            var tint = FarmerTint.None;
+            string worn = Worn;
+            if (!string.IsNullOrEmpty(worn)) tint.sleevePalette = FarmerArt.PathFor(worn, FarmerSlot.Torso);
+            return tint;
         }
     }
 }

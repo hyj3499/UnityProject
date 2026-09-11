@@ -397,7 +397,7 @@ namespace FarmMVP
             // 낚시는 여러 초에 걸쳐 단계가 바뀌므로, 그 단계를 그대로 눌러 둔 동작으로 넘긴다.
             var fishing = _game?.Fishing;
             if (fishing != null && fishing.IsActive)
-                _anim.SetOverride(FarmerAnimations.ForFishing(fishing.State));
+                _anim.SetOverride(FarmerPoses.ForFishing(fishing.State));
             else
                 _anim.ClearOverride();
 
@@ -435,7 +435,7 @@ namespace FarmMVP
                 return;
             }
 
-            _anim.PlayOnce(FarmerAnimations.ForMagic(_game.CurrentMagic));
+            _anim.PlayOnce(FarmerPoses.ForMagic(_game.CurrentMagic));
         }
     }
 }
