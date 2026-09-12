@@ -71,5 +71,14 @@ namespace FarmMVP
 
         /// <summary>떨어진 아이템은 바닥에 놓인 것이라 같은 칸의 캐릭터보다 뒤.</summary>
         public const int DroppedItemBias = -10;
+
+        /// <summary>
+        /// 다 자란 나무의 밑동(그루터기). 같은 칸의 윗부분보다 뒤에 그려져야 윗부분이 밑동을 덮는다.
+        /// 나무를 쓰러뜨리면 윗부분만 떨어져 나가고 이 그림이 드러난다.
+        /// </summary>
+        public const int TreeBaseBias = -2;
+
+        /// <summary>벨 때 흩날리는 나뭇잎. 그 나무보다는 앞에 보여야 한다.</summary>
+        public const int TreeLeafBias = 2;
     }
 }

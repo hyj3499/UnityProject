@@ -1,0 +1,24 @@
+{
+  "id": "dev.two_hearts",
+  "trigger": "EnterLocation",
+  "priority": 100,
+  "repeat": "Once",
+  "conditions": [
+    { "type": "Location", "id": "Farm1" },
+    { "type": "Hearts", "id": "dev", "min": 2 },
+    { "type": "Time", "min": 360, "max": 1080 }
+  ],
+  "commands": [
+    { "op": "Say", "actor": "dev", "emotion": 3, "lines": ["요즘 네가 농장을 가꾸는 걸 자주 봤어.", "가끔은 쉬어 가도 괜찮지 않을까?"] },
+    { "op": "Choice", "actor": "dev", "lines": ["오늘은 같이 쉬었다 갈래?"], "choices": [
+      { "text": "좋아, 같이 쉬자.", "target": "accept" },
+      { "text": "오늘은 할 일이 있어서, 다음에!", "target": "decline" }
+    ] },
+    { "op": "Say", "label": "accept", "actor": "dev", "emotion": 2, "lines": ["좋아! 이렇게 같이 있으니까 기분이 좋네."] },
+    { "op": "Affection", "id": "dev", "amount": 30 },
+    { "op": "Flag", "id": "dev.rested_together" },
+    { "op": "Goto", "target": "finish" },
+    { "op": "Say", "label": "decline", "actor": "dev", "emotion": 1, "lines": ["알겠어. 너무 무리하지는 마!"] },
+    { "op": "End", "label": "finish" }
+  ]
+}

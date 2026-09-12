@@ -38,6 +38,7 @@ namespace FarmMVP
 
         public void OnBeginDrag(PointerEventData e)
         {
+            if (_ui.IsStoryRunning) return;
             var icon = _view.icon;
             if (icon == null || !icon.enabled || icon.sprite == null) return;
 

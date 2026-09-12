@@ -25,6 +25,7 @@ namespace FarmMVP
         private UIManager _ui;
 
         private RectTransform _root;
+        private RectTransform _panel;
         private Image _portrait;
         private Text _nameText, _bodyText, _nextHint;
         private RectTransform _choiceRoot;
@@ -56,6 +57,8 @@ namespace FarmMVP
             _lines = lines != null && lines.Length > 0 ? lines : new[] { "..." };
             _lineIndex = 0;
             _choices = choices != null && choices.Length > 0 ? choices : null;
+            _panel.sizeDelta = new Vector2(PanelW, Mathf.Max(PanelH,
+                132f + (_choices == null ? 0 : _choices.Length * (ChoiceH + ChoiceGap)) + Pad));
             _onChoice = onChoice;
             _onFinished = onFinished;
             _awaitingChoice = false;
@@ -80,6 +83,8 @@ namespace FarmMVP
 
         public void Close()
         {
+            _onChoice = null;
+            _onFinished = null;
             ClearChoices();
             _root.gameObject.SetActive(false);
         }
@@ -187,6 +192,7 @@ namespace FarmMVP
 
             var panelGo = new GameObject("Panel");
             var panel = panelGo.AddComponent<RectTransform>();
+            _panel = panel;
             panel.SetParent(_root, false);
             panel.anchorMin = panel.anchorMax = new Vector2(0.5f, 0f);
             panel.pivot = new Vector2(0.5f, 0f);

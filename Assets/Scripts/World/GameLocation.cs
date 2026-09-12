@@ -32,7 +32,20 @@ namespace FarmMVP
         /// <summary>드랍된 월드 아이템(WorldItem)을 매달아 둘 부모. 위치가 다시 로드되면 함께 정리된다.</summary>
         public Transform FeatureRoot => _featureRoot;
 
+        private PlayerController _player;
+        /// <summary>연출이 플레이어 쪽을 봐야 할 때만 쓴다 (나무가 넘어가는 방향).</summary>
+        private PlayerController Player
+        {
+            get
+            {
+                if (_player == null) _player = FindObjectOfType<PlayerController>();
+                return _player;
+            }
+        }
+
         private bool[,] _blocked;
+        // NPC 점유를 지형과 분리해 이동 시 원래 지형/오브젝트 충돌을 지우지 않는다.
+        private readonly HashSet<Vector2Int> _npcBlocked = new HashSet<Vector2Int>();
         /// <summary>
         /// 오브젝트 발판처럼 <b>치울 수 없는</b> 이유로 막힌 칸. 나무를 베거나 바위를 부술 때 그 칸을
         /// 무조건 열어 버리면, 집 발판 위에 서 있던 나무를 벤 순간 집에 구멍이 뚫린다.
@@ -69,6 +82,8 @@ namespace FarmMVP
         private readonly Dictionary<Vector2Int, SpriteRenderer> _wetRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _cropRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _treeRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
+        /// <summary>다 자란 나무의 윗부분. 그루터기(_treeRenderers) 위에 겹쳐 그리고, 벨 때 이것만 넘어간다.</summary>
+        private readonly Dictionary<Vector2Int, SpriteRenderer> _treeTopRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly Dictionary<Vector2Int, SpriteRenderer> _rockRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
 
         // Special interaction points
@@ -498,12 +513,21 @@ namespace FarmMVP
 
         /// <summary>
         /// 한 칸(16px)보다 큰 그림을 얼마나 위로 올려 그려야 밑동이 칸 바닥에 붙는지.
-        /// 스프라이트는 가운데를 기준으로 그려지므로, 그냥 두면 키가 큰 그림일수록 아래로 파묻힌다.
+        /// 그냥 두면 키가 큰 그림일수록 아래로 파묻힌다.
         /// 작물·칠해 둔 오브젝트·가구가 모두 이 한 가지 규칙을 쓴다 — 그래서 그림 크기가 제각각인
         /// png를 팔레트에 그냥 넣어도 발밑이 저절로 맞는다.
+        ///
+        /// 그림 <b>크기</b>가 아니라 <b>기준점</b>을 보고 계산한다. 크기로 계산하면 가운데 기준인
+        /// 그림에서만 맞아서, 나무 시트 조각처럼 기준점이 아래인 그림을 칠하면 통째로 떠 버린다.
         /// </summary>
         public static float BottomAlignLift(Sprite sprite)
-            => sprite == null ? 0f : (sprite.rect.height - 16f) / 32f;
+        {
+            if (sprite == null) return 0f;
+            // 기준점에서 그림 아래끝까지의 거리만큼 올리면 밑동이 칸 바닥(칸 중심에서 반 칸 아래)에 닿는다.
+            // 기준점을 보고 계산하므로 가운데 기준이든(대부분의 png) 아래 기준이든(나무 시트 조각) 맞는다.
+            float ppu = sprite.pixelsPerUnit > 0f ? sprite.pixelsPerUnit : 16f;
+            return sprite.pivot.y / ppu - 0.5f;
+        }
 
         /// <summary>
         /// Assets/Resources/Prefabs/{locId}Ground.prefab 가 있으면 그걸 인스턴스화해서 바닥으로 쓴다
@@ -527,7 +551,7 @@ namespace FarmMVP
         public bool IsBlocked(int x, int y)
         {
             if (!InBounds(x, y)) return true;
-            return _blocked[x, y];
+            return _blocked[x, y] || _npcBlocked.Contains(new Vector2Int(x, y));
         }
 
         internal void SetBlocked(int x, int y, bool v)
@@ -618,7 +642,8 @@ namespace FarmMVP
                 trees[pos] = new TreeFeature(t.x, t.y, t.treeId, t.growthStage)
                 {
                     hp = t.hp,
-                    dayCounter = t.dayCounter
+                    dayCounter = t.dayCounter,
+                    isStump = t.isStump
                 };
                 SetBlocked(t.x, t.y, true);
                 RenderTree(pos);
@@ -738,28 +763,48 @@ namespace FarmMVP
                 RenderHoeDirt(key);
         }
 
+        /// <summary>
+        /// 나무 그림의 기준선 — 그림의 기준점이 <b>아래 가운데</b>라 칸의 아래끝에 놓기만 하면
+        /// 크기가 제각각인 성장 단계들이 저절로 같은 자리에 선다.
+        /// </summary>
+        private static float TreeFootY(int tileY) => tileY - 0.5f;
+
+        /// <summary>
+        /// 나무 한 그루를 그린다. 다 자란 나무는 그림이 둘이다 — 바닥에 붙은 <b>그루터기</b>와
+        /// 그 위에 얹히는 <b>윗부분</b>. 기준점이 같아서 같은 자리에 놓기만 하면 맞물리고,
+        /// 벨 때 윗부분만 떼어 넘어뜨리면 그루터기가 그대로 남는다 (TreeChopFx 참고).
+        /// </summary>
         public void RenderTree(Vector2Int pos)
         {
             bool alive = trees.TryGetValue(pos, out var tree) && tree.IsAlive;
 
-            if (_treeRenderers.TryGetValue(pos, out var sr))
+            if (!alive)
             {
-                if (!alive)
+                if (_treeRenderers.TryGetValue(pos, out var dead))
                 {
-                    Destroy(sr.gameObject);
+                    Destroy(dead.gameObject);
                     _treeRenderers.Remove(pos);
-                    ClearFeatureBlock(pos);
                 }
-                else
-                {
-                    sr.sprite = tree.GetSprite(); // 자라면서 그림이 바뀐다
-                }
+                DestroyTreeTop(pos);
+                ClearFeatureBlock(pos);
                 return;
             }
 
-            if (!alive) return;
-            var created = PlaceObject(tree.GetSprite(), pos.x, pos.y + 0.6f, pos.y);
-            _treeRenderers[pos] = created;
+            if (_treeRenderers.TryGetValue(pos, out var sr)) sr.sprite = tree.GetSprite();
+            else _treeRenderers[pos] = PlaceObject(tree.GetSprite(), pos.x, TreeFootY(pos.y), pos.y, Depth.TreeBaseBias);
+
+            var top = tree.GetTopSprite();
+            if (top == null) { DestroyTreeTop(pos); return; }
+
+            if (_treeTopRenderers.TryGetValue(pos, out var topSr)) topSr.sprite = top;
+            else _treeTopRenderers[pos] = PlaceObject(top, pos.x, TreeFootY(pos.y), pos.y);
+        }
+
+        private void DestroyTreeTop(Vector2Int pos)
+        {
+            if (!_treeTopRenderers.TryGetValue(pos, out var topSr)) return;
+            _treeTopRenderers.Remove(pos);
+            if (topSr != null) Destroy(topSr.gameObject);
         }
 
         public void RenderRock(Vector2Int pos)
@@ -855,7 +900,22 @@ namespace FarmMVP
         }
 
         /// <summary>NPC가 서 있는 칸은 지나갈 수 없게 막는다.</summary>
-        public void SetNpcBlocked(Vector2Int tile) => SetBlocked(tile.x, tile.y, true);
+        public void SetNpcBlocked(Vector2Int tile) => _npcBlocked.Add(tile);
+        public void ClearNpcBlocks() => _npcBlocked.Clear();
+
+        public void MoveNpcBlock(Vector2Int from, Vector2Int to)
+        {
+            _npcBlocked.Remove(from);
+            _npcBlocked.Add(to);
+        }
+
+        public bool IsBlockedForStory(Vector2Int tile, NpcActor movingNpc)
+        {
+            if (!InBounds(tile.x, tile.y) || _blocked[tile.x, tile.y]) return true;
+            if (_npcBlocked.Contains(tile) && (movingNpc == null || movingNpc.Tile != tile)) return true;
+            // 컷신 중 출구를 밟고 끝나면 다음 프레임에 의도치 않게 맵이 바뀌므로 제외한다.
+            return _exits.ContainsKey(tile) || (doorExitTile.HasValue && doorExitTile.Value == tile);
+        }
 
         /// <summary>
         /// 문으로 드나들었을 때 내려설 칸 — 문 바로 위/아래 중 걸을 수 있는 쪽.
@@ -928,9 +988,12 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 나무를 한 번 벤다. 이번 타격으로 나무가 쓰러졌으면 destroyed=true와 함께
-        /// 그 나무의 dropTableId를 돌려준다 (호출자가 ItemDropSpawner로 실제 드랍을 스폰한다).
-        /// 아직 다 자라지 않은 나무는 한 번에 뽑히고 아무것도 남기지 않는다.
+        /// 나무를 한 번 벤다. 칠 때마다 나뭇잎이 흩날리고,
+        ///  · 다 자란 나무는 hp만큼 때려야 쓰러진다 — 윗부분이 옆으로 넘어가고 그루터기가 남는다.
+        ///  · 남은 그루터기는 한 번 더 치우면 자리가 빈다.
+        ///  · 아직 다 자라지 않은 나무는 한 번에 뽑히고 아무것도 남기지 않는다.
+        /// 무언가 떨어뜨릴 것이 생겼으면 destroyed=true와 함께 dropTableId를 돌려준다
+        /// (호출자가 ItemDropSpawner로 실제 드랍을 스폰한다).
         /// </summary>
         public bool ChopTree(int x, int y, out bool destroyed, out string dropTableId)
         {
@@ -940,20 +1003,75 @@ namespace FarmMVP
             var pos = new Vector2Int(x, y);
             var t = trees[pos];
 
-            bool wasMature = t.IsMature;
-            destroyed = t.Chop();
+            bool wasStump = t.isStump;
+            var result = t.Chop();
+            ScatterChopLeaves(pos, t);
 
-            // 아직 안 쓰러졌으면 휘청인다 (쓰러지면 그림 자체가 사라지므로 흔들 것이 없다)
-            if (!destroyed && _treeRenderers.TryGetValue(pos, out var treeSr))
-                Wobble.Play(treeSr, 3f, 0.35f);
-
-            if (destroyed)
+            switch (result)
             {
-                if (wasMature) dropTableId = t.Def.dropTableId;
-                trees.Remove(pos);
-                RenderTree(pos);
+                case ChopResult.Hit:
+                    // 휘청인다. 다 자란 나무는 윗부분이 흔들려야 나무를 친 것처럼 보인다.
+                    if (_treeTopRenderers.TryGetValue(pos, out var topSr)) Wobble.Play(topSr, 3f, 0.35f);
+                    else if (_treeRenderers.TryGetValue(pos, out var baseSr)) Wobble.Play(baseSr, 3f, 0.35f);
+                    break;
+
+                case ChopResult.Felled:
+                    destroyed = true;
+                    dropTableId = t.Def.DropTableId;
+                    FellTreeTop(pos);
+                    RenderTree(pos);   // 밑동이 그루터기 그림으로 바뀐다
+                    break;
+
+                case ChopResult.Cleared:
+                    // 그루터기를 치우면 장작이 조금 더 나온다. 덜 자란 나무는 아무것도 남기지 않는다.
+                    destroyed = wasStump;
+                    if (wasStump) dropTableId = t.Def.StumpDropTableId;
+                    trees.Remove(pos);
+                    RenderTree(pos);
+                    break;
             }
             return true;
+        }
+
+        /// <summary>
+        /// 쓰러진 윗부분을 목록에서 떼어내 옆으로 넘어뜨린다. 목록에서 빠졌으므로 이 뒤의
+        /// RenderTree는 이것을 건드리지 않고, 넘어가는 연출이 끝나면 스스로 사라진다.
+        /// </summary>
+        private void FellTreeTop(Vector2Int pos)
+        {
+            if (!_treeTopRenderers.TryGetValue(pos, out var topSr)) return;
+            _treeTopRenderers.Remove(pos);
+            TreeChopFx.FellTop(topSr, FallDirection(pos.x));
+        }
+
+        /// <summary>베는 사람 반대쪽으로 넘어뜨린다 — 자기 위로 쓰러지면 이상하다.</summary>
+        private float FallDirection(int tileX)
+        {
+            var player = Player;
+            return player == null || player.transform.position.x <= tileX ? 1f : -1f;
+        }
+
+        private void ScatterChopLeaves(Vector2Int pos, TreeFeature tree)
+        {
+            TreeChopFx.ScatterLeaves(_featureRoot, tree.GetLeafSprites(),
+                                     new Vector2(pos.x, TreeFootY(pos.y)), CanopyHeight(tree),
+                                     Depth.YSort(pos.y, Depth.TreeLeafBias));
+        }
+
+        /// <summary>
+        /// 잎이 달려 있는 높이 (밑동에서 몇 칸 위인지). 성장 단계 그림은 모두 같은 크기의 칸에
+        /// 담겨 있어 그림에서 높이를 읽을 수 없으므로 단계별로 적어 둔다.
+        /// </summary>
+        private static float CanopyHeight(TreeFeature tree)
+        {
+            if (tree.isStump) return 0.4f;
+            switch (tree.growthStage)
+            {
+                case 0: return 0.5f;
+                case 1: return 0.8f;
+                case 2: return 1.4f;
+                default: return 4.0f;
+            }
         }
 
         /// <summary>바위를 한 번 친다. 부서졌으면 broken=true와 드랍 테이블을 돌려준다.</summary>
@@ -1051,7 +1169,8 @@ namespace FarmMVP
                     x = t.x, y = t.y, hp = t.hp,
                     treeId = t.treeId,
                     growthStage = t.growthStage,
-                    dayCounter = t.dayCounter
+                    dayCounter = t.dayCounter,
+                    isStump = t.isStump
                 });
             }
 

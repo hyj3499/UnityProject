@@ -12,8 +12,12 @@ namespace FarmMVP
     /// 마스크 레이어와 달리 여기서는 "무엇을 칠했는지"가 중요하다 — 칠한 Tile 에셋의 이름이
     /// 무엇을 놓을지 정한다. 이름 규칙:
     ///   Obj_{그림 파일 이름}  ObjectMarkerDatabase에 등록된 오브젝트 (Obj_ShopCart, Obj_Rock_0)
-    ///   Obj_{나무 id}         TreeDatabase의 나무 (Obj_Apricot)
+    ///   Obj_{나무 id}         TreeDatabase의 나무 (Obj_Tree1)
     ///   Obj_Exit{맵이름}      밟으면 그 맵으로 넘어가는 칸 (Obj_ExitFarm2)
+    ///
+    /// "Obj_"는 붙여도 되고 안 붙여도 되며, <b>시트에서 잘라 낸 조각 이름을 그대로 써도 된다</b>
+    /// ("tree1_spring_top" → 나무 tree1). 그래서 나무를 하나 더 넣어도 마커 타일 에셋을 손으로
+    /// 만들 필요 없이, 시트의 아무 조각이나 팔레트에 끌어다 칠하면 된다.
     ///
     /// 이 레이어에는 <b>특별한 일을 하는 것만</b> 칠한다 — 집·문·맵 이동 출구·나무·바위처럼
     /// 코드가 알아야 하는 것들. 평범한 배경 오브젝트는 "Fixed_{맵}", 부수고 다시 놓을 수 있는
@@ -64,11 +68,25 @@ namespace FarmMVP
                       (created > 0 ? $" 그중 나무/바위 {created}개는 이번에 새로 만들었습니다." : ""));
             if (unknown.Count > 0)
             {
-                Debug.LogWarning($"[ObjectMarkers] {markers.name}: 이름을 알 수 없는 마커 타일 — " +
-                                 string.Join(", ", unknown) + ". 이 레이어는 특별한 일을 하는 마커만 " +
-                                 "알아봅니다 (집·문·맵 이동 출구·나무·바위). 그냥 놓아 두는 장식이라면 " +
-                                 $"\"Fixed_{loc.id}\" 레이어에, 부수고 다시 놓을 수 있는 것이라면 " +
-                                 $"\"Breakable_{loc.id}\" 레이어에 칠하세요 — 그 둘은 등록이 필요 없습니다.");
+                // 울타리·길·가구를 여기 칠한 것은 흔한 실수라, 어느 레이어로 옮기면 되는지 짚어 준다.
+                var misplaced = new List<string>();
+                var nameless = new List<string>();
+                foreach (var n in unknown)
+                    (PlaceableDatabase.FindByTileName(ObjectMarkerDatabase.StripPrefix(n)) != null ? misplaced : nameless).Add(n);
+
+                if (misplaced.Count > 0)
+                {
+                    Debug.LogWarning($"[ObjectMarkers] {markers.name}: 설치물을 마커 레이어에 칠했습니다 — " +
+                                     string.Join(", ", misplaced) + $". 울타리·길·가구는 \"Breakable_{loc.id}\" " +
+                                     "레이어에 칠해야 걷어내고 다시 놓을 수 있습니다.");
+                }
+                if (nameless.Count > 0)
+                {
+                    Debug.LogWarning($"[ObjectMarkers] {markers.name}: 이름을 알 수 없는 마커 타일 — " +
+                                     string.Join(", ", nameless) + ". 이 레이어는 특별한 일을 하는 것만 " +
+                                     "알아봅니다 (집·문·맵 이동 출구·나무·바위). 그냥 놓아 두는 장식이라면 " +
+                                     $"\"Fixed_{loc.id}\" 레이어에 칠하세요 — 거기는 등록이 필요 없습니다.");
+                }
             }
 
             if (!loc.doorExitTile.HasValue && (loc.id == LocationId.Farm1 || loc.id == LocationId.FarmHouse))

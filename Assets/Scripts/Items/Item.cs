@@ -33,7 +33,6 @@ namespace FarmMVP
             {
                 case "Wood": return AssetLibrary.Wood;
                 case "Stone": return AssetLibrary.Stone;
-                case "ApricotSeed": return AssetLibrary.ApricotSeed;
                 case "Hoe": return AssetLibrary.Hoe;
                 case "WateringCan": return AssetLibrary.WateringCan;
                 case "Axe": return AssetLibrary.Axe;

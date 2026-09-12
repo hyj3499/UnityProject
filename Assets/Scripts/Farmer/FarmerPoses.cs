@@ -154,37 +154,67 @@ namespace FarmMVP
         {
             var d = new Dictionary<FarmerAnim, FarmerClip[]>();
 
-            // 세 방향이 같은 그림을 쓴다. 뒤를 볼 때만 눈을 지운다.
-            void Flat(FarmerAnim anim, bool loop, params FarmerKey[] keys)
+            // 앞뒤는 정면 그림을, 옆은 측면 그림을 쓴다. 뒤를 볼 때는 눈만 지운다.
+            void Ways(FarmerAnim anim, bool loop, FarmerKey[] front, FarmerKey[] side)
             {
-                var clips = new[] { Clip(keys), Clip(keys), Clip(NoEyes(keys)) };
+                var clips = new[] { Clip(front), Clip(side), Clip(NoEyes(front)) };
                 foreach (var c in clips) c.loop = loop;
                 d[anim] = clips;
             }
 
-            // 서 있기 — 가만히 있다가 이따금 한 번 깜빡인다.
-            Flat(FarmerAnim.Idle, loop: true,
-                K(2800, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0),
-                K( 120, eyes: 1, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0));
+            // 세 방향이 같은 그림을 쓴다 (측면 그림이 아직 없는 동작).
+            void Flat(FarmerAnim anim, bool loop, params FarmerKey[] keys) => Ways(anim, loop, keys, keys);
 
-            // 걷기 — 0번(모은 자세)과 1·2번(내딛는 자세)을 번갈아 밟는다.
+            // ---------------------------------------------------------------------------
+            //  그림이 들어 있는 칸
+            //    정면(0~2)  legs·armL·armR : 0 모음 · 1·2 걷기      chest·head : 0
+            //    측면(3~)   legs  : 3 대기 · 4 준비 · 5 앞딛기 · 6 뒷딛기
+            //               armL  : 3 대기 · 4 준비 · 5 뒤로     · 6 앞으로
+            //               armR  : 3 준비 · 4 앞으로 · 5 뒤로            (대기 칸이 없어 3을 같이 쓴다)
+            //               chest·head : 1        눈·머리카락은 측면 그림이 없어 정면 것을 그대로 쓴다
+            // ---------------------------------------------------------------------------
+
+            // 서 있기 — 가만히 있다가 이따금 한 번 깜빡인다.
+            Ways(FarmerAnim.Idle, loop: true,
+                front: new[] {
+                    K(2800, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0),
+                    K( 120, eyes: 1, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0) },
+                side: new[] {
+                    K(2800, eyes: 2, legs: 3, armL: 3, armR: 3, hair: 0, chest: 1, head: 1),
+                    K( 120, eyes: 3, legs: 3, armL: 3, armR: 3, hair: 0, chest: 1, head: 1) });
+
+            // 걷기 — 모은 자세와 내딛는 자세를 번갈아 밟는다.
             //
             // 한 걸음은 두 박이다. 다리가 몸 아래로 모이는 칸은 <b>뜨는 박</b>이라 hop을,
             // 발을 내디뎌 다리가 뻗는 칸은 <b>딛는 박</b>이라 bounce를 준다.
             // 뜰 땐 몸이 통째로 오르고, 디딜 땐 발이 땅에 붙은 채 허리만 늘어난다.
             // (bounce를 음수로 바꾸면 늘어나는 대신 내려앉는 무거운 걸음이 된다.)
-            Flat(FarmerAnim.Walk, loop: true,
-                K( 180, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 1, bounce: 0),
-                K( 180, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0, hop: 0, bounce: -1),
-                K( 180, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 1, bounce: 0),
-                K( 180, eyes: 0, legs: 2, armL: 2, armR: 2, hair: 2, chest: 0, head: 0, hop: 0, bounce: -1));
+            //
+            // 측면은 뛰기 그림밖에 없어 걸을 때도 같은 칸을 느리게 넘긴다.
+            Ways(FarmerAnim.Walk, loop: true,
+                front: new[] {
+                    K( 180, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 1, bounce: 0),
+                    K( 180, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0, hop: 0, bounce: -1),
+                    K( 180, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 1, bounce: 0),
+                    K( 180, eyes: 0, legs: 2, armL: 2, armR: 2, hair: 2, chest: 0, head: 0, hop: 0, bounce: -1) },
+                side: new[] {
+                    K( 180, eyes: 2, legs: 4, armL: 4, armR: 3, hair: 0, chest: 1, head: 1, hop: 1, bounce: 0),
+                    K( 180, eyes: 2, legs: 5, armL: 6, armR: 5, hair: 1, chest: 1, head: 1, hop: 0, bounce: -1),
+                    K( 180, eyes: 2, legs: 4, armL: 4, armR: 3, hair: 0, chest: 1, head: 1, hop: 1, bounce: 0),
+                    K( 180, eyes: 2, legs: 6, armL: 5, armR: 4, hair: 2, chest: 1, head: 1, hop: 0, bounce: -1) });
 
             // 뛰기 — 걷기와 같은 박자로, 빠르고 더 크게 튄다.
-            Flat(FarmerAnim.Run, loop: true,
-                K( 110, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 2, bounce: 0),
-                K( 110, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0, hop: 0, bounce: -2),
-                K( 110, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 2, bounce: 0),
-                K( 110, eyes: 0, legs: 2, armL: 2, armR: 2, hair: 2, chest: 0, head: 0, hop: 0, bounce: -2));
+            Ways(FarmerAnim.Run, loop: true,
+                front: new[] {
+                    K( 110, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 2, bounce: 0),
+                    K( 110, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0, hop: 0, bounce: -2),
+                    K( 110, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 2, bounce: 0),
+                    K( 110, eyes: 0, legs: 2, armL: 2, armR: 2, hair: 2, chest: 0, head: 0, hop: 0, bounce: -2) },
+                side: new[] {
+                    K( 110, eyes: 2, legs: 4, armL: 4, armR: 3, hair: 0, chest: 1, head: 1, hop: 0, bounce: -1),
+                    K( 110, eyes: 2, legs: 5, armL: 6, armR: 5, hair: 1, chest: 1, head: 1, hop: 2, bounce: 0),
+                    K( 110, eyes: 2, legs: 4, armL: 4, armR: 3, hair: 0, chest: 1, head: 1, hop: 0, bounce: -1),
+                    K( 110, eyes: 2, legs: 6, armL: 5, armR: 4, hair: 2, chest: 1, head: 1, hop: 2, bounce: 0) });
 
             // ---- 아래는 아직 전용 그림이 없어 서기·걷기 그림을 빌려 쓴다 ----
 

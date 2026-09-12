@@ -21,7 +21,29 @@ namespace FarmMVP
         public GameLocation CurrentLocation { get; private set; }
         public PlayerController Player { get; private set; }
 
-        public bool Paused;              // 책(인벤토리/설정) 이나 팝업이 열려 있는 동안 true
+        private bool _uiPaused;
+        public StoryEventDirector Events { get; private set; }
+        public bool Paused
+        {
+            get => _uiPaused || (Events != null && Events.IsRunning);
+            set => _uiPaused = value;
+        }
+
+        public void InitEvents(UIManager ui)
+        {
+            Events = gameObject.AddComponent<StoryEventDirector>();
+            Events.Init(this, ui);
+        }
+
+        public NpcActor FindNpcActor(string id) => _npcActors.Find(a => a != null && a.Def.id == id);
+
+        public void RebuildNpcBlocks()
+        {
+            if (CurrentLocation == null) return;
+            CurrentLocation.ClearNpcBlocks();
+            foreach (var actor in _npcActors)
+                if (actor != null) CurrentLocation.SetNpcBlocked(actor.Tile);
+        }
 
         public event Action OnTimeChanged;
         public event Action OnDayChanged;
@@ -142,6 +164,7 @@ namespace FarmMVP
         /// </summary>
         private bool InteractNpc(NpcActor actor)
         {
+            if (Events != null && Events.TryInteract(actor.Def.id)) return true;
             var def = actor.Def;
             var stack = SelectedStack;
             bool holdingItem = stack != null && !stack.IsEmpty;
@@ -431,6 +454,7 @@ namespace FarmMVP
             };
             d.farmer.posX = 8;
             d.farmer.posY = 7;
+            d.story.introPending = true;
 
             // Starting inventory: 도구는 인벤토리에 넣지 않는다. 딸기 씨앗 5개만 지급.
             d.farmer.slots.Add(new SlotData { index = 0, itemId = "strawberry_seed", count = 5 });
@@ -455,8 +479,16 @@ namespace FarmMVP
         {
             foreach (var slot in data)
             {
-                if (slot.index >= 0 && slot.index < inv.slots.Length && !string.IsNullOrEmpty(slot.itemId))
-                    inv.slots[slot.index] = new ItemStack(slot.itemId, slot.count);
+                if (slot.index < 0 || slot.index >= inv.slots.Length || string.IsNullOrEmpty(slot.itemId)) continue;
+
+                // 이제 없는 아이템(삭제된 종류를 담고 있던 예전 세이브)은 조용히 버린다 —
+                // 들고만 있어도 그림·이름을 찾을 수 없어 쓰는 쪽마다 터진다.
+                if (ItemDatabase.Get(slot.itemId) == null)
+                {
+                    Debug.LogWarning($"[GameManager] 이제 없는 아이템 '{slot.itemId}'을(를) 인벤토리에서 뺐습니다.");
+                    continue;
+                }
+                inv.slots[slot.index] = new ItemStack(slot.itemId, slot.count);
             }
         }
 
@@ -474,6 +506,7 @@ namespace FarmMVP
         // ---------- location ----------
         public void ChangeLocation(LocationId id, Vector2 spawn)
         {
+            if (Events != null && Events.IsRunning) return;
             // persist current location features before leaving
             if (CurrentLocation != null)
                 CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
@@ -486,6 +519,7 @@ namespace FarmMVP
         /// </summary>
         public void ChangeLocationThroughDoor(LocationId id)
         {
+            if (Events != null && Events.IsRunning) return;
             if (CurrentLocation != null)
                 CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
             LoadLocation(id, Vector2.zero, false, spawnAtDoor: true);
@@ -497,6 +531,7 @@ namespace FarmMVP
         /// </summary>
         public void ChangeLocationThroughExit(LocationId target, Vector2Int fromTile)
         {
+            if (Events != null && Events.IsRunning) return;
             var origin = CurrentLocation != null ? CurrentLocation.id : Data.currentLocation;
             if (CurrentLocation != null)
                 CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
@@ -534,6 +569,7 @@ namespace FarmMVP
             Player.transform.position = new Vector3(p.x, p.y, 0);
 
             CenterCameraInstant();
+            Events?.Signal("EnterLocation");
         }
 
         /// <summary>이 위치에 저장되어 있던, 아직 줍지 않은 드랍 아이템들을 그대로 되살린다.</summary>
@@ -548,7 +584,7 @@ namespace FarmMVP
         {
             // I = 인벤토리 책, ESC = 설정 책 (같은 페이지를 다시 누르면 닫힌다).
             // 배송함이 열려 있을 때는 두 키 모두 배송함을 닫는다.
-            if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Escape))
+            if ((Events == null || !Events.IsRunning) && (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Escape)))
             {
                 var ui = UIManager.Instance;
                 if (ui != null && ui.IsDialogueOpen)
@@ -572,6 +608,7 @@ namespace FarmMVP
                 AdvanceTime(Time.deltaTime * minutesPerRealSecond);
                 FollowCamera();
             }
+            else if (Events != null && Events.IsRunning) FollowCamera();
 
             // sync player pos into data continuously (cheap)
             Data.farmer.posX = Player.transform.position.x;
@@ -952,6 +989,7 @@ namespace FarmMVP
         // ---------- day / sleep / save ----------
         public void Sleep()
         {
+            if (Events != null && Events.IsRunning) return;
             // persist current location
             CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
 
@@ -987,6 +1025,8 @@ namespace FarmMVP
 
             // reload current location so grown crops render
             LoadLocation(Data.currentLocation, new Vector2(Player.transform.position.x, Player.transform.position.y), false);
+
+            Events?.Signal("DayStarted");
 
             UIManager.Instance?.ShowDayBanner(Data.currentDay);
             if (income > 0) UIManager.Instance?.Toast($"배송함 판매 +{income:N0} G");
@@ -1031,11 +1071,16 @@ namespace FarmMVP
 
         private void AdvanceCropsInData(LocationData loc)
         {
-            // 나무는 물과 상관없이 하루마다 자란다.
+            // 나무는 물과 상관없이 하루마다 자란다 (쓰러뜨리고 남은 그루터기는 자라지 않는다).
             foreach (var td in loc.trees)
             {
-                var tree = new TreeFeature(td.x, td.y, td.treeId, td.growthStage) { dayCounter = td.dayCounter };
+                var tree = new TreeFeature(td.x, td.y, td.treeId, td.growthStage)
+                {
+                    dayCounter = td.dayCounter,
+                    isStump = td.isStump
+                };
                 tree.Grow();
+                td.treeId = tree.treeId;   // 없어진 종류를 가리키던 예전 세이브를 여기서 옮긴다
                 td.growthStage = tree.growthStage;
                 td.dayCounter = tree.dayCounter;
             }
@@ -1056,6 +1101,7 @@ namespace FarmMVP
         /// <summary>현재 상태를 즉시 저장한다 (F5 단축키와 설정창의 저장 버튼이 공유).</summary>
         public void SaveNow()
         {
+            if (Events != null && Events.IsRunning) return;
             SaveInventory();
             CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
             SaveSystem.Save(Data);
@@ -1064,7 +1110,7 @@ namespace FarmMVP
         // manual save hotkey
         private void LateUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.F5))
+            if (Input.GetKeyDown(KeyCode.F5) && (Events == null || !Events.IsRunning))
             {
                 SaveNow();
                 UIManager.Instance?.Toast("저장됨");

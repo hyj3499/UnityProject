@@ -1,0 +1,18 @@
+{
+  "id": "demo.movement",
+  "trigger": "Manual",
+  "triggerId": "demo.movement",
+  "repeat": "Always",
+  "conditions": [{ "type": "Location", "id": "Farm1" }],
+  "commands": [
+    { "op": "Say", "actor": "dev", "lines": ["이동 연출 예시야. 잠깐 걸어 볼게!"] },
+    { "op": "Move", "actor": "dev", "path": [{ "x": 11, "y": 7 }, { "x": 11, "y": 8 }], "speed": 2 },
+    { "op": "Face", "actor": "dev", "direction": "Left" },
+    { "op": "Move", "actor": "player", "path": [{ "x": 10, "y": 7 }], "speed": 2.6 },
+    { "op": "Face", "actor": "player", "direction": "Up" },
+    { "op": "Wait", "seconds": 0.5 },
+    { "op": "Animate", "actor": "player", "animation": "Harvest", "seconds": 0.8 },
+    { "op": "Say", "actor": "dev", "lines": ["이렇게 명령을 차례로 쓰면 돼. 연출이 끝나면 원래 자리로 돌아가."] },
+    { "op": "End" }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "farm2.savings",
+  "trigger": "EnterLocation",
+  "repeat": "Once",
+  "conditions": [
+    { "type": "Location", "id": "Farm2" },
+    { "type": "Money", "min": 1000 }
+  ],
+  "commands": [
+    { "op": "Say", "actor": "player", "lines": ["어느새 1,000 G를 모았다.", "이 밭을 어떻게 가꿀지 계획을 세워 볼까?"] },
+    { "op": "Choice", "actor": "player", "lines": ["어떤 농장을 만들고 싶지?"], "choices": [
+      { "text": "작물로 가득한 농장!", "target": "crops" },
+      { "text": "산책하기 좋은 농장!", "target": "garden" }
+    ] },
+    { "op": "Flag", "label": "crops", "id": "farm.plan_crops" },
+    { "op": "Goto", "target": "finish" },
+    { "op": "Flag", "label": "garden", "id": "farm.plan_garden" },
+    { "op": "End", "label": "finish" }
+  ]
+}

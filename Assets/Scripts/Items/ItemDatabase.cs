@@ -39,17 +39,6 @@ namespace FarmMVP
 
             Register(new ItemDef
             {
-                id = "apricot_seed",
-                displayName = "살구나무 씨앗",
-                type = ItemType.Seed,
-                maxStack = 99,
-                spriteKey = "ApricotSeed",
-                treeId = "apricot",
-                sellPrice = 30
-            });
-
-            Register(new ItemDef
-            {
                 id = "hoe",
                 displayName = "괭이",
                 type = ItemType.Tool,
@@ -90,6 +79,9 @@ namespace FarmMVP
                 foreach (var harvest in crop.Harvests) Register(HarvestItem(crop, harvest));
             }
 
+            // 나무 씨앗도 TreeDatabase 하나만 보면 되도록 여기서 만든다 — 나무를 추가하면 씨앗이 따라 생긴다.
+            foreach (var tree in TreeDatabase.All) Register(TreeSeedItem(tree));
+
             // 설치물(울타리·길·가구)도 표 하나만 보면 되도록 여기서 만든다. 아이템 id와 설치물 id가
             // 같은 값이라, 가구를 하나 더 넣어도 아이템·드랍·재설치가 저절로 따라온다.
             foreach (var p in PlaceableDatabase.All) Register(PlaceableItem(p));
@@ -119,6 +111,21 @@ namespace FarmMVP
             spriteKey = "Crops/" + crop.SeedSpriteName,
             cropId = crop.cropId,
             sellPrice = Mathf.Max(1, crop.seedPrice / 3)   // 되팔면 산 값의 1/3
+        };
+
+        /// <summary>
+        /// 나무 씨앗. 밭이 아닌 빈 땅에 심는다 (treeId가 있으면 GameManager가 그렇게 다룬다).
+        /// 아이콘은 작물 씨앗과 같은 All Crops.png 안의 씨앗 봉지를 쓴다.
+        /// </summary>
+        private static ItemDef TreeSeedItem(TreeDef tree) => new ItemDef
+        {
+            id = tree.SeedItemId,
+            displayName = tree.name + " 씨앗",
+            type = ItemType.Seed,
+            maxStack = 99,
+            spriteKey = "Crops/" + tree.seedSpriteName,
+            treeId = tree.treeId,
+            sellPrice = tree.seedSellPrice
         };
 
         /// <summary>

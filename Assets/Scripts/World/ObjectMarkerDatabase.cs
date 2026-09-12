@@ -25,7 +25,7 @@ namespace FarmMVP
     ///
     /// 이름을 따로 짓지 않는다 — 그림이 있는 오브젝트는 <b>스프라이트 파일 이름</b>이 곧 이름이고
     /// (Sprites/Environment/ShopCart.png → 마커 타일 Obj_ShopCart), 나무처럼 이미 자기 id가 있는
-    /// 것은 <b>그 id</b>가 이름이 된다 (TreeDef.treeId "apricot" → Obj_Apricot).
+    /// 것은 <b>그 id</b>가 이름이 된다 (TreeDef.treeId "tree1" → Obj_Tree1).
     /// 같은 것을 가리키는 이름이 하나뿐이라 서로 어긋날 일이 없다.
     /// </summary>
     public class ObjectMarkerDef
@@ -76,11 +76,11 @@ namespace FarmMVP
 
         public Sprite GetSprite()
         {
-            // 나무는 자기 성장 단계 그림을 갖고 있으니 다 자란 모습을 팔레트에 보여 준다.
+            // 나무는 팔레트에 다 자란 모습(윗부분)을 보여 준다 — 무엇을 칠하는지 한눈에 보이게.
             if (role == MarkerRole.Tree)
             {
-                var stages = TreeDatabase.Get(treeId)?.stageSprites?.Invoke();
-                return stages != null && stages.Length > 0 ? stages[stages.Length - 1] : null;
+                AssetLibrary.EnsureLoaded();
+                return TreeArt.Full(TreeDatabase.Get(treeId).sheet, Seasons.Current);
             }
             return string.IsNullOrEmpty(spritePath) ? null : AssetLibrary.GetSeasonal(spritePath);
         }
@@ -182,7 +182,7 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 나무 종류마다 마커를 하나씩. TreeDatabase에 참나무를 추가하면 Obj_Oak 마커가 저절로 생긴다.
+        /// 나무 종류마다 마커를 하나씩. TreeDatabase에 나무를 하나 더 넣으면 그 마커가 저절로 생긴다.
         /// </summary>
         private static void RegisterTrees()
         {
@@ -220,13 +220,31 @@ namespace FarmMVP
             _all.Add(def);
         }
 
-        /// <summary>칠한 타일 이름으로 찾는다. "Obj_ShopCart", "obj_shopcart", "ShopCart" 모두 같은 것.</summary>
+        /// <summary>
+        /// 칠한 타일 이름으로 찾는다. "Obj_ShopCart", "obj_shopcart", "ShopCart" 모두 같은 것이고,
+        /// <b>시트에서 잘라 낸 조각 이름도 그대로 통한다</b> ("tree1_spring_top" → 나무 tree1).
+        ///
+        /// 팔레트에 그림을 끌어다 놓으면 타일 이름이 그 조각 이름 그대로가 되기 때문이다 —
+        /// 그래서 나무를 한 종류 더 넣어도 Obj_{id}.asset 을 손으로 만들 필요 없이,
+        /// 시트의 아무 조각이나 팔레트에 끌어다 칠하면 된다.
+        /// PlaceableDatabase.FindByTileName과 같은 규칙이라 외울 것이 하나뿐이다.
+        /// </summary>
         public static ObjectMarkerDef Find(string tileName)
         {
             Init();
-            string key = Normalize(StripPrefix(tileName));
-            return string.IsNullOrEmpty(key) ? null
-                 : _defs.TryGetValue(key, out var d) ? d : null;
+            string name = StripPrefix(tileName);
+            if (string.IsNullOrEmpty(name)) return null;
+            if (_defs.TryGetValue(Normalize(name), out var exact)) return exact;
+
+            // 딱 맞는 이름이 없으면 뒤에서부터 한 마디씩 떼어 본다
+            // ("tree1_spring_top" → "tree1_spring" → "tree1").
+            var parts = name.Split('_');
+            for (int keep = parts.Length - 1; keep >= 1; keep--)
+            {
+                if (_defs.TryGetValue(Normalize(string.Join("_", parts, 0, keep)), out var shorter))
+                    return shorter;
+            }
+            return null;
         }
 
         /// <summary>마커 타일 에셋에 붙는 이름 ("Obj_ShopCart").</summary>

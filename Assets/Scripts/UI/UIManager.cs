@@ -322,9 +322,11 @@ namespace FarmMVP
         }
 
         public bool IsShopOpen => _shop != null && _shop.IsOpen;
+        public bool IsStoryRunning => _game != null && _game.Events != null && _game.Events.IsRunning;
 
         public void OpenShop()
         {
+            if (IsStoryRunning) return;
             if (_shop == null || IsBookOpen) return;
             _shop.Open();
             SyncPaused();
@@ -349,6 +351,7 @@ namespace FarmMVP
 
         public void OpenCrafting()
         {
+            if (IsStoryRunning) return;
             if (_crafting == null || IsBookOpen) return;
             _crafting.Open();
             SyncPaused();
@@ -373,6 +376,35 @@ namespace FarmMVP
         public bool IsShippingOpen => _shipping != null && _shipping.IsOpen;
         public bool IsDialogueOpen => _dialogue != null && _dialogue.IsOpen;
 
+        public void ShowStoryDialogue(StoryCommand command, Action<string> onChoice, Action onFinished)
+        {
+            if (_dialogue == null) throw new InvalidOperationException("대화 UI가 준비되지 않았습니다.");
+            var def = NpcDatabase.Get(command.actor);
+            string name = !string.IsNullOrEmpty(command.speaker) ? command.speaker
+                : def != null ? def.displayName : command.actor == "player" ? "나" : "";
+            DialogueChoice[] choices = null;
+            if (command.op == "Choice")
+            {
+                choices = new DialogueChoice[command.choices.Length];
+                for (int i = 0; i < choices.Length; i++) choices[i] = new DialogueChoice { text = command.choices[i].text };
+            }
+            _dialogue.Show(def != null ? def.id : "", name, command.emotion, command.lines, choices,
+                picked =>
+                {
+                    int index = Array.IndexOf(choices, picked);
+                    _dialogue.Close();
+                    SyncPaused();
+                    onChoice(command.choices[index].target);
+                }, () => { SyncPaused(); onFinished(); });
+            SyncPaused();
+        }
+
+        public void CloseStoryDialogue()
+        {
+            if (_dialogue != null) _dialogue.Close();
+            SyncPaused();
+        }
+
         /// <summary>NPC 대사를 띄운다. 선택지가 있으면 마지막 줄 뒤에 버튼이 나온다.</summary>
         public void ShowDialogue(NpcDefinition def, int emotion, string[] lines,
             DialogueChoice[] choices, Action<DialogueChoice> onChoice)
@@ -393,6 +425,7 @@ namespace FarmMVP
         /// <summary>배송함을 우클릭했을 때 호출된다.</summary>
         public void OpenShippingBox()
         {
+            if (IsStoryRunning) return;
             if (_shipping == null || IsBookOpen) return;
             _shipping.Open();
             _game.CurrentLocation?.SetShippingBoxOpen(true);
@@ -429,6 +462,7 @@ namespace FarmMVP
         /// <summary>I / ESC: 해당 페이지로 책을 연다. 이미 그 페이지가 열려 있으면 닫는다.</summary>
         public void ToggleBook(BookUI.Page page)
         {
+            if (IsStoryRunning) return;
             if (_book == null) return;
             if (_confirmPanel != null && _confirmPanel.activeSelf) return; // 팝업이 떠 있으면 무시
             _book.Toggle(page);
@@ -730,6 +764,7 @@ namespace FarmMVP
         // drag & drop callback from SlotDragHandler
         public void OnSlotDrop(SlotView from, SlotView to)
         {
+            if (IsStoryRunning) return;
             var fromInv = InventoryOf(from.container);
             var toInv = InventoryOf(to.container);
 
@@ -742,6 +777,7 @@ namespace FarmMVP
         /// <summary>쉬프트+좌클릭: 배송함이 열려 있을 때 반대편 인벤토리로 한 번에 옮긴다.</summary>
         public bool QuickTransfer(SlotView view)
         {
+            if (IsStoryRunning) return false;
             if (!IsShippingOpen) return false;
 
             var from = InventoryOf(view.container);
@@ -757,6 +793,7 @@ namespace FarmMVP
 
         public void OnHotbarClicked(int index)
         {
+            if (IsStoryRunning) return;
             _game.SelectHotbar(index);
             RefreshSlots();
         }

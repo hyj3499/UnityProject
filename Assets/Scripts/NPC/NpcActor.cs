@@ -9,6 +9,22 @@ namespace FarmMVP
 
         public NpcDefinition Def { get; private set; }
         public Vector2Int Tile { get; private set; }
+        public Direction Facing { get; private set; } = Direction.Down;
+
+        public void SetFacing(Direction direction)
+        {
+            Facing = direction;
+            // 현재 NPC 아트는 Idle만 있다. 좌/우는 반전, 상/하는 상태만 기록한다.
+            if (_sr != null) _sr.flipX = direction == Direction.Left;
+        }
+
+        public void SyncStoryPosition(GameLocation location)
+        {
+            var next = Vector2Int.RoundToInt(transform.position);
+            if (next != Tile) location.MoveNpcBlock(Tile, next);
+            Tile = next;
+            if (_sr != null) _sr.sortingOrder = Depth.YSort(transform.position.y);
+        }
 
         private SpriteRenderer _sr;
         private Sprite[] _frames;

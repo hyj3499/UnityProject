@@ -55,6 +55,7 @@ namespace FarmMVP
         /// <summary>설정창의 "타이틀로 나가기": 진행 중인 게임을 정리하고 타이틀 화면으로 되돌아간다.</summary>
         public void ReturnToTitle()
         {
+            if (_gameManagerGo != null) _gameManagerGo.GetComponent<GameManager>()?.Events?.Cancel();
             if (_uiManagerGo != null) Destroy(_uiManagerGo);
             if (_gameManagerGo != null) Destroy(_gameManagerGo);
             if (_playerGo != null) Destroy(_playerGo);
@@ -115,6 +116,7 @@ namespace FarmMVP
             gm.Boot(cam, pc, locationRoot);
             ui.Boot(gm);
             gm.InitFishing(ui);   // 미니게임 바가 UI 캔버스에 붙으므로 UI 다음에
+            gm.InitEvents(ui);
 
             ui.ShowDayBanner(gm.Data.currentDay);
 

@@ -51,13 +51,17 @@ namespace FarmMVP
                 });
             }
 
-            _entries.Add(new ShopEntry
+            // 나무 씨앗도 TreeDatabase에서 그대로 따라온다 — 나무를 추가하면 상점에도 따라 올라온다.
+            foreach (var tree in TreeDatabase.All)
             {
-                itemId = "apricot_seed",
-                price = 120,
-                group = "나무",
-                note = "밭이 아닌 빈 땅에 심는다"
-            });
+                _entries.Add(new ShopEntry
+                {
+                    itemId = tree.SeedItemId,
+                    price = tree.seedPrice,
+                    group = "나무",
+                    note = $"밭이 아닌 빈 땅에 심는다 · 다 자라기까지 {tree.maxGrowthStage * tree.daysPerStage}일"
+                });
+            }
         }
 
         /// <summary>

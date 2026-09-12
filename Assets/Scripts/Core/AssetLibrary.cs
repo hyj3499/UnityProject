@@ -25,8 +25,7 @@ namespace FarmMVP
         public static Sprite Tree, House, Wood;
         public static Sprite ShippingBox, ShippingBoxOpen, ShopCart, Workbench;
         public static Sprite[] RockVariants;      // 이끼 없는 바위 5종
-        public static Sprite Stone, ApricotSeed;
-        public static Sprite[] ApricotStages;     // 씨앗 → 묘목 → 성장 → 다 자람
+        public static Sprite Stone;
         // Interior furniture
         public static Sprite Bed, Door, Fireplace, Plant;
         // Tools
@@ -57,7 +56,6 @@ namespace FarmMVP
             ShopCart = Load("Sprites/Environment/ShopCart");
             Workbench = Load("Sprites/Environment/Workbench");
             Stone = Load("Sprites/Environment/Stone");
-            ApricotSeed = Load("Sprites/Crops/ApricotSeed");
 
             Bed = Load("Sprites/Interior/Bed");
             Door = Load("Sprites/Interior/Door");
@@ -112,7 +110,8 @@ namespace FarmMVP
             Dirt = GetSeasonalRaw("Sprites/Tiles/Dirt", season);
             Tree = GetSeasonalRaw("Sprites/Environment/Tree", season);
             RockVariants = LoadRangeSeasonal("Sprites/Environment/Rock_", 5, season);
-            ApricotStages = LoadRangeSeasonal("Sprites/Environment/Apricot_", 4, season);
+            // 나무는 여기서 미리 읽지 않는다 — 종류x계절x조각이라 수가 많고, TreeArt가
+            // 실제로 그릴 때 이름으로 찾아 온다 (찾은 결과는 아래 캐시에 그대로 남는다).
         }
 
         /// <summary>
@@ -138,9 +137,9 @@ namespace FarmMVP
         /// <summary>
         /// 계절별 스프라이트. 파일 이름 뒤에 계절을 붙여 두면 그 계절에만 그게 쓰인다:
         ///
-        ///   Sprites/Environment/Apricot_3.png        (기본 · 계절판이 없으면 이게 나온다)
-        ///   Sprites/Environment/Apricot_3_Fall.png   (가을에만)
-        ///   Sprites/Environment/Apricot_3_Winter.png (겨울에만)
+        ///   Sprites/Environment/Tree.png        (기본 · 계절판이 없으면 이게 나온다)
+        ///   Sprites/Environment/Tree_Fall.png   (가을에만)
+        ///   Sprites/Environment/Tree_Winter.png (겨울에만)
         ///
         /// 그래서 지금처럼 계절판이 하나도 없어도 네 계절이 전부 기본 그림으로 나오고,
         /// 바꾸고 싶은 것만 옆에 넣으면 된다 (같은 파일 네 벌을 만들 필요가 없다).
@@ -174,8 +173,8 @@ namespace FarmMVP
         /// 스프라이트 하나를 찾는다. 먼저 그 경로의 <b>독립된 파일</b>을 보고, 없으면 같은 폴더의
         /// <b>잘라 놓은 시트 안</b>을 이름으로 뒤진다.
         ///
-        /// 스프라이트 에디터로 큰 시트를 잘라 조각마다 이름을 붙이는 방식(Apricot Tree.png 안의
-        /// "Apricot_0", "Apricot_3_Fall" ...)을 쓰면 파일이 따로 존재하지 않기 때문에
+        /// 스프라이트 에디터로 큰 시트를 잘라 조각마다 이름을 붙이는 방식(All Crops.png 안의
+        /// "CarrotSeed", tree1_spring.png 안의 "tree1_spring_top" ...)을 쓰면 파일이 따로 존재하지 않기 때문에
         /// Resources.Load(경로)만으로는 찾을 수 없다. 그 경우를 여기서 받아 준다.
         /// </summary>
         private static Sprite Resolve(string path)
@@ -228,7 +227,7 @@ namespace FarmMVP
             return s;
         }
 
-        /// <summary>LoadRange의 계절판. "Apricot_0_Winter"가 있으면 그걸, 없으면 "Apricot_0".</summary>
+        /// <summary>LoadRange의 계절판. "Rock_0_Winter"가 있으면 그걸, 없으면 "Rock_0".</summary>
         private static Sprite[] LoadRangeSeasonal(string prefix, int count, Season season)
         {
             var list = new List<Sprite>();

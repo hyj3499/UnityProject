@@ -20,6 +20,34 @@ namespace FarmMVP
         private FarmerAnimator _anim;
         private bool _moving;
         private bool _running;
+        private bool _storyControlled;
+
+        public void BeginStoryControl()
+        {
+            CancelHolds();
+            _storyControlled = true;
+            _moving = _running = false;
+            _anim?.ClearOverride();
+            _anim?.SetCarriedItem(null);
+            _anim?.SetLocomotion(false, false, facing);
+        }
+
+        public void SetStoryMotion(bool moving, Direction direction)
+        {
+            facing = direction;
+            _anim?.SetLocomotion(moving, false, facing);
+        }
+
+        public void SetStoryPose(FarmerAnim pose) => _anim?.SetOverride(pose);
+        public void ClearStoryPose() => _anim?.ClearOverride();
+
+        public void EndStoryControl()
+        {
+            _storyControlled = false;
+            _moving = _running = false;
+            _anim?.ClearOverride();
+            UpdateAnimation();
+        }
 
         // ---------- 마법(좌클릭) / 씨앗·수확(우클릭) 조준 상태 ----------
         private static readonly Color SeedPreviewColor = new Color(0.35f, 0.85f, 0.35f, 0.45f);
@@ -54,6 +82,7 @@ namespace FarmMVP
 
         private void Update()
         {
+            if (_storyControlled) return;
             if (_game == null || _game.Paused)
             {
                 CancelHolds();
@@ -63,6 +92,7 @@ namespace FarmMVP
             }
 
             HandleMovement();
+            if (_game.Paused) return;
             HandleHotbarKeys();
             HandleInteraction();
         }
@@ -221,6 +251,7 @@ namespace FarmMVP
 
             HandleMagicInput();
             HandleSeedInput();
+            if (_game.Paused) return;
 
             // interact key (e / space) for bed and generic
             if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space))

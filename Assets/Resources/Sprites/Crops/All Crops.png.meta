@@ -765,7 +765,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ApricotSeed
+      name: Tree1Seed
       rect:
         serializedVersion: 2
         x: 144
@@ -3957,7 +3957,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: All Crops_184
+      name: Tree2Seed
       rect:
         serializedVersion: 2
         x: 288
@@ -6867,7 +6867,7 @@ TextureImporter:
       All Crops_181: 2137190575
       All Crops_182: -1502920504
       All Crops_183: 245862723
-      All Crops_184: 1141997876
+      Tree2Seed: 1141997876
       All Crops_185: 2123746446
       All Crops_186: 1286161120
       All Crops_187: 585627674
@@ -7070,7 +7070,7 @@ TextureImporter:
       All Crops_98: -1959979556
       All Crops_99: 358405976
       AloeSeed: -345046988
-      ApricotSeed: -1830772007
+      Tree1Seed: -1830772007
       AsparagusSeed: 202977952
       BeetrootSeed: 510604721
       BellPepperSeed: -780626778

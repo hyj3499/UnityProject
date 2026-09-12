@@ -22,6 +22,8 @@ namespace FarmMVP
         /// <summary>NPC별 호감도와 대화/선물 기록.</summary>
         public List<NpcStateData> npcs = new List<NpcStateData>();
 
+        public StoryEventState story = new StoryEventState();
+
         public LocationData farm1 = new LocationData();
         public LocationData farm2 = new LocationData();
         public LocationData farmHouse = new LocationData();
@@ -120,8 +122,11 @@ namespace FarmMVP
         public int x, y;
         public int hp;
         public string treeId = TreeDatabase.DefaultTreeId;
-        public int growthStage = 3; // 예전 세이브의 나무는 다 자란 상태로 본다
+        public int growthStage = TreeDatabase.FullGrowth; // 예전 세이브의 나무는 다 자란 상태로 본다
         public int dayCounter;
+
+        /// <summary>쓰러뜨리고 남은 그루터기인지 (예전 세이브에는 없던 값이라 기본은 false).</summary>
+        public bool isStump;
     }
 
     /// <summary>플레이어가 설치한 울타리·길 한 칸.</summary>

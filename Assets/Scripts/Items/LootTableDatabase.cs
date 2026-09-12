@@ -11,10 +11,9 @@ namespace FarmMVP
     /// 아래에 Register 한 줄만 추가하면 된다.
     ///
     /// 사용 예 (추후 추가 시):
-    ///   Register("tree_apple", new LootTable().Add("wood", 1, 2).Add("apple", 1, 3, 0.9f));
-    ///   Register("tree_orange", new LootTable().Add("wood", 1, 2).Add("orange", 1, 3, 0.9f));
-    ///   Register("rock_basic", new LootTable().Add("stone", 1, 3).Add("coal", 0, 1, 0.15f));
-    /// (단, apple/orange/stone/coal 은 먼저 ItemDatabase에도 등록되어 있어야 한다.)
+    ///   Register("rock_gold", new LootTable().Add("stone", 1, 3).Add("gold_ore", 0, 1, 0.15f));
+    /// (단, gold_ore 는 먼저 ItemDatabase에도 등록되어 있어야 한다.)
+    /// 나무와 작물처럼 <b>이미 자기 표가 있는 것</b>은 그 표에서 자동으로 만들어지므로 여기 적지 않는다.
     /// </summary>
     public static class LootTableDatabase
     {
@@ -26,8 +25,17 @@ namespace FarmMVP
             if (_init) return;
             _init = true;
 
-            Register("tree_apricot", new LootTable().Add("wood", 3, 3).Add("apricot_seed", 1, 1, 0.3f));
             Register("rock_basic", new LootTable().Add("stone", 1, 3));
+
+            // 나무도 TreeDatabase 하나만 보면 되도록 여기서 자동 등록한다 — 쓰러뜨렸을 때와
+            // 남은 그루터기를 치웠을 때가 따로 있다.
+            foreach (var tree in TreeDatabase.All)
+            {
+                Register(tree.DropTableId, new LootTable()
+                    .Add("wood", tree.woodMin, tree.woodMax)
+                    .Add(tree.SeedItemId, 1, 1, tree.seedDropChance));
+                Register(tree.StumpDropTableId, new LootTable().Add("wood", tree.stumpWood, tree.stumpWood));
+            }
             // 작물은 CropDatabase 하나만 보면 되도록 여기서 자동 등록한다 (색이 여러 개면 색마다).
             foreach (var crop in CropDatabase.All)
                 foreach (var harvest in crop.Harvests)
