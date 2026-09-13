@@ -88,6 +88,22 @@ namespace FarmMVP
                 seedDropChance = 0.3f,
                 seedSpriteName = "Tree2Seed",
             });
+
+            Register(new TreeDef
+            {
+                treeId = "tree3",
+                name = "보라꽃나무",
+                sheet = "tree3",
+                daysPerStage = 4,
+                maxHp = 5,
+                stumpHp = 2,
+                woodMin = 5, woodMax = 7,
+                stumpWood = 2,
+                seedPrice = 220,
+                seedSellPrice = 60,
+                seedDropChance = 0.25f,
+                seedSpriteName = "Tree3Seed",
+            });
         }
 
         private static void Register(TreeDef d)

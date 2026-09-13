@@ -16,6 +16,9 @@ Assets/Resources/Sprites/Trees/*.png 의 .meta 를 만든다 (유니티 임포�
 <b>완전히 비어 있는 조각은 아예 만들지 않는다</b> — 겨울 자작나무처럼 그 계절에 잎이 없는
 나무가 있기 때문이다. 없는 조각은 코드(TreeArt)가 남은 것으로 채운다.
 
+<b>이미 .meta가 있는 시트는 건드리지 않는다</b> — 유니티가 임포트하면서 제 내용을 채워 넣고,
+그 조각들을 가리키는 타일 에셋이 이미 생겼을 수 있기 때문이다. 다시 만들고 싶으면 .meta를 지우고 돌린다.
+
   python tools/build_tree_metas.py
 """
 import hashlib
@@ -210,7 +213,10 @@ def main():
         img = Image.open(os.path.join(DIR, f)).convert("RGBA")
         parts = [p for p in PARTS if not is_empty(img, *p[1:5])]
         path = os.path.join(DIR, f + ".meta")
-        guid = existing_guid(path) or h32("tree-sheet", sheet)
+        if os.path.exists(path):
+            print("skip ", os.path.normpath(path), "(이미 있음)")
+            continue
+        guid = h32("tree-sheet", sheet)
         open(path, "w", encoding="utf-8", newline="\n").write(meta(sheet, guid, parts))
         print("wrote", os.path.normpath(path), "(조각 %d/%d)" % (len(parts), len(PARTS)))
 

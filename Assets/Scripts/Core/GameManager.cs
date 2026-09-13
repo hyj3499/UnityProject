@@ -790,6 +790,12 @@ namespace FarmMVP
 
             var def = stack.Def;
             if (!string.IsNullOrEmpty(def.treeId)) return CurrentLocation.CanPlantTree(tile.x, tile.y);
+            if (!string.IsNullOrEmpty(def.plantId))
+            {
+                // 조준 표시가 실제 결과와 어긋나지 않게 계절까지 여기서 본다 (겨울에는 풀이 살지 못한다).
+                var plant = PlantDatabase.Get(def.plantId);
+                return plant != null && Seasons.AllowsNow(plant.seasons) && CurrentLocation.CanSowPlant(tile.x, tile.y);
+            }
 
             var crop = CropDatabase.Get(def.cropId);
             if (crop != null && !Seasons.AllowsNow(crop.seasons)) return false;
@@ -819,7 +825,7 @@ namespace FarmMVP
 
         /// <summary>
         /// 우클릭: 선택된 인벤토리 아이템이 씨앗일 때 바라보는 타일에 심는다.
-        /// 나무 씨앗(treeId가 있는 것)은 빈 땅에, 작물 씨앗은 갈아 둔 밭에 심긴다.
+        /// 나무·풀 씨앗(treeId/plantId가 있는 것)은 빈 땅에, 작물 씨앗은 갈아 둔 밭에 심긴다.
         /// </summary>
         public void PlantSelectedAt(Vector2Int tile)
         {
@@ -841,9 +847,20 @@ namespace FarmMVP
                 }
             }
 
-            bool planted = !string.IsNullOrEmpty(def.treeId)
-                ? CurrentLocation.PlantTree(tile.x, tile.y, def.treeId)
-                : CurrentLocation.Plant(tile.x, tile.y, def.cropId);
+            if (!string.IsNullOrEmpty(def.plantId))
+            {
+                var plant = PlantDatabase.Get(def.plantId);
+                if (plant != null && !Seasons.AllowsNow(plant.seasons))
+                {
+                    UIManager.Instance?.Toast($"{plant.name}은(는) {Seasons.Name(Seasons.Current)}에 심을 수 없다");
+                    return;
+                }
+            }
+
+            bool planted;
+            if (!string.IsNullOrEmpty(def.treeId)) planted = CurrentLocation.PlantTree(tile.x, tile.y, def.treeId);
+            else if (!string.IsNullOrEmpty(def.plantId)) planted = CurrentLocation.SowPlant(tile.x, tile.y, def.plantId);
+            else planted = CurrentLocation.Plant(tile.x, tile.y, def.cropId);
 
             if (planted)
             {
@@ -1011,6 +1028,9 @@ namespace FarmMVP
                 withered = WitherOutOfSeasonCrops(Data.farm1)
                          + WitherOutOfSeasonCrops(Data.farm2)
                          + WitherOutOfSeasonCrops(Data.farmHouse);
+                WitherOutOfSeasonPlants(Data.farm1);
+                WitherOutOfSeasonPlants(Data.farm2);
+                WitherOutOfSeasonPlants(Data.farmHouse);
             }
 
             // 잠을 자면 MP 회복
@@ -1059,6 +1079,19 @@ namespace FarmMVP
                 withered++;
             }
             return withered;
+        }
+
+        /// <summary>
+        /// 그 계절에 살 수 없는 풀을 걷어낸다 — 겨울이 되면 잔디도 잡초도 자취를 감춘다.
+        /// 작물과 달리 "시들었다"고 알리지 않는다: 들판이 겨울이 되는 것은 사고가 아니다.
+        /// </summary>
+        private static void WitherOutOfSeasonPlants(LocationData loc)
+        {
+            loc.plants.RemoveAll(p =>
+            {
+                var def = PlantDatabase.Get(p.plantId);
+                return def == null || !Seasons.AllowsNow(def.seasons);
+            });
         }
 
         private void AdvanceAllCrops()

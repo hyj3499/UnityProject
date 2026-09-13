@@ -18,6 +18,7 @@ namespace FarmMVP
         public ToolType toolType;  // only for tools
         public string cropId;      // only for seeds -> which crop to plant
         public string treeId;      // 나무 씨앗일 때 어떤 나무가 자라는지
+        public string plantId;     // 풀 씨앗일 때 어떤 풀이 자라는지 (잔디)
         public int sellPrice;      // 배송함에 넣었을 때 개당 판매 가격 (0이면 팔 수 없음)
 
         /// <summary>

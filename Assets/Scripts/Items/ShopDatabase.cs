@@ -51,6 +51,18 @@ namespace FarmMVP
                 });
             }
 
+            foreach (var plant in PlantDatabase.All)
+            {
+                if (plant.maxStage <= 0) continue;
+                _entries.Add(new ShopEntry
+                {
+                    itemId = plant.plantId + "_seed",
+                    price = 60,
+                    group = "풀",
+                    note = "빈 땅에 심으면 옆으로 번진다"
+                });
+            }
+
             // 나무 씨앗도 TreeDatabase에서 그대로 따라온다 — 나무를 추가하면 상점에도 따라 올라온다.
             foreach (var tree in TreeDatabase.All)
             {

@@ -1,0 +1,98 @@
+[
+  {
+    "name": "tree1_spring",
+    "species": 1,
+    "source": "sources/tree1_spring.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-12d5849c-4e32-4945-8792-636c018d0e7e.png",
+    "background": "checker",
+    "prompt": "Redesign cherry tree as an asymmetrical fan crown with a leaning S-curved russet trunk; preserve all seven sprite groups and spring pink blossoms."
+  },
+  {
+    "name": "tree1_summer",
+    "species": 1,
+    "source": "sources/tree1_summer.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-bcaa4d5e-39c9-4b15-bc98-237f73600625.png",
+    "background": "checker",
+    "prompt": "Use case: lighting-weather. Edit target: this newly designed cherry-tree sprite strip. Create SUMMER: replace every pink flower cluster with broad fresh green and deep jade leaf fans, NO pink blossoms. Same fan-bough shapes. Preserve the exact tree design, trunk curvature, branch locations, roots, object positions, relative scales and strip layout of this reference. This is a seasonal variant of the exact same tree. Seven groups left-to-right: seedling, juvenile 1, juvenile 2, four detached leaves 2x2, stump, upper mature tree without roots, identical full tree with roots. Pixel-art hard edges, limited palette, native mature target 48x96 pixels so clear chunky details. No labels, no extra objects. Output actual transparent alpha background; DO NOT draw a checkerboard. Remove any reference checkerboard from output. Keep all seven groups clearly separated."
+  },
+  {
+    "name": "tree1_fall",
+    "species": 1,
+    "source": "sources/tree1_fall.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-30277a3b-377e-4d80-948a-b9d554aa418c.png",
+    "background": "checker",
+    "prompt": "Use case: lighting-weather. Edit target: this newly designed cherry-tree sprite strip. Create AUTUMN: replace all pink blossoms with copper, coral orange and amber red autumn leaf fans. Same open fan-bough shapes. Preserve the exact tree design, trunk curvature, branch locations, roots, object positions, relative scales and strip layout of this reference. This is a seasonal variant of the exact same tree. Seven groups left-to-right: seedling, juvenile 1, juvenile 2, four detached leaves 2x2, stump, upper mature tree without roots, identical full tree with roots. Pixel-art hard edges, limited palette, native mature target 48x96 pixels so clear chunky details. No labels, no extra objects. Output actual transparent alpha background; DO NOT draw a checkerboard. Remove any reference checkerboard from output. Keep all seven groups clearly separated."
+  },
+  {
+    "name": "tree1_winter",
+    "species": 1,
+    "source": "sources/tree1_winter.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-65a970ff-c6fe-41ea-bc3e-52d36ef5054e.png",
+    "background": "white",
+    "prompt": "Use case: lighting-weather. Edit target: this newly designed cherry-tree sprite strip. Create WINTER: remove ALL blossom/foliage masses entirely, reveal the SAME bent S-shaped trunk with its widely spreading asymmetrical bare branches and fine twigs. A little pale blue-white snow resting on upper surfaces of branches and stump. Detached leaf particles become four tiny pale icy petals. The full mature tree must keep its original spread and height despite being leafless. Preserve the exact tree design, trunk curvature, branch locations, roots, object positions, relative scales and strip layout of this reference. This is a seasonal variant of the exact same tree. Seven groups left-to-right: seedling, juvenile 1, juvenile 2, four detached leaves 2x2, stump, upper mature tree without roots, identical full tree with roots. Pixel-art hard edges, limited palette, native mature target 48x96 pixels so clear chunky details. No labels, no extra objects. Output actual transparent alpha background; DO NOT draw a checkerboard. Remove any reference checkerboard from output. Keep all seven groups clearly separated."
+  },
+  {
+    "name": "tree2_spring",
+    "species": 2,
+    "source": "sources/tree2_spring.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-0c4e7f8f-d5d8-4795-af7d-347470c1f6d1.png",
+    "background": "birch",
+    "prompt": "Use case: precise-object-edit. Supplied image is layout reference and edit target for tree2_spring. Radically redesign every growth stage with this original tree identity: BIRCH: pale ivory bark with bold dark horizontal markings, a gracefully forked Y trunk, three irregular angular tiers of flat diamond-shaped lime/chartreuse leaf clusters with open gaps. Tall slender crown with a pointed off-center leader. Very distinct from a round oval canopy. Low resolution professional pixel art, large clear pixel clusters, limited 12-color palette, hard edges, no gradients, no soft shadows, suitable for a 48x96 pixel mature tree. SPRING season. Create horizontal sprite strip on actual transparent alpha background (do not paint checkerboard). Seven evenly spaced columns. From left: tiny seedling, small juvenile, medium juvenile, four detached directional leaves in a compact 2x2 group, short cut stump with roots, mature upper tree without roots, matching complete mature tree with roots. Rooted sprites all share a bottom baseline. Keep generous empty gaps between each column; never overlap columns. Mature upper and complete tree must use identical canopy and trunk and same size; only roots differ. No text, no grid, no ground, no oval crown copied from reference. Native target sheet is 336x96, 7 cells each 48x96. Keep species identity consistent across seedling, juveniles, stump and mature tree. Real transparent background."
+  },
+  {
+    "name": "tree2_summer",
+    "species": 2,
+    "source": "sources/tree2_summer.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-881f5fd4-7f88-43ef-8539-13db557ee21d.png",
+    "background": "birch",
+    "prompt": "Use case: lighting-weather. Edit target: supplied new birch sprite strip. Create SUMMER: richer emerald and cool green pointed leaf clusters, no flowers, keep its open tiered angular silhouette. Keep EXACT same trunk structure, forked branches, silhouette height/width, roots, position and size of each object. Native target mature sprite is 48x96 pixel art. Hard chunky pixel edges with a restrained palette. Seven separate groups across a horizontal strip: seedling, juvenile1, juvenile2, four detached leaves in 2x2, stump, mature upper tree without roots, full tree including roots. Exact same canopy in last two trees. No labels, grid or ground shadow. Please output actual ALPHA TRANSPARENCY. Never paint a checkerboard. If transparency unavailable use completely solid pure magenta #FF00FF background, no texture. Keep pale ivory bark distinguishable from background."
+  },
+  {
+    "name": "tree2_fall",
+    "species": 2,
+    "source": "sources/tree2_fall.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-f296b8e9-cdaf-4df9-979c-515223826b2c.png",
+    "background": "birch",
+    "prompt": "Use case: lighting-weather. Edit target: supplied new birch sprite strip. Create AUTUMN: brilliant warm golden yellow leaves with ochre shadows, sparse amber tips, pale ivory bark unchanged. Keep EXACT same trunk structure, forked branches, silhouette height/width, roots, position and size of each object. Native target mature sprite is 48x96 pixel art. Hard chunky pixel edges with a restrained palette. Seven separate groups across a horizontal strip: seedling, juvenile1, juvenile2, four detached leaves in 2x2, stump, mature upper tree without roots, full tree including roots. Exact same canopy in last two trees. No labels, grid or ground shadow. Please output actual ALPHA TRANSPARENCY. Never paint a checkerboard. If transparency unavailable use completely solid pure magenta #FF00FF background, no texture. Keep pale ivory bark distinguishable from background."
+  },
+  {
+    "name": "tree2_winter",
+    "species": 2,
+    "source": "sources/tree2_winter.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-1d3d84a0-8e51-4a1d-ac20-60f6d804fcc3.png",
+    "background": "birch",
+    "prompt": "Use case: lighting-weather. Edit target: supplied new birch sprite strip. Create WINTER: remove all leaves, bare fine forked branches in the SAME tiered silhouette, ivory birch bark with black dashes stays visible. Sparse pale blue snow accents on upper sides of branches and roots. Four detached icy leaf particles remain. Keep EXACT same trunk structure, forked branches, silhouette height/width, roots, position and size of each object. Native target mature sprite is 48x96 pixel art. Hard chunky pixel edges with a restrained palette. Seven separate groups across a horizontal strip: seedling, juvenile1, juvenile2, four detached leaves in 2x2, stump, mature upper tree without roots, full tree including roots. Exact same canopy in last two trees. No labels, grid or ground shadow. Please output actual ALPHA TRANSPARENCY. Never paint a checkerboard. If transparency unavailable use completely solid pure magenta #FF00FF background, no texture. Keep pale ivory bark distinguishable from background."
+  },
+  {
+    "name": "tree3_spring",
+    "species": 3,
+    "source": "sources/tree3_spring.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-3d335d0f-9d90-4102-bb92-62aa3d8d333e.png",
+    "background": "alpha",
+    "prompt": "Use case: precise-object-edit. Supplied image is layout reference and edit target for tree3_spring. Radically redesign every growth stage with this original tree identity: PURPLE FLOWERING TREE: thick twisting dark plum trunk splitting into an arch, dramatic umbrella crown with long hanging wisteria-like lavender and purple flower tassels in 5 separated curtains, irregular weeping silhouette and clear negative space under arch. Very distinct from an oval canopy. Low resolution professional pixel art, large clear pixel clusters, limited 12-color palette, hard edges, no gradients, no soft shadows, suitable for a 48x96 pixel mature tree. SPRING season. Create horizontal sprite strip on actual transparent alpha background (do not paint checkerboard). Seven evenly spaced columns. From left: tiny seedling, small juvenile, medium juvenile, four detached directional leaves in a compact 2x2 group, short cut stump with roots, mature upper tree without roots, matching complete mature tree with roots. Rooted sprites all share a bottom baseline. Keep generous empty gaps between each column; never overlap columns. Mature upper and complete tree must use identical canopy and trunk and same size; only roots differ. No text, no grid, no ground, no oval crown copied from reference. Native target sheet is 336x96, 7 cells each 48x96. Keep species identity consistent across seedling, juveniles, stump and mature tree. Real transparent background."
+  },
+  {
+    "name": "tree3_summer",
+    "species": 3,
+    "source": "sources/tree3_summer.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-fbd0ffc3-2ff5-48a3-8b49-eb2734a9808f.png",
+    "background": "checker",
+    "prompt": "Use case: lighting-weather. Edit target: this newly designed purple flowering tree sheet. Create SUMMER: replace lavender flowers with long drooping emerald and turquoise GREEN leaf curtains, dark plum brown trunk, no purple blossom masses. Preserve the same trunk bends, arch, exact silhouette proportions, each object's position and scale and original sprite strip composition. Seven groups left to right: seedling, juvenile1, juvenile2, four detached leaves in a 2x2 square, stump, mature upper tree without roots, same full tree with roots. Pixel art for native 48x96 mature sprites, chunky hard pixel clusters, clear silhouettes, limited palette, no antialias fringe. Real transparent ALPHA background exactly as reference transparency. No painted checkerboard or white backdrop, no labels, no ground shadows. All objects remain separate with gaps."
+  },
+  {
+    "name": "tree3_fall",
+    "species": 3,
+    "source": "sources/tree3_fall.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-5a9c8e1d-da30-4c77-bcb0-477c6fa05780.png",
+    "background": "checker",
+    "prompt": "Use case: lighting-weather. Edit target: this newly designed purple flowering tree sheet. Create AUTUMN: replace flower curtains with drooping muted amber, dusty rose and wine-red autumn leaves, dark plum brown trunk. Preserve the same trunk bends, arch, exact silhouette proportions, each object's position and scale and original sprite strip composition. Seven groups left to right: seedling, juvenile1, juvenile2, four detached leaves in a 2x2 square, stump, mature upper tree without roots, same full tree with roots. Pixel art for native 48x96 mature sprites, chunky hard pixel clusters, clear silhouettes, limited palette, no antialias fringe. Real transparent ALPHA background exactly as reference transparency. No painted checkerboard or white backdrop, no labels, no ground shadows. All objects remain separate with gaps."
+  },
+  {
+    "name": "tree3_winter",
+    "species": 3,
+    "source": "sources/tree3_winter.png",
+    "generated": "C:\\Users\\USER\\.codex\\generated_images\\01a094b5-641e-78b0-901e-93b3292242b4\\exec-c59487e3-28c3-4254-83b8-be5d198dd8d1.png",
+    "background": "checker",
+    "prompt": "Use case: lighting-weather. Edit target: this newly designed purple flowering tree sheet. Create WINTER: entirely remove all curtains of leaves and flowers; show bare arching upper branches with long downward-curving fine twigs, keeping the same twisting arch-shaped trunk and overall mature tree size. Small pale icy blue snow accents rest on branches and stump. Four pale blue detached particles. Preserve the same trunk bends, arch, exact silhouette proportions, each object's position and scale and original sprite strip composition. Seven groups left to right: seedling, juvenile1, juvenile2, four detached leaves in a 2x2 square, stump, mature upper tree without roots, same full tree with roots. Pixel art for native 48x96 mature sprites, chunky hard pixel clusters, clear silhouettes, limited palette, no antialias fringe. Real transparent ALPHA background exactly as reference transparency. No painted checkerboard or white backdrop, no labels, no ground shadows. All objects remain separate with gaps."
+  }
+]

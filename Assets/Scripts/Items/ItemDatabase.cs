@@ -39,6 +39,27 @@ namespace FarmMVP
 
             Register(new ItemDef
             {
+                id = "hay",
+                displayName = "목초",
+                type = ItemType.Resource,
+                maxStack = 99,
+                // 아이콘은 다 자란 잔디 그림을 그대로 쓴다 — 목초가 곧 벤 잔디다.
+                spriteKey = "Plants/glass_spring_2",
+                sellPrice = 8
+            });
+
+            Register(new ItemDef
+            {
+                id = "fiber",
+                displayName = "섬유",
+                type = ItemType.Resource,
+                maxStack = 99,
+                spriteKey = "Plants/weed_spring_2",
+                sellPrice = 6
+            });
+
+            Register(new ItemDef
+            {
                 id = "hoe",
                 displayName = "괭이",
                 type = ItemType.Tool,
@@ -81,6 +102,10 @@ namespace FarmMVP
 
             // 나무 씨앗도 TreeDatabase 하나만 보면 되도록 여기서 만든다 — 나무를 추가하면 씨앗이 따라 생긴다.
             foreach (var tree in TreeDatabase.All) Register(TreeSeedItem(tree));
+
+            // 심을 수 있는 풀(잔디)의 씨앗. 자라지 않는 잡초는 씨앗이 없다.
+            foreach (var plant in PlantDatabase.All)
+                if (plant.maxStage > 0) Register(PlantSeedItem(plant));
 
             // 설치물(울타리·길·가구)도 표 하나만 보면 되도록 여기서 만든다. 아이템 id와 설치물 id가
             // 같은 값이라, 가구를 하나 더 넣어도 아이템·드랍·재설치가 저절로 따라온다.
@@ -126,6 +151,21 @@ namespace FarmMVP
             spriteKey = "Crops/" + tree.seedSpriteName,
             treeId = tree.treeId,
             sellPrice = tree.seedSellPrice
+        };
+
+        /// <summary>
+        /// 풀 씨앗 (잔디). 밭이 아닌 빈 땅에 심고, 심은 자리에서 옆으로 번져 나간다.
+        /// 아이콘은 갓 난 포기 그림을 쓴다 — 씨앗 봉지 그림을 따로 만들 것이 없다.
+        /// </summary>
+        private static ItemDef PlantSeedItem(PlantDef plant) => new ItemDef
+        {
+            id = plant.plantId + "_seed",
+            displayName = plant.name + " 씨앗",
+            type = ItemType.Seed,
+            maxStack = 99,
+            spriteKey = "Plants/" + plant.sheet + "_spring_0",
+            plantId = plant.plantId,
+            sellPrice = 5
         };
 
         /// <summary>

@@ -73,6 +73,7 @@ namespace FarmMVP
     {
         public List<HoeDirtData> hoeDirts = new List<HoeDirtData>();
         public List<TreeData> trees = new List<TreeData>();
+        public List<PlantData> plants = new List<PlantData>();
         public List<RockData> rocks = new List<RockData>();
         public List<WorldItemData> droppedItems = new List<WorldItemData>();
 
@@ -83,6 +84,16 @@ namespace FarmMVP
 
         /// <summary>바위는 나중에 추가된 기능이라, 기존 세이브에도 한 번은 깔리도록 따로 표시한다.</summary>
         public bool rocksInitialized = false;
+
+        /// <summary>
+        /// 풀(잔디·잡초)을 며칟날까지 자라게 했는지. 잔디가 번지고 잡초가 나는 것은 <b>지도를 봐야</b>
+        /// 할 수 있는 일이라(경작 가능 구역인지, 이미 무언가 있는지) 잘 때가 아니라 그 맵에 들어갈 때
+        /// 밀린 날수만큼 한꺼번에 처리한다. 그래서 가 보지 않은 맵도 제 날짜를 따라잡는다.
+        /// </summary>
+        public int plantDay = 0;
+
+        /// <summary>"Grass_{맵}" 마스크에 칠해 둔 잔디를 이미 한 번 깔았는지. 두 번 깔지 않기 위한 표시.</summary>
+        public bool grassSeeded = false;
 
         /// <summary>
         /// 마커로 이미 한 번 만들어 낸 칸들. 나무·바위는 저장되는 지형지물이라 맵에 들어올 때마다
@@ -127,6 +138,16 @@ namespace FarmMVP
 
         /// <summary>쓰러뜨리고 남은 그루터기인지 (예전 세이브에는 없던 값이라 기본은 false).</summary>
         public bool isStump;
+    }
+
+    /// <summary>땅을 덮는 풀 한 칸 (잔디·잡초).</summary>
+    [Serializable]
+    public class PlantData
+    {
+        public int x, y;
+        public string plantId;
+        public int stage;
+        public int dayCounter;
     }
 
     /// <summary>플레이어가 설치한 울타리·길 한 칸.</summary>

@@ -6603,7 +6603,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: All Crops_310
+      name: Tree3Seed
       rect:
         serializedVersion: 2
         x: 144
@@ -6995,7 +6995,7 @@ TextureImporter:
       All Crops_308: 109307358
       All Crops_309: 751603661
       All Crops_31: 2006552541
-      All Crops_310: 212243015
+      Tree3Seed: 212243015
       All Crops_311: 1144167784
       All Crops_312: 1881222748
       All Crops_313: -920651773

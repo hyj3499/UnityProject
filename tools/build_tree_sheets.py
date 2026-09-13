@@ -19,6 +19,7 @@ Assets/Resources/Sprites/Trees/{나무}_{계절}.png (288x96) 로 다시 배치�
   python tools/build_tree_sheets.py
 """
 import os
+import shutil
 from PIL import Image
 
 SRC = os.path.join(os.path.dirname(__file__), "tree_sources")
@@ -36,7 +37,11 @@ RECTS = [
     (0, 0, 48, 96),     # 5 레벨3 윗부분
 ]
 
-# 만들 시트 -> 원본 파일. tree2(자작나무)는 여름판이 따로 없어 봄B(꽃이 진 초록)를 쓴다.
+# 만들 시트 -> 원본 파일.
+# 원본 파일 이름과 만들 이름이 어긋나는 것은 원본 묶음의 번호가 게임 안 나무 번호와 다르기 때문이다:
+#   tree1(벚나무)   <- 원본 tree1
+#   tree2(자작나무) <- 원본 tree3. 여름판이 따로 없어 봄B(꽃이 진 초록)를 쓴다.
+#   tree3(보라꽃나무) <- 원본 tree2
 SHEETS = {
     "tree1_spring": "tree1_spring.png",
     "tree1_summer": "tree1_summer.png",
@@ -46,6 +51,10 @@ SHEETS = {
     "tree2_summer": "tree3_spring_B.png",
     "tree2_fall":   "tree3_fall.png",
     "tree2_winter": "tree3_winter.png",
+    "tree3_spring": "tree2_spring.png",
+    "tree3_summer": "tree2_summer.png",
+    "tree3_fall":   "tree2_fall.png",
+    "tree3_winter": "tree2_winter.png",
 }
 
 
@@ -71,6 +80,19 @@ def build(src_path):
 
 
 def main():
+    # Prefer the redesigned, validated sheets. Keep the legacy source converter
+    # below for checkouts that do not contain the new artwork.
+    redesigned = os.path.join(os.path.dirname(__file__), "..", "art", "trees-redesign", "packed")
+    if os.path.isdir(redesigned):
+        missing = [name for name in SHEETS if not os.path.isfile(os.path.join(redesigned, name + ".png"))]
+        if missing:
+            raise SystemExit("Redesigned sheets missing; run tools/pack_redesigned_trees.ps1: " + ", ".join(missing))
+        for name in SHEETS:
+            dst = os.path.join(DST, name + ".png")
+            shutil.copyfile(os.path.join(redesigned, name + ".png"), dst)
+            print("wrote", os.path.normpath(dst))
+        return
+
     for name, src_file in SHEETS.items():
         path = os.path.join(SRC, src_file)
         if not os.path.exists(path):

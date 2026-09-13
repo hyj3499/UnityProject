@@ -23,6 +23,15 @@ TextureImporter:
   - first:
       213: -772407837
     second: tree2_winter_full
+  - first:
+      213: 1829507867
+    second: tree2_winter_leaf0
+  - first:
+      213: 460905328
+    second: tree2_winter_leaf2
+  - first:
+      213: 1155754356
+    second: tree2_winter_leaf3
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -219,6 +228,69 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
+      name: tree2_winter_leaf0
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 8
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 54b2030f11bdcf90daeebe45b3c83178
+      internalID: 1829507867
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tree2_winter_leaf2
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: efd9b46530a1a3b81b0fbb544c47a458
+      internalID: 460905328
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tree2_winter_leaf3
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 0
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9bc8a9fa5cdb4eb4254dbf45dbdcb30
+      internalID: 1155754356
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
       name: tree2_winter_leaf1
       rect:
         serializedVersion: 2
@@ -271,6 +343,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      tree2_winter_leaf3: 1155754356
+      tree2_winter_leaf2: 460905328
+      tree2_winter_leaf0: 1829507867
       tree2_winter_full: -772407837
       tree2_winter_leaf1: -1934850439
       tree2_winter_stage0: 839173142

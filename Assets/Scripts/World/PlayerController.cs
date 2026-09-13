@@ -120,12 +120,12 @@ namespace FarmMVP
         {
             _anim?.SetSortingOrder(Depth.YSort(transform.position.y));
 
-            // 밟고 선 칸이 바뀌는 순간에만 작물을 스친다 (매 프레임 흔들면 계속 떨린다)
+            // 밟고 선 칸이 바뀌는 순간에만 스친다 (매 프레임 흔들면 계속 떨린다)
             var tile = new Vector2Int(Mathf.RoundToInt(transform.position.x),
                                       Mathf.RoundToInt(transform.position.y));
             if (tile == _lastTile) return;
             _lastTile = tile;
-            _game?.CurrentLocation?.BrushCropAt(tile);
+            _game?.CurrentLocation?.BrushAt(tile);
         }
 
         private void HandleMovement()
@@ -262,7 +262,9 @@ namespace FarmMVP
         /// 좌클릭 = 마법 사용.
         /// 대지/칼날마법: 누르는 즉시 범위를 표시하고, 키를 뗄 때 실제로 시전한다
         /// (짧게 누르면 거의 즉시 떼어지므로 바로 시전한 것처럼 보이고, 길게 누르면 그동안 이동하며 조준할 수 있다).
-        /// 물마법: 누르는 즉시 한 번 시전하고, 계속 누르고 있으면 일정 간격마다 반복 시전한다.
+        /// 이어 쓰는 마법(MagicDef.continuous — 물·바람): 누르는 즉시 한 번 시전하고,
+        /// 계속 누르고 있으면 tickInterval마다 반복 시전한다. 넓은 범위를 훑는 마법이라
+        /// 한 칸씩 끊어 누르게 하면 손만 아프다.
         /// </summary>
         private void HandleMagicInput()
         {
@@ -272,7 +274,7 @@ namespace FarmMVP
 
                 _waterTickTimer = 0f;
 
-                if (_game.CurrentMagic == MagicType.Water)
+                if (MagicSystem.Get(_game.CurrentMagic).continuous)
                 {
                     if (!_game.CastMagicOnFacingTile(this)) return; // MP 부족 - 조준 시작조차 하지 않음
                     PlayMagicAnimation();
@@ -285,10 +287,11 @@ namespace FarmMVP
             {
                 ShowMagicIndicator();
 
-                if (_game.CurrentMagic == MagicType.Water)
+                var held = MagicSystem.Get(_game.CurrentMagic);
+                if (held.continuous)
                 {
                     _waterTickTimer += Time.deltaTime;
-                    float interval = MagicSystem.Get(_game.CurrentMagic).tickInterval;
+                    float interval = Mathf.Max(0.05f, held.tickInterval);
                     if (_waterTickTimer >= interval)
                     {
                         _waterTickTimer -= interval;
@@ -310,8 +313,8 @@ namespace FarmMVP
                 _magicHeld = false;
                 _indicator.Hide();
 
-                // 물마법은 누르는 동안 이미 시전했으므로 뗄 때 추가로 시전하지 않는다.
-                if (_game.CurrentMagic != MagicType.Water && _game.CastMagicOnFacingTile(this))
+                // 이어 쓰는 마법은 누르는 동안 이미 시전했으므로 뗄 때 추가로 시전하지 않는다.
+                if (!MagicSystem.Get(_game.CurrentMagic).continuous && _game.CastMagicOnFacingTile(this))
                     PlayMagicAnimation();
             }
         }

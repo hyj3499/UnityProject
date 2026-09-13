@@ -36,6 +36,10 @@ namespace FarmMVP
                     .Add(tree.SeedItemId, 1, 1, tree.seedDropChance));
                 Register(tree.StumpDropTableId, new LootTable().Add("wood", tree.stumpWood, tree.stumpWood));
             }
+            // 풀도 마찬가지 — 잔디는 목초를, 잡초는 섬유를 남긴다.
+            Register(PlantDatabase.Get(PlantDatabase.GrassId).DropTableId, new LootTable().Add("hay", 1, 2));
+            Register(PlantDatabase.Get(PlantDatabase.WeedId).DropTableId, new LootTable().Add("fiber", 1, 2));
+
             // 작물은 CropDatabase 하나만 보면 되도록 여기서 자동 등록한다 (색이 여러 개면 색마다).
             foreach (var crop in CropDatabase.All)
                 foreach (var harvest in crop.Harvests)

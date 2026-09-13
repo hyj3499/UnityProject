@@ -282,6 +282,7 @@ namespace FarmMVP
                 case MagicType.Rock: return FarmerAnim.Tool;
                 case MagicType.Earth: return FarmerAnim.Tool;
                 case MagicType.Blade: return FarmerAnim.Melee;
+                case MagicType.Wind: return FarmerAnim.Melee;   // 휘둘러 베는 동작
                 case MagicType.Water: return FarmerAnim.Watering;
                 default: return FarmerAnim.Tool;
             }

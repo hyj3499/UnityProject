@@ -1,0 +1,50 @@
+[
+  {
+    "file": "tree1_spring",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=3965"
+  },
+  {
+    "file": "tree1_summer",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=4216"
+  },
+  {
+    "file": "tree1_fall",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=4187"
+  },
+  {
+    "file": "tree1_winter",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=3275"
+  },
+  {
+    "file": "tree2_spring",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=3645"
+  },
+  {
+    "file": "tree2_summer",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=3771"
+  },
+  {
+    "file": "tree2_fall",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=3697"
+  },
+  {
+    "file": "tree2_winter",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=3222"
+  },
+  {
+    "file": "tree3_spring",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=4887"
+  },
+  {
+    "file": "tree3_summer",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=5276"
+  },
+  {
+    "file": "tree3_fall",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=5300"
+  },
+  {
+    "file": "tree3_winter",
+    "result": "336x96 RGBA; 10 nonempty sprites; cardinal particles; exact stump+upper composition; visible=3544"
+  }
+]

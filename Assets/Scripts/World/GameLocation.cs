@@ -56,7 +56,12 @@ namespace FarmMVP
         /// <summary>맵 크기를 씬에 칠한 바닥에서 가져왔는지. true면 빌더의 기본 크기를 무시한다.</summary>
         private bool _sizeFromTilemap;
 
+        /// <summary>이 맵을 지은 날. 풀이 며칠치를 따라잡아야 하는지 계산하는 데 쓴다.</summary>
+        private int _today = 1;
+
         private Tilemap _groundMap, _blockedMask, _tillableMask, _objectMarkers, _waterMap;
+        /// <summary>잔디를 깔아 둘 자리를 칠해 둔 마스크. null이면 그런 레이어가 없다.</summary>
+        private Tilemap _grassMask;
         private Tilemap _fixedObjects, _breakableObjects;
         private Tilemap _cliffMap;
         /// <summary>물 칸. null이면 물 레이어가 없다.</summary>
@@ -148,6 +153,7 @@ namespace FarmMVP
         public void Build(GameData data)
         {
             AssetLibrary.EnsureLoaded();
+            _today = data != null ? data.currentDay : 1;
 
             _tileRoot = new GameObject("Tiles").transform;
             _tileRoot.SetParent(transform, false);
@@ -204,6 +210,7 @@ namespace FarmMVP
         ///   물     "Water_{id}"     또는 "{id}Water"      — 칠한 칸은 물. 못 지나가고, 낚시할 수 있다
         ///   장식   "Decor_{id}"     또는 "{id}Decor"      — 꽃·잔디 장식. 막지 않고, 경작지에 덮인다
         ///   절벽   "Cliff_{id}"     또는 "{id}Cliff"      — 칠한 칸은 절벽. 못 지나가고, 덮을 수 없다
+        ///   잔디   "Grass_{id}"     또는 "{id}Grass"      — 칠한 칸에 잔디가 <b>처음 한 번</b> 깔린다
         ///
         /// 마스크 레이어는 "어떤 타일을 칠했는지"는 보지 않고 "칠했는지 아닌지"만 본다. 그래서
         /// 아무 타일이나 하나 골라 영역만 쓱 칠하면 되고, 타일셋의 타일을 하나씩 분류할 필요가 없다.
@@ -216,6 +223,7 @@ namespace FarmMVP
         private void FindSceneTilemaps()
         {
             _groundMap = _blockedMask = _tillableMask = _objectMarkers = _waterMap = null;
+            _grassMask = null;
             _fixedObjects = _breakableObjects = null;
             _cliffMap = null;
             HasObjectMarkers = false;
@@ -294,6 +302,11 @@ namespace FarmMVP
                     case TilemapLayer.Breakable:
                         _breakableObjects = tm;
                         if (HasTiles(tm)) HasObjectMarkers = true;
+                        if (tr != null) tr.enabled = false;
+                        break;
+                    case TilemapLayer.Grass:
+                        // 어떤 타일을 칠했는지는 보지 않는다 — 칠한 칸에 잔디를 깔 뿐이라 마스크다.
+                        _grassMask = tm;
                         if (tr != null) tr.enabled = false;
                         break;
                 }
@@ -431,7 +444,7 @@ namespace FarmMVP
             PaintedObjectPlacer.Apply(this, _fixedObjects, _breakableObjects, locData);
         }
 
-        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff, Fixed, Breakable }
+        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff, Fixed, Breakable, Grass }
 
         /// <summary>
         /// 레이어 이름을 해석한다. 앞에 계절이 붙어 있으면("Winter_Location_Farm1") 그 계절 전용이다.
@@ -474,6 +487,8 @@ namespace FarmMVP
                 { locId = candidate; layer = TilemapLayer.Fixed; return true; }
                 if (name == $"Breakable_{candidate}" || name == $"{candidate}Breakable")
                 { locId = candidate; layer = TilemapLayer.Breakable; return true; }
+                if (name == $"Grass_{candidate}" || name == $"{candidate}Grass")
+                { locId = candidate; layer = TilemapLayer.Grass; return true; }
             }
             locId = default;
             layer = TilemapLayer.Ground;
@@ -659,6 +674,7 @@ namespace FarmMVP
             }
 
             RestorePlaced(loc);
+            RestorePlants(loc);
 
             int outside = _outOfBoundsHoeDirts.Count + _outOfBoundsTrees.Count + _outOfBoundsRocks.Count;
             if (outside > 0)
@@ -897,6 +913,13 @@ namespace FarmMVP
         {
             if (_cropRenderers.TryGetValue(pos, out var sr) && sr.enabled)
                 Wobble.Play(sr, 6f, 0.3f, 2.5f);
+        }
+
+        /// <summary>이 칸을 밟고 지나간다 — 스치는 것(작물·풀)이 있으면 잠깐 흔들린다.</summary>
+        public void BrushAt(Vector2Int pos)
+        {
+            BrushCropAt(pos);
+            BrushPlantAt(pos);
         }
 
         /// <summary>NPC가 서 있는 칸은 지나갈 수 없게 막는다.</summary>
@@ -1173,6 +1196,8 @@ namespace FarmMVP
                     isStump = t.isStump
                 });
             }
+
+            SavePlantsInto(loc);
 
             loc.rocks.Clear();
             foreach (var kv in rocks)

@@ -2,8 +2,9 @@ using UnityEngine;
 
 namespace FarmMVP
 {
-    // 농기구 대신 마법을 사용 (대지=경작, 물=물주기, 칼날=나무 베기, 바위=바위 부수기)
-    public enum MagicType { Earth, Water, Blade, Rock }
+    // 농기구 대신 마법을 사용 (대지=경작, 물=물주기, 칼날=나무 베기, 바위=바위 부수기, 바람=풀 베기)
+    // 새로 추가할 때는 <b>맨 뒤에</b> 붙인다 — 저장된 "지금 든 마법"이 번호라서 중간에 끼우면 어긋난다.
+    public enum MagicType { Earth, Water, Blade, Rock, Wind }
 
     /// <summary>한 마법의 스펙: MP 소모량, 길게 눌렀을 때 지속 시전 여부와 간격, 조준 표시 색상.</summary>
     public struct MagicDef
@@ -62,6 +63,17 @@ namespace FarmMVP
             previewColor = new Color(0.55f, 0.55f, 0.6f, 0.45f),
         };
 
+        public static readonly MagicDef Wind = new MagicDef
+        {
+            displayName = "바람마법",
+            mpCost = 2,
+            timeCost = 2,
+            // 풀은 넓게 깔려 있어서 한 칸씩 끊어 치면 손이 아프다 — 누르고 있으면 이어서 벤다.
+            continuous = true,
+            tickInterval = 0.25f,
+            previewColor = new Color(0.55f, 0.85f, 0.6f, 0.45f),
+        };
+
         /// <summary>지금 이 칸에는 쓸 수 없다는 표시 — 조준 사각형을 어둡게 덮는다.</summary>
         public static readonly Color InvalidPreviewColor = new Color(0.08f, 0.08f, 0.1f, 0.45f);
 
@@ -86,6 +98,8 @@ namespace FarmMVP
                 // 바위마법은 바위를 부수고, 놓아 둔 설치물(울타리·길·가구)을 걷어낸다.
                 // "Fixed_{맵}"에 칠한 배경 오브젝트와 마커로 놓인 것은 여기 걸리지 않아 부술 수 없다.
                 case MagicType.Rock: return location.HasBreakableRock(x, y) || location.HasPlaced(x, y);
+                // 바람마법: 땅을 덮은 풀(잔디·잡초)을 베어 낸다.
+                case MagicType.Wind: return location.HasCuttablePlant(x, y);
                 default: return false;
             }
         }
@@ -98,6 +112,7 @@ namespace FarmMVP
                 case MagicType.Water: return Water;
                 case MagicType.Blade: return Blade;
                 case MagicType.Rock: return Rock;
+                case MagicType.Wind: return Wind;
                 default: return Earth;
             }
         }
@@ -136,6 +151,9 @@ namespace FarmMVP
                     }
                     // 걷어낸 울타리·길·가구는 그 자리에 떨어져서 다시 주워 놓을 수 있다.
                     return location.RemovePlaced(x, y, out dropTableId);
+
+                case MagicType.Wind: // 바람마법: 풀 베기 (잔디 -> 목초, 잡초 -> 섬유)
+                    return location.CutPlant(x, y, out dropTableId);
 
                 default:
                     return false;

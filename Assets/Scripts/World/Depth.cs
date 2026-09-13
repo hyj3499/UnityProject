@@ -80,5 +80,11 @@ namespace FarmMVP
 
         /// <summary>벨 때 흩날리는 나뭇잎. 그 나무보다는 앞에 보여야 한다.</summary>
         public const int TreeLeafBias = 2;
+
+        /// <summary>
+        /// 땅을 덮는 풀(잔디·잡초). 같은 칸의 작물·떨어진 아이템보다 뒤에 그린다 —
+        /// 풀에 가려 못 줍는 아이템이 생기면 안 되기 때문이다.
+        /// </summary>
+        public const int PlantBias = -25;
     }
 }
