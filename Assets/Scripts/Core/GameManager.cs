@@ -397,23 +397,15 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 카메라 크기를 정한다. 설정한 배율이 맵보다 크게 보려고 하면 <b>맵에 맞춰 줄인다</b> —
-        /// 그러지 않으면 맵 바깥의 빈 배경(진한 회색)이 화면에 들어온다. 맵이 작을수록 덜 물러난다.
-        /// 창 크기(가로세로비)나 맵이 바뀌면 값이 달라지므로 매 프레임 다시 계산한다 (계산은 몇 줄뿐).
+        /// 카메라 크기를 설정한 배율 그대로 맞춘다. <b>맵 크기는 보지 않는다</b> — 맵마다 배율이
+        /// 달라지면 맵을 옮길 때마다 화면이 확 당겨졌다 밀렸다 해서 설정을 만져 봐야 소용이 없다.
+        /// 작은 맵에서 가장자리 바깥이 보이는 것은 카메라 <b>위치</b>로 최대한 밀어 넣고(ClampToMap),
+        /// 그래도 남는 부분은 그냥 둔다.
         /// </summary>
         private void ApplyCameraSize()
         {
             if (_cam == null || !_cam.orthographic) return;
-
-            float size = BaseOrthographicSize * ZoomMultiplier;
-            var loc = CurrentLocation;
-            if (loc != null && loc.width > 0 && loc.height > 0)
-            {
-                // 칸 중심이 정수 좌표라 맵이 실제로 차지하는 크기는 width x height 칸 그대로다.
-                float aspect = _cam.aspect > 0.01f ? _cam.aspect : 1f;
-                size = Mathf.Min(size, loc.height / 2f, loc.width / 2f / aspect);
-            }
-            _cam.orthographicSize = Mathf.Max(size, 1f);
+            _cam.orthographicSize = BaseOrthographicSize * ZoomMultiplier;
         }
 
         // 1 real second = this many in-game minutes when idle (time passes with actions primarily)
@@ -670,7 +662,6 @@ namespace FarmMVP
         private void FollowCamera()
         {
             if (_cam == null) return;
-            ApplyCameraSize();
             Vector3 target = ClampToMap(new Vector3(Player.transform.position.x, Player.transform.position.y, -10));
             _cam.transform.position = Vector3.Lerp(_cam.transform.position, target, Time.deltaTime * 6f);
         }
@@ -678,7 +669,7 @@ namespace FarmMVP
         private void CenterCameraInstant()
         {
             if (_cam == null) return;
-            ApplyCameraSize();   // 맵이 바뀌었으니 새 맵 크기에 맞춰 다시 정한다
+            ApplyCameraSize();   // 맵을 옮겨도 설정한 배율 그대로
             _cam.transform.position = ClampToMap(new Vector3(Player.transform.position.x, Player.transform.position.y, -10));
         }
 
