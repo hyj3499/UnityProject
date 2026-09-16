@@ -117,6 +117,30 @@ namespace FarmMVP
         public bool TryGetExit(int x, int y, out LocationId target)
             => _exits.TryGetValue(new Vector2Int(x, y), out target);
 
+        /// <summary>이 맵에 target으로 가는 출구 <b>칸</b>이 하나라도 있는지 (마커로 칠했든 빌더가 넣었든).</summary>
+        public bool HasExitTo(LocationId target)
+        {
+            foreach (var kv in _exits) if (kv.Value == target) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// 맵의 <b>변</b>을 넘어가면 이어지는 맵. 칸이 아니라 변이라서, 그 변 어디에서든 맵 밖으로
+        /// 한 발 내디디면 넘어간다 (<see cref="MapExits"/>가 MapGraph를 보고 등록한다).
+        /// 출구 칸과 달리 <b>밟는다고</b> 넘어가지 않는다 — 가장자리 칸에 서 있는 것은 자유롭고,
+        /// 바깥쪽으로 한 번 더 움직여야 넘어간다. 그래서 도착하자마자 되돌아가는 일이 없다.
+        /// </summary>
+        private readonly Dictionary<MapSide, LocationId> _edgeExits = new Dictionary<MapSide, LocationId>();
+
+        /// <summary>이 변을 넘어가면 target 맵으로 가도록 등록한다.</summary>
+        public void AddEdgeExit(MapSide side, LocationId target) => _edgeExits[side] = target;
+
+        /// <summary>이 변을 넘어가면 갈 곳이 있는지.</summary>
+        public bool TryGetEdgeExit(MapSide side, out LocationId target) => _edgeExits.TryGetValue(side, out target);
+
+        /// <summary>씬에 "Location_{맵}" 바닥을 칠해 뒀는지. 안 칠했으면 빌더가 임시 바닥을 깐다.</summary>
+        internal bool HasPaintedGround => _groundMap != null;
+
         /// <summary>
         /// origin 맵에서 넘어왔을 때 내려설 자리. 되돌아가는 출구(= origin을 가리키는 칸) 중
         /// 떠나온 높이와 가장 가까운 것을 고르고, 그 <b>옆</b>의 걸을 수 있는 칸에 내려놓는다.
@@ -145,9 +169,36 @@ namespace FarmMVP
                 }
             }
 
-            Debug.LogWarning($"[GameLocation] {id}: {origin}에서 되돌아올 출구를 찾지 못해 맵 가운데에 내려놓습니다. " +
-                             $"\"Obj_Exit{origin}\" 마커를 칠해 주세요.");
+            // 칠해 둔 출구 칸이 없으면 변을 넘어 들어온 것이다 — 그 변의 한 칸 안쪽에 내려놓는다.
+            foreach (var kv in _edgeExits)
+            {
+                if (kv.Value != origin) continue;
+                return FindWalkableNear(EntryPointOnSide(kv.Key, fromTile));
+            }
+
+            Debug.LogWarning($"[GameLocation] {id}: {origin}에서 되돌아올 길이 없어 맵 가운데에 내려놓습니다. " +
+                             $"\"Obj_Exit{origin}\" 마커를 칠하거나 MapGraph에 통로를 적어 주세요.");
             return FindWalkableNear(new Vector2(width / 2f, height / 2f));
+        }
+
+        /// <summary>
+        /// 변을 넘어 들어왔을 때 내려설 칸. 떠나온 칸의 나란한 좌표를 그대로 써서, 맵 위쪽에서
+        /// 나가면 위쪽으로 들어온다. 가장자리 <b>한 칸 안쪽</b>에 세우는 이유는 출구 칸으로 드나들 때와
+        /// 같다 — 테두리에 딱 붙여 세우면 손가락을 떼기도 전에 되돌아가 버린다.
+        /// </summary>
+        private Vector2 EntryPointOnSide(MapSide side, Vector2Int fromTile)
+        {
+            int x = Mathf.Clamp(fromTile.x, 0, Mathf.Max(0, width - 1));
+            int y = Mathf.Clamp(fromTile.y, 0, Mathf.Max(0, height - 1));
+            int inX = Mathf.Min(1, Mathf.Max(0, width - 1));     // 맵이 한 칸짜리면 안쪽이 없다
+            int inY = Mathf.Min(1, Mathf.Max(0, height - 1));
+            switch (side)
+            {
+                case MapSide.Left:   return new Vector2(inX, y);
+                case MapSide.Right:  return new Vector2(width - 1 - inX, y);
+                case MapSide.Bottom: return new Vector2(x, inY);
+                default:             return new Vector2(x, height - 1 - inY);
+            }
         }
 
         public void Build(GameData data)
@@ -180,7 +231,14 @@ namespace FarmMVP
                 case LocationId.Farm1: Farm1Builder.Build(this, data); break;
                 case LocationId.Farm2: Farm2Builder.Build(this, data); break;
                 case LocationId.FarmHouse: FarmHouseBuilder.Build(this, data); break;
+                // 전용 빌더가 없는 바깥 맵은 전부 같은 방식으로 짓는다 (씬에 칠한 대로).
+                // 그래서 LocationId에 맵을 하나 더 넣어도 여기를 고칠 일이 없다.
+                default: OutdoorMapBuilder.Build(this, data); break;
             }
+
+            // MapGraph에 적힌 통로 중 "Obj_Exit{맵}" 마커로 칠하지 않은 것은 맵의 변에 걸어 둔다 —
+            // 그 변에서 맵 밖으로 한 발 내디디면 넘어간다 (출구 칸과 달리 밟는다고 넘어가지 않는다).
+            MapExits.EnsureEdgeExits(this);
 
             ApplyMaskTilemaps();
 
@@ -188,6 +246,11 @@ namespace FarmMVP
             // 칠하다 보면 문까지 함께 칠하기 쉬운데, 그러면 집에 들어갈 방법이 없어진다.
             if (doorExitTile.HasValue)
                 SetBlocked(doorExitTile.Value.x, doorExitTile.Value.y, false);
+
+            // 풀은 <b>맵이 다 지어진 뒤에</b> 되살리고 자라게 한다. 어디에 날 수 있는지가 경작 마스크·물·
+            // 절벽·충돌에 달려 있어서, 마스크를 읽기 전에 처리하면 마스크가 없는 것처럼 보인다
+            // (경작지에만 나야 할 잡초가 맵 전체에 나거나, 반대로 한 포기도 나지 않는다).
+            if (data != null) RestorePlants(data.GetLocation(id));
         }
 
         /// <summary>
@@ -198,6 +261,10 @@ namespace FarmMVP
             if (_sizeFromTilemap) return;
             width = w;
             height = h;
+            // 충돌 배열은 Build가 이 함수보다 먼저 잡아 둔다. 크기를 바꿨으면 여기서 다시 잡아야
+            // 새 크기로 접근할 때 배열 밖으로 나가지 않는다 (빌더가 ResetBlocked를 잊어도 안전하게).
+            if (_blocked == null || _blocked.GetLength(0) != width || _blocked.GetLength(1) != height)
+                ResetBlocked();
         }
 
         /// <summary>
@@ -597,6 +664,12 @@ namespace FarmMVP
         /// 이 칸에서 대지마법(경작)을 쓸 수 있는지. "Tillable_{id}" 마스크 레이어를 칠해 두면
         /// 거기 칠한 칸만 경작할 수 있고, 레이어가 없으면 (예전처럼) 어디든 경작할 수 있다.
         /// </summary>
+        /// <summary>
+        /// "Tillable_{id}" 마스크를 칠해 둔 맵인지. 칠하지 않았으면 <b>들판이 없는 맵</b>이라는 뜻이라
+        /// 잡초도 나지 않는다 (경작 자체는 예전처럼 tillableByDefault를 따른다).
+        /// </summary>
+        public bool HasTillableMask => _tillable != null;
+
         public bool IsTillable(int x, int y)
         {
             if (!InBounds(x, y)) return false;
@@ -674,7 +747,8 @@ namespace FarmMVP
             }
 
             RestorePlaced(loc);
-            RestorePlants(loc);
+            // 풀은 여기서 되살리지 않는다 — 마스크 레이어를 읽은 뒤라야 어디에 날 수 있는지 알 수 있어서
+            // Build가 맨 마지막에 부른다.
 
             int outside = _outOfBoundsHoeDirts.Count + _outOfBoundsTrees.Count + _outOfBoundsRocks.Count;
             if (outside > 0)

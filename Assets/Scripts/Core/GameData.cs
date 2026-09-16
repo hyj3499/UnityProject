@@ -24,10 +24,21 @@ namespace FarmMVP
 
         public StoryEventState story = new StoryEventState();
 
+        // 처음 세 맵은 예전 세이브가 이 이름으로 저장돼 있어서 그대로 둔다.
         public LocationData farm1 = new LocationData();
         public LocationData farm2 = new LocationData();
         public LocationData farmHouse = new LocationData();
 
+        /// <summary>
+        /// 그 밖의 맵들. JsonUtility가 Dictionary를 저장하지 못해 리스트로 들고 있고,
+        /// 맵을 <b>이름</b>으로 찾는다 — LocationId의 순서를 나중에 바꿔도 세이브가 섞이지 않는다.
+        /// </summary>
+        public List<LocationEntry> locations = new List<LocationEntry>();
+
+        /// <summary>
+        /// 그 맵의 저장 데이터. 아직 한 번도 가 보지 않은 맵이면 이 자리에서 빈 데이터를 만들어 둔다
+        /// (맵마다 필드를 하나씩 늘리지 않아도 되도록).
+        /// </summary>
         public LocationData GetLocation(LocationId id)
         {
             switch (id)
@@ -35,9 +46,41 @@ namespace FarmMVP
                 case LocationId.Farm1: return farm1;
                 case LocationId.Farm2: return farm2;
                 case LocationId.FarmHouse: return farmHouse;
-                default: return farm1;
+            }
+
+            string key = id.ToString();
+            foreach (var entry in locations)
+                if (entry.id == key) return entry.data;
+
+            var created = new LocationEntry { id = key, data = new LocationData() };
+            locations.Add(created);
+            return created.data;
+        }
+
+        /// <summary>
+        /// 저장돼 있는 모든 맵의 데이터. 밤사이 작물을 자라게 하는 것처럼 <b>가 있지 않은 맵까지</b>
+        /// 함께 처리해야 하는 일에 쓴다. 맵을 늘려도 부르는 쪽을 고칠 필요가 없다.
+        /// 아직 한 번도 만들어지지 않은 맵은 (데이터가 없으므로) 들어 있지 않다 — 빈 맵이라 할 일도 없다.
+        /// </summary>
+        public IEnumerable<LocationData> AllLocations
+        {
+            get
+            {
+                yield return farm1;
+                yield return farm2;
+                yield return farmHouse;
+                foreach (var entry in locations)
+                    if (entry != null && entry.data != null) yield return entry.data;
             }
         }
+    }
+
+    /// <summary>맵 하나의 저장 데이터와 그 맵의 이름 (GameData.locations).</summary>
+    [Serializable]
+    public class LocationEntry
+    {
+        public string id;
+        public LocationData data = new LocationData();
     }
 
     [Serializable]

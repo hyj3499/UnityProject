@@ -6,80 +6,19 @@ namespace FarmMVP
     public enum FarmerFacing { Down, Side, Up }
 
     /// <summary>
-    /// 동작의 한 칸 — <b>얼마 동안</b> 그리고 <b>부위마다 몇 번 그림</b>을 쓸지.
+    /// 한 동작의 한 방향 — 시트의 <b>어느 줄</b>을 <b>몇 칸</b>, <b>얼마씩</b> 넘길지.
     ///
-    /// 값의 뜻:
-    ///   · 0 이상 = 그 시트의 그 번째 그림 (첫 장이 0번)
-    ///   · <b>-1</b> = 그리지 않음 (뒤를 볼 때의 눈처럼)
-    ///
-    /// 부위마다 그림 장수가 다를 수 있다. 없는 번호를 적으면 그 부위만 안 그려진다.
-    /// 지금 맨몸은 머리통·몸통이 한 장뿐이고(정면 고정), 다리·팔·머리카락이 석 장이다
-    /// (0번 모은 자세, 1·2번 걷는 자세).
+    /// 한 줄이 곧 한 동작이고 칸은 왼쪽부터 차례로 넘어간다. 칸마다 다른 시간을 주던 예전
+    /// 동작표와 달리 지금은 한 줄이 같은 박자로 넘어가므로 시간이 하나뿐이다.
     /// </summary>
-    public struct FarmerKey
-    {
-        public int ms;
-
-        public int eyes;      // 눈 (0 뜬 눈, 1 감은 눈)
-        public int legs;      // 맨다리 + 바지
-        public int armL;      // 왼팔 + 왼소매
-        public int armR;      // 오른팔 + 오른소매
-        public int hair;      // 머리카락
-        public int chest;     // 맨몸통
-        public int head;      // 머리통
-
-        /// <summary>
-        /// 이 칸에서 <b>몸 전체</b>를 몇 픽셀 띄울지 — 다리까지 통째로 땅에서 떠오른다.
-        ///
-        /// 몸이 한 덩어리로 움직이니 이음매가 벌어질 일이 없어 <b>그림을 고치지 않아도 된다</b>.
-        /// 발이 땅에서 떨어지므로 폴짝 뛰어오르는 느낌이 난다.
-        /// </summary>
-        public int hop;
-
-        /// <summary>
-        /// 이 칸에서 <b>상체만</b> 몇 픽셀 띄울지 — 다리는 바닥에 둔 채 허리가 늘어난다.
-        /// 머리에 붙은 눈·머리카락은 머리가 움직인 만큼 그대로 따라간다.
-        ///
-        /// 늘어난 만큼 다리 그림 위쪽이 드러나는데, 그 자리는 이미 골반으로 칠해져 있다
-        /// (평소엔 몸통에 가려 보이지 않는다). 층을 붙여 맞추는 일은 없고 그려진 자리 그대로
-        /// 겹치므로, 여기 적은 픽셀만큼만 상체가 오르내린다. 음수면 반대로 내려앉는다.
-        /// </summary>
-        public int bounce;
-
-        public const int Hidden = -1;
-
-        /// <summary>이 칸에서 그 부위가 쓸 그림 번호. 음수면 그리지 않는다는 뜻이다.</summary>
-        public int FrameFor(FarmerPart part)
-        {
-            switch (part)
-            {
-                case FarmerPart.Face: return eyes;
-                case FarmerPart.Legs: return legs;
-                case FarmerPart.ArmLeft: return armL;
-                case FarmerPart.ArmRight: return armR;
-                case FarmerPart.Hair: return hair;
-                case FarmerPart.Chest: return chest;
-                case FarmerPart.Head: return head;
-                default: return Hidden;
-            }
-        }
-    }
-
-    /// <summary>한 동작의 한 방향.</summary>
     public class FarmerClip
     {
-        public FarmerKey[] keys;
+        public int row;      // 시트의 몇 번째 줄 (맨 윗줄이 0번)
+        public int count;    // 그 줄에 그려져 있는 칸 수
+        public int ms;       // 한 칸을 얼마 동안 보여 줄지
         public bool loop;
 
-        public float Duration
-        {
-            get
-            {
-                int total = 0;
-                foreach (var k in keys) total += k.ms;
-                return total / 1000f;
-            }
-        }
+        public float Duration => count * ms / 1000f;
     }
 
     /// <summary>플레이어가 취하는 동작.</summary>
@@ -88,6 +27,8 @@ namespace FarmMVP
         Idle,
         Walk,
         Run,
+        Interact,       // 손을 뻗어 만지는 동작
+        Jump,
         Carry,          // 무언가를 들고 있는 자세
         Harvest,        // 줍기·수확
         Tool,           // 곡괭이·괭이 (바위/대지 마법)
@@ -100,19 +41,101 @@ namespace FarmMVP
     }
 
     /// <summary>
-    /// 동작표. <b>여기 적힌 숫자가 화면에 나오는 그림을 그대로 정한다.</b>
+    /// 동작표. <b>여기 적힌 줄과 박자가 화면에 나오는 그림을 그대로 정한다.</b>
     ///
-    /// 부위마다 시트가 따로 있고 장수도 제각각이라, 칸 하나에 부위별 번호를 나란히 적는다.
-    /// 팔만 다른 그림을 쓰고 싶으면 그 칸의 armL/armR만 바꾸면 되고, 다른 부위는 그대로 있다.
+    /// 그림은 부위별로 나뉘어 있지 않다. <b>Base/base_animations.png</b> 한 장에 모든 동작이
+    /// 이미 합쳐진 채로 들어 있고, 한 칸이 곧 한 장면이다. 예전처럼 다리·팔·머리를 따로 불러
+    /// 겹쳐 그리지 않으므로 부위를 맞춰 줄 일도, 칸 번호를 부위마다 따로 적을 일도 없다.
     ///
-    /// 맨몸 그림이 <b>정면뿐</b>이라 세 방향이 같은 번호를 쓴다(Flat). 옆·뒤 그림을 그려 넣으면
-    /// 그때 방향마다 다른 줄을 적어 주면 된다. 상의만은 방향별 그림이 따로 있어서 동작표가
-    /// 아니라 바라보는 방향이 번호를 정한다(FacingFrame).
+    /// 시트는 <b>한 줄에 한 태그</b>씩, 아래 차례로 놓여 있다 (가로 여섯 칸 자리 중 앞에서부터
+    /// 쓰고 남는 칸은 비어 있다). 줄 차례는 <see cref="Sheet"/> × <see cref="FarmerFacing"/>다.
     ///
-    /// 일감 동작(수확·연장·낚시)은 아직 전용 그림이 없어 서기·걷기 그림을 빌려 쓴다.
+    ///    줄  태그             칸
+    ///     0  Idle_Down         4      3  Walk_Down     4      6  Run_Down       6
+    ///     1  Idle_Side         4      4  Walk_Side     4      7  Run_Side       6
+    ///     2  Idle_Up           4      5  Walk_Up       4      8  Run_Up         6
+    ///     9  Interact_Down     4     12  Jump_Down     5
+    ///    10  Interact_Side     4     13  Jump_Side     5
+    ///    11  Interact_Up       4     14  Jump_Up       5
+    ///
+    /// 왼쪽을 볼 때는 측면 줄을 좌우로 뒤집어 쓴다.
+    ///
+    /// 일감 동작(수확·연장·낚시)은 아직 전용 줄이 없어 만지기·뛰기 줄을 빌려 쓴다.
     /// </summary>
     public static class FarmerPoses
     {
+        /// <summary>시트가 있는 곳 (Resources 아래 경로, 확장자는 뺀다).</summary>
+        public const string SheetPath = "Sprites/Farmer/Base/base_animations";
+
+        /// <summary>시트 한 칸의 크기.</summary>
+        public const int FrameWidth = 32, FrameHeight = 32;
+
+        /// <summary>한 줄에 놓인 칸 자리 수. 줄마다 실제로 쓰는 칸은 이보다 적을 수 있다.</summary>
+        public const int Columns = 6;
+
+        /// <summary>그림 몇 픽셀을 한 칸으로 볼지. 타일과 같은 자로 재야 크기가 맞는다.</summary>
+        public const float PixelsPerUnit = 16f;
+
+        /// <summary>
+        /// 칸 한가운데에서 발바닥까지의 거리(픽셀). 캐릭터를 타일 바닥에 세울 때 쓴다.
+        /// 이 시트는 발이 칸 맨 아랫줄에 닿아 있으므로 칸 높이의 절반이다.
+        /// </summary>
+        public const int FeetBelowCenter = FrameHeight / 2;
+
+        // =================================================================================
+        //  동작표 — 고칠 곳은 여기뿐이다
+        // =================================================================================
+
+        /// <summary>시트에 실제로 그려져 있는 동작. <b>이 차례가 곧 줄 차례</b>다.</summary>
+        private enum Sheet { Idle, Walk, Run, Interact, Jump }
+
+        /// <summary>줄마다 그려져 있는 칸 수. 방향이 달라도 같다.</summary>
+        private static readonly int[] Frames = { 4, 4, 6, 4, 5 };
+
+        /// <summary>한 칸을 얼마 동안 보여 줄지. 빠르게·느리게 하려면 이 숫자만 고치면 된다.</summary>
+        private static readonly int[] Millis = { 200, 140, 90, 90, 100 };
+
+        /// <summary>줄이 되풀이되는 것인지. 한 번짜리 줄은 마지막 칸에서 멈춘다.</summary>
+        private static readonly bool[] Loops = { true, true, true, false, false };
+
+        /// <summary>
+        /// 이 동작이 끝나고 처음으로 돌아갈지.
+        ///
+        /// 보통은 줄이 정하지만, <b>상태가 유지되는 동안 계속 재생하는 동작</b>은 빌려 온 줄이
+        /// 한 번짜리라도 되풀이해야 한다. 낚싯줄 감기가 그렇다 — 한 번 재생하고 멈춰 버리면
+        /// 물고기와 씨름하는 내내 마지막 칸에 굳어 있게 된다.
+        /// </summary>
+        private static bool LoopFor(FarmerAnim anim, Sheet sheet)
+            => Loops[(int)sheet] || anim == FarmerAnim.FishReel;
+
+        /// <summary>이 동작을 어느 줄로 그릴지. 전용 줄이 없는 것은 비슷한 줄을 빌려 쓴다.</summary>
+        private static Sheet SheetFor(FarmerAnim anim)
+        {
+            switch (anim)
+            {
+                case FarmerAnim.Walk: return Sheet.Walk;
+                case FarmerAnim.Run: return Sheet.Run;
+
+                // 폴짝 뛰는 동작 — 물고기를 낚아 올렸을 때도 이걸 쓴다.
+                case FarmerAnim.Jump:
+                case FarmerAnim.FishCaught: return Sheet.Jump;
+
+                // 손을 뻗는 동작 — 수확·연장질·물주기·휘두르기·낚싯대 던지기가 모두 여기 얹힌다.
+                case FarmerAnim.Interact:
+                case FarmerAnim.Harvest:
+                case FarmerAnim.Tool:
+                case FarmerAnim.Watering:
+                case FarmerAnim.Melee:
+                case FarmerAnim.FishCast:
+                case FarmerAnim.FishReel: return Sheet.Interact;
+
+                // 서 있기 — 무언가 들고 있을 때와 입질을 기다릴 때도 가만히 서 있는다.
+                default: return Sheet.Idle;
+            }
+        }
+
+        // ---------- 위에서 만들어지는 것 ----------
+
         /// <summary>이 방향을 볼 때 그림을 좌우로 뒤집어야 하는지.</summary>
         public static bool Mirrored(Direction dir) => dir == Direction.Left;
 
@@ -127,151 +150,40 @@ namespace FarmMVP
             }
         }
 
-        /// <summary>
-        /// 방향마다 그림이 따로 있는 부위(상의)가 쓸 번호.
-        /// 그림이 앞·오른쪽·왼쪽·뒤 차례로 넉 장 들어 있다.
-        /// </summary>
-        public static int FacingFrame(Direction dir)
-        {
-            switch (dir)
-            {
-                case Direction.Right: return 1;
-                case Direction.Left: return 2;
-                case Direction.Up: return 3;
-                default: return 0;
-            }
-        }
+        /// <summary>시트에서 이 동작·방향이 놓인 줄. 태그를 놓은 차례 그대로다.</summary>
+        public static int Row(FarmerAnim anim, FarmerFacing facing)
+            => (int)SheetFor(anim) * 3 + (int)facing;
+
+        /// <summary>시트에 들어 있는 줄 수.</summary>
+        public static int RowCount => System.Enum.GetValues(typeof(Sheet)).Length * 3;
 
         private static readonly Dictionary<FarmerAnim, FarmerClip[]> _clips = BuildClips();
 
         public static FarmerClip Get(FarmerAnim anim, Direction dir)
             => _clips[anim][(int)Facing(dir)];
 
-        // =================================================================================
-        //  동작표 — 고칠 곳은 여기뿐이다
-        // =================================================================================
         private static Dictionary<FarmerAnim, FarmerClip[]> BuildClips()
         {
             var d = new Dictionary<FarmerAnim, FarmerClip[]>();
 
-            // 앞뒤는 정면 그림을, 옆은 측면 그림을 쓴다. 뒤를 볼 때는 눈만 지운다.
-            void Ways(FarmerAnim anim, bool loop, FarmerKey[] front, FarmerKey[] side)
+            foreach (FarmerAnim anim in System.Enum.GetValues(typeof(FarmerAnim)))
             {
-                var clips = new[] { Clip(front), Clip(side), Clip(NoEyes(front)) };
-                foreach (var c in clips) c.loop = loop;
+                int sheet = (int)SheetFor(anim);
+                var clips = new FarmerClip[3];
+
+                for (int facing = 0; facing < clips.Length; facing++)
+                    clips[facing] = new FarmerClip
+                    {
+                        row = sheet * 3 + facing,
+                        count = Frames[sheet],
+                        ms = Millis[sheet],
+                        loop = LoopFor(anim, (Sheet)sheet),
+                    };
+
                 d[anim] = clips;
             }
-
-            // 세 방향이 같은 그림을 쓴다 (측면 그림이 아직 없는 동작).
-            void Flat(FarmerAnim anim, bool loop, params FarmerKey[] keys) => Ways(anim, loop, keys, keys);
-
-            // ---------------------------------------------------------------------------
-            //  그림이 들어 있는 칸
-            //    정면(0~2)  legs·armL·armR : 0 모음 · 1·2 걷기      chest·head : 0
-            //    측면(3~)   legs  : 3 대기 · 4 준비 · 5 앞딛기 · 6 뒷딛기
-            //               armL  : 3 대기 · 4 준비 · 5 뒤로     · 6 앞으로
-            //               armR  : 3 준비 · 4 앞으로 · 5 뒤로            (대기 칸이 없어 3을 같이 쓴다)
-            //               chest·head : 1        눈·머리카락은 측면 그림이 없어 정면 것을 그대로 쓴다
-            // ---------------------------------------------------------------------------
-
-            // 서 있기 — 가만히 있다가 이따금 한 번 깜빡인다.
-            Ways(FarmerAnim.Idle, loop: true,
-                front: new[] {
-                    K(2800, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0),
-                    K( 120, eyes: 1, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0) },
-                side: new[] {
-                    K(2800, eyes: 2, legs: 3, armL: 3, armR: 3, hair: 0, chest: 1, head: 1),
-                    K( 120, eyes: 3, legs: 3, armL: 3, armR: 3, hair: 0, chest: 1, head: 1) });
-
-            // 걷기 — 모은 자세와 내딛는 자세를 번갈아 밟는다.
-            //
-            // 한 걸음은 두 박이다. 다리가 몸 아래로 모이는 칸은 <b>뜨는 박</b>이라 hop을,
-            // 발을 내디뎌 다리가 뻗는 칸은 <b>딛는 박</b>이라 bounce를 준다.
-            // 뜰 땐 몸이 통째로 오르고, 디딜 땐 발이 땅에 붙은 채 허리만 늘어난다.
-            // (bounce를 음수로 바꾸면 늘어나는 대신 내려앉는 무거운 걸음이 된다.)
-            //
-            // 측면은 뛰기 그림밖에 없어 걸을 때도 같은 칸을 느리게 넘긴다.
-            Ways(FarmerAnim.Walk, loop: true,
-                front: new[] {
-                    K( 180, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 1, bounce: 0),
-                    K( 180, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0, hop: 0, bounce: -1),
-                    K( 180, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 1, bounce: 0),
-                    K( 180, eyes: 0, legs: 2, armL: 2, armR: 2, hair: 2, chest: 0, head: 0, hop: 0, bounce: -1) },
-                side: new[] {
-                    K( 180, eyes: 2, legs: 4, armL: 4, armR: 3, hair: 0, chest: 1, head: 1, hop: 1, bounce: 0),
-                    K( 180, eyes: 2, legs: 5, armL: 6, armR: 5, hair: 1, chest: 1, head: 1, hop: 0, bounce: -1),
-                    K( 180, eyes: 2, legs: 4, armL: 4, armR: 3, hair: 0, chest: 1, head: 1, hop: 1, bounce: 0),
-                    K( 180, eyes: 2, legs: 6, armL: 5, armR: 4, hair: 2, chest: 1, head: 1, hop: 0, bounce: -1) });
-
-            // 뛰기 — 걷기와 같은 박자로, 빠르고 더 크게 튄다.
-            Ways(FarmerAnim.Run, loop: true,
-                front: new[] {
-                    K( 110, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 2, bounce: 0),
-                    K( 110, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0, hop: 0, bounce: -2),
-                    K( 110, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0, hop: 2, bounce: 0),
-                    K( 110, eyes: 0, legs: 2, armL: 2, armR: 2, hair: 2, chest: 0, head: 0, hop: 0, bounce: -2) },
-                side: new[] {
-                    K( 110, eyes: 2, legs: 4, armL: 4, armR: 3, hair: 0, chest: 1, head: 1, hop: 0, bounce: -1),
-                    K( 110, eyes: 2, legs: 5, armL: 6, armR: 5, hair: 1, chest: 1, head: 1, hop: 2, bounce: 0),
-                    K( 110, eyes: 2, legs: 4, armL: 4, armR: 3, hair: 0, chest: 1, head: 1, hop: 0, bounce: -1),
-                    K( 110, eyes: 2, legs: 6, armL: 5, armR: 4, hair: 2, chest: 1, head: 1, hop: 2, bounce: 0) });
-
-            // ---- 아래는 아직 전용 그림이 없어 서기·걷기 그림을 빌려 쓴다 ----
-
-            Flat(FarmerAnim.Carry, loop: true,
-                K(1000, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0));
-
-            Flat(FarmerAnim.Harvest, loop: false,
-                K( 140, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0, bounce: 1),
-                K( 260, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0));
-
-            Flat(FarmerAnim.Tool, loop: false,
-                K( 130, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0, hop: 1),
-                K( 220, eyes: 0, legs: 2, armL: 2, armR: 2, hair: 2, chest: 0, head: 0));
-
-            Flat(FarmerAnim.Watering, loop: false,
-                K( 120, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0),
-                K( 420, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0));
-
-            Flat(FarmerAnim.Melee, loop: false,
-                K(  90, eyes: 0, legs: 2, armL: 2, armR: 2, hair: 2, chest: 0, head: 0, hop: 1),
-                K( 150, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0));
-
-            Flat(FarmerAnim.FishCast, loop: false,
-                K( 120, eyes: 0, legs: 1, armL: 1, armR: 1, hair: 1, chest: 0, head: 0),
-                K( 220, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0));
-
-            Flat(FarmerAnim.FishWait, loop: true,
-                K(1000, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0));
-
-            Flat(FarmerAnim.FishReel, loop: true,
-                K( 220, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0),
-                K( 220, eyes: 0, legs: 0, armL: 1, armR: 1, hair: 0, chest: 0, head: 0));
-
-            Flat(FarmerAnim.FishCaught, loop: false,
-                K( 200, eyes: 0, legs: 2, armL: 2, armR: 2, hair: 2, chest: 0, head: 0, hop: 2),
-                K( 700, eyes: 0, legs: 0, armL: 0, armR: 0, hair: 0, chest: 0, head: 0));
-
             return d;
         }
-
-        private static FarmerClip Clip(FarmerKey[] keys) => new FarmerClip { keys = keys };
-
-        /// <summary>뒤를 볼 때 쓸 칸들. 눈만 지운 사본이다.</summary>
-        private static FarmerKey[] NoEyes(FarmerKey[] keys)
-        {
-            var copy = (FarmerKey[])keys.Clone();
-            for (int i = 0; i < copy.Length; i++) copy[i].eyes = FarmerKey.Hidden;
-            return copy;
-        }
-
-        private static FarmerKey K(int ms, int eyes, int legs, int armL, int armR, int hair,
-                                   int chest, int head, int hop = 0, int bounce = 0)
-            => new FarmerKey
-            {
-                ms = ms, eyes = eyes, legs = legs, armL = armL, armR = armR, hair = hair,
-                chest = chest, head = head, hop = hop, bounce = bounce,
-            };
 
         // ---------- 무슨 일을 할 때 무엇을 재생할지 ----------
 

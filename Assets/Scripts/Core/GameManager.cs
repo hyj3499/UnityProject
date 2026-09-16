@@ -381,6 +381,41 @@ namespace FarmMVP
         private Camera _cam;
         private float _timeAccum;
 
+        // ---------- camera zoom ----------
+        public const float BaseOrthographicSize = 5.5f; // GameBootstrap이 카메라를 만들 때 쓰는 기본값과 같다
+        private const string ZoomPrefKey = "farm_mvp_zoom";
+        public const float MinZoom = 0.6f, MaxZoom = 2.5f;
+
+        public float ZoomMultiplier { get; private set; } = 1f;
+
+        /// <summary>화면 확대/축소. 1 = 기본, 클수록 더 멀리서 보여 화면이 넓게 보인다.</summary>
+        public void SetZoom(float multiplier)
+        {
+            ZoomMultiplier = Mathf.Clamp(multiplier, MinZoom, MaxZoom);
+            ApplyCameraSize();
+            PlayerPrefs.SetFloat(ZoomPrefKey, ZoomMultiplier);
+        }
+
+        /// <summary>
+        /// 카메라 크기를 정한다. 설정한 배율이 맵보다 크게 보려고 하면 <b>맵에 맞춰 줄인다</b> —
+        /// 그러지 않으면 맵 바깥의 빈 배경(진한 회색)이 화면에 들어온다. 맵이 작을수록 덜 물러난다.
+        /// 창 크기(가로세로비)나 맵이 바뀌면 값이 달라지므로 매 프레임 다시 계산한다 (계산은 몇 줄뿐).
+        /// </summary>
+        private void ApplyCameraSize()
+        {
+            if (_cam == null || !_cam.orthographic) return;
+
+            float size = BaseOrthographicSize * ZoomMultiplier;
+            var loc = CurrentLocation;
+            if (loc != null && loc.width > 0 && loc.height > 0)
+            {
+                // 칸 중심이 정수 좌표라 맵이 실제로 차지하는 크기는 width x height 칸 그대로다.
+                float aspect = _cam.aspect > 0.01f ? _cam.aspect : 1f;
+                size = Mathf.Min(size, loc.height / 2f, loc.width / 2f / aspect);
+            }
+            _cam.orthographicSize = Mathf.Max(size, 1f);
+        }
+
         // 1 real second = this many in-game minutes when idle (time passes with actions primarily)
         public float minutesPerRealSecond = 1.0f;
 
@@ -394,6 +429,7 @@ namespace FarmMVP
             _cam = cam;
             Player = player;
             _locationRoot = locationRoot;
+            SetZoom(PlayerPrefs.GetFloat(ZoomPrefKey, 1f));
 
             ItemDatabase.Init();
             CropDatabase.Init();
@@ -634,6 +670,7 @@ namespace FarmMVP
         private void FollowCamera()
         {
             if (_cam == null) return;
+            ApplyCameraSize();
             Vector3 target = ClampToMap(new Vector3(Player.transform.position.x, Player.transform.position.y, -10));
             _cam.transform.position = Vector3.Lerp(_cam.transform.position, target, Time.deltaTime * 6f);
         }
@@ -641,6 +678,7 @@ namespace FarmMVP
         private void CenterCameraInstant()
         {
             if (_cam == null) return;
+            ApplyCameraSize();   // 맵이 바뀌었으니 새 맵 크기에 맞춰 다시 정한다
             _cam.transform.position = ClampToMap(new Vector3(Player.transform.position.x, Player.transform.position.y, -10));
         }
 
@@ -1025,12 +1063,14 @@ namespace FarmMVP
             if (seasonChanged)
             {
                 AssetLibrary.ApplySeason(Seasons.Current);
-                withered = WitherOutOfSeasonCrops(Data.farm1)
-                         + WitherOutOfSeasonCrops(Data.farm2)
-                         + WitherOutOfSeasonCrops(Data.farmHouse);
-                WitherOutOfSeasonPlants(Data.farm1);
-                WitherOutOfSeasonPlants(Data.farm2);
-                WitherOutOfSeasonPlants(Data.farmHouse);
+                // 맵을 늘려도 여기를 고치지 않도록 저장된 맵을 전부 훑는다. 심어 둔 것도 자란 풀도
+                // 없는 맵(대부분의 산·마을)은 할 일이 없으니 건너뛴다.
+                foreach (var loc in Data.AllLocations)
+                {
+                    if (loc.hoeDirts.Count == 0 && loc.plants.Count == 0) continue;
+                    withered += WitherOutOfSeasonCrops(loc);
+                    WitherOutOfSeasonPlants(loc);
+                }
             }
 
             // 잠을 자면 MP 회복
@@ -1097,9 +1137,9 @@ namespace FarmMVP
         private void AdvanceAllCrops()
         {
             // 살아 있는 위치는 이미 SaveInto로 데이터에 반영된 뒤라 전부 데이터에서 자라게 한다.
-            AdvanceCropsInData(Data.farm1);
-            AdvanceCropsInData(Data.farm2);
-            AdvanceCropsInData(Data.farmHouse);
+            // 밭을 갈아 둔 맵만 볼 일이 있다 — 나머지는 hoeDirts가 비어 있어 건너뛴다.
+            foreach (var loc in Data.AllLocations)
+                if (loc.hoeDirts.Count > 0) AdvanceCropsInData(loc);
         }
 
         private void AdvanceCropsInData(LocationData loc)

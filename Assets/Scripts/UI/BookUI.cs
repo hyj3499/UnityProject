@@ -37,6 +37,7 @@ namespace FarmMVP
 
         private Text _stMoney, _stDate, _stTime, _stHp, _stMp, _stMagic, _stBag;
         private Slider _volumeSlider;
+        private Slider _zoomSlider;
 
         public bool IsOpen => _root != null && _root.gameObject.activeSelf;
 
@@ -77,6 +78,8 @@ namespace FarmMVP
 
             if (page == Page.Settings && _volumeSlider != null)
                 _volumeSlider.SetValueWithoutNotify(AudioListener.volume);
+            if (page == Page.Settings && _zoomSlider != null && _game != null)
+                _zoomSlider.SetValueWithoutNotify(_game.ZoomMultiplier);
 
             RefreshStatus();
         }
@@ -252,9 +255,24 @@ namespace FarmMVP
             volLabel.rectTransform.sizeDelta = new Vector2(0, 26);
             volLabel.color = TextColor;
 
-            _volumeSlider = BuildVolumeSlider(left, new Vector2(0, -92));
+            _volumeSlider = BuildSlider(left, new Vector2(0, -92), 0f, 1f, AudioListener.volume, v =>
+            {
+                AudioListener.volume = v;
+                PlayerPrefs.SetFloat(VolumePrefKey, v);
+            });
 
-            var note = _ui.Label(left, "ESC 를 다시 누르면 책이 닫힙니다.", 13, new Vector2(0, -150), TextAnchor.UpperLeft);
+            var zoomLabel = _ui.Label(left, "화면 확대/축소", 17, new Vector2(0, -120), TextAnchor.UpperLeft);
+            zoomLabel.rectTransform.anchorMin = new Vector2(0, 1);
+            zoomLabel.rectTransform.anchorMax = new Vector2(1, 1);
+            zoomLabel.rectTransform.pivot = new Vector2(0.5f, 1);
+            zoomLabel.rectTransform.sizeDelta = new Vector2(0, 26);
+            zoomLabel.color = TextColor;
+
+            _zoomSlider = BuildSlider(left, new Vector2(0, -152), GameManager.MinZoom, GameManager.MaxZoom,
+                _game != null ? _game.ZoomMultiplier : 1f,
+                v => _game?.SetZoom(v));
+
+            var note = _ui.Label(left, "ESC 를 다시 누르면 책이 닫힙니다.", 13, new Vector2(0, -190), TextAnchor.UpperLeft);
             note.rectTransform.anchorMin = new Vector2(0, 1);
             note.rectTransform.anchorMax = new Vector2(1, 1);
             note.rectTransform.pivot = new Vector2(0.5f, 1);
@@ -432,9 +450,10 @@ namespace FarmMVP
             return btn;
         }
 
-        private Slider BuildVolumeSlider(RectTransform parent, Vector2 pos)
+        private Slider BuildSlider(RectTransform parent, Vector2 pos, float min, float max, float initial,
+            UnityEngine.Events.UnityAction<float> onChanged)
         {
-            var container = new GameObject("VolumeSlider");
+            var container = new GameObject("Slider");
             var rt = container.AddComponent<RectTransform>();
             rt.SetParent(parent, false);
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 1f);
@@ -463,14 +482,10 @@ namespace FarmMVP
             slider.fillRect = fill.rectTransform;
             slider.handleRect = handleRt;
             slider.targetGraphic = handleImg;
-            slider.minValue = 0f;
-            slider.maxValue = 1f;
-            slider.value = AudioListener.volume;
-            slider.onValueChanged.AddListener(v =>
-            {
-                AudioListener.volume = v;
-                PlayerPrefs.SetFloat(VolumePrefKey, v);
-            });
+            slider.minValue = min;
+            slider.maxValue = max;
+            slider.value = initial;
+            slider.onValueChanged.AddListener(onChanged);
             return slider;
         }
 

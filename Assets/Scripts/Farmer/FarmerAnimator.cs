@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace FarmMVP
@@ -5,24 +6,13 @@ namespace FarmMVP
     /// <summary>
     /// 플레이어를 그리고 동작을 재생한다.
     ///
-    /// 그림은 부위(머리·몸통·다리·양팔·머리카락·옷…)마다 따로 있고, 한 순간의 모습은 부위별
-    /// 그림 번호를 모아 놓은 <b>동작표의 한 칸</b>으로 정해진다. 그 칸대로 부위마다 한 장씩
-    /// 꺼내 아래에서 위로 겹치면 그 자세가 된다.
-    /// 부위 그림은 전부 같은 크기의 칸에 서로 자리가 맞도록 그려져 있어서(FarmerSlots), 층을
-    /// 같은 자리에 놓고 겹치기만 하면 몸이 된다.
+    /// 그림은 <b>Base/base_animations.png</b> 한 장이다. 모든 동작이 이미 합쳐진 채로 그려져
+    /// 있어서 그리는 일은 <b>그 시트에서 칸 하나를 골라 놓는 것</b>이 전부다. 부위를 따로 불러
+    /// 겹치지 않으므로 층도, 부위별 칸 번호도, 통통 튀게 하려고 자리를 올리던 장치도 없다 —
+    /// 튀는 것까지 그림에 들어 있다.
     ///
-    /// 어느 부위가 몇 번 그림을 쓸지는 전부 동작표에 적혀 있다(FarmerPoses). 여기서는 그 표를
-    /// 시간에 맞춰 넘기고, 칸마다 부위별 번호를 꺼내 그리기만 한다.
-    ///
-    /// 걸을 때 통통 튀는 것은 그림이 아니라 <b>자리</b>로 낸다. 층들은 두 겹의 덩어리에 매달려
-    /// 있고, 동작표가 칸마다 그 둘을 몇 픽셀씩 올릴지 적어 둔다:
-    ///   · Body      — 몸 전체(다리·발 포함). 올리면 발이 땅에서 떨어져 폴짝 뛴다   (hop)
-    ///   · UpperBody — 그 안에서 다리·발을 뺀 나머지. 올리면 허리만 늘어난다      (bounce)
-    /// 상체가 몸 안에 들어 있어 둘은 저절로 합쳐진다. 머리에 붙은 눈·머리카락·모자는 머리와
-    /// 같은 덩어리라 언제나 머리가 움직인 만큼 따라간다.
-    ///
-    /// 둘은 따로 껐다 켤 수 있다(useHop·useWaistStretch). 허리 늘이기는 늘어난 자리에 다리
-    /// 그림의 골반이 드러나야 하므로, 그 자리가 칠해진 그림에서만 켠다.
+    /// 어느 줄을 몇 칸씩 넘길지는 전부 동작표에 적혀 있다(FarmerPoses). 여기서는 그 줄을
+    /// 시간에 맞춰 넘기기만 한다.
     ///
     /// 무엇을 재생할지는 세 단계로 정해진다 (위가 우선):
     ///   1. 한 번짜리 동작 — 곡괭이질·물주기처럼 끝나면 저절로 풀린다
@@ -31,41 +21,29 @@ namespace FarmMVP
     /// </summary>
     public class FarmerAnimator : MonoBehaviour
     {
-        private const float PixelsPerUnit = FarmerSlots.PixelsPerUnit;
+        private const float PixelsPerUnit = FarmerPoses.PixelsPerUnit;
 
         /// <summary>
-        /// 그림을 얼마나 올려 그릴지. 층의 축은 몸 칸 한가운데에 있고 발바닥은 그보다 조금
-        /// 아래에 있어서, 그 차이만큼 올려 주면 서 있는 칸의 아래 모서리에 발이 닿는다.
+        /// 그림을 얼마나 올려 그릴지. 그림의 축은 칸 한가운데에 있고 발바닥은 칸 맨 아래에
+        /// 있어서, 그 차이만큼 올려 주면 서 있는 타일의 아래 모서리에 발이 닿는다.
         /// </summary>
-        private const float FeetOffset = FarmerSlots.FeetBelowCenter / PixelsPerUnit - 0.5f;
+        private const float FeetOffset = FarmerPoses.FeetBelowCenter / PixelsPerUnit - 0.5f;
 
         /// <summary>들고 있는 아이템을 머리 위 어디에 그릴지.</summary>
         private const float CarryItemHeight = 1.0f;
 
-        [Header("걸을 때 몸을 움직이는 방식 (섞어 쓸 수 있다)")]
-
-        [Tooltip("다리와 발까지 몸을 통째로 띄운다. 이음매가 벌어지지 않아 그림을 고칠 필요가 없다.")]
-        public bool useHop = true;
-
-        [Tooltip("다리는 땅에 두고 상체만 올려 허리를 늘린다. " +
-                 "다리 그림 위쪽에 골반이 미리 칠해져 있어야 허리에 빈 줄이 생기지 않는다.")]
-        public bool useWaistStretch = true;
+        /// <summary>몸과 든 것의 앞뒤 순서. 사이를 띄워 나중에 끼워 넣을 자리를 남겨 둔다.</summary>
+        private const int BodyOrder = 2, CarryOrder = 4;
 
         private PlayerAppearance _appearance = new PlayerAppearance();
 
-        private SpriteRenderer[] _layers;      // FarmerSlots.DrawOrder 와 같은 순서
+        private SpriteRenderer _body;
         private SpriteRenderer _carriedItem;
-
-        /// <summary>몸 전체를 묶어 둔 자리. 여기를 올리면 다리·발까지 함께 떠오른다.</summary>
-        private Transform _body;
-
-        /// <summary>몸 안에서 다리·발을 뺀 나머지. 여기만 올리면 허리가 늘어난다.</summary>
-        private Transform _upperBody;
 
         private Direction _facing = Direction.Down;
         private FarmerAnim _current = FarmerAnim.Idle;
         private FarmerClip _clip;
-        private int _key;
+        private int _frame;
         private float _timer;
         private bool _finished;
 
@@ -77,7 +55,7 @@ namespace FarmMVP
 
         private bool _moving, _running;
 
-        /// <summary>이 칸의 앞뒤 순서. 층들은 이 값 위에 얹힌다.</summary>
+        /// <summary>이 칸의 앞뒤 순서. 몸과 든 것은 이 값 위에 얹힌다.</summary>
         private int _sortingBase;
 
         public bool IsPlayingOneShot => _hasOneShot;
@@ -89,53 +67,34 @@ namespace FarmMVP
         {
             _appearance = appearance != null ? appearance.Clone() : new PlayerAppearance();
 
-            // 상체를 몸 안에 넣어 두면 두 움직임이 저절로 합쳐진다.
-            // 몸이 1 오르고 상체가 1 더 오르면 다리는 1, 머리는 2 오른 셈이 된다.
-            _body = MakeJoint("Body", transform);
-            _upperBody = MakeJoint("UpperBody", _body);
+            _body = MakeRenderer("Body", BodyOrder);
+            _body.transform.localPosition = new Vector3(0f, FeetOffset, 0f);
 
-            var order = FarmerSlots.DrawOrder;
-            _layers = new SpriteRenderer[order.Length];
-            for (int i = 0; i < order.Length; i++)
-            {
-                var parent = Grounded(FarmerSlots.Info(order[i]).part) ? _body : _upperBody;
-                _layers[i] = MakeRenderer(order[i].ToString(), LayerOrder(i), parent);
-            }
-
-            // 든 것은 손에 딸려 있으니 상체를 따라 움직인다.
-            _carriedItem = MakeRenderer("CarriedItem", LayerOrder(order.Length), _upperBody);
-            _carriedItem.transform.localPosition = new Vector3(0f, CarryItemHeight, 0f);
+            // 든 것은 손에 딸려 있으니 몸과 같은 자리에서 머리 위로 올려 둔다.
+            _carriedItem = MakeRenderer("CarriedItem", CarryOrder);
+            _carriedItem.transform.localPosition = new Vector3(0f, FeetOffset + CarryItemHeight, 0f);
             _carriedItem.enabled = false;
 
             Play(FarmerAnim.Idle, restart: true);
             Draw();
         }
 
-        /// <summary>층 사이를 한 칸씩 띄워 둔다. 나중에 층을 끼워 넣을 자리를 남겨 두는 것이다.</summary>
-        private static int LayerOrder(int index) => 2 * (index + 1);
-
-        /// <summary>바닥을 딛는 부위. 허리가 늘어날 때 제자리에 남는다. 나머지는 상체에 얹힌다.</summary>
-        private static bool Grounded(FarmerPart part) => part == FarmerPart.Legs;
-
-        /// <summary>층을 매달아 두고 통째로 움직이기 위한 빈 자리.</summary>
-        private static Transform MakeJoint(string name, Transform parent)
+        private SpriteRenderer MakeRenderer(string name, int subOrder)
         {
             var go = new GameObject(name);
-            go.transform.SetParent(parent, false);
-            return go.transform;
-        }
-
-        private SpriteRenderer MakeRenderer(string name, int subOrder, Transform parent)
-        {
-            var go = new GameObject(name);
-            go.transform.SetParent(parent, false);
-            go.transform.localPosition = new Vector3(0f, FeetOffset, 0f);
+            go.transform.SetParent(transform, false);
             var sr = go.AddComponent<SpriteRenderer>();
             // 같은 칸 안에서의 앞뒤 순서. Depth.YSort는 칸마다 100씩 벌어져 있어 자리가 넉넉하다.
-            sr.sortingOrder = subOrder;
+            sr.sortingOrder = _sortingBase + subOrder;
             return sr;
         }
 
+        /// <summary>
+        /// 외형을 갈아 끼운다.
+        ///
+        /// 지금 그림은 모든 동작이 합쳐진 한 장뿐이라 고를 것이 없다 — 받아만 두고 그리는 데는
+        /// 쓰지 않는다. 옷·머리 모양을 다시 갈아입힐 수 있게 되면 여기서 시트를 바꾸면 된다.
+        /// </summary>
         public void SetAppearance(PlayerAppearance appearance)
         {
             _appearance = appearance != null ? appearance.Clone() : new PlayerAppearance();
@@ -176,14 +135,12 @@ namespace FarmMVP
             _carriedItem.enabled = sprite != null;
         }
 
-        /// <summary>이 칸의 앞뒤 순서. 층들은 그 위에서 조금씩 더 앞으로 그려진다.</summary>
+        /// <summary>이 칸의 앞뒤 순서. 몸과 든 것은 그 위에서 조금씩 더 앞으로 그려진다.</summary>
         public void SetSortingOrder(int order)
         {
             _sortingBase = order;
-            if (_layers == null) return;
-            for (int i = 0; i < _layers.Length; i++)
-                if (_layers[i] != null) _layers[i].sortingOrder = order + LayerOrder(i);
-            if (_carriedItem != null) _carriedItem.sortingOrder = order + LayerOrder(_layers.Length);
+            if (_body != null) _body.sortingOrder = order + BodyOrder;
+            if (_carriedItem != null) _carriedItem.sortingOrder = order + CarryOrder;
         }
 
         // ---------- 재생 ----------
@@ -191,7 +148,7 @@ namespace FarmMVP
 
         private void Advance(float dt)
         {
-            if (_layers == null) return;
+            if (_body == null) return;
 
             if (_hasOneShot && _finished) _hasOneShot = false;
 
@@ -201,19 +158,20 @@ namespace FarmMVP
 
             Play(want, restart: false);
 
-            if (_clip == null || _clip.keys.Length == 0) return;
+            // 동작표를 손으로 고치다 0을 적어도 여기서 멈추지 않도록 막아 둔다.
+            if (_clip == null || _clip.count <= 0 || _clip.ms <= 0) return;
 
             if (!_finished)
             {
                 _timer += dt * 1000f;
-                while (_timer >= _clip.keys[_key].ms)
+                while (_timer >= _clip.ms)
                 {
-                    _timer -= _clip.keys[_key].ms;
-                    _key++;
-                    if (_key >= _clip.keys.Length)
+                    _timer -= _clip.ms;
+                    _frame++;
+                    if (_frame >= _clip.count)
                     {
-                        if (_clip.loop) _key = 0;
-                        else { _key = _clip.keys.Length - 1; _finished = true; break; }
+                        if (_clip.loop) _frame = 0;
+                        else { _frame = _clip.count - 1; _finished = true; break; }
                     }
                 }
             }
@@ -234,46 +192,85 @@ namespace FarmMVP
 
             _current = anim;
             _clip = clip;
-            _key = 0;
+            _frame = 0;
             _timer = 0f;
             _finished = false;
         }
 
         private void Draw()
         {
-            if (_layers == null || _clip == null || _clip.keys.Length == 0) return;
+            if (_body == null || _clip == null || _clip.count <= 0) return;
 
-            var key = _clip.keys[Mathf.Clamp(_key, 0, _clip.keys.Length - 1)];
-            bool mirrored = FarmerPoses.Mirrored(_facing);
-            int facingFrame = FarmerPoses.FacingFrame(_facing);
-            var order = FarmerSlots.DrawOrder;
+            var frames = Sheet.Row(_clip.row);
+            if (frames == null) { _body.enabled = false; return; }
 
-            _body.localPosition = new Vector3(0f, (useHop ? key.hop : 0) / PixelsPerUnit, 0f);
-            _upperBody.localPosition = new Vector3(0f, (useWaistStretch ? key.bounce : 0) / PixelsPerUnit, 0f);
+            int frame = Mathf.Clamp(_frame, 0, Mathf.Min(_clip.count, frames.Length) - 1);
+            if (frame < 0) { _body.enabled = false; return; }
 
-            for (int i = 0; i < order.Length; i++)
-            {
-                var sr = _layers[i];
-                if (sr == null) continue;
-
-                var slot = order[i];
-                var frames = FarmerArt.Frames(_appearance.ItemFor(slot), slot, _appearance.TintFor(slot));
-                if (frames == null || frames.Length == 0) { sr.enabled = false; continue; }
-
-                // 방향별 그림이 따로 있는 부위는 동작표가 아니라 바라보는 쪽이 번호를 정하고,
-                // 왼쪽 그림을 이미 가지고 있으니 뒤집지도 않는다.
-                var info = FarmerSlots.Info(slot);
-                bool byFacing = info.frames == FarmerFrameSource.Facing;
-
-                int frame = byFacing ? facingFrame : key.FrameFor(info.part);
-                if (frame < 0 || frame >= frames.Length) { sr.enabled = false; continue; }
-
-                sr.sprite = frames[frame];
-                sr.flipX = mirrored && !byFacing;
-                sr.enabled = true;
-            }
+            _body.sprite = frames[frame];
+            // 왼쪽 그림은 따로 없다 — 측면 줄을 뒤집어 쓴다.
+            _body.flipX = FarmerPoses.Mirrored(_facing);
+            _body.enabled = true;
 
             if (_carriedItem != null) _carriedItem.flipX = false;
+        }
+
+        /// <summary>
+        /// 동작 시트를 줄 단위로 잘라 두는 곳.
+        ///
+        /// 시트는 한 장뿐이고 모두가 같은 것을 보므로 한 번만 잘라 나눠 쓴다. 축은 칸 한가운데로
+        /// 잡는다 — 칸마다 몸이 이미 제자리에 그려져 있어서 자리를 따로 맞출 일이 없다.
+        /// </summary>
+        private static class Sheet
+        {
+            private static Sprite[][] _rows;
+            private static bool _tried;
+
+            /// <summary>그 줄의 칸들. 시트가 없으면 null.</summary>
+            public static Sprite[] Row(int row)
+            {
+                if (!_tried) Load();
+                if (_rows == null || row < 0 || row >= _rows.Length) return null;
+                return _rows[row];
+            }
+
+            private static void Load()
+            {
+                _tried = true;
+
+                var tex = Resources.Load<Texture2D>(FarmerPoses.SheetPath);
+                if (tex == null)
+                {
+                    Debug.LogWarning($"[FarmerAnimator] {FarmerPoses.SheetPath} 를 찾지 못했습니다.");
+                    return;
+                }
+
+                int fw = FarmerPoses.FrameWidth, fh = FarmerPoses.FrameHeight;
+                int rows = Mathf.Min(tex.height / fh, FarmerPoses.RowCount);
+                int cols = Mathf.Min(tex.width / fw, FarmerPoses.Columns);
+
+                if (rows < FarmerPoses.RowCount)
+                    Debug.LogWarning($"[FarmerAnimator] {FarmerPoses.SheetPath} 는 줄이 {rows}개뿐입니다. " +
+                                     $"동작표는 {FarmerPoses.RowCount}줄을 기대합니다.");
+
+                var pivot = new Vector2(0.5f, 0.5f);
+                var made = new List<Sprite[]>(rows);
+
+                for (int r = 0; r < rows; r++)
+                {
+                    var line = new Sprite[cols];
+                    for (int c = 0; c < cols; c++)
+                    {
+                        // 그림은 위에서부터 줄을 세지만 텍스처는 아래가 0이라 뒤집어 읽는다.
+                        var rect = new Rect(c * fw, tex.height - (r + 1) * fh, fw, fh);
+                        line[c] = Sprite.Create(tex, rect, pivot, FarmerPoses.PixelsPerUnit,
+                                                0, SpriteMeshType.FullRect);
+                        line[c].name = $"{tex.name}_{r}_{c}";
+                    }
+                    made.Add(line);
+                }
+                _rows = made.ToArray();
+            }
         }
     }
 }

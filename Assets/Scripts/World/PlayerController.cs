@@ -168,9 +168,11 @@ namespace FarmMVP
             // X
             float nx = cx + delta.x;
             if (!IsSolidAtWorld(nx, cy, loc)) cx = nx;
+            else if (TryLeaveThroughEdge(loc, nx, cy)) return;   // 맵 밖으로 한 발 내디뎠다
             // Y
             float ny = cy + delta.y;
             if (!IsSolidAtWorld(cx, ny, loc)) cy = ny;
+            else if (TryLeaveThroughEdge(loc, cx, ny)) return;
 
             transform.position = new Vector3(cx, cy, 0);
             CheckExits(loc);
@@ -181,6 +183,32 @@ namespace FarmMVP
             int tx = Mathf.RoundToInt(wx);
             int ty = Mathf.RoundToInt(wy);
             return loc.IsBlocked(tx, ty);
+        }
+
+        /// <summary>
+        /// 맵 끝에서 바깥으로 한 발 더 내디뎠을 때 이어진 맵으로 넘어간다.
+        /// 막혀서 못 간 자리가 <b>맵 밖</b>일 때만, 그리고 그 변에 이어진 맵이 있을 때만 넘어간다 —
+        /// 벽이나 물에 막힌 것과 헷갈리지 않는다. 넘어갈 때는 지금 서 있던 칸을 함께 넘겨서,
+        /// 도착한 맵에서 같은 높이(또는 같은 폭)로 들어서게 한다.
+        /// </summary>
+        private bool TryLeaveThroughEdge(GameLocation loc, float wx, float wy)
+        {
+            if (loc == null) return false;
+
+            int tx = Mathf.RoundToInt(wx), ty = Mathf.RoundToInt(wy);
+            MapSide side;
+            if (tx < 0) side = MapSide.Left;
+            else if (tx >= loc.width) side = MapSide.Right;
+            else if (ty < 0) side = MapSide.Bottom;
+            else if (ty >= loc.height) side = MapSide.Top;
+            else return false;                      // 맵 안에서 무언가에 막힌 것뿐이다
+
+            if (!loc.TryGetEdgeExit(side, out var target)) return false;
+
+            var from = new Vector2Int(Mathf.RoundToInt(transform.position.x),
+                                      Mathf.RoundToInt(transform.position.y));
+            _game.ChangeLocationThroughExit(target, from);
+            return true;
         }
 
         private void CheckExits(GameLocation loc)

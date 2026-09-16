@@ -185,6 +185,9 @@ namespace FarmMVP
         private void SowPlantsRandomly(PlantDef def)
         {
             if (def.sowAttemptsPerDay <= 0) return;
+            // "Tillable_{맵}"을 칠해 둔 맵에만 난다. 마스크가 없으면 IsTillable이 맵 전체를 밭으로 보기
+            // 때문에, 그냥 두면 들판을 정해 주지 않은 맵(산·마을·바다)까지 잡초로 뒤덮인다.
+            if (!HasTillableMask) return;
 
             int living = CountPlants(def.plantId);
             for (int i = 0; i < def.sowAttemptsPerDay && living < def.maxPerLocation; i++)
@@ -247,6 +250,11 @@ namespace FarmMVP
                 Debug.Log($"[GameLocation] {id}: 칠해 둔 자리에 잔디 {seeded}칸을 깔았습니다.");
         }
 
+        /// <summary>
+        /// 저장해 둔 풀을 되살리고, 칠해 둔 잔디를 깔고, 밀린 날수만큼 자라게 한다.
+        /// <b>GameLocation.Build가 맨 마지막에</b> 부른다 — 경작 마스크·물·절벽·충돌이 모두 정해진 뒤라야
+        /// 어디에 풀이 날 수 있는지 제대로 알 수 있기 때문이다.
+        /// </summary>
         private void RestorePlants(LocationData loc)
         {
             foreach (var p in loc.plants)
