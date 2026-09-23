@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +14,11 @@ namespace FarmMVP
         private const float PanelW = 720f;
         private const float PanelH = 230f;
         private const float Pad = 20f;
-        private const float PortraitSize = 140f;
+
+        // 초상화는 창 <b>위에</b> 세로로 선다 — 대사 칸을 가리지 않고 얼굴이 크게 보이도록.
+        // 그림 비율은 preserveAspect가 맞춰 주므로 이 상자는 "이보다 크지 않게"라는 뜻이다.
+        private const float PortraitW = 180f, PortraitH = 240f;
+        private const float PortraitOverlap = 10f;   // 창 위쪽 테두리에 살짝 걸치는 깊이
         private const float ChoiceH = 30f;
         private const float ChoiceGap = 6f;
 
@@ -50,7 +54,7 @@ namespace FarmMVP
         }
 
         /// <summary>대사를 보여준다. 선택지가 있으면 마지막 줄 뒤에 버튼이 뜬다.</summary>
-        public void Show(string npcId, string displayName, int emotion, string[] lines,
+        public void Show(string npcId, string displayName, string portrait, string[] lines,
             DialogueChoice[] choices, Action<DialogueChoice> onChoice, Action onFinished)
         {
             _npcId = npcId;
@@ -66,7 +70,7 @@ namespace FarmMVP
             _openedFrame = Time.frameCount;
 
             _nameText.text = displayName;
-            SetEmotion(emotion);
+            SetPortrait(portrait);
             ClearChoices();
 
             _root.gameObject.SetActive(true);
@@ -74,10 +78,13 @@ namespace FarmMVP
             ShowCurrentLine();
         }
 
-        /// <summary>대사 도중 표정만 바꾼다 (선택지 반응 등).</summary>
-        public void SetEmotion(int emotion)
+        /// <summary>
+        /// 대사 도중 초상화만 바꾼다 (선택지 반응 등). 이름은 Portraits 폴더의 파일 이름이고,
+        /// 비워 두면 그 NPC의 defaultPortrait를 쓴다.
+        /// </summary>
+        public void SetPortrait(string portrait)
         {
-            _portrait.sprite = NpcDatabase.Portrait(_npcId, emotion);
+            _portrait.sprite = NpcDatabase.Portrait(_npcId, portrait);
             _portrait.enabled = _portrait.sprite != null;
         }
 
@@ -204,19 +211,21 @@ namespace FarmMVP
             bg.type = Image.Type.Sliced;
             bg.pixelsPerUnitMultiplier = SlicedPpu;
 
-            // 초상화 (왼쪽)
+            // 초상화 — 창의 왼쪽 위 <b>바깥</b>에 서서 테두리에 살짝 걸친다.
+            // 창보다 먼저 만들지 않고 자식으로 두는 이유는, 창 높이가 선택지 수에 따라 변해도
+            // 초상화가 늘 창 윗변을 따라다니게 하기 위해서다.
             var portraitGo = new GameObject("Portrait");
             var prt = portraitGo.AddComponent<RectTransform>();
             prt.SetParent(panel, false);
             prt.anchorMin = prt.anchorMax = new Vector2(0, 1);
-            prt.pivot = new Vector2(0, 1);
-            prt.anchoredPosition = new Vector2(Pad, -Pad);
-            prt.sizeDelta = new Vector2(PortraitSize, PortraitSize);
+            prt.pivot = new Vector2(0, 0);                       // 아래 끝을 창 윗변에 맞춘다
+            prt.anchoredPosition = new Vector2(Pad, -PortraitOverlap);
+            prt.sizeDelta = new Vector2(PortraitW, PortraitH);
             _portrait = portraitGo.AddComponent<Image>();
             _portrait.preserveAspect = true;
             _portrait.raycastTarget = false;
 
-            float textLeft = Pad + PortraitSize + 16f;
+            float textLeft = Pad;
 
             _nameText = _ui.Label(panel, "", 20, Vector2.zero, TextAnchor.MiddleLeft);
             Anchor(_nameText.rectTransform, textLeft, Pad, 18f, 28f);

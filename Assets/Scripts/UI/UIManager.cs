@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -388,7 +388,7 @@ namespace FarmMVP
                 choices = new DialogueChoice[command.choices.Length];
                 for (int i = 0; i < choices.Length; i++) choices[i] = new DialogueChoice { text = command.choices[i].text };
             }
-            _dialogue.Show(def != null ? def.id : "", name, command.emotion, command.lines, choices,
+            _dialogue.Show(def != null ? def.id : "", name, command.portrait, command.lines, choices,
                 picked =>
                 {
                     int index = Array.IndexOf(choices, picked);
@@ -406,19 +406,19 @@ namespace FarmMVP
         }
 
         /// <summary>NPC 대사를 띄운다. 선택지가 있으면 마지막 줄 뒤에 버튼이 나온다.</summary>
-        public void ShowDialogue(NpcDefinition def, int emotion, string[] lines,
+        public void ShowDialogue(NpcDefinition def, string portrait, string[] lines,
             DialogueChoice[] choices, Action<DialogueChoice> onChoice)
         {
             if (_dialogue == null) return;
-            _dialogue.Show(def.id, def.displayName, emotion, lines, choices, onChoice, SyncPaused);
+            _dialogue.Show(def.id, def.displayName, portrait, lines, choices, onChoice, SyncPaused);
             SyncPaused();
         }
 
         /// <summary>선택지를 고른 뒤 이어지는 반응 대사를 같은 창에 이어서 보여준다.</summary>
-        public void ContinueDialogue(NpcDefinition def, int emotion, string[] lines)
+        public void ContinueDialogue(NpcDefinition def, string portrait, string[] lines)
         {
             if (_dialogue == null) return;
-            _dialogue.Show(def.id, def.displayName, emotion, lines, null, null, SyncPaused);
+            _dialogue.Show(def.id, def.displayName, portrait, lines, null, null, SyncPaused);
             SyncPaused();
         }
 
@@ -664,7 +664,9 @@ namespace FarmMVP
         private void RefreshTime()
         {
             int day = _game.Data.currentDay;
-            _dateText.text = $"{Seasons.Name(Seasons.Of(day))} {Seasons.DayOfSeason(day)}일";
+            // 요일과 날씨도 함께 — NPC 일과가 이 둘을 보고 갈라지므로 화면에서 바로 확인할 수 있어야 한다.
+            _dateText.text = $"{Seasons.Name(Seasons.Of(day))} {Seasons.DayOfSeason(day)}일 " +
+                             $"({Seasons.WeekdayName(day)}) {WeatherSystem.Name(_game.Today)}";
             _timeText.text = _game.TimeString();
             _dayNightIcon.sprite = _game.IsDaytime ? AssetLibrary.UiIconSun : AssetLibrary.UiIconMoon;
 
