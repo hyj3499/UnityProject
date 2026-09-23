@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace FarmMVP
@@ -11,8 +11,19 @@ namespace FarmMVP
     public class GameData
     {
         public int currentDay = 1;
-        public int currentMinutes = 6 * 60; // 06:00
+        /// <summary>
+        /// 자정부터의 분. 하루는 06:00(360)에 시작해 다음 날 02:00(1560)에 끝난다 —
+        /// 자정을 넘긴 시각은 24를 더해 이어서 센다(<see cref="DayClock"/>).
+        /// </summary>
+        public int currentMinutes = 6 * 60;
         public LocationId currentLocation = LocationId.Farm1;
+
+        /// <summary>
+        /// 날씨를 뽑는 씨앗. 게임마다 한 번 정해지고 그 뒤로 바뀌지 않는다 — 날씨 자체는
+        /// 저장하지 않고 (날짜 + 이 씨앗)으로 계산한다(<see cref="WeatherSystem"/>).
+        /// 0이면 아직 씨앗이 없는 예전 세이브라, 불러올 때 한 번 채운다.
+        /// </summary>
+        public int weatherSeed;
 
         public FarmerData farmer = new FarmerData();
 

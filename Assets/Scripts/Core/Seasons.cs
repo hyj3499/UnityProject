@@ -28,6 +28,11 @@ namespace FarmMVP
         public const int DaysPerSeason = 28;
         public const int SeasonCount = 4;
         public const int DaysPerYear = DaysPerSeason * SeasonCount;
+        public const int DaysPerWeek = 7;
+
+        /// <summary>요일 이름. 스케줄 JSON의 when 태그로 그대로 쓴다.</summary>
+        private static readonly string[] WeekdayKeys = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+        private static readonly string[] WeekdayNames = { "월", "화", "수", "목", "금", "토", "일" };
 
         /// <summary>
         /// 지금 계절. GameManager가 날짜를 바꿀 때마다 갱신한다.
@@ -57,6 +62,18 @@ namespace FarmMVP
         public static int DayOfSeason(int day) => ((Math.Max(1, day) - 1) % DaysPerSeason) + 1;
 
         public static int YearOf(int day) => ((Math.Max(1, day) - 1) / DaysPerYear) + 1;
+
+        /// <summary>그 날의 요일 (0=월 ... 6=일). 한 계절이 28일이라 계절마다 같은 요일로 시작한다.</summary>
+        public static int DayOfWeek(int day) => (Math.Max(1, day) - 1) % DaysPerWeek;
+
+        /// <summary>스케줄 JSON에 쓰는 요일 이름 ("Mon" ... "Sun").</summary>
+        public static string WeekdayKey(int day) => WeekdayKeys[DayOfWeek(day)];
+
+        /// <summary>화면에 쓰는 요일 이름 ("월" ... "일").</summary>
+        public static string WeekdayName(int day) => WeekdayNames[DayOfWeek(day)];
+
+        /// <summary>그런 이름의 요일이 있는지 (스케줄 검사용).</summary>
+        public static bool IsWeekdayKey(string key) => Array.IndexOf(WeekdayKeys, key) >= 0;
 
         public static SeasonFlags ToFlag(Season s) => (SeasonFlags)(1 << (int)s);
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,7 +35,31 @@ namespace FarmMVP
             Events.Init(this, ui);
         }
 
+        /// <summary>NPC들의 하루 일과를 굴린다 (요일·계절·날씨별 루트).</summary>
+        public NpcScheduler Npcs { get; private set; }
+
+        /// <summary>오늘 날씨. 저장하지 않고 날짜에서 계산한다 (<see cref="WeatherSystem"/>).</summary>
+        public Weather Today => WeatherSystem.Of(Data.currentDay, Data.weatherSeed);
+
         public NpcActor FindNpcActor(string id) => _npcActors.Find(a => a != null && a.Def.id == id);
+
+        /// <summary>지금 맵에 NPC 한 명을 세운다 (스케줄이 부른다).</summary>
+        public NpcActor SpawnNpc(NpcDefinition def, Vector2Int tile)
+        {
+            var actor = NpcActor.Spawn(CurrentLocation.FeatureRoot, def, tile);
+            _npcActors.Add(actor);
+            CurrentLocation.SetNpcBlocked(tile);
+            return actor;
+        }
+
+        /// <summary>NPC가 이 맵을 떠났다 — 몸을 치운다.</summary>
+        public void DespawnNpc(NpcActor actor)
+        {
+            if (actor == null) return;
+            _npcActors.Remove(actor);
+            Destroy(actor.gameObject);
+            RebuildNpcBlocks();
+        }
 
         public void RebuildNpcBlocks()
         {
@@ -192,7 +216,7 @@ namespace FarmMVP
 
             if (state.lastTalkDay == Data.currentDay)
             {
-                UIManager.Instance?.ShowDialogue(def, (int)NpcEmotion.Smile,
+                UIManager.Instance?.ShowDialogue(def, def.alreadyTalkedPortrait,
                     PickLines(def.alreadyTalkedLines, "오늘은 이미 이야기를 나눴어요."), null, null);
                 return;
             }
@@ -203,15 +227,15 @@ namespace FarmMVP
             var entry = PickDialogue(def, HeartsOf(def.id));
             if (entry == null)
             {
-                UIManager.Instance?.ShowDialogue(def, (int)NpcEmotion.Neutral, new[] { "..." }, null, null);
+                UIManager.Instance?.ShowDialogue(def, null, new[] { "..." }, null, null);
                 return;
             }
 
-            UIManager.Instance?.ShowDialogue(def, entry.emotion, entry.lines, entry.choices,
+            UIManager.Instance?.ShowDialogue(def, entry.portrait, entry.lines, entry.choices,
                 choice =>
                 {
                     ChangeAffection(NpcState(def.id), choice.affection);
-                    UIManager.Instance?.ContinueDialogue(def, choice.emotion,
+                    UIManager.Instance?.ContinueDialogue(def, choice.portrait,
                         PickLines(choice.reply, "그렇군요."));
                 });
         }
@@ -228,7 +252,7 @@ namespace FarmMVP
 
             if (state.giftsThisWeek >= GiftsPerWeek)
             {
-                UIManager.Instance?.ShowDialogue(def, (int)NpcEmotion.Think,
+                UIManager.Instance?.ShowDialogue(def, def.giftLimitPortrait,
                     PickLines(def.giftLimitLines, "이번 주엔 벌써 충분히 받았는걸요!"), null, null);
                 return;
             }
@@ -241,10 +265,10 @@ namespace FarmMVP
             Inventory.ConsumeOne(slotIndex);
 
             var custom = def.FindItemGiftLine(itemId);
-            int emotion = custom != null ? custom.emotion : GiftEmotion(tier);
+            string portrait = custom != null ? custom.portrait : def.giftLines.PortraitFor(tier);
             string[] lines = custom != null ? custom.lines : PickLines(def.giftLines.For(tier), "고마워요.");
 
-            UIManager.Instance?.ShowDialogue(def, emotion, lines, null, null);
+            UIManager.Instance?.ShowDialogue(def, portrait, lines, null, null);
         }
 
         private static int GiftAffection(GiftTier tier)
@@ -256,18 +280,6 @@ namespace FarmMVP
                 case GiftTier.Disliked: return -20;
                 case GiftTier.Hated: return -40;
                 default: return 20;
-            }
-        }
-
-        private static int GiftEmotion(GiftTier tier)
-        {
-            switch (tier)
-            {
-                case GiftTier.Loved: return (int)NpcEmotion.Happy;
-                case GiftTier.Liked: return (int)NpcEmotion.Smile;
-                case GiftTier.Disliked: return (int)NpcEmotion.Sad;
-                case GiftTier.Hated: return (int)NpcEmotion.Angry;
-                default: return (int)NpcEmotion.Neutral;
             }
         }
 
@@ -293,19 +305,14 @@ namespace FarmMVP
             return lines;
         }
 
-        /// <summary>이 위치에 사는 NPC들을 배치한다 (위치가 다시 로드될 때마다 호출).</summary>
-        private void SpawnNpcs(LocationId locationId)
+        /// <summary>
+        /// 이 맵에 지금 있어야 할 NPC들을 배치한다 (맵이 다시 만들어질 때마다 호출).
+        /// 누가 어디 있어야 하는지는 스케줄이 정한다 — 여기서는 몸을 세우는 일만 한다.
+        /// </summary>
+        private void SpawnNpcs()
         {
             _npcActors.Clear();
-            foreach (var def in NpcDatabase.All)
-            {
-                if (def.HomeLocation != locationId) continue;
-
-                var tile = new Vector2Int(def.home.x, def.home.y);
-                if (!CurrentLocation.InBounds(tile.x, tile.y)) continue;  // 맵 밖이면 세우지 않는다
-                _npcActors.Add(NpcActor.Spawn(CurrentLocation.FeatureRoot, def, tile));
-                CurrentLocation.SetNpcBlocked(tile);
-            }
+            Npcs?.EnterLocation(CurrentLocation);
         }
 
         // ---------- 배송함 ----------
@@ -351,7 +358,7 @@ namespace FarmMVP
         }
 
         /// <summary>낮(06:00~18:00)이면 true — HUD의 해/달 아이콘에 쓰인다.</summary>
-        public bool IsDaytime => Data.currentMinutes >= 6 * 60 && Data.currentMinutes < 18 * 60;
+        public bool IsDaytime => DayClock.IsDaytime(Data.currentMinutes);
 
         // ---------- 마법 (스펙/발동 로직은 MagicSystem 참고) ----------
         public MagicType CurrentMagic { get; private set; } = MagicType.Earth;
@@ -408,8 +415,8 @@ namespace FarmMVP
             _cam.orthographicSize = BaseOrthographicSize * ZoomMultiplier;
         }
 
-        // 1 real second = this many in-game minutes when idle (time passes with actions primarily)
-        public float minutesPerRealSecond = 1.0f;
+        // 시간이 흐르는 속도. 기본값은 DayClock에 적힌 10분 = 현실 7초다 (1시간 ≈ 42초).
+        public float minutesPerRealSecond = DayClock.MinutesPerRealSecond;
 
         /// <summary>새 게임에서 캐릭터를 만들었을 때 그 외형. Boot이 세이브를 읽은 뒤에 덮어쓴다.</summary>
         private PlayerAppearance _pendingAppearance;
@@ -458,6 +465,13 @@ namespace FarmMVP
             Inventory.OnChanged += () => { SaveInventory(); OnHotbarChanged?.Invoke(); };
             ShippingBox.OnChanged += () => { StoreSlots(ShippingBox, Data.shippingBox); OnShippingChanged?.Invoke(); };
 
+            // 날씨 씨앗은 게임마다 한 번만 정한다 — 그 뒤로 날씨는 (날짜 + 씨앗)으로 계산된다.
+            if (Data.weatherSeed == 0) Data.weatherSeed = UnityEngine.Random.Range(1, int.MaxValue);
+
+            // NPC 일과는 맵을 만들기 전에 준비해 둔다 (맵이 만들어질 때 누가 어디 있는지 물어본다).
+            Npcs = gameObject.AddComponent<NpcScheduler>();
+            Npcs.Init(this);
+
             Player.Init(this);
             LoadLocation(Data.currentLocation, new Vector2(Data.farmer.posX, Data.farmer.posY), firstBoot: true);
         }
@@ -477,7 +491,7 @@ namespace FarmMVP
             var d = new GameData
             {
                 currentDay = 1,
-                currentMinutes = 6 * 60,
+                currentMinutes = DayClock.DayStart,
                 currentLocation = LocationId.Farm1
             };
             d.farmer.posX = 8;
@@ -580,7 +594,7 @@ namespace FarmMVP
             CurrentLocation.id = id;
             CurrentLocation.Build(Data);
             RestoreDroppedItems(Data.GetLocation(id));
-            SpawnNpcs(id);
+            SpawnNpcs();
 
             Data.currentLocation = id;
 
@@ -644,18 +658,36 @@ namespace FarmMVP
             Data.farmer.direction = (int)Player.facing;
         }
 
+        /// <summary>
+        /// 시계를 굴린다. 표시가 06:07 같은 어중간한 값이 되지 않도록 <b>10분 칸 단위로</b> 건너뛰고,
+        /// 하루가 끝나는 새벽 2시에 닿으면 그 자리에서 쓰러지듯 잠든다.
+        /// </summary>
         private void AdvanceTime(float minutes)
         {
             _timeAccum += minutes;
-            if (_timeAccum >= 1f)
+            if (_timeAccum < DayClock.Step) return;
+
+            int steps = Mathf.FloorToInt(_timeAccum / DayClock.Step);
+            _timeAccum -= steps * DayClock.Step;
+            Data.currentMinutes += steps * DayClock.Step;
+
+            if (Data.currentMinutes >= DayClock.DayEnd)
             {
-                int add = Mathf.FloorToInt(_timeAccum);
-                _timeAccum -= add;
-                Data.currentMinutes += add;
-                if (Data.currentMinutes >= 24 * 60)
-                    Data.currentMinutes = 24 * 60 - 1; // clamp; sleeping resets the day
+                Data.currentMinutes = DayClock.DayEnd;
                 OnTimeChanged?.Invoke();
+                CollapseIntoBed();
+                return;
             }
+            OnTimeChanged?.Invoke();
+        }
+
+        /// <summary>새벽 2시. 어디에 있든 하루가 끝난다.</summary>
+        private void CollapseIntoBed()
+        {
+            if (Events != null && Events.IsRunning) return;   // 연출 중에는 재우지 않는다
+            _timeAccum = 0f;
+            UIManager.Instance?.Toast("새벽 2시 — 그대로 곯아떨어졌다");
+            Sleep();
         }
 
         // ---------- camera ----------
@@ -1025,11 +1057,11 @@ namespace FarmMVP
 
         private bool Near(Vector2Int a, Vector2Int b) => Mathf.Abs(a.x - b.x) <= 1 && Mathf.Abs(a.y - b.y) <= 1;
 
+        /// <summary>일을 해서 시간이 흐른다. 시계는 10분 칸으로만 보이므로 자투리는 모아 두었다가 쓴다.</summary>
         private void SpendTime(int minutes)
         {
-            Data.currentMinutes += minutes;
-            if (Data.currentMinutes >= 24 * 60) Data.currentMinutes = 24 * 60 - 1;
-            OnTimeChanged?.Invoke();
+            _timeAccum += minutes;
+            AdvanceTime(0f);
         }
 
         // ---------- day / sleep / save ----------
@@ -1046,7 +1078,8 @@ namespace FarmMVP
             int income = SellShippingBox();
 
             Data.currentDay += 1;
-            Data.currentMinutes = 6 * 60; // 06:00
+            Data.currentMinutes = DayClock.DayStart;   // 06:00
+            _timeAccum = 0f;
 
             // 계절이 바뀌면: 그림을 갈아 끼우고, 그 계절에 못 사는 작물을 걷어낸다.
             int withered = 0;
@@ -1063,6 +1096,9 @@ namespace FarmMVP
                     WitherOutOfSeasonPlants(loc);
                 }
             }
+
+            // 날짜가 바뀌었으니 오늘 날씨에 맞는 NPC 일과를 새로 고른다.
+            Npcs?.PlanDay();
 
             // 잠을 자면 MP 회복
             Data.farmer.mp = Data.farmer.maxMp;
@@ -1181,11 +1217,6 @@ namespace FarmMVP
             }
         }
 
-        public string TimeString()
-        {
-            int h = Data.currentMinutes / 60;
-            int m = Data.currentMinutes % 60;
-            return $"{h:00}:{m:00}";
-        }
+        public string TimeString() => DayClock.Format(Data.currentMinutes);
     }
 }
