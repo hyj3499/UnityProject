@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -62,6 +62,14 @@ namespace FarmMVP
         private Tilemap _groundMap, _blockedMask, _tillableMask, _objectMarkers, _waterMap;
         /// <summary>잔디를 깔아 둘 자리를 칠해 둔 마스크. null이면 그런 레이어가 없다.</summary>
         private Tilemap _grassMask;
+
+        /// <summary>
+        /// "Path_{맵}" 마스크. NPC가 <b>즐겨 걷는 칸</b>이다 — 막지도, 보이지도 않는다.
+        /// 길 그림 위에 대충 덧칠해 두면 NPC가 잔디를 가로지르지 않고 그 길을 따라 다닌다
+        /// (<see cref="NpcScheduler"/>). 안 칠해도 그냥 최단거리로 걷는다.
+        /// </summary>
+        private Tilemap _pathMask;
+        private bool[,] _path;
         private Tilemap _fixedObjects, _breakableObjects;
         private Tilemap _cliffMap;
         /// <summary>물 칸. null이면 물 레이어가 없다.</summary>
@@ -125,6 +133,25 @@ namespace FarmMVP
         }
 
         /// <summary>
+        /// target으로 가는 출구 칸 중 <paramref name="from"/>에서 가장 가까운 것.
+        /// NPC가 맵을 옮길 때 "어느 쪽으로 걸어 나가야 하는지"를 여기서 얻는다.
+        /// </summary>
+        public bool TryGetExitTile(LocationId target, Vector2Int from, out Vector2Int tile)
+        {
+            tile = default;
+            int best = int.MaxValue;
+            foreach (var kv in _exits)
+            {
+                if (kv.Value != target) continue;
+                int distance = Mathf.Abs(kv.Key.x - from.x) + Mathf.Abs(kv.Key.y - from.y);
+                if (distance >= best) continue;
+                best = distance;
+                tile = kv.Key;
+            }
+            return best != int.MaxValue;
+        }
+
+        /// <summary>
         /// 맵의 <b>변</b>을 넘어가면 이어지는 맵. 칸이 아니라 변이라서, 그 변 어디에서든 맵 밖으로
         /// 한 발 내디디면 넘어간다 (<see cref="MapExits"/>가 MapGraph를 보고 등록한다).
         /// 출구 칸과 달리 <b>밟는다고</b> 넘어가지 않는다 — 가장자리 칸에 서 있는 것은 자유롭고,
@@ -137,6 +164,49 @@ namespace FarmMVP
 
         /// <summary>이 변을 넘어가면 갈 곳이 있는지.</summary>
         public bool TryGetEdgeExit(MapSide side, out LocationId target) => _edgeExits.TryGetValue(side, out target);
+
+        /// <summary>
+        /// NPC 스케줄이 이름으로 부르는 자리들. "Objects_{맵}" 레이어에 "Obj_Spot{이름}" 마커를
+        /// 칠하면 여기 등록된다 — 스케줄 json에는 좌표 대신 그 이름만 적는다. 맵을 다시 칠해서
+        /// 광장이 세 칸 옮겨 가도 마커만 옮기면 되고 json은 손댈 필요가 없다.
+        /// </summary>
+        private readonly Dictionary<string, Vector2Int> _waypoints = new Dictionary<string, Vector2Int>();
+
+        public void AddWaypoint(string name, int x, int y)
+        {
+            if (string.IsNullOrEmpty(name) || !InBounds(x, y)) return;
+            _waypoints[name] = new Vector2Int(x, y);
+        }
+
+        /// <summary>이름이 같은지는 대소문자를 가리지 않는다 ("plaza" == "Plaza").</summary>
+        public bool TryGetWaypoint(string name, out Vector2Int tile)
+        {
+            tile = default;
+            if (string.IsNullOrEmpty(name)) return false;
+            if (_waypoints.TryGetValue(name, out tile)) return true;
+            foreach (var kv in _waypoints)
+                if (string.Equals(kv.Key, name, System.StringComparison.OrdinalIgnoreCase))
+                { tile = kv.Value; return true; }
+            return false;
+        }
+
+        /// <summary>이 맵에 칠해 둔 자리 이름들 (검사·디버그용).</summary>
+        public IEnumerable<string> WaypointNames => _waypoints.Keys;
+
+        /// <summary>
+        /// NPC가 즐겨 걷는 칸인지. "Path_{맵}" 레이어에 칠한 칸이거나, 플레이어가 깐 길 설치물이
+        /// 놓인 칸이다. 통행에는 아무 영향이 없고 <b>어느 쪽으로 돌아갈지</b>에만 쓰인다.
+        /// </summary>
+        public bool IsPath(int x, int y)
+        {
+            if (!InBounds(x, y)) return false;
+            if (_path != null && _path[x, y]) return true;
+            var feature = GetPlaced(x, y);
+            return feature != null && feature.Def != null && feature.Def.kind == PlaceableKind.Road;
+        }
+
+        /// <summary>이 맵에 길을 칠해 뒀는지 ("Path_{맵}" 레이어).</summary>
+        public bool HasPathMask => _path != null;
 
         /// <summary>씬에 "Location_{맵}" 바닥을 칠해 뒀는지. 안 칠했으면 빌더가 임시 바닥을 깐다.</summary>
         internal bool HasPaintedGround => _groundMap != null;
@@ -291,6 +361,8 @@ namespace FarmMVP
         {
             _groundMap = _blockedMask = _tillableMask = _objectMarkers = _waterMap = null;
             _grassMask = null;
+            _pathMask = null;
+            _path = null;
             _fixedObjects = _breakableObjects = null;
             _cliffMap = null;
             HasObjectMarkers = false;
@@ -376,6 +448,11 @@ namespace FarmMVP
                         _grassMask = tm;
                         if (tr != null) tr.enabled = false;
                         break;
+                    case TilemapLayer.Path:
+                        // 여기도 마스크다 — 무엇을 칠했는지가 아니라 칠했는지만 본다.
+                        _pathMask = tm;
+                        if (tr != null) tr.enabled = false;
+                        break;
                 }
             }
         }
@@ -430,13 +507,15 @@ namespace FarmMVP
         private void ApplyMaskTilemaps()
         {
             Tilemap blockedMask = _blockedMask, tillableMask = _tillableMask, waterMap = _waterMap;
-            Tilemap cliffMap = _cliffMap;
+            Tilemap cliffMap = _cliffMap, pathMask = _pathMask;
             _tillable = tillableMask != null ? new bool[width, height] : null;
             _water = waterMap != null ? new bool[width, height] : null;
             _cliff = cliffMap != null ? new bool[width, height] : null;
-            if (blockedMask == null && tillableMask == null && waterMap == null && cliffMap == null) return;
+            _path = pathMask != null ? new bool[width, height] : null;
+            if (blockedMask == null && tillableMask == null && waterMap == null
+                && cliffMap == null && pathMask == null) return;
 
-            int blockedCount = 0, tillableCount = 0, waterCount = 0, cliffCount = 0;
+            int blockedCount = 0, tillableCount = 0, waterCount = 0, cliffCount = 0, pathCount = 0;
             for (int x = 0; x < width; x++)
                 for (int y = 0; y < height; y++)
                 {
@@ -467,6 +546,12 @@ namespace FarmMVP
                         SetBlocked(x, y, true);
                         cliffCount++;
                     }
+                    // 길은 아무것도 막지 않는다 — NPC가 걸을 때만 보는 힌트다.
+                    if (pathMask != null && pathMask.HasTile(pathMask.WorldToCell(world)))
+                    {
+                        _path[x, y] = true;
+                        pathCount++;
+                    }
                 }
 
             if (blockedMask != null)
@@ -477,6 +562,8 @@ namespace FarmMVP
                 Debug.Log($"[GameLocation] {waterMap.name}: 물 {waterCount}칸 (통행 불가, 물마법으로 낚시).");
             if (cliffMap != null)
                 Debug.Log($"[GameLocation] {cliffMap.name}: 절벽 {cliffCount}칸 (통행 불가, 덮을 수 없음).");
+            if (pathMask != null)
+                Debug.Log($"[GameLocation] {pathMask.name}: NPC가 다니는 길 {pathCount}칸.");
         }
 
         // ---------- 오브젝트 마커 레이어 ----------
@@ -511,7 +598,7 @@ namespace FarmMVP
             PaintedObjectPlacer.Apply(this, _fixedObjects, _breakableObjects, locData);
         }
 
-        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff, Fixed, Breakable, Grass }
+        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff, Fixed, Breakable, Grass, Path }
 
         /// <summary>
         /// 레이어 이름을 해석한다. 앞에 계절이 붙어 있으면("Winter_Location_Farm1") 그 계절 전용이다.
@@ -556,6 +643,8 @@ namespace FarmMVP
                 { locId = candidate; layer = TilemapLayer.Breakable; return true; }
                 if (name == $"Grass_{candidate}" || name == $"{candidate}Grass")
                 { locId = candidate; layer = TilemapLayer.Grass; return true; }
+                if (name == $"Path_{candidate}" || name == $"{candidate}Path")
+                { locId = candidate; layer = TilemapLayer.Path; return true; }
             }
             locId = default;
             layer = TilemapLayer.Ground;

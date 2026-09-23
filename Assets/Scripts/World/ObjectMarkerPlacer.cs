@@ -14,6 +14,7 @@ namespace FarmMVP
     ///   Obj_{그림 파일 이름}  ObjectMarkerDatabase에 등록된 오브젝트 (Obj_ShopCart, Obj_Rock_0)
     ///   Obj_{나무 id}         TreeDatabase의 나무 (Obj_Tree1)
     ///   Obj_Exit{맵이름}      밟으면 그 맵으로 넘어가는 칸 (Obj_ExitFarm2)
+    ///   Obj_Spot{자리이름}    NPC 스케줄이 이름으로 부르는 자리 (Obj_SpotPlaza) — 그림도 없고 길도 막지 않는다
     ///
     /// "Obj_"는 붙여도 되고 안 붙여도 되며, <b>시트에서 잘라 낸 조각 이름을 그대로 써도 된다</b>
     /// ("tree1_spring_top" → 나무 tree1). 그래서 나무를 하나 더 넣어도 마커 타일 에셋을 손으로
@@ -55,6 +56,14 @@ namespace FarmMVP
                     {
                         if (TryParseLocationName(name.Substring(4), out var target)) { loc.AddExit(x, y, target); placed++; }
                         else unknown.Add(tile.name);
+                        continue;
+                    }
+
+                    // "Obj_SpotPlaza" — NPC 스케줄이 이름으로 부르는 자리. 그림도 없고 길도 막지 않는다.
+                    if (name.StartsWith("Spot", System.StringComparison.OrdinalIgnoreCase) && name.Length > 4)
+                    {
+                        loc.AddWaypoint(name.Substring(4), x, y);
+                        placed++;
                         continue;
                     }
 

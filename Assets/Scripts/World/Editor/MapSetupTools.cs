@@ -43,6 +43,7 @@ namespace FarmMVP
             ("Blocked",   210,                 false),   // 통행 불가 마스크
             ("Tillable",  211,                 false),   // 경작 가능 마스크
             ("Grass",     212,                 true),    // 잔디를 처음 한 번 깔 자리
+            ("Path",      213,                 false),   // NPC가 즐겨 걷는 길 (막지 않는 힌트)
         };
 
         [MenuItem(MenuRoot + "맵 레이어 만들기", false, 1)]
