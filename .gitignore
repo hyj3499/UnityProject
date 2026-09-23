@@ -9,3 +9,4 @@
 *.sln
 .vs/
 .vscode/
+__pycache__/
