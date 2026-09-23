@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace FarmMVP
@@ -34,7 +34,7 @@ namespace FarmMVP
         public string label;
         public string actor; // player 또는 NPC id; Say/Choice에서 생략하면 내레이션
         public string speaker;
-        public int emotion;
+        public string portrait;   // Say/Choice에서 띄울 초상화 (Portraits 폴더의 파일 이름)
         public string[] lines;
         public StoryChoice[] choices;
         public StoryCondition[] conditions;

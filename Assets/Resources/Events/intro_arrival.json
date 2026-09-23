@@ -7,7 +7,7 @@
     { "op": "Say", "speaker": "첫날 아침", "lines": ["도시를 떠나 도착한 작은 농장.", "오늘부터 이곳에서 나만의 생활을 시작한다."] },
     { "op": "Face", "actor": "player", "direction": "Down" },
     { "op": "Animate", "actor": "player", "animation": "Harvest", "seconds": 0.8 },
-    { "op": "Say", "actor": "dev", "emotion": 1, "lines": ["농장에 온 걸 환영해! 나는 데브야.", "씨앗을 심고 물을 주면 작물이 자랄 거야. 궁금한 게 있으면 말을 걸어 줘."] },
+    { "op": "Say", "speaker": "첫날 아침", "lines": ["씨앗을 심고 물을 주면 작물이 자란다.", "언덕 너머 비둘기 마을에는 사람도 산다고 했다. 한번 가 봐야지."] },
     { "op": "Flag", "id": "farm.introduced", "value": true },
     { "op": "End" }
   ]

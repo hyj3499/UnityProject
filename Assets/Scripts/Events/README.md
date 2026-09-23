@@ -15,10 +15,9 @@
 
 | 파일 | 발생 조건 | 내용 |
 | --- | --- | --- |
-| intro_arrival.json | 새 게임 | 내레이션 → 플레이어 동작 → 데브 소개 |
-| dev_two_hearts.json | 데브 하트 2 이상, 06~18시, Farm1 진입 | 선택지 분기, 호감도 +30, 플래그 |
+| intro_arrival.json | 새 게임 | 내레이션 → 플레이어 동작 → 농장 안내 |
 | farm2_savings.json | 1,000 G 이상 소지하고 Farm2 진입 | 농장 계획 선택, 선택 결과 저장 |
-| movement_demo.json | Farm1에서 수동 신호 `demo.movement` | NPC·플레이어 경유지 이동, 방향, 대기, 동작 |
+| movement_demo.json | PigeonVillage에서 수동 신호 `demo.movement` | NPC·플레이어 경유지 이동, 방향, 대기, 동작 |
 
 이동 예시의 좌표는 현재 맵에 맞게 조정하세요. 경로에 플레이어/NPC/가구/나무가 있으면 우회하며, 목적지가 막혀 있거나 다른 장소에 있는 NPC를 이동시키면 이벤트를 오류로 중단합니다.
 
@@ -26,20 +25,20 @@
 
 ```json
 {
-  "id": "dev.rich_visit",
+  "id": "leona.rich_visit",
   "trigger": "EnterLocation",
   "priority": 50,
   "repeat": "Once",
   "conditions": [
     { "type": "Location", "id": "Farm1" },
     { "type": "Money", "min": 2000 },
-    { "type": "Hearts", "id": "dev", "min": 2 },
-    { "type": "Completed", "id": "dev.two_hearts" }
+    { "type": "Hearts", "id": "Leona", "min": 2 },
+    { "type": "Completed", "id": "leona.first_visit" }
   ],
   "commands": [
-    { "op": "Say", "actor": "dev", "emotion": 1, "lines": ["농장이 많이 성장했네!"] },
+    { "op": "Say", "actor": "Leona", "portrait": "happy", "lines": ["농장이 많이 컸네!"] },
     { "op": "Money", "amount": 100 },
-    { "op": "Flag", "id": "dev.encouraged" },
+    { "op": "Flag", "id": "leona.encouraged" },
     { "op": "End" }
   ]
 }
@@ -56,7 +55,7 @@
 | NewGame | 새 게임 인트로. Once만 지원 |
 | EnterLocation | 장소 로딩 완료 시. 이어하기와 수면 후 맵 재구성도 포함 |
 | DayStarted | 게임 시작 시와 다음 날 아침 |
-| InteractNpc | NPC에게 상호작용할 때. `triggerId: "dev"` 필수 |
+| InteractNpc | NPC에게 상호작용할 때. `triggerId: "Leona"` 필수 |
 | Manual | 외부 코드/에디터 메뉴가 신호를 보낼 때. `triggerId` 필수 |
 
 ```csharp
@@ -77,13 +76,13 @@ game.Events.Signal("Manual", "quest.bridge_repaired");
 | Money | 소지금 |
 | Hearts | `id` NPC의 하트 수. 100 호감도 = 1 하트, 최대 10 |
 | Day | 게임 시작 후 날짜, 첫날 1 |
-| Time | 자정부터의 분. 06:00=360, 18:00=1080 |
+| Time | 자정부터의 분. 06:00=360, 18:00=1080. 하루는 06:00에 시작해 다음 날 02:00에 끝나고, 자정을 넘긴 시각은 24를 더해 이어 셉니다 (01:30 = 1530) |
 | Location | `id`: Farm1 / Farm2 / FarmHouse |
 | Flag | `id` 이름의 플래그가 있음 |
 | Completed | `id` 이벤트가 완료됨 |
 
 정확히 1,000 G: `{"type":"Money","min":1000,"max":1000}`.
-아직 발생하지 않은 이벤트: `{"type":"Completed","id":"dev.two_hearts","not":true}`.
+아직 발생하지 않은 이벤트: `{"type":"Completed","id":"leona.first_visit","not":true}`.
 OR는 `If`를 연속 배치해 같은 label로 분기하거나 발생 조건이 다른 이벤트로 나누면 됩니다.
 
 ## 연출 명령
@@ -92,7 +91,7 @@ OR는 `If`를 연속 배치해 같은 label로 분기하거나 발생 조건이 
 
 | op | 주요 필드 | 동작 |
 | --- | --- | --- |
-| Say | actor, speaker, emotion, lines | 여러 줄 대화. actor 생략 = 내레이션, player = 주인공 |
+| Say | actor, speaker, portrait, lines | 여러 줄 대화. actor 생략 = 내레이션, player = 주인공 |
 | Choice | actor, lines, choices | 2~4개 선택지. 선택한 target label로 이동 |
 | Move | actor, path, speed | 경유지마다 장애물을 피해 걷기. speed는 타일/초 |
 | Face | actor, direction | Down / Up / Left / Right |
@@ -109,21 +108,21 @@ OR는 `If`를 연속 배치해 같은 label로 분기하거나 발생 조건이 
 
 ```json
 [
-  { "op": "Move", "actor": "dev", "path": [{"x":11,"y":7},{"x":11,"y":8}], "speed": 2 },
+  { "op": "Move", "actor": "Leona", "path": [{"x":11,"y":7},{"x":11,"y":8}], "speed": 2 },
   { "op": "Face", "actor": "player", "direction": "Up" },
   { "op": "Animate", "actor": "player", "animation": "Harvest", "seconds": 0.8 },
-  { "op": "If", "conditions": [{"type":"Flag","id":"dev.rested_together"}], "target": "friend" },
-  { "op": "Say", "actor": "dev", "lines": ["좋은 아침!"] },
+  { "op": "If", "conditions": [{"type":"Flag","id":"leona.rested_together"}], "target": "friend" },
+  { "op": "Say", "actor": "Leona", "lines": ["좋은 아침!"] },
   { "op": "End" },
-  { "op": "Say", "label": "friend", "actor": "dev", "lines": ["지난번 같이 쉬었던 날, 즐거웠어."] }
+  { "op": "Say", "label": "friend", "actor": "Leona", "lines": ["지난번 같이 쉬었던 날, 즐거웠어."] }
 ]
 ```
 
-`speaker`는 표시 이름을 덮어씁니다. NPC 표정은 기존 `NpcEmotion` 번호: 0 기본, 1 미소, 2 행복, 3 생각, 4 화남, 5 슬픔, 6 놀람, 7 충격입니다.
+`speaker`는 표시 이름을 덮어씁니다. `portrait`는 그 NPC의 `Resources/Sprites/NPC/{id}/Portraits/` 안 **파일 이름**입니다 (`"happy"` 또는 `"Leona_happy"`). 생략하면 json의 `defaultPortrait`를 씁니다. 자세한 내용은 [NPC 안내](../NPC/README.md)를 보세요.
 
 플레이어 `animation`: Idle, Walk, Run, Carry, Harvest, Tool, Watering, Melee, FishCast, FishWait, FishReel, FishCaught. `Animate`는 시각 연출이며 실제 농사·낚시 효과는 발생시키지 않습니다. 동작의 실제 그림은 기존 FarmerPoses/에셋에 따릅니다.
 
-NPC는 현재 Idle 스프라이트만 있어서 이동 중에도 대기 그림을 사용하며, Left는 좌우 반전합니다. Up/Down 전용 그림과 걷기 프레임은 아직 없습니다. `NpcActor.SetFacing`/`Update`에 방향별 애니메이션을 연결하면 같은 이벤트 파일을 계속 사용할 수 있습니다.
+NPC 그림은 방향별 대기/걷기가 모두 있습니다 (`{id}_sprites.png` 한 장을 잘라 씁니다). Left는 side를 좌우 반전해 씁니다. 연출이 `transform`을 직접 옮겨도 걷기 애니메이션이 저절로 따라붙습니다.
 
 ## 실행과 저장 규칙
 
@@ -134,7 +133,7 @@ NPC는 현재 Idle 스프라이트만 있어서 이동 중에도 대기 그림�
 - 완료 기록은 기존 F5/수면 저장에 포함됩니다. 이벤트 끝마다 자동 저장하지 않으며 중간 재개는 지원하지 않습니다. 저장 전 종료하면 마지막 세이브 상태로 돌아갑니다.
 - 신규 명령을 추가할 때는 StoryCommand 필드 → StoryEventRules 검증 → StoryEventDirector.Execute 실행을 함께 확장합니다. 타임라인이나 외부 대화 플러그인 없이 동작합니다.
 
-현재 기반은 한 이벤트 안의 순차 연출을 담당합니다. NPC의 하루 시간표, 여러 배우 동시 이동, 카메라 컷·페이드, 이벤트 도중 맵 전환은 별도 확장 지점입니다.
+현재 기반은 한 이벤트 안의 순차 연출을 담당합니다. NPC의 하루 시간표는 이벤트가 아니라 [스케줄](../NPC/README.md)이 굴리며, 연출이 도는 동안에는 멈춰 있다가 끝나면 제자리로 돌아갑니다. 여러 배우 동시 이동, 카메라 컷·페이드, 이벤트 도중 맵 전환은 별도 확장 지점입니다.
 
 ## 검증
 
@@ -148,4 +147,4 @@ Unity.exe -batchmode -nographics -projectPath <프로젝트 절대경로> -execu
 
 에디터 실행이 불가능한 환경에서는 저장소 루트에서 `./tools/Check-StoryEvents.ps1`을 실행합니다. 설치된 Unity 컴파일러로 전체 C#을 컴파일하고, 28개 순수 로직 검사와 이벤트 JSON 검증을 실행합니다. 경로가 다르면 `-UnityData`로 Editor/Data 폴더를 지정합니다. 이 검사는 프로젝트가 한 번 임포트되어 Library/ScriptAssemblies의 UI·Tilemap DLL이 있어야 합니다. Unity JsonUtility와 실제 화면/코루틴 재생 검사는 에디터에서 별도로 해야 합니다.
 
-플레이 모드 확인: 새 게임 인트로 → 마지막 대사 이후 조작 복구 → 저장/이어하기에서 인트로 미재생 → 하트 2 상태로 Farm1 재진입 → 두 선택지 각각 확인 → 1,000 G로 Farm2 진입 → movement_demo 수동 실행 및 취소 → 가구로 목적지를 막고 실패 시 잠금/위치 복구 확인.
+플레이 모드 확인: 새 게임 인트로 → 마지막 대사 이후 조작 복구 → 저장/이어하기에서 인트로 미재생 → 1,000 G로 Farm2 진입 → movement_demo 수동 실행 및 취소 → 가구로 목적지를 막고 실패 시 잠금/위치 복구 확인.

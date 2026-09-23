@@ -27,7 +27,7 @@ namespace FarmMVP.Editor
             var conditions = new[] {
                 new StoryCondition { type = "Money", min = 1000, max = 2000 },
                 new StoryCondition { type = "Location", id = "Farm1" },
-                new StoryCondition { type = "Hearts", id = "dev", min = 2 },
+                new StoryCondition { type = "Hearts", id = "leona", min = 2 },
                 new StoryCondition { type = "Time", min = 360, max = 1080 }
             };
             Check(!StoryEventRules.Matches(conditions, data, state, 999, _ => 2), "소지금 하한 직전");
