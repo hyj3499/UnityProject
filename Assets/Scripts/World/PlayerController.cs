@@ -28,7 +28,6 @@ namespace FarmMVP
             _storyControlled = true;
             _moving = _running = false;
             _anim?.ClearOverride();
-            _anim?.SetCarriedItem(null);
             _anim?.SetLocomotion(false, false, facing);
         }
 
@@ -463,22 +462,7 @@ namespace FarmMVP
             else
                 _anim.ClearOverride();
 
-            _anim.SetCarriedItem(CarriedSprite());
             _anim.SetLocomotion(_moving, _running, facing);
-        }
-
-        /// <summary>
-        /// 지금 퀵바에서 고른 아이템의 그림 (도구는 제외). 이것이 있으면 머리 위로 들고 다니는
-        /// 자세가 되고, 그 그림이 머리 위에 그려진다.
-        /// </summary>
-        private Sprite CarriedSprite()
-        {
-            var stack = _game?.SelectedStack;
-            if (stack == null || stack.IsEmpty) return null;
-
-            var def = stack.Def;
-            if (def == null || def.type == ItemType.Tool) return null;
-            return def.GetSprite();
         }
 
         /// <summary>낚시에 성공했을 때 (FishingController가 부른다).</summary>

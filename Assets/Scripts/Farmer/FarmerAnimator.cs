@@ -17,7 +17,7 @@ namespace FarmMVP
     /// 무엇을 재생할지는 세 단계로 정해진다 (위가 우선):
     ///   1. 한 번짜리 동작 — 곡괭이질·물주기처럼 끝나면 저절로 풀린다
     ///   2. 눌러 둔 동작   — 낚시처럼 상태가 유지되는 동안 계속되는 것
-    ///   3. 이동           — 서기/걷기/뛰기 (무언가 들고 있으면 드는 자세)
+    ///   3. 이동           — 서기/걷기/뛰기
     /// </summary>
     public class FarmerAnimator : MonoBehaviour
     {
@@ -29,16 +29,12 @@ namespace FarmMVP
         /// </summary>
         private const float FeetOffset = FarmerPoses.FeetBelowCenter / PixelsPerUnit - 0.5f;
 
-        /// <summary>들고 있는 아이템을 머리 위 어디에 그릴지.</summary>
-        private const float CarryItemHeight = 1.0f;
-
-        /// <summary>몸과 든 것의 앞뒤 순서. 사이를 띄워 나중에 끼워 넣을 자리를 남겨 둔다.</summary>
-        private const int BodyOrder = 2, CarryOrder = 4;
+        /// <summary>칸 안에서 몸의 앞뒤 순서.</summary>
+        private const int BodyOrder = 2;
 
         private PlayerAppearance _appearance = new PlayerAppearance();
 
         private SpriteRenderer _body;
-        private SpriteRenderer _carriedItem;
 
         private Direction _facing = Direction.Down;
         private FarmerAnim _current = FarmerAnim.Idle;
@@ -55,13 +51,11 @@ namespace FarmMVP
 
         private bool _moving, _running;
 
-        /// <summary>이 칸의 앞뒤 순서. 몸과 든 것은 이 값 위에 얹힌다.</summary>
+        /// <summary>이 칸의 앞뒤 순서. 몸은 이 값 위에 얹힌다.</summary>
         private int _sortingBase;
 
         public bool IsPlayingOneShot => _hasOneShot;
         public PlayerAppearance Appearance => _appearance;
-
-        private bool IsCarrying => _carriedItem != null && _carriedItem.sprite != null;
 
         public void Init(PlayerAppearance appearance)
         {
@@ -69,11 +63,6 @@ namespace FarmMVP
 
             _body = MakeRenderer("Body", BodyOrder);
             _body.transform.localPosition = new Vector3(0f, FeetOffset, 0f);
-
-            // 든 것은 손에 딸려 있으니 몸과 같은 자리에서 머리 위로 올려 둔다.
-            _carriedItem = MakeRenderer("CarriedItem", CarryOrder);
-            _carriedItem.transform.localPosition = new Vector3(0f, FeetOffset + CarryItemHeight, 0f);
-            _carriedItem.enabled = false;
 
             Play(FarmerAnim.Idle, restart: true);
             Draw();
@@ -128,19 +117,11 @@ namespace FarmMVP
 
         public void ClearOverride() => _hasOverride = false;
 
-        public void SetCarriedItem(Sprite sprite)
-        {
-            if (_carriedItem == null) return;
-            _carriedItem.sprite = sprite;
-            _carriedItem.enabled = sprite != null;
-        }
-
-        /// <summary>이 칸의 앞뒤 순서. 몸과 든 것은 그 위에서 조금씩 더 앞으로 그려진다.</summary>
+        /// <summary>이 칸의 앞뒤 순서. 몸은 그 위에서 조금 더 앞으로 그려진다.</summary>
         public void SetSortingOrder(int order)
         {
             _sortingBase = order;
             if (_body != null) _body.sortingOrder = order + BodyOrder;
-            if (_carriedItem != null) _carriedItem.sortingOrder = order + CarryOrder;
         }
 
         // ---------- 재생 ----------
@@ -178,12 +159,8 @@ namespace FarmMVP
             Draw();
         }
 
-        /// <summary>손에 뭘 들었으면 드는 자세, 아니면 서기/걷기/뛰기.</summary>
-        private FarmerAnim Locomotion()
-        {
-            if (IsCarrying && !_moving) return FarmerAnim.Carry;
-            return FarmerPoses.ForLocomotion(_moving, _running);
-        }
+        /// <summary>서기/걷기/뛰기.</summary>
+        private FarmerAnim Locomotion() => FarmerPoses.ForLocomotion(_moving, _running);
 
         private void Play(FarmerAnim anim, bool restart)
         {
@@ -211,8 +188,6 @@ namespace FarmMVP
             // 왼쪽 그림은 따로 없다 — 측면 줄을 뒤집어 쓴다.
             _body.flipX = FarmerPoses.Mirrored(_facing);
             _body.enabled = true;
-
-            if (_carriedItem != null) _carriedItem.flipX = false;
         }
 
         /// <summary>
