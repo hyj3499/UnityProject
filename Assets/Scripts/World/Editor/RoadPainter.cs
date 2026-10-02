@@ -10,13 +10,13 @@ namespace FarmMVP
     /// <summary>
     /// 굵기가 계속 변하는 구불구불한 흙길과, 둥그스름한 공터를 타일맵에 자동으로 깔아 주는 도구.
     ///
-    /// Tileset_spring 시트의 [행 0~2 / 열 8~16] 블록(3x9칸)이 코너 기반(wang/blob) 오토타일이다.
+    /// Tileset_spring 시트의 [행 0~2 / 열 8~12] 블록(3x5칸)이 코너 기반 오토타일이다.
     /// 타일 한 장의 정체성은 그 타일의 네 꼭짓점(TL,TR,BL,BR)이 각각 흙인지 잔디인지로 정해진다.
     /// 그래서 맵을 "타일 격자"가 아니라 그보다 한 칸 큰 "꼭짓점 격자"에 그린 뒤,
     /// 각 타일이 자기 네 꼭짓점 조합에 맞는 그림을 골라 쓰면 경계가 저절로 이어진다.
     ///
     /// 반전·회전·합성은 쓰지 않는다. 시트에 실제로 그려진 조각만 그대로 놓는다.
-    /// 시트에 없는 조합은 아래 EmptyCodes 설명 참고.
+    /// 순수 잔디(0000)는 비우고, 나머지 15개 조합은 원본 조각을 사용한다.
     /// </summary>
     internal class RoadPainter : EditorWindow
     {
@@ -24,6 +24,7 @@ namespace FarmMVP
         private const string TileFolder = "Assets/Resources/Sprites/Tiles/Tileset";
         private const string SheetName = "Tileset_spring";
         private const int SheetCols = 28;          // Tileset_spring 한 줄의 칸 수 (448/16)
+        private const int SheetRows = 16;
 
         /// <summary>기본 대상 — 없으면 만들어 준다. 여기에 그려 두고 복사해서 쓰면 된다.</summary>
         private const string TestGridName = "test";
@@ -43,25 +44,26 @@ namespace FarmMVP
             new Dictionary<int, (int, int)[]>
             {
                 { 0x1, new[] { (0, 0) } },                                    // 0001
-                { 0x2, new[] { (0, 3), (1, 5) } },                            // 0010
+                { 0x2, new[] { (0, 2) } },                                    // 0010
                 { 0x4, new[] { (2, 0) } },                                    // 0100
-                { 0x8, new[] { (2, 3) } },                                    // 1000
-                { 0x3, new[] { (0, 1), (1, 6), (1, 7) } },                    // 0011
-                { 0xC, new[] { (0, 5), (0, 6), (0, 7), (2, 1) } },            // 1100
+                { 0x8, new[] { (2, 2) } },                                    // 1000
+                { 0x3, new[] { (0, 1) } },                                    // 0011
+                { 0xC, new[] { (2, 1) } },                                    // 1100
                 { 0x5, new[] { (1, 0) } },                                    // 0101
-                { 0xA, new[] { (1, 3) } },                                    // 1010
-                { 0x7, new[] { (0, 2), (1, 8) } },                            // 0111
-                { 0xB, new[] { (1, 4) } },                                    // 1011
-                { 0xD, new[] { (0, 8), (2, 2) } },                            // 1101
-                { 0xE, new[] { (0, 4) } },                                    // 1110
-                { 0xF, new[] { (1, 1), (1, 2), (2, 4) } },                    // 1111
+                { 0xA, new[] { (1, 2) } },                                    // 1010
+                { 0x7, new[] { (0, 3) } },                                    // 0111
+                { 0xB, new[] { (0, 4) } },                                    // 1011
+                { 0xD, new[] { (1, 3) } },                                    // 1101
+                { 0xE, new[] { (1, 4) } },                                    // 1110
+                { 0xF, new[] { (1, 1) } },                                    // 1111
+                { 0x6, new[] { (2, 3) } },                                    // 0110
+                { 0x9, new[] { (2, 4) } },                                    // 1001
             };
 
         // 시트에 그림이 없는 조합:
         //   0000  길에서 먼 순수 잔디 — 그릴 것이 없으므로 그 칸은 타일을 놓지 않고 비워 둔다.
         //         (밑에 깔린 잔디 레이어가 그대로 보이면 된다.)
-        //   0110/1001  마주보는 귀퉁이 둘만 흙인 대각 — 폭이 있는 하나의 덩어리에서는 나올 수 없는
-        //         모양이라 애초에 그리지 않는다. FixDiagonals()가 꼭짓점 하나를 채워서 없앤다.
+        // 대각 조합 0110/1001도 원본에 있으므로 마스크를 보정하지 않고 그대로 사용한다.
 
         private enum Shape { Road, Clearing }
 
@@ -90,9 +92,9 @@ namespace FarmMVP
         private float _clearingWobble = 0.28f;
 
         // 시트 안에서 오토타일 블록이 차지하는 칸 범위. 시트를 고치면 여기만 바꾸면 된다.
-        private const int BlockRows = 3, BlockCols = 9;   // BlockCells 표가 전제하는 블록 크기
+        private const int BlockRows = 3, BlockCols = 5;   // BlockCells 표가 전제하는 블록 크기
         private int _blockRow0 = 0, _blockRow1 = 2;
-        private int _blockCol0 = 8, _blockCol1 = 16;
+        private int _blockCol0 = 8, _blockCol1 = 12;
 
         private string _status = "";
 
@@ -185,7 +187,8 @@ namespace FarmMVP
 
             int rows = _blockRow1 - _blockRow0 + 1, cols = _blockCol1 - _blockCol0 + 1;
             bool blockOk = rows == BlockRows && cols == BlockCols &&
-                           _blockRow0 >= 0 && _blockCol0 >= 0 && _blockCol1 < SheetCols;
+                           _blockRow0 >= 0 && _blockRow1 < SheetRows &&
+                           _blockCol0 >= 0 && _blockCol1 < SheetCols;
             if (blockOk)
             {
                 EditorGUILayout.HelpBox(
@@ -198,7 +201,7 @@ namespace FarmMVP
             {
                 EditorGUILayout.HelpBox(
                     $"블록은 정확히 {BlockRows}행 x {BlockCols}열이어야 합니다 (지금 {rows}x{cols}). " +
-                    $"열은 0~{SheetCols - 1} 안이어야 합니다.\n" +
+                    $"행은 0~{SheetRows - 1}, 열은 0~{SheetCols - 1} 안이어야 합니다.\n" +
                     "칸 배치는 그대로 두고 위치만 옮겨졌을 때 범위를 바꿔 주세요.",
                     MessageType.Error);
             }
@@ -237,7 +240,6 @@ namespace FarmMVP
 
             var rng = new System.Random(_seed);
             bool[,] mask = _shape == Shape.Road ? RoadMask(rng) : ClearingMask(rng);
-            FixDiagonals(mask);
 
             Undo.RegisterCompleteObjectUndo(_target, "길·공터 그리기");
 
@@ -257,8 +259,7 @@ namespace FarmMVP
                         continue;
                     }
 
-                    if (!tiles.TryGetValue(code, out var variants))
-                        variants = tiles[0xF];     // 0110/1001 안전장치 (정상 경로에선 안 옴)
+                    var variants = tiles[code];
 
                     _target.SetTile(pos, variants[rng.Next(variants.Length)]);
                     painted++;
@@ -313,6 +314,14 @@ namespace FarmMVP
         /// <summary>코너 코드 -> 쓸 수 있는 타일들. 하나라도 없으면 null을 주고 error에 이유를 담는다.</summary>
         private Dictionary<int, TileBase[]> LoadTiles(out string error)
         {
+            if (_blockRow1 - _blockRow0 + 1 != BlockRows ||
+                _blockCol1 - _blockCol0 + 1 != BlockCols ||
+                _blockRow0 < 0 || _blockRow1 >= SheetRows ||
+                _blockCol0 < 0 || _blockCol1 >= SheetCols)
+            {
+                error = "시트 안의 3행 x 5열 범위를 지정하세요. 기본값: 행 0~2 / 열 8~12.";
+                return null;
+            }
             var result = new Dictionary<int, TileBase[]>();
             var missing = new List<string>();
 
@@ -549,28 +558,6 @@ namespace FarmMVP
             int bl = mask[i, j + 1] ? 1 : 0;
             int br = mask[i + 1, j + 1] ? 1 : 0;
             return (tl << 3) | (tr << 2) | (bl << 1) | br;
-        }
-
-        /// <summary>
-        /// 마주보는 귀퉁이 둘만 흙인 칸(0110/1001)을 없앤다. 그런 그림은 시트에 없고,
-        /// 실제로도 덩어리 두 개가 점 하나로만 닿는 이상한 모양이라 꼭짓점 하나를 채워 붙여 버린다.
-        /// </summary>
-        private void FixDiagonals(bool[,] mask)
-        {
-            for (int pass = 0; pass < 12; pass++)
-            {
-                bool changed = false;
-                for (int i = 0; i < _w; i++)
-                {
-                    for (int j = 0; j < _h; j++)
-                    {
-                        int c = CodeAt(mask, i, j);
-                        if (c == 0x9) { mask[i + 1, j] = true; changed = true; }        // 1001 -> 1101
-                        else if (c == 0x6) { mask[i, j] = true; changed = true; }       // 0110 -> 1110
-                    }
-                }
-                if (!changed) break;
-            }
         }
 
         // ------------------------------------------------------------------ 기본 타일맵
