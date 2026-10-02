@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace FarmMVP
 {
-    // 농기구 대신 마법을 사용 (대지=경작, 물=물주기, 칼날=나무 베기, 바위=바위 부수기, 바람=풀 베기)
+    // 농기구 대신 마법을 사용 (대지=경작, 물=물주기, 칼날=나무 베기, 바위=바위 부수기·땅 되돌리기, 바람=풀 베기, 삽=잔디땅 파기)
     // 새로 추가할 때는 <b>맨 뒤에</b> 붙인다 — 저장된 "지금 든 마법"이 번호라서 중간에 끼우면 어긋난다.
-    public enum MagicType { Earth, Water, Blade, Rock, Wind }
+    public enum MagicType { Earth, Water, Blade, Rock, Wind, Shovel }
 
     /// <summary>한 마법의 스펙: MP 소모량, 길게 눌렀을 때 지속 시전 여부와 간격, 조준 표시 색상.</summary>
     public struct MagicDef
@@ -74,6 +74,16 @@ namespace FarmMVP
             previewColor = new Color(0.55f, 0.85f, 0.6f, 0.45f),
         };
 
+        public static readonly MagicDef Shovel = new MagicDef
+        {
+            displayName = "삽마법",
+            mpCost = 2,
+            timeCost = 5,
+            continuous = false,
+            tickInterval = 0f,
+            previewColor = new Color(0.88f, 0.68f, 0.35f, 0.45f),
+        };
+
         /// <summary>지금 이 칸에는 쓸 수 없다는 표시 — 조준 사각형을 어둡게 덮는다.</summary>
         public static readonly Color InvalidPreviewColor = new Color(0.08f, 0.08f, 0.1f, 0.45f);
 
@@ -97,9 +107,13 @@ namespace FarmMVP
                 case MagicType.Blade: return location.HasChoppableTree(x, y);
                 // 바위마법은 바위를 부수고, 놓아 둔 설치물(울타리·길·가구)을 걷어낸다.
                 // "Fixed_{맵}"에 칠한 배경 오브젝트와 마커로 놓인 것은 여기 걸리지 않아 부술 수 없다.
-                case MagicType.Rock: return location.HasBreakableRock(x, y) || location.HasPlaced(x, y);
+                // 땅에 쓰면 한 단계씩 되돌린다: 갈아 둔 밭 -> 흙땅 -> 삽질하기 전의 잔디땅.
+                case MagicType.Rock: return location.HasBreakableRock(x, y) || location.HasPlaced(x, y)
+                                         || location.CanUntill(x, y) || location.CanFillDirt(x, y);
                 // 바람마법: 땅을 덮은 풀(잔디·잡초)을 베어 낸다.
                 case MagicType.Wind: return location.HasCuttablePlant(x, y);
+                // 삽마법: "Tillable_{맵}"을 칠해 둔 잔디땅을 흙땅으로 파낸다. 대지마법은 그 흙땅에만 먹힌다.
+                case MagicType.Shovel: return location.CanDig(x, y);
                 default: return false;
             }
         }
@@ -113,6 +127,7 @@ namespace FarmMVP
                 case MagicType.Blade: return Blade;
                 case MagicType.Rock: return Rock;
                 case MagicType.Wind: return Wind;
+                case MagicType.Shovel: return Shovel;
                 default: return Earth;
             }
         }
@@ -150,10 +165,15 @@ namespace FarmMVP
                         return true;
                     }
                     // 걷어낸 울타리·길·가구는 그 자리에 떨어져서 다시 주워 놓을 수 있다.
-                    return location.RemovePlaced(x, y, out dropTableId);
+                    if (location.RemovePlaced(x, y, out dropTableId)) return true;
+                    // 땅을 한 단계 되돌린다: 밭이면 흙땅으로, 흙땅이면 삽질하기 전으로.
+                    return location.Untill(x, y) || location.FillDirt(x, y);
 
                 case MagicType.Wind: // 바람마법: 풀 베기 (잔디 -> 목초, 잡초 -> 섬유)
                     return location.CutPlant(x, y, out dropTableId);
+
+                case MagicType.Shovel: // 삽마법: 잔디땅 -> 흙땅 (그 칸의 풀은 함께 걷힌다)
+                    return location.Dig(x, y, out dropTableId);
 
                 default:
                     return false;

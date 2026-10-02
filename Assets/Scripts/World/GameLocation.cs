@@ -286,10 +286,11 @@ namespace FarmMVP
             FindSceneTilemaps();
             if (_groundMap != null) AlignGridToMap(_groundMap);
 
-            // 칠해 둔 평범한 타일을 계절 타일로 바꾸고(이미 바뀐 칸은 건너뛴다) 다시 그리게 한다.
+            // Animation 폴더의 타일은 슬라이스 애니메이션으로, 나머지는 계절 타일로 바꾼다.
             // 씬의 Tilemap은 위치를 다시 로드해도 살아 있으므로 직접 갱신해야 한다.
             foreach (var map in _visibleMaps)
             {
+                AnimationTileset.Apply(map);
                 SeasonalTileset.Apply(map);
                 map.RefreshAllTiles();
             }
@@ -342,7 +343,7 @@ namespace FarmMVP
         ///
         ///   바닥   "Location_{id}"  또는 "{id}Ground"    — 눈에 보이는 바닥
         ///   충돌   "Blocked_{id}"   또는 "{id}Blocked"   — 칠한 칸은 지나갈 수 없다
-        ///   경작   "Tillable_{id}"  또는 "{id}Tillable"  — 칠한 칸에서만 대지마법을 쓸 수 있다
+        ///   경작   "Tillable_{id}"  또는 "{id}Tillable"  — 칠한 칸에서만 삽마법·대지마법을 쓸 수 있다
         ///   물건   "Objects_{id}"   또는 "{id}Objects"    — 집/배송함/나무... 를 놓을 자리
         ///   물     "Water_{id}"     또는 "{id}Water"      — 칠한 칸은 물. 못 지나가고, 낚시할 수 있다
         ///   장식   "Decor_{id}"     또는 "{id}Decor"      — 꽃·잔디 장식. 막지 않고, 경작지에 덮인다
@@ -798,6 +799,7 @@ namespace FarmMVP
         // ---------- feature restore / render ----------
         public void RestoreFeatures(LocationData loc)
         {
+            RestoreDirt(loc);
             foreach (var hd in loc.hoeDirts)
             {
                 if (!InBounds(hd.x, hd.y)) { _outOfBoundsHoeDirts.Add(hd); continue; }
@@ -1013,6 +1015,7 @@ namespace FarmMVP
             var pos = new Vector2Int(x, y);
             if (IsBlocked(x, y)) return false;
             if (!IsTillable(x, y)) return false;    // 경작 마스크 밖이거나 원래 못 가는 위치
+            if (!IsDirt(x, y)) return false;        // 삽마법으로 파낸 흙땅만 갈 수 있다
             if (hoeDirts.ContainsKey(pos)) return false;
             if (trees.ContainsKey(pos)) return false;
             return true;
@@ -1361,6 +1364,7 @@ namespace FarmMVP
             }
 
             SavePlantsInto(loc);
+            SaveDirtInto(loc);
 
             loc.rocks.Clear();
             foreach (var kv in rocks)

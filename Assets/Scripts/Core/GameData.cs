@@ -105,7 +105,7 @@ namespace FarmMVP
         public int equippedHotbarIndex = 0; // 전체 슬롯 기준 번호 (0~29)
         public int backpackLevel = 0;       // 0=기본 10칸, 1=20칸, 2=30칸
         public int hotbarPage = 0;          // 퀵바가 지금 보여주는 배낭 페이지
-        public int currentMagic = 0; // 0=Earth, 1=Water, 2=Blade
+        public int currentMagic = 0; // MagicType 번호 (0=Earth, 1=Water, 2=Blade ...)
 
         /// <summary>새 게임을 시작할 때 고른 캐릭터 외형 (피부·눈·머리·옷·장식).</summary>
         public PlayerAppearance appearance = new PlayerAppearance();
@@ -127,6 +127,8 @@ namespace FarmMVP
     {
         public List<HoeDirtData> hoeDirts = new List<HoeDirtData>();
         public List<TreeData> trees = new List<TreeData>();
+        /// <summary>삽마법으로 파낸 칸. 흙땅 그림(3x3 테두리)은 저장하지 않고 여기서 다시 계산한다.</summary>
+        public List<DirtData> dirts = new List<DirtData>();
         public List<PlantData> plants = new List<PlantData>();
         public List<RockData> rocks = new List<RockData>();
         public List<WorldItemData> droppedItems = new List<WorldItemData>();
@@ -163,6 +165,13 @@ namespace FarmMVP
     /// <summary>마커로 이미 만들어 낸 칸 하나 (LocationData.spawnedMarkers).</summary>
     [Serializable]
     public class MarkerSpawnData
+    {
+        public int x, y;
+    }
+
+    /// <summary>삽마법으로 파낸 칸 하나 (LocationData.dirts).</summary>
+    [Serializable]
+    public class DirtData
     {
         public int x, y;
     }

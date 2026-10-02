@@ -492,10 +492,10 @@ namespace FarmMVP
             {
                 currentDay = 1,
                 currentMinutes = DayClock.DayStart,
-                currentLocation = LocationId.Farm1
+                currentLocation = LocationId.FarmHouse
             };
-            d.farmer.posX = 8;
-            d.farmer.posY = 7;
+            d.farmer.posX = 6;
+            d.farmer.posY = 2;
             d.story.introPending = true;
 
             // Starting inventory: 도구는 인벤토리에 넣지 않는다. 딸기 씨앗 5개만 지급.
@@ -1169,6 +1169,9 @@ namespace FarmMVP
                 if (loc.hoeDirts.Count > 0) AdvanceCropsInData(loc);
         }
 
+        /// <summary>아무것도 심지 않고 물도 주지 않은 밭이 하루 지날 때 흙땅으로 돌아갈 확률.</summary>
+        private const float UntendedSoilRevertChance = 0.1f;
+
         private void AdvanceCropsInData(LocationData loc)
         {
             // 나무는 물과 상관없이 하루마다 자란다 (쓰러뜨리고 남은 그루터기는 자라지 않는다).
@@ -1184,6 +1187,11 @@ namespace FarmMVP
                 td.growthStage = tree.growthStage;
                 td.dayCounter = tree.dayCounter;
             }
+
+            // 심지도 않고 물도 안 준 밭은 하루마다 일정 확률로 흙땅으로 돌아간다.
+            // 밭만 걷어내면 된다 — 밑의 삽질한 칸(loc.dirts)은 그대로 남아 있다.
+            loc.hoeDirts.RemoveAll(hd => !hd.hasCrop && !hd.watered
+                                         && UnityEngine.Random.value < UntendedSoilRevertChance);
 
             foreach (var hd in loc.hoeDirts)
             {
