@@ -1,0 +1,559 @@
+fileFormatVersion: 2
+guid: baf82bd6a7bca28468a257147ff366b8
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8987062411819587933
+    second: SmallCliff_Dirt_No_Shadow_0
+  - first:
+      213: 7240109663538827423
+    second: SmallCliff_Dirt_No_Shadow_1
+  - first:
+      213: -4274130607773746781
+    second: SmallCliff_Dirt_No_Shadow_2
+  - first:
+      213: 9167461110507320984
+    second: SmallCliff_Dirt_No_Shadow_3
+  - first:
+      213: -7964499167666238918
+    second: SmallCliff_Dirt_No_Shadow_4
+  - first:
+      213: 8105328006241793201
+    second: SmallCliff_Dirt_No_Shadow_5
+  - first:
+      213: 1726316838085901080
+    second: SmallCliff_Dirt_No_Shadow_6
+  - first:
+      213: -8638575535699511778
+    second: SmallCliff_Dirt_No_Shadow_7
+  - first:
+      213: -8992831357388442626
+    second: SmallCliff_Dirt_No_Shadow_8
+  - first:
+      213: -5408400385957215085
+    second: SmallCliff_Dirt_No_Shadow_9
+  - first:
+      213: 3228752239494922323
+    second: SmallCliff_Dirt_No_Shadow_10
+  - first:
+      213: -9137487425634155386
+    second: SmallCliff_Dirt_No_Shadow_11
+  - first:
+      213: 8900245514973961289
+    second: SmallCliff_Dirt_No_Shadow_12
+  - first:
+      213: -1120904118037259215
+    second: SmallCliff_Dirt_No_Shadow_13
+  - first:
+      213: -4498222706119833635
+    second: SmallCliff_Dirt_No_Shadow_14
+  - first:
+      213: 978577201624295235
+    second: SmallCliff_Dirt_No_Shadow_15
+  - first:
+      213: 5265570221982388767
+    second: SmallCliff_Dirt_No_Shadow_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 193
+        width: 96
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5995c6e5a578bc70800000000000000
+      internalID: 8987062411819587933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 162
+        width: 96
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f90da1611690a7460800000000000000
+      internalID: 7240109663538827423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 111
+        width: 96
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a975088bdc3fa4c0800000000000000
+      internalID: -4274130607773746781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_3
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 145
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8963ff70f4d593f70800000000000000
+      internalID: 9167461110507320984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_4
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 145
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3a0c59643a687190800000000000000
+      internalID: -7964499167666238918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_5
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 145
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b43118b0e8eb7070800000000000000
+      internalID: 8105328006241793201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_6
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 145
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81bb2ef840c15f710800000000000000
+      internalID: 1726316838085901080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_7
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 145
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e163045c15d9d1880800000000000000
+      internalID: -8638575535699511778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_8
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 145
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef33ed9c68b033380800000000000000
+      internalID: -8992831357388442626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 95
+        width: 11
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3944feff08081f4b0800000000000000
+      internalID: -5408400385957215085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_10
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 95
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35087de1e05decc20800000000000000
+      internalID: 3228752239494922323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_11
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 95
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6844a7f499f113180800000000000000
+      internalID: -9137487425634155386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_12
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 95
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94c59cde326048b70800000000000000
+      internalID: 8900245514973961289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_13
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 95
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13cdd19b4afb170f0800000000000000
+      internalID: -1120904118037259215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_14
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 95
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd78129084a1391c0800000000000000
+      internalID: -4498222706119833635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 63
+        width: 96
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 347ac18b7ca949d00800000000000000
+      internalID: 978577201624295235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_No_Shadow_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 96
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f12922df730131940800000000000000
+      internalID: 5265570221982388767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SmallCliff_Dirt_No_Shadow_0: 8987062411819587933
+      SmallCliff_Dirt_No_Shadow_1: 7240109663538827423
+      SmallCliff_Dirt_No_Shadow_10: 3228752239494922323
+      SmallCliff_Dirt_No_Shadow_11: -9137487425634155386
+      SmallCliff_Dirt_No_Shadow_12: 8900245514973961289
+      SmallCliff_Dirt_No_Shadow_13: -1120904118037259215
+      SmallCliff_Dirt_No_Shadow_14: -4498222706119833635
+      SmallCliff_Dirt_No_Shadow_15: 978577201624295235
+      SmallCliff_Dirt_No_Shadow_16: 5265570221982388767
+      SmallCliff_Dirt_No_Shadow_2: -4274130607773746781
+      SmallCliff_Dirt_No_Shadow_3: 9167461110507320984
+      SmallCliff_Dirt_No_Shadow_4: -7964499167666238918
+      SmallCliff_Dirt_No_Shadow_5: 8105328006241793201
+      SmallCliff_Dirt_No_Shadow_6: 1726316838085901080
+      SmallCliff_Dirt_No_Shadow_7: -8638575535699511778
+      SmallCliff_Dirt_No_Shadow_8: -8992831357388442626
+      SmallCliff_Dirt_No_Shadow_9: -5408400385957215085
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

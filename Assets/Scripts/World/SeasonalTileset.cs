@@ -65,7 +65,7 @@ namespace FarmMVP
             foreach (var cell in map.cellBounds.allPositionsWithin)
             {
                 var tile = map.GetTile(cell);
-                if (tile == null || tile is SeasonalTile) continue;
+                if (tile == null || tile is SeasonalTile || tile is SlicedAnimationTile) continue;
 
                 var plain = tile as Tile;
                 if (plain == null || plain.sprite == null) continue;
@@ -84,25 +84,20 @@ namespace FarmMVP
             string key = source.sprite.name;
             if (_tiles.TryGetValue(key, out var cached)) return cached;
 
-            var anim = TileAnimationDatabase.ForSheet(source.sprite.texture != null
-                                                      ? source.sprite.texture.name : null);
-
-            var frames = new SeasonalTile.Frames[Seasons.SeasonCount];
+            var sprites = new Sprite[Seasons.SeasonCount];
             int found = 0;
-            bool animated = false;
             for (int i = 0; i < Seasons.SeasonCount; i++)
             {
                 // 규칙 1(계절 폴더의 짝 시트)이 없으면 규칙 2(한 시트 안의 "_계절" 슬라이스)를 본다.
-                var sprites = FindSeasonalFrames(source.sprite, i, anim)
-                              ?? FindSuffixFrames(source.sprite, i);
-                if (sprites == null) continue;
-                frames[i] = new SeasonalTile.Frames { sprites = sprites };
+                var sprite = FindSeasonalSprite(source.sprite, i)
+                             ?? FindSuffixSprite(source.sprite, i);
+                if (sprite == null) continue;
+                sprites[i] = sprite;
                 found++;
-                if (sprites.Length > 1) animated = true;
             }
 
-            // 자기 계절 하나뿐이고 움직이지도 않으면 바꿀 이유가 없다 — 평범한 타일이 더 싸다.
-            if (found <= 1 && !animated)
+            // 자기 계절 하나뿐이면 평범한 타일을 그대로 쓴다.
+            if (found <= 1)
             {
                 _tiles[key] = null;
                 return null;
@@ -110,18 +105,17 @@ namespace FarmMVP
 
             var tile = ScriptableObject.CreateInstance<SeasonalTile>();
             tile.name = "Seasonal_" + key;
-            tile.seasonFrames = frames;
-            tile.fps = anim != null ? anim.fps : 4f;
+            tile.seasonSprites = sprites;
             tile.colliderType = source.colliderType;
             _tiles[key] = tile;
             return tile;
         }
 
         /// <summary>
-        /// 이 계절에 해당하는 그림들. 애니메이션 시트면 한 벌(여러 장), 아니면 한 장.
+        /// 이 계절에 해당하는 그림 한 장.
         /// 짝이 되는 시트를 못 찾으면 null.
         /// </summary>
-        private static Sprite[] FindSeasonalFrames(Sprite source, int seasonIndex, TileAnimationDef anim)
+        private static Sprite FindSeasonalSprite(Sprite source, int seasonIndex)
         {
             var texture = source.texture;
             if (texture == null || string.IsNullOrEmpty(texture.name)) return null;
@@ -134,7 +128,7 @@ namespace FarmMVP
             {
                 var sheet = LoadSheet(path);
                 if (sheet == null) continue;
-                return CollectFrames(sheet, source.name, anim);
+                return sheet.TryGetValue(IndexKey(source.name), out var sprite) ? sprite : null;
             }
             return null;
         }
@@ -142,9 +136,9 @@ namespace FarmMVP
         /// <summary>
         /// 규칙 2 — 같은 시트 안에서 "<이름>_<계절>" 슬라이스를 찾는다. 접미사가 없는 이름은
         /// 시트가 들어 있는 계절 폴더의 그림으로 본다. 계절 변형이 시트 안에 흩어져 있어 번호로는
-        /// 짝을 지을 수 없는 그림(프롭 모음집 등)을 위한 규칙이라 프레임은 항상 한 장이다.
+        /// 짝을 지을 수 없는 그림(프롭 모음집 등)을 위한 규칙이다.
         /// </summary>
-        private static Sprite[] FindSuffixFrames(Sprite source, int seasonIndex)
+        private static Sprite FindSuffixSprite(Sprite source, int seasonIndex)
         {
             var texture = source.texture;
             if (texture == null || string.IsNullOrEmpty(texture.name)) return null;
@@ -154,10 +148,10 @@ namespace FarmMVP
 
             string baseName = StripSeasonSuffix(source.name);
             if (sheet.sprites.TryGetValue(baseName + "_" + SeasonWords[seasonIndex], out var s))
-                return new[] { s };
+                return s;
             // 시트가 놓인 폴더의 계절은 접미사 없이 쓴다 (Spring 폴더의 "..._0" = 봄 그림).
             if (seasonIndex == sheet.season && sheet.sprites.TryGetValue(baseName, out var bare))
-                return new[] { bare };
+                return bare;
             return null;
         }
 
@@ -195,38 +189,6 @@ namespace FarmMVP
                     return spriteName.Substring(0, spriteName.Length - suffix.Length);
             }
             return spriteName;
-        }
-
-        /// <summary>
-        /// 시트에서 이 타일의 프레임들을 모은다. 애니메이션 시트가 아니면 한 장짜리 배열.
-        ///
-        /// 다음 프레임은 스프라이트 이름 번호의 일정한 간격 뒤에 있다 (TileAnimationDatabase 참고).
-        /// </summary>
-        private static Sprite[] CollectFrames(Dictionary<string, Sprite> sheet, string sourceName,
-                                              TileAnimationDef anim)
-        {
-            string wanted = IndexKey(sourceName);
-            if (!sheet.TryGetValue(wanted, out var first)) return null;
-            if (anim == null) return new[] { first };
-
-            if (anim.frameIndexStride <= 0 || !int.TryParse(wanted.TrimStart('_'), out int index))
-                return new[] { first };
-
-            // _93, _186, _279을 칠했어도 _0 계열의 같은 애니메이션으로 보정한다.
-            int baseIndex = index % anim.frameIndexStride;
-
-            var frames = new List<Sprite>(anim.frameCount);
-            for (int k = 0; k < anim.frameCount; k++)
-            {
-                int frameIndex = baseIndex + k * anim.frameIndexStride;
-                if (sheet.TryGetValue("_" + frameIndex, out var s)) frames.Add(s);
-            }
-
-            // Unity Tilemap은 배열 끝에서 처음으로 되돌아가므로, 역방향 프레임을 배열에 넣어
-            // 0 -> 93 -> 186 -> 279 -> 186 -> 93 -> 0 순환을 데이터만으로 만든다.
-            if (anim.pingPong)
-                for (int k = frames.Count - 2; k > 0; k--) frames.Add(frames[k]);
-            return frames.Count > 0 ? frames.ToArray() : new[] { first };
         }
 
         /// <summary>찾아볼 시트 경로들. 폴더로 나눈 경우와 이름에 계절을 붙인 경우를 모두 받는다.</summary>

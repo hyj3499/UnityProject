@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 3011c335828f0854b8698aad19305b79
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1064324379880520177
+    second: SmallCliff_Grass_0
+  - first:
+      213: 2659027653524413748
+    second: SmallCliff_Grass_1
+  - first:
+      213: -962741772931478121
+    second: SmallCliff_Grass_2
+  - first:
+      213: -266138907334749545
+    second: SmallCliff_Grass_3
+  - first:
+      213: -8121863551769301447
+    second: SmallCliff_Grass_4
+  - first:
+      213: -416983965129504556
+    second: SmallCliff_Grass_5
+  - first:
+      213: 4141229681421615803
+    second: SmallCliff_Grass_6
+  - first:
+      213: -7455991980222577760
+    second: SmallCliff_Grass_7
+  - first:
+      213: 1595342926753956031
+    second: SmallCliff_Grass_8
+  - first:
+      213: -580986503188574899
+    second: SmallCliff_Grass_9
+  - first:
+      213: 1537302768976783712
+    second: SmallCliff_Grass_10
+  - first:
+      213: -3706340550142040066
+    second: SmallCliff_Grass_11
+  - first:
+      213: -4126885733157478186
+    second: SmallCliff_Grass_12
+  - first:
+      213: -4455603456438573774
+    second: SmallCliff_Grass_13
+  - first:
+      213: 6124791168513477369
+    second: SmallCliff_Grass_14
+  - first:
+      213: 4288146124305154458
+    second: SmallCliff_Grass_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SmallCliff_Grass_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 160
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f060f639d92ca31f0800000000000000
+      internalID: -1064324379880520177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_1
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 144
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43d53401093c6e420800000000000000
+      internalID: 2659027653524413748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_2
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 144
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79d4df55577a3a2f0800000000000000
+      internalID: -962741772931478121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_3
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 144
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 792d667e21c7e4cf0800000000000000
+      internalID: -266138907334749545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_4
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 144
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93e29929128594f80800000000000000
+      internalID: -8121863551769301447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_5
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 144
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d80c610b43963af0800000000000000
+      internalID: -416983965129504556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_6
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 144
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb2807e347a987930800000000000000
+      internalID: 4141229681421615803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 111
+        width: 96
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a30caa2ccef68890800000000000000
+      internalID: -7455991980222577760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 95
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb00a1c70fbc32610800000000000000
+      internalID: 1595342926753956031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_9
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4d06228adbefe7f0800000000000000
+      internalID: -580986503188574899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_10
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 069e51139b8955510800000000000000
+      internalID: 1537302768976783712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_11
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef7682c18ee609cc0800000000000000
+      internalID: -3706340550142040066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_12
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d065867a4b5ab6c0800000000000000
+      internalID: -4126885733157478186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_13
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 235e9fe53448a22c0800000000000000
+      internalID: -4455603456438573774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 63
+        width: 96
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fa02b20e11aff450800000000000000
+      internalID: 6124791168513477369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Grass_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 96
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a914d243e2e828b30800000000000000
+      internalID: 4288146124305154458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SmallCliff_Grass_0: -1064324379880520177
+      SmallCliff_Grass_1: 2659027653524413748
+      SmallCliff_Grass_10: 1537302768976783712
+      SmallCliff_Grass_11: -3706340550142040066
+      SmallCliff_Grass_12: -4126885733157478186
+      SmallCliff_Grass_13: -4455603456438573774
+      SmallCliff_Grass_14: 6124791168513477369
+      SmallCliff_Grass_15: 4288146124305154458
+      SmallCliff_Grass_2: -962741772931478121
+      SmallCliff_Grass_3: -266138907334749545
+      SmallCliff_Grass_4: -8121863551769301447
+      SmallCliff_Grass_5: -416983965129504556
+      SmallCliff_Grass_6: 4141229681421615803
+      SmallCliff_Grass_7: -7455991980222577760
+      SmallCliff_Grass_8: 1595342926753956031
+      SmallCliff_Grass_9: -580986503188574899
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

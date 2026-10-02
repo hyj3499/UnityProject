@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: f60782729f9ee3e4d9972e4581a77afd
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2018017489353892264
+    second: SmallCliff_Dirt_0
+  - first:
+      213: 5244543609988107051
+    second: SmallCliff_Dirt_1
+  - first:
+      213: 5249164361772934825
+    second: SmallCliff_Dirt_2
+  - first:
+      213: 4047309331552151730
+    second: SmallCliff_Dirt_3
+  - first:
+      213: 1180580603445270193
+    second: SmallCliff_Dirt_4
+  - first:
+      213: -4231892515581378276
+    second: SmallCliff_Dirt_5
+  - first:
+      213: -2822298060634507110
+    second: SmallCliff_Dirt_6
+  - first:
+      213: -2939150610674527771
+    second: SmallCliff_Dirt_7
+  - first:
+      213: 5535251625020921313
+    second: SmallCliff_Dirt_8
+  - first:
+      213: 4291491393266695078
+    second: SmallCliff_Dirt_9
+  - first:
+      213: -8287419464977275993
+    second: SmallCliff_Dirt_10
+  - first:
+      213: -6903635103436275354
+    second: SmallCliff_Dirt_11
+  - first:
+      213: -668379015654774333
+    second: SmallCliff_Dirt_12
+  - first:
+      213: -4384303487120941317
+    second: SmallCliff_Dirt_13
+  - first:
+      213: 6515268968380537491
+    second: SmallCliff_Dirt_14
+  - first:
+      213: 4956908540984485323
+    second: SmallCliff_Dirt_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 160
+        width: 96
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a1e673f630710c10800000000000000
+      internalID: 2018017489353892264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_1
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 144
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2bc26260ac58c840800000000000000
+      internalID: 5244543609988107051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_2
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 144
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a6ad1ffc27c8d840800000000000000
+      internalID: 5249164361772934825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_3
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 144
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b82a4bb46eea2830800000000000000
+      internalID: 4047309331552151730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_4
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 144
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b65219cdc3426010800000000000000
+      internalID: 1180580603445270193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_5
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 144
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c114329bd2c4545c0800000000000000
+      internalID: -4231892515581378276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_6
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 144
+        width: 13
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a983b95fdde25d8d0800000000000000
+      internalID: -2822298060634507110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 111
+        width: 96
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e15f55871a0637d0800000000000000
+      internalID: -2939150610674527771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 95
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e596c3a60a21dc40800000000000000
+      internalID: 5535251625020921313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_9
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6abbe445fa07e8b30800000000000000
+      internalID: 4291491393266695078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_10
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a32f5db7eb2dfc80800000000000000
+      internalID: -8287419464977275993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_11
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66183c0537c5130a0800000000000000
+      internalID: -6903635103436275354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_12
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c9629493d079b6f0800000000000000
+      internalID: -668379015654774333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_13
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 95
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfe56ae1533d723c0800000000000000
+      internalID: -4384303487120941317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 63
+        width: 96
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39a927c7b92ea6a50800000000000000
+      internalID: 6515268968380537491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SmallCliff_Dirt_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 96
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc5ea712e0a7ac440800000000000000
+      internalID: 4956908540984485323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SmallCliff_Dirt_0: 2018017489353892264
+      SmallCliff_Dirt_1: 5244543609988107051
+      SmallCliff_Dirt_10: -8287419464977275993
+      SmallCliff_Dirt_11: -6903635103436275354
+      SmallCliff_Dirt_12: -668379015654774333
+      SmallCliff_Dirt_13: -4384303487120941317
+      SmallCliff_Dirt_14: 6515268968380537491
+      SmallCliff_Dirt_15: 4956908540984485323
+      SmallCliff_Dirt_2: 5249164361772934825
+      SmallCliff_Dirt_3: 4047309331552151730
+      SmallCliff_Dirt_4: 1180580603445270193
+      SmallCliff_Dirt_5: -4231892515581378276
+      SmallCliff_Dirt_6: -2822298060634507110
+      SmallCliff_Dirt_7: -2939150610674527771
+      SmallCliff_Dirt_8: 5535251625020921313
+      SmallCliff_Dirt_9: 4291491393266695078
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
