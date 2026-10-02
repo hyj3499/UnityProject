@@ -90,6 +90,7 @@ namespace FarmMVP
         private readonly List<ItemRow> _itemRows = new List<ItemRow>();
         private readonly List<ColorRow> _colorRows = new List<ColorRow>();
         private bool _suppressCallbacks;
+        private bool _finishing;
 
         /// <summary>
         /// 화면을 만들어 띄운다. 만들다 실패하면 <b>null을 돌려준다</b> — 부르는 쪽이 타이틀로
@@ -485,6 +486,9 @@ namespace FarmMVP
             MakeButton(_canvas.transform as RectTransform, "이 모습으로 시작", new Vector2(0.75f, 0.08f),
                        new Vector2(200, 42), () =>
                        {
+                           // 클릭이 겹쳐 들어와도 한 번만 처리한다 (안 그러면 게임이 두 번 시작된다).
+                           if (_finishing) return;
+                           _finishing = true;
                            var result = _appearance.Clone();
                            var done = _onDone;
                            Destroy(gameObject);

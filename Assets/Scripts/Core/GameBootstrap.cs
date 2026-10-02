@@ -25,13 +25,11 @@ namespace FarmMVP
 
         private void Awake()
         {
-            // Avoid duplicate bootstraps
+            // Avoid duplicate bootstraps. FindObjectsOfType does not guarantee "this" is
+            // index 0, so every other instance must be checked, not just index 1+.
             var all = FindObjectsOfType<GameBootstrap>();
-            if (all.Length > 1)
-            {
-                for (int i = 1; i < all.Length; i++)
-                    if (all[i] != this) Destroy(all[i].gameObject);
-            }
+            for (int i = 0; i < all.Length; i++)
+                if (all[i] != this) Destroy(all[i].gameObject);
             DontDestroyOnLoad(gameObject);
         }
 
@@ -74,6 +72,13 @@ namespace FarmMVP
         /// </summary>
         public void StartGame(PlayerAppearance appearance)
         {
+            // "이 모습으로 시작" 버튼이 겹클릭 등으로 두 번 눌려도 게임을 두 번 만들지 않는다.
+            if (_playerGo != null)
+            {
+                Debug.LogWarning("[GameBootstrap] 이미 게임이 실행 중이라 StartGame 중복 호출을 무시합니다.");
+                return;
+            }
+
             AssetLibrary.EnsureLoaded();
 
             // Camera
