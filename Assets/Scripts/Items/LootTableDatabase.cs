@@ -40,6 +40,10 @@ namespace FarmMVP
             Register(PlantDatabase.Get(PlantDatabase.GrassId).DropTableId, new LootTable().Add("hay", 1, 2));
             Register(PlantDatabase.Get(PlantDatabase.WeedId).DropTableId, new LootTable().Add("fiber", 1, 2));
 
+            // 농장 바닥의 잔해 — 나뭇가지·통나무는 나무를, 돌멩이·큰 바위는 돌을 남긴다.
+            foreach (var d in DebrisDatabase.All)
+                Register(d.DropTableId, new LootTable().Add(d.DropItemId, d.dropMin, d.dropMax));
+
             // 작물은 CropDatabase 하나만 보면 되도록 여기서 자동 등록한다 (색이 여러 개면 색마다).
             foreach (var crop in CropDatabase.All)
                 foreach (var harvest in crop.Harvests)

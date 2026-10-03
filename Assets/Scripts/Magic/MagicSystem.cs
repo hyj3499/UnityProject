@@ -104,11 +104,13 @@ namespace FarmMVP
                 case MagicType.Earth: return location.CanTill(x, y);
                 // 물 타일이면 물을 주는 대신 낚시가 시작된다 — 조준 표시도 켜져야 한다.
                 case MagicType.Water: return location.CanWater(x, y) || FishingController.CanFishAt(location, x, y);
-                case MagicType.Blade: return location.HasChoppableTree(x, y);
+                // 칼날마법은 나무를 베고, 바닥의 나뭇가지·통나무를 치운다.
+                case MagicType.Blade: return location.HasChoppableTree(x, y) || location.HasDebris(x, y, DebrisKind.Wood);
                 // 바위마법은 바위를 부수고, 놓아 둔 설치물(울타리·길·가구)을 걷어낸다.
                 // "Fixed_{맵}"에 칠한 배경 오브젝트와 마커로 놓인 것은 여기 걸리지 않아 부술 수 없다.
                 // 땅에 쓰면 한 단계씩 되돌린다: 갈아 둔 밭 -> 흙땅 -> 삽질하기 전의 잔디땅.
                 case MagicType.Rock: return location.HasBreakableRock(x, y) || location.HasPlaced(x, y)
+                                         || location.HasDebris(x, y, DebrisKind.Stone)
                                          || location.CanUntill(x, y) || location.CanFillDirt(x, y);
                 // 바람마법: 땅을 덮은 풀(잔디·잡초)을 베어 낸다.
                 case MagicType.Wind: return location.HasCuttablePlant(x, y);
@@ -156,7 +158,7 @@ namespace FarmMVP
                         if (destroyed) dropTableId = tableId;
                         return true;
                     }
-                    return false;
+                    return location.HitDebris(x, y, DebrisKind.Wood, out _, out dropTableId);
 
                 case MagicType.Rock: // 바위마법: 바위 부수기 + 설치물(울타리·길·가구) 철거
                     if (location.BreakRock(x, y, out bool broken, out string rockTable))
@@ -164,6 +166,7 @@ namespace FarmMVP
                         if (broken) dropTableId = rockTable;
                         return true;
                     }
+                    if (location.HitDebris(x, y, DebrisKind.Stone, out _, out dropTableId)) return true;
                     // 걷어낸 울타리·길·가구는 그 자리에 떨어져서 다시 주워 놓을 수 있다.
                     if (location.RemovePlaced(x, y, out dropTableId)) return true;
                     // 땅을 한 단계 되돌린다: 밭이면 흙땅으로, 흙땅이면 삽질하기 전으로.

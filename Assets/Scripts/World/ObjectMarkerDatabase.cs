@@ -18,6 +18,7 @@ namespace FarmMVP
         Door,           // 실내 출입문
         Tree,           // 저장되는 나무 — 새 게임일 때만 데이터로 들어간다
         Rock,           // 저장되는 바위 — 새 게임일 때만 데이터로 들어간다
+        Debris,         // 저장되는 잔해 (큰 통나무·큰 바위) — 칸마다 한 번만 만들어지고, 부수면 다시 나오지 않는다
     }
 
     /// <summary>
@@ -61,6 +62,9 @@ namespace FarmMVP
 
         /// <summary>role이 Rock일 때 어떤 바위 그림을 쓸지 (AssetLibrary.RockVariants 인덱스).</summary>
         public int rockVariant;
+
+        /// <summary>role이 Debris일 때 어떤 잔해를 놓을지.</summary>
+        public DebrisDef debris;
 
         /// <summary>이 오브젝트의 이름. 마커 타일 이름은 "Obj_" + 이 값이다.</summary>
         public string Name
@@ -179,6 +183,24 @@ namespace FarmMVP
 
             RegisterTrees();
             RegisterRocks();
+            RegisterDebris();
+        }
+
+        /// <summary>
+        /// 잔해 그림 조각마다 마커를 하나씩 (Wood_spring_2, Stone_spring_3 ...). 이름이 시트의 조각 이름
+        /// 그대로라, Wood_spring.png / Stone_spring.png 의 조각을 팔레트에 끌어다 칠하면 된다.
+        /// </summary>
+        private static void RegisterDebris()
+        {
+            foreach (var d in DebrisDatabase.All)
+            {
+                Register(new ObjectMarkerDef
+                {
+                    spritePath = d.MarkerSpritePath,
+                    role = MarkerRole.Debris,
+                    debris = d,
+                });
+            }
         }
 
         /// <summary>

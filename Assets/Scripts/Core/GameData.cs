@@ -151,6 +151,15 @@ namespace FarmMVP
         /// <summary>"Grass_{맵}" 마스크에 칠해 둔 잔디를 이미 한 번 깔았는지. 두 번 깔지 않기 위한 표시.</summary>
         public bool grassSeeded = false;
 
+        /// <summary>농장 바닥의 잔해 (나뭇가지·돌멩이·큰 통나무·큰 바위).</summary>
+        public List<DebrisData> debris = new List<DebrisData>();
+
+        /// <summary>
+        /// 잔해를 며칟날까지 번지게 했는지 (plantDay와 같은 방식). 0이면 아직 한 번도 깔지 않은 농장이라
+        /// 처음 들어갈 때 한 번 깔아 준다.
+        /// </summary>
+        public int debrisDay = 0;
+
         /// <summary>
         /// 마커로 이미 한 번 만들어 낸 칸들. 나무·바위는 저장되는 지형지물이라 맵에 들어올 때마다
         /// 다시 만들면 베어 낸 나무가 되살아난다. 그렇다고 맵 전체에 "한 번 했음" 표시 하나만 두면
@@ -229,6 +238,16 @@ namespace FarmMVP
         public int x, y;
         public int hp;
         public int variant;
+    }
+
+    /// <summary>농장 바닥의 잔해 하나. (x, y)는 발판의 왼쪽 아래 칸.</summary>
+    [Serializable]
+    public class DebrisData
+    {
+        public int x, y;
+        public int kind;      // DebrisKind 번호 (0=나무, 1=돌)
+        public int variant;
+        public int hp;
     }
 
     /// <summary>NPC 한 명과의 관계 상태. 호감도 100당 하트 1개.</summary>

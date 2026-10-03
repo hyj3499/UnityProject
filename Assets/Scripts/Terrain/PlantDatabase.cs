@@ -93,8 +93,9 @@ namespace FarmMVP
                 sheet = "weed",
                 maxStage = 0,           // 자라지 않는다 — 조각 3개는 생김새 3종으로 쓴다
                 daysPerStage = 0,
-                sowAttemptsPerDay = 6,
-                maxPerLocation = 60,
+                // 저절로 아무 데나 나지 않는다 — 나뭇가지·돌멩이와 같은 규칙으로 계절 첫날 깔리고
+                // 밤마다 이웃 칸으로 번진다 (GameLocationDebris). 그래서 sowAttemptsPerDay는 0이다.
+                maxPerLocation = 400,
                 // 잡초는 15x12로 납작해서 세로로 넓게 흩어도 뭉쳐 보이지 않는다.
                 tuftsMin = 4, tuftsMax = 5,
                 scatterX = 0.4f, scatterY = 0.45f,

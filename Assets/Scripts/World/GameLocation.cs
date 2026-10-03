@@ -59,7 +59,10 @@ namespace FarmMVP
         /// <summary>이 맵을 지은 날. 풀이 며칠치를 따라잡아야 하는지 계산하는 데 쓴다.</summary>
         private int _today = 1;
 
-        private Tilemap _groundMap, _blockedMask, _tillableMask, _objectMarkers, _waterMap;
+        private Tilemap _groundMap, _blockedMask, _tillableMask, _objectMarkers;
+        // 물·절벽은 겹쳐 칠한 레이어("Water_1_{맵}")까지 전부 담는다 — 어느 것에 칠했든 물은 물이다.
+        private readonly List<Tilemap> _waterMaps = new List<Tilemap>();
+        private readonly List<Tilemap> _cliffMaps = new List<Tilemap>();
         /// <summary>잔디를 깔아 둘 자리를 칠해 둔 마스크. null이면 그런 레이어가 없다.</summary>
         private Tilemap _grassMask;
 
@@ -70,8 +73,9 @@ namespace FarmMVP
         /// </summary>
         private Tilemap _pathMask;
         private bool[,] _path;
-        private Tilemap _fixedObjects, _breakableObjects;
-        private Tilemap _cliffMap;
+        /// <summary>"Fixed_{맵}"이 0번, 겹쳐 칠한 "Fixed_{n}_{맵}"이 n번. 없는 번호는 null.</summary>
+        private readonly Tilemap[] _fixedObjects = new Tilemap[Depth.MaxOverlay + 1];
+        private Tilemap _breakableObjects;
         /// <summary>물 칸. null이면 물 레이어가 없다.</summary>
         private bool[,] _water;
         /// <summary>절벽 칸. null이면 절벽 레이어가 없다.</summary>
@@ -321,7 +325,15 @@ namespace FarmMVP
             // 풀은 <b>맵이 다 지어진 뒤에</b> 되살리고 자라게 한다. 어디에 날 수 있는지가 경작 마스크·물·
             // 절벽·충돌에 달려 있어서, 마스크를 읽기 전에 처리하면 마스크가 없는 것처럼 보인다
             // (경작지에만 나야 할 잡초가 맵 전체에 나거나, 반대로 한 포기도 나지 않는다).
-            if (data != null) RestorePlants(data.GetLocation(id));
+            // 잔해도 같은 이유로 여기서 처리한다. 되살리는 것은 풀보다 먼저(그 칸에 잡초가 나지 않게),
+            // 번지고 새로 깔리는 것은 풀보다 나중에(풀이 난 칸을 피하도록) 한다.
+            if (data != null)
+            {
+                var locData = data.GetLocation(id);
+                RestoreDebris(locData);
+                RestorePlants(locData);
+                AdvanceDebris(locData);
+            }
         }
 
         /// <summary>
@@ -355,28 +367,35 @@ namespace FarmMVP
         /// 화면에 나오면 안 되므로 마스크 레이어의 렌더러는 꺼 둔다.
         /// 경작 레이어가 아예 없으면 _tillable이 null로 남아 지금까지처럼 어디든 경작할 수 있다.
         ///
+        /// 그림이 보이는 레이어(바닥·물·장식·절벽·Fixed)는 이름에 번호를 끼워 <b>겹쳐 칠할 수 있다</b>:
+        /// "Fixed_1_{id}", "Water_2_{id}", "Spring_Fixed_1_{id}". 원본과 똑같이 동작하고(물은 물, Fixed는
+        /// 막는다) 번호가 클수록 앞에 그려진다. 번호는 1 ~ Depth.MaxOverlay.
+        ///
         /// 이름으로 GameObject.Find를 하지 않고 Tilemap 컴포넌트로 찾는 이유: GameManager가
         /// 런타임에 만드는 위치 루트도 이름이 "Location_{id}"라서 이름만으로는 구분되지 않는다.
         /// </summary>
         private void FindSceneTilemaps()
         {
-            _groundMap = _blockedMask = _tillableMask = _objectMarkers = _waterMap = null;
+            _groundMap = _blockedMask = _tillableMask = _objectMarkers = null;
             _grassMask = null;
             _pathMask = null;
             _path = null;
-            _fixedObjects = _breakableObjects = null;
-            _cliffMap = null;
+            System.Array.Clear(_fixedObjects, 0, _fixedObjects.Length);
+            _breakableObjects = null;
+            _waterMaps.Clear();
+            _cliffMaps.Clear();
             HasObjectMarkers = false;
             _visibleMaps.Clear();
 
             // 계절 전용 레이어가 있으면 기본 레이어보다 우선한다. 그래서 두 번 훑는다 —
             // 첫 판에서 이번 계절 전용 레이어를 잡고, 둘째 판에서 빈 자리만 기본 레이어로 채운다.
-            var seasonal = new HashSet<TilemapLayer>();
+            // 겹쳐 칠한 레이어는 번호마다 따로 따진다 ("Spring_Fixed_{맵}"이 "Fixed_1_{맵}"까지 가리지 않는다).
+            var seasonal = new HashSet<(TilemapLayer, int)>();
 
             for (int pass = 0; pass < 2; pass++)
             foreach (var tm in FindObjectsOfType<Tilemap>())
             {
-                if (!TryParseLayerName(tm.name, out var owner, out var layer, out var layerSeason)) continue;
+                if (!TryParseLayerName(tm.name, out var owner, out var layer, out int overlay, out var layerSeason)) continue;
                 var tr = tm.GetComponent<TilemapRenderer>();
 
                 bool isSeasonal = layerSeason.HasValue;
@@ -391,18 +410,19 @@ namespace FarmMVP
                     if (tr != null) tr.enabled = false;   // 다른 위치의 레이어는 안 보이게
                     continue;
                 }
-                if (pass == 1 && seasonal.Contains(layer))
+                if (pass == 1 && seasonal.Contains((layer, overlay)))
                 {
                     if (tr != null) tr.enabled = false;   // 이번 계절 전용 레이어가 대신하고 있다
                     continue;
                 }
-                if (isSeasonal) seasonal.Add(layer);
+                if (isSeasonal) seasonal.Add((layer, overlay));
 
                 switch (layer)
                 {
                     case TilemapLayer.Ground:
-                        _groundMap = tm;
-                        Show(tm, tr, Depth.PaintedGround);
+                        // 맵 크기와 격자 기준은 원본 바닥만 정한다. 겹쳐 칠한 바닥은 그림일 뿐이다.
+                        if (overlay == 0) _groundMap = tm;
+                        Show(tm, tr, Depth.PaintedGround + overlay);
                         break;
                     case TilemapLayer.Blocked:
                         _blockedMask = tm;
@@ -414,17 +434,17 @@ namespace FarmMVP
                         break;
                     case TilemapLayer.Water:
                         // 물은 눈에 보여야 하는 레이어다 — 마스크들과 달리 렌더러를 켜 둔다.
-                        _waterMap = tm;
-                        Show(tm, tr, Depth.Water);
+                        _waterMaps.Add(tm);
+                        Show(tm, tr, Depth.Water + overlay);
                         break;
                     case TilemapLayer.Decor:
                         // 장식은 경작지(Depth.Soil)보다 뒤에 그린다 — 밭을 갈면 흙에 덮여 사라지고,
                         // 흙을 없애면 그대로 다시 드러난다. 숨겼다 되살리는 상태가 아예 없다.
-                        Show(tm, tr, Depth.Decor);
+                        Show(tm, tr, Depth.Decor + overlay);
                         break;
                     case TilemapLayer.Cliff:
-                        _cliffMap = tm;
-                        Show(tm, tr, Depth.Cliff);
+                        _cliffMaps.Add(tm);
+                        Show(tm, tr, Depth.Cliff + overlay);
                         break;
                     case TilemapLayer.Objects:
                         _objectMarkers = tm;
@@ -435,7 +455,7 @@ namespace FarmMVP
                     // (PaintedObjectPlacer). 타일맵 자체는 앞뒤 정렬을 칸마다 다르게 할 수 없어서
                     // 플레이어가 뒤로 돌아갔을 때 가려지지 않기 때문이다 — 그래서 렌더러는 끈다.
                     case TilemapLayer.Fixed:
-                        _fixedObjects = tm;
+                        _fixedObjects[overlay] = tm;
                         if (HasTiles(tm)) HasObjectMarkers = true;
                         if (tr != null) tr.enabled = false;
                         break;
@@ -507,14 +527,14 @@ namespace FarmMVP
         /// </summary>
         private void ApplyMaskTilemaps()
         {
-            Tilemap blockedMask = _blockedMask, tillableMask = _tillableMask, waterMap = _waterMap;
-            Tilemap cliffMap = _cliffMap, pathMask = _pathMask;
+            Tilemap blockedMask = _blockedMask, tillableMask = _tillableMask, pathMask = _pathMask;
+            bool hasWater = _waterMaps.Count > 0, hasCliff = _cliffMaps.Count > 0;
             _tillable = tillableMask != null ? new bool[width, height] : null;
-            _water = waterMap != null ? new bool[width, height] : null;
-            _cliff = cliffMap != null ? new bool[width, height] : null;
+            _water = hasWater ? new bool[width, height] : null;
+            _cliff = hasCliff ? new bool[width, height] : null;
             _path = pathMask != null ? new bool[width, height] : null;
-            if (blockedMask == null && tillableMask == null && waterMap == null
-                && cliffMap == null && pathMask == null) return;
+            if (blockedMask == null && tillableMask == null && !hasWater
+                && !hasCliff && pathMask == null) return;
 
             int blockedCount = 0, tillableCount = 0, waterCount = 0, cliffCount = 0, pathCount = 0;
             for (int x = 0; x < width; x++)
@@ -533,7 +553,7 @@ namespace FarmMVP
                         tillableCount++;
                     }
                     // 물은 칠하기만 하면 자동으로 못 지나가는 칸이 된다 (따로 Blocked를 칠 필요 없음)
-                    if (waterMap != null && waterMap.HasTile(waterMap.WorldToCell(world)))
+                    if (AnyHasTile(_waterMaps, world))
                     {
                         _water[x, y] = true;
                         SetBlocked(x, y, true);
@@ -541,7 +561,7 @@ namespace FarmMVP
                     }
                     // 절벽도 칠하기만 하면 못 지나가는 칸이 된다. 경작·씨앗·오브젝트가 덮지 못하는 것은
                     // CanTill이 IsBlocked를 먼저 보기 때문에 따로 막을 필요가 없다.
-                    if (cliffMap != null && cliffMap.HasTile(cliffMap.WorldToCell(world)))
+                    if (AnyHasTile(_cliffMaps, world))
                     {
                         _cliff[x, y] = true;
                         SetBlocked(x, y, true);
@@ -559,12 +579,20 @@ namespace FarmMVP
                 Debug.Log($"[GameLocation] {blockedMask.name}: {blockedCount}칸을 통행 불가로 표시했습니다.");
             if (tillableMask != null)
                 Debug.Log($"[GameLocation] {tillableMask.name}: {tillableCount}칸만 경작할 수 있습니다.");
-            if (waterMap != null)
-                Debug.Log($"[GameLocation] {waterMap.name}: 물 {waterCount}칸 (통행 불가, 물마법으로 낚시).");
-            if (cliffMap != null)
-                Debug.Log($"[GameLocation] {cliffMap.name}: 절벽 {cliffCount}칸 (통행 불가, 덮을 수 없음).");
+            if (hasWater)
+                Debug.Log($"[GameLocation] Water_{id}: 물 {waterCount}칸 (통행 불가, 물마법으로 낚시).");
+            if (hasCliff)
+                Debug.Log($"[GameLocation] Cliff_{id}: 절벽 {cliffCount}칸 (통행 불가, 덮을 수 없음).");
             if (pathMask != null)
                 Debug.Log($"[GameLocation] {pathMask.name}: NPC가 다니는 길 {pathCount}칸.");
+        }
+
+        /// <summary>원본이든 겹쳐 칠한 레이어든, 이 자리에 칠한 것이 하나라도 있는지.</summary>
+        private static bool AnyHasTile(List<Tilemap> maps, Vector3 world)
+        {
+            foreach (var map in maps)
+                if (map.HasTile(map.WorldToCell(world))) return true;
+            return false;
         }
 
         // ---------- 오브젝트 마커 레이어 ----------
@@ -605,50 +633,60 @@ namespace FarmMVP
         /// 레이어 이름을 해석한다. 앞에 계절이 붙어 있으면("Winter_Location_Farm1") 그 계절 전용이다.
         /// season이 null이면 계절과 무관한 기본 레이어.
         /// </summary>
+        /// <summary>
+        /// 레이어 이름표. stackable은 번호를 끼워 겹쳐 칠할 수 있는 레이어 — 그림이 보이는 것들뿐이다.
+        /// 마스크·마커는 칠했는지만 보므로 겹칠 이유가 없다.
+        /// </summary>
+        private static readonly (string key, string legacy, TilemapLayer layer, bool stackable)[] LayerNames =
+        {
+            ("Location",  "Ground",    TilemapLayer.Ground,    true),
+            ("Blocked",   "Blocked",   TilemapLayer.Blocked,   false),
+            ("Tillable",  "Tillable",  TilemapLayer.Tillable,  false),
+            ("Objects",   "Objects",   TilemapLayer.Objects,   false),
+            ("Water",     "Water",     TilemapLayer.Water,     true),
+            ("Decor",     "Decor",     TilemapLayer.Decor,     true),
+            ("Cliff",     "Cliff",     TilemapLayer.Cliff,     true),
+            ("Fixed",     "Fixed",     TilemapLayer.Fixed,     true),
+            ("Breakable", "Breakable", TilemapLayer.Breakable, false),
+            ("Grass",     "Grass",     TilemapLayer.Grass,     false),
+            ("Path",      "Path",      TilemapLayer.Path,      false),
+        };
+
         private static bool TryParseLayerName(string name, out LocationId locId, out TilemapLayer layer,
-                                              out Season? season)
+                                              out int overlay, out Season? season)
         {
             season = null;
             foreach (Season s in System.Enum.GetValues(typeof(Season)))
             {
                 string prefix = Seasons.Key(s) + "_";
                 if (!name.StartsWith(prefix, System.StringComparison.Ordinal)) continue;
-                if (!TryParseLayerName(name.Substring(prefix.Length), out locId, out layer)) break;
+                if (!TryParseLayerName(name.Substring(prefix.Length), out locId, out layer, out overlay)) break;
                 season = s;
                 return true;
             }
-            return TryParseLayerName(name, out locId, out layer);
+            return TryParseLayerName(name, out locId, out layer, out overlay);
         }
 
-        private static bool TryParseLayerName(string name, out LocationId locId, out TilemapLayer layer)
+        /// <summary>overlay는 겹쳐 칠한 번호 — "Fixed_Farm1"은 0, "Fixed_2_Farm1"은 2.</summary>
+        private static bool TryParseLayerName(string name, out LocationId locId, out TilemapLayer layer,
+                                              out int overlay)
         {
             foreach (LocationId candidate in System.Enum.GetValues(typeof(LocationId)))
-            {
-                if (name == $"Location_{candidate}" || name == $"{candidate}Ground")
-                { locId = candidate; layer = TilemapLayer.Ground; return true; }
-                if (name == $"Blocked_{candidate}" || name == $"{candidate}Blocked")
-                { locId = candidate; layer = TilemapLayer.Blocked; return true; }
-                if (name == $"Tillable_{candidate}" || name == $"{candidate}Tillable")
-                { locId = candidate; layer = TilemapLayer.Tillable; return true; }
-                if (name == $"Objects_{candidate}" || name == $"{candidate}Objects")
-                { locId = candidate; layer = TilemapLayer.Objects; return true; }
-                if (name == $"Water_{candidate}" || name == $"{candidate}Water")
-                { locId = candidate; layer = TilemapLayer.Water; return true; }
-                if (name == $"Decor_{candidate}" || name == $"{candidate}Decor")
-                { locId = candidate; layer = TilemapLayer.Decor; return true; }
-                if (name == $"Cliff_{candidate}" || name == $"{candidate}Cliff")
-                { locId = candidate; layer = TilemapLayer.Cliff; return true; }
-                if (name == $"Fixed_{candidate}" || name == $"{candidate}Fixed")
-                { locId = candidate; layer = TilemapLayer.Fixed; return true; }
-                if (name == $"Breakable_{candidate}" || name == $"{candidate}Breakable")
-                { locId = candidate; layer = TilemapLayer.Breakable; return true; }
-                if (name == $"Grass_{candidate}" || name == $"{candidate}Grass")
-                { locId = candidate; layer = TilemapLayer.Grass; return true; }
-                if (name == $"Path_{candidate}" || name == $"{candidate}Path")
-                { locId = candidate; layer = TilemapLayer.Path; return true; }
-            }
+                foreach (var entry in LayerNames)
+                {
+                    if (!name.StartsWith(entry.key, System.StringComparison.Ordinal)
+                        && !name.EndsWith(entry.legacy, System.StringComparison.Ordinal)) continue;
+
+                    locId = candidate; layer = entry.layer; overlay = 0;
+                    if (name == $"{entry.key}_{candidate}" || name == $"{candidate}{entry.legacy}") return true;
+                    if (!entry.stackable) continue;
+
+                    for (overlay = 1; overlay <= Depth.MaxOverlay; overlay++)
+                        if (name == $"{entry.key}_{overlay}_{candidate}") return true;
+                }
             locId = default;
             layer = TilemapLayer.Ground;
+            overlay = 0;
             return false;
         }
 
@@ -1194,7 +1232,7 @@ namespace FarmMVP
 
             bool wasStump = t.isStump;
             var result = t.Chop();
-            ScatterChopLeaves(pos, t);
+            ScatterChopLeaves(pos, t, wasStump);
 
             switch (result)
             {
@@ -1240,20 +1278,25 @@ namespace FarmMVP
             return player == null || player.transform.position.x <= tileX ? 1f : -1f;
         }
 
-        private void ScatterChopLeaves(Vector2Int pos, TreeFeature tree)
+        /// <param name="wasStump">친 <b>순간 이전</b>에 그루터기였는지 — 쓰러뜨린 그 한 번은 아직 다 자란 나무의 잎이다.</param>
+        private void ScatterChopLeaves(Vector2Int pos, TreeFeature tree, bool wasStump)
         {
-            TreeChopFx.ScatterLeaves(_featureRoot, tree.GetLeafSprites(),
-                                     new Vector2(pos.x, TreeFootY(pos.y)), CanopyHeight(tree),
-                                     Depth.YSort(pos.y, Depth.TreeLeafBias));
+            var sprites = tree.GetLeafSprites(wasStump);
+            var foot = new Vector2(pos.x, TreeFootY(pos.y));
+            int order = Depth.YSort(pos.y, Depth.TreeLeafBias);
+
+            // 그루터기는 잎이 아니라 나무 조각이 팍 튄다.
+            if (wasStump) TreeChopFx.ScatterChips(_featureRoot, sprites, foot, CanopyHeight(tree, true), order);
+            else TreeChopFx.ScatterLeaves(_featureRoot, sprites, foot, CanopyHeight(tree, false), order);
         }
 
         /// <summary>
         /// 잎이 달려 있는 높이 (밑동에서 몇 칸 위인지). 성장 단계 그림은 모두 같은 크기의 칸에
         /// 담겨 있어 그림에서 높이를 읽을 수 없으므로 단계별로 적어 둔다.
         /// </summary>
-        private static float CanopyHeight(TreeFeature tree)
+        private static float CanopyHeight(TreeFeature tree, bool wasStump)
         {
-            if (tree.isStump) return 0.4f;
+            if (wasStump) return 0.4f;
             switch (tree.growthStage)
             {
                 case 0: return 0.5f;
@@ -1376,6 +1419,7 @@ namespace FarmMVP
             loc.rocks.AddRange(_outOfBoundsRocks);
 
             SavePlacedInto(loc);
+            SaveDebrisInto(loc);
 
             loc.droppedItems.Clear();
             foreach (var wi in _featureRoot.GetComponentsInChildren<WorldItem>())

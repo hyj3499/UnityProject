@@ -612,6 +612,14 @@ namespace FarmMVP
 
             CenterCameraInstant();
             Events?.Signal("EnterLocation");
+            AnnounceDebrisDamage();
+        }
+
+        /// <summary>밤사이 번진 잔해가 작물·설치물을 뭉갰으면 알린다 (그 농장에 들어설 때 알게 된다).</summary>
+        private void AnnounceDebrisDamage()
+        {
+            if (CurrentLocation != null && CurrentLocation.DebrisDamage > 0)
+                UIManager.Instance?.Toast("퍼져나간 나뭇가지와 돌이 농장에 피해를 입혔습니다");
         }
 
         /// <summary>이 위치에 저장되어 있던, 아직 줍지 않은 드랍 아이템들을 그대로 되살린다.</summary>
@@ -1122,6 +1130,7 @@ namespace FarmMVP
                 UIManager.Instance?.Toast($"{Seasons.Name(Seasons.Current)}이(가) 되었다"
                                           + (withered > 0 ? $" — 철 지난 작물 {withered}개가 시들었다" : ""));
             }
+            AnnounceDebrisDamage();   // 알림은 마지막 것만 남으므로 피해 소식을 맨 뒤에 다시 띄운다
         }
 
         /// <summary>

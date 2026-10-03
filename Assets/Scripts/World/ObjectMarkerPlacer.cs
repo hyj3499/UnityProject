@@ -166,6 +166,13 @@ namespace FarmMVP
                 created++;
                 return true;
             }
+            if (def.role == MarkerRole.Debris)
+            {
+                if (!MarkSpawned(locData, spawned, x, y)) return false;
+                GameLocation.AddDebrisData(locData, x, y, def.debris);
+                created++;
+                return true;
+            }
 
             // 그림은 offset만큼 올려 그리되, 앞뒤는 발밑(마커를 찍은 칸)으로 정한다.
             var sr = loc.PlaceObject(def.GetSprite(), x + def.offset.x, y + def.offset.y, y, def.sortBias);
