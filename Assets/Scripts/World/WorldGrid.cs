@@ -198,11 +198,15 @@ namespace FarmMVP
                     path = new bool[bounds.size.x, bounds.size.y],
                 };
 
-                var blockers = new[]
+                var blockers = new List<Tilemap>
                 {
                     Find(byName, id, "Blocked"), Find(byName, id, "Water"), Find(byName, id, "Cliff"),
                     Find(byName, id, "Fixed"), Find(byName, id, "Breakable"),
                 };
+                // 겹쳐 칠한 레이어("Fixed_1_{맵}")도 원본과 똑같이 막는다.
+                foreach (var stackable in new[] { "Water", "Cliff", "Fixed" })
+                    for (int n = 1; n <= Depth.MaxOverlay; n++)
+                        blockers.Add(Find(byName, id, $"{stackable}_{n}"));
                 var pathMask = Find(byName, id, "Path");
                 var objects = Find(byName, id, "Objects");
 

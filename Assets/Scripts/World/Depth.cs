@@ -20,25 +20,32 @@ namespace FarmMVP
         public const int Ground = -110;
         /// <summary>타일 팔레트로 칠한 바닥.</summary>
         public const int PaintedGround = -100;
+
+        /// <summary>
+        /// 겹쳐 칠하는 레이어("Water_1_{맵}", "Fixed_2_{맵}")의 가장 큰 번호. 번호만큼 원본보다 앞에
+        /// 그려지므로, 칠하는 레이어들(PaintedGround/Decor/Cliff/Water)은 서로 이만큼씩 떨어져 있어야 한다.
+        /// </summary>
+        public const int MaxOverlay = 9;
+
         /// <summary>
         /// 물 타일. Location/Cliff 바닥보다 앞에 그려져, 그 위에 칠한 물이 가려지지 않고 그대로 보인다.
         /// </summary>
-        public const int Water = -54;
+        public const int Water = -65;
         /// <summary>
         /// 꽃·잔디 같은 바닥 장식("Decor_{맵}" 레이어). 칠한 바닥보다 앞, <b>경작지보다 뒤</b>다 —
         /// 밭을 갈면 불투명한 흙 타일에 덮여 저절로 사라지고, 흙이 없어지면 다시 드러난다.
         /// 그래서 장식을 숨겼다 되살리는 상태도, 저장할 것도 없다.
         /// </summary>
-        public const int Decor = -60;
+        public const int Decor = -90;
 
         /// <summary>절벽("Cliff_{맵}" 레이어). 장식 위에 얹히지만 서 있는 것들보다는 뒤.</summary>
-        public const int Cliff = -55;
+        public const int Cliff = -75;
 
         /// <summary>
         /// 삽마법으로 파낸 흙땅. 장식을 덮고, 절벽·물보다는 뒤라 테두리 조각이 그쪽으로 삐져나오지 않는다.
-        /// 한 칸에 테두리 조각이 여러 장 겹칠 수 있어 -59 ~ -56을 차례로 쓴다 (DirtTileset.MaxLayers).
+        /// 한 칸에 테두리 조각이 여러 장 겹칠 수 있어 -80 ~ -77을 차례로 쓴다 (DirtTileset.MaxLayers).
         /// </summary>
-        public const int Dirt = -59;
+        public const int Dirt = -80;
 
         /// <summary>경작된 흙.</summary>
         public const int Soil = -50;

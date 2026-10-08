@@ -250,8 +250,11 @@ namespace FarmMVP
 
         private void HandleHotbarKeys()
         {
+            // 원형 퀵스킬 메뉴가 열린 동안에는 숫자키가 인벤토리 대신 마법 번호를 고른다.
+            QuickSkillHUD.HandleKeyboardInput(_game);
+
             // 숫자키 1~0: 지금 보고 있는 배낭 페이지에서 그 번째 칸 선택
-            for (int i = 0; i < HotbarKeys.Length && i < Inventory.HotbarSize; i++)
+            for (int i = 0; !QuickSkillHUD.IsRadialMenuOpen && i < HotbarKeys.Length && i < Inventory.HotbarSize; i++)
             {
                 if (Input.GetKeyDown(HotbarKeys[i]))
                     _game.SelectHotbarColumn(i);
@@ -261,9 +264,11 @@ namespace FarmMVP
             if (Input.GetKeyDown(KeyCode.Tab))
                 _game.CycleHotbarPage();
 
-            // Q키: 마법 변경 (대지 → 물 → 칼날)
+            // Q/E: 원형 퀵스킬을 각각 오른쪽/왼쪽으로 한 칸 바꾼다.
             if (Input.GetKeyDown(KeyCode.Q))
                 _game.CycleMagic();
+            if (Input.GetKeyDown(KeyCode.E))
+                _game.CycleMagic(-1);
         }
 
         private void HandleInteraction()
@@ -280,8 +285,8 @@ namespace FarmMVP
             HandleSeedInput();
             if (_game.Paused) return;
 
-            // interact key (e / space) for bed and generic
-            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space))
+            // E는 퀵스킬 왼쪽 순환에 배정되었으므로, 상호작용은 Space만 쓴다.
+            if (Input.GetKeyDown(KeyCode.Space))
                 _game.TryContextInteract(this);
         }
 
@@ -295,6 +300,10 @@ namespace FarmMVP
         /// </summary>
         private void HandleMagicInput()
         {
+            // 원형 메뉴가 열려 있으면 월드 시전보다 방향 클릭을 우선한다.
+            if (QuickSkillHUD.ConsumeRadialClick(_game)) return;
+            if (QuickSkillHUD.IsRadialMenuOpen) return;
+
             if (Input.GetMouseButtonDown(0))
             {
                 if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 시전으로 새는 것 방지
@@ -473,7 +482,7 @@ namespace FarmMVP
         {
             if (_anim == null || _game == null) return;
 
-            // 물마법으로 낚시를 시작했으면 물주기가 아니라 던지는 동작이다.
+            // 낚시마법으로 낚시를 시작했으면 도구 동작이 아니라 던지는 동작이다.
             var fishing = _game.Fishing;
             if (fishing != null && fishing.IsActive)
             {

@@ -5,8 +5,7 @@ using UnityEngine.UI;
 namespace FarmMVP
 {
     /// <summary>
-    /// Enables drag & drop between inventory/hotbar slots and click-to-select on
-    /// the hotbar (design doc §12).
+    /// Enables drag & drop between shipping-box / backpack slots (design doc §12).
     /// </summary>
     public class SlotDragHandler : MonoBehaviour,
         IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
@@ -31,9 +30,6 @@ namespace FarmMVP
             {
                 if (_ui.QuickTransfer(_view)) return;
             }
-
-            if (_view.isHotbar)
-                _ui.OnHotbarClicked(_view.index);
         }
 
         public void OnBeginDrag(PointerEventData e)

@@ -64,8 +64,13 @@ namespace FarmMVP
         public Sprite GetTopSprite()
             => IsMature ? TreeArt.Top(Def.sheet, Seasons.Current) : null;
 
-        /// <summary>벨 때 흩날릴 나뭇잎 그림들 (지금 계절 것).</summary>
-        public Sprite[] GetLeafSprites() => TreeArt.Leaves(Def.sheet, Seasons.Current);
+        /// <summary>
+        /// 벨 때 흩날릴 나뭇잎 그림들 (지금 계절 것). 장수는 단계가 오를수록 늘고(TreeArt.Leaves),
+        /// 그루터기를 칠 때는 전용 잎 한 장이다. 치고 난 뒤에는 상태가 바뀌어 있을 수 있으므로
+        /// <b>치기 전</b>의 상태를 받는다.
+        /// </summary>
+        public Sprite[] GetLeafSprites(bool wasStump)
+            => TreeArt.Leaves(Def.sheet, Seasons.Current, growthStage, wasStump);
 
         /// <summary>하루가 지나 한 단계씩 자란다. 그루터기는 자라지 않는다.</summary>
         public void Grow()

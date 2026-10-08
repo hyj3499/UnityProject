@@ -8,8 +8,7 @@ using UnityEngine.EventSystems;
 namespace FarmMVP
 {
     /// <summary>
-    /// Builds and drives all runtime UI from code: HUD (HP/MP, day/time),
-    /// quick hotbar, equipped-tool indicator, full inventory with drag & drop,
+    /// Builds and drives runtime UI from code: equipped-magic indicator, shipping box, shop, dialogue,
     /// and transient banners/toasts (design doc §4/§12).
     /// </summary>
     public class UIManager : MonoBehaviour
@@ -24,17 +23,6 @@ namespace FarmMVP
         private Font _font;
 
         public Font UiFont => _font;
-
-        // HUD
-        private Slider _hpBar, _mpBar;
-        private Text _dateText, _timeText, _moneyText;
-        private Image _dayNightIcon;
-
-        // Hotbar
-        private readonly List<SlotView> _hotbarViews = new List<SlotView>();
-        private RectTransform _hotbarRoot;
-        private Text _toolLabel;
-        private Text _hotbarPageLabel;
 
         // 책(인벤토리/설정/도움말)
         private BookUI _book;
@@ -70,8 +58,6 @@ namespace FarmMVP
             AssetLibrary.EnsureLoaded();
 
             BuildCanvas();
-            BuildHUD();
-            BuildHotbar();
             BuildBook();
             BuildShipping();
             BuildShop();
@@ -83,7 +69,6 @@ namespace FarmMVP
             _game.OnTimeChanged += RefreshTime;
             _game.OnDayChanged += RefreshTime;
             _game.OnHotbarChanged += RefreshSlots;
-            _game.OnMagicChanged += RefreshMagic;
             _game.OnMoneyChanged += RefreshMoney;
             _game.OnShippingChanged += OnShippingInventoryChanged;
             _game.Inventory.OnChanged += RefreshSlots;
@@ -91,7 +76,6 @@ namespace FarmMVP
             RefreshTime();
             RefreshMoney();
             RefreshSlots();
-            RefreshMagic();
         }
 
         private void OnDestroy()
@@ -126,174 +110,6 @@ namespace FarmMVP
                 es.AddComponent<EventSystem>();
                 es.AddComponent<StandaloneInputModule>();
             }
-        }
-
-        // ---------- HUD ----------
-        private void BuildHUD()
-        {
-            // top-left status
-            var panel = Panel("StatusPanel", new Vector2(0, 1), new Vector2(0, 1),
-                new Vector2(12, -12), new Vector2(200, 70), new Color(0, 0, 0, 0.45f));
-
-            _hpBar = MakeBar(panel, "HP", 0, new Color(0.85f, 0.2f, 0.2f));
-            _mpBar = MakeBar(panel, "MP", -26, new Color(0.25f, 0.5f, 0.95f));
-
-            BuildTopRightHud();
-        }
-
-        /// <summary>
-        /// 우측 상단: 날짜/시간 패널(왼쪽 칸에 낮=해, 밤=달 아이콘)과 그 아래 소지금 바.
-        /// 자식 위젯은 원본 아트의 픽셀 좌표를 앵커로 환산해 배치하므로 패널 크기를 바꿔도 어긋나지 않는다.
-        /// </summary>
-        private void BuildTopRightHud()
-        {
-            const float hudScale = 3f;
-
-            // --- 날짜 / 시간 패널 (아트 59x28) ---
-            var infoSize = new Vector2(59, 28);
-            var info = SpritePanel("HudInfo", AssetLibrary.UiHudInfo, new Vector2(1, 1),
-                new Vector2(-12, -12), infoSize * hudScale);
-
-            var iconRt = Child(info, "DayNightIcon");
-            PlaceInArt(iconRt, infoSize, new Rect(3, 4, 19, 20));
-            _dayNightIcon = iconRt.gameObject.AddComponent<Image>();
-            _dayNightIcon.preserveAspect = true;
-            _dayNightIcon.raycastTarget = false;
-            _dayNightIcon.sprite = AssetLibrary.UiIconSun;
-
-            _dateText = Label(info, "1일차", 17, Vector2.zero, TextAnchor.MiddleCenter);
-            PlaceInArt(_dateText.rectTransform, infoSize, new Rect(25, 5, 31, 9));
-            _dateText.color = new Color(0.24f, 0.13f, 0.11f);
-
-            _timeText = Label(info, "06:00", 17, Vector2.zero, TextAnchor.MiddleCenter);
-            PlaceInArt(_timeText.rectTransform, infoSize, new Rect(25, 15, 31, 9));
-            _timeText.color = new Color(0.24f, 0.13f, 0.11f);
-
-            // --- 소지금 바 (아트 60x16) ---
-            var moneySize = new Vector2(60, 16);
-            var money = SpritePanel("HudMoney", AssetLibrary.UiHudMoney, new Vector2(1, 1),
-                new Vector2(-12, -12 - infoSize.y * hudScale - 6), moneySize * hudScale);
-
-            _moneyText = Label(money, "0", 16, Vector2.zero, TextAnchor.MiddleRight);
-            PlaceInArt(_moneyText.rectTransform, moneySize, new Rect(19, 3, 35, 10));
-            _moneyText.color = new Color(0.24f, 0.13f, 0.11f);
-        }
-
-        /// <summary>스프라이트를 배경으로 쓰는 HUD 패널 (화면 모서리 기준 배치).</summary>
-        private RectTransform SpritePanel(string name, Sprite sprite, Vector2 anchor, Vector2 pos, Vector2 size)
-        {
-            var go = new GameObject(name);
-            var rt = go.AddComponent<RectTransform>();
-            rt.SetParent(_canvas.transform, false);
-            rt.anchorMin = rt.anchorMax = anchor;
-            rt.pivot = anchor;
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = size;
-            var img = go.AddComponent<Image>();
-            img.sprite = sprite;
-            img.raycastTarget = false;
-            return rt;
-        }
-
-        /// <summary>부모 스프라이트의 원본 픽셀 좌표(artRect)에 맞춰 자식을 앵커로 배치한다.</summary>
-        private static void PlaceInArt(RectTransform child, Vector2 artSize, Rect artRect)
-        {
-            child.anchorMin = new Vector2(artRect.xMin / artSize.x, 1f - artRect.yMax / artSize.y);
-            child.anchorMax = new Vector2(artRect.xMax / artSize.x, 1f - artRect.yMin / artSize.y);
-            child.offsetMin = Vector2.zero;
-            child.offsetMax = Vector2.zero;
-        }
-
-        private RectTransform Child(RectTransform parent, string name)
-        {
-            var go = new GameObject(name);
-            var rt = go.AddComponent<RectTransform>();
-            rt.SetParent(parent, false);
-            return rt;
-        }
-
-        private Slider MakeBar(RectTransform parent, string label, float yOff, Color fill)
-        {
-            var container = new GameObject(label + "Bar");
-            var rt = container.AddComponent<RectTransform>();
-            rt.SetParent(parent, false);
-            rt.anchorMin = new Vector2(0, 1); rt.anchorMax = new Vector2(1, 1);
-            rt.pivot = new Vector2(0, 1);
-            rt.anchoredPosition = new Vector2(8, yOff - 8);
-            rt.sizeDelta = new Vector2(-16, 20);
-
-            var lbl = Label(rt, label, 12, new Vector2(0, 0), TextAnchor.MiddleLeft);
-            lbl.rectTransform.anchorMin = new Vector2(0, 0);
-            lbl.rectTransform.anchorMax = new Vector2(0, 1);
-            lbl.rectTransform.sizeDelta = new Vector2(28, 0);
-            lbl.rectTransform.anchoredPosition = new Vector2(0, 0);
-
-            var slider = container.AddComponent<Slider>();
-            var bg = new GameObject("BG").AddComponent<Image>();
-            bg.transform.SetParent(rt, false);
-            bg.color = new Color(0.15f, 0.15f, 0.15f, 0.8f);
-            bg.raycastTarget = false; // 상호작용 불가능한 HP/MP 바
-            Stretch(bg.rectTransform, 30, 0, 0, 0);
-
-            var fillArea = new GameObject("Fill").AddComponent<Image>();
-            fillArea.transform.SetParent(rt, false);
-            fillArea.color = fill;
-            fillArea.raycastTarget = false;
-            Stretch(fillArea.rectTransform, 30, 0, 0, 0);
-
-            slider.fillRect = fillArea.rectTransform;
-            slider.targetGraphic = bg;
-            slider.transition = Selectable.Transition.None;
-            slider.minValue = 0; slider.maxValue = 1; slider.value = 1;
-            slider.interactable = false;
-            return slider;
-        }
-
-        // ---------- Hotbar ----------
-        private void BuildHotbar()
-        {
-            int n = Inventory.HotbarSize;
-            float slot = 48, pad = 4;
-            float totalW = n * slot + (n - 1) * pad;
-
-            var root = new GameObject("Hotbar");
-            _hotbarRoot = root.AddComponent<RectTransform>();
-            _hotbarRoot.SetParent(_canvas.transform, false);
-            _hotbarRoot.anchorMin = new Vector2(0.5f, 0);
-            _hotbarRoot.anchorMax = new Vector2(0.5f, 0);
-            _hotbarRoot.pivot = new Vector2(0.5f, 0);
-            _hotbarRoot.anchoredPosition = new Vector2(0, 12);
-            _hotbarRoot.sizeDelta = new Vector2(totalW, slot);
-
-            for (int i = 0; i < n; i++)
-            {
-                float x = i * (slot + pad);
-                var sv = BuildSlot(_hotbarRoot, i, x, 0, slot, isHotbar: true);
-                _hotbarViews.Add(sv);
-
-                // 어떤 숫자키에 대응하는 칸인지 (10번째는 0)
-                var key = Label(sv.frame.rectTransform, i == 9 ? "0" : (i + 1).ToString(), 12, Vector2.zero, TextAnchor.UpperLeft);
-                var krt = key.rectTransform;
-                krt.anchorMin = krt.anchorMax = new Vector2(0, 1);
-                krt.pivot = new Vector2(0, 1);
-                krt.anchoredPosition = new Vector2(3, -2);
-                krt.sizeDelta = new Vector2(16, 16);
-                key.color = new Color(1f, 0.93f, 0.75f, 0.9f);
-            }
-
-            _hotbarPageLabel = Label(_hotbarRoot, "", 14, Vector2.zero, TextAnchor.MiddleCenter);
-            _hotbarPageLabel.rectTransform.anchorMin = new Vector2(0, 1);
-            _hotbarPageLabel.rectTransform.anchorMax = new Vector2(1, 1);
-            _hotbarPageLabel.rectTransform.pivot = new Vector2(0.5f, 0);
-            _hotbarPageLabel.rectTransform.anchoredPosition = new Vector2(0, 4);
-            _hotbarPageLabel.rectTransform.sizeDelta = new Vector2(0, 20);
-            _hotbarPageLabel.color = new Color(1f, 0.95f, 0.8f, 0.9f);
-
-            // equipped tool indicator (bottom-right)
-            var toolPanel = Panel("ToolIndicator", new Vector2(1, 0), new Vector2(1, 0),
-                new Vector2(-12, 12), new Vector2(120, 52), new Color(0, 0, 0, 0.45f));
-            _toolLabel = Label(toolPanel, "-", 14, Vector2.zero, TextAnchor.MiddleCenter);
-            Stretch(_toolLabel.rectTransform, 0, 0, 0, 0);
         }
 
         // ---------- 책 UI ----------
@@ -450,7 +266,7 @@ namespace FarmMVP
         /// <summary>ShippingUI가 배송함 칸을 만들 때 호출한다.</summary>
         public SlotView CreateShippingSlot(RectTransform parent, int index, float x, float y, float size)
         {
-            var sv = BuildSlot(parent, index, x, y, size, isHotbar: false, centered: true, container: SlotContainer.Shipping);
+            var sv = BuildSlot(parent, index, x, y, size, centered: true, container: SlotContainer.Shipping);
             _shippingViews.Add(sv);
             return sv;
         }
@@ -479,10 +295,10 @@ namespace FarmMVP
                            || IsShopOpen || IsCraftingOpen;
         }
 
-        /// <summary>BookUI가 인벤토리 페이지의 칸을 만들 때 호출한다 (드래그&amp;드롭 및 갱신 대상에 등록).</summary>
+        /// <summary>배송함 아래쪽 "내 가방" 칸을 만들 때 호출한다 (드래그&amp;드롭 및 갱신 대상에 등록).</summary>
         public SlotView CreateInventorySlot(RectTransform parent, int index, float x, float y, float size)
         {
-            var sv = BuildSlot(parent, index, x, y, size, isHotbar: false, centered: true);
+            var sv = BuildSlot(parent, index, x, y, size, centered: true);
             _invViews.Add(sv);
             return sv;
         }
@@ -591,7 +407,7 @@ namespace FarmMVP
 
         // ---------- slot construction ----------
         private SlotView BuildSlot(RectTransform parent, int index, float x, float y, float size,
-            bool isHotbar, bool centered = false, SlotContainer container = SlotContainer.Player)
+            bool centered = false, SlotContainer container = SlotContainer.Player)
         {
             var go = new GameObject($"Slot_{container}_{index}");
             var rt = go.AddComponent<RectTransform>();
@@ -646,7 +462,6 @@ namespace FarmMVP
             var view = new SlotView
             {
                 index = index,
-                isHotbar = isHotbar,
                 container = container,
                 frame = frame,
                 icon = icon,
@@ -663,16 +478,6 @@ namespace FarmMVP
         // ---------- refresh ----------
         private void RefreshTime()
         {
-            int day = _game.Data.currentDay;
-            // 요일과 날씨도 함께 — NPC 일과가 이 둘을 보고 갈라지므로 화면에서 바로 확인할 수 있어야 한다.
-            _dateText.text = $"{Seasons.Name(Seasons.Of(day))} {Seasons.DayOfSeason(day)}일 " +
-                             $"({Seasons.WeekdayName(day)}) {WeatherSystem.Name(_game.Today)}";
-            _timeText.text = _game.TimeString();
-            _dayNightIcon.sprite = _game.IsDaytime ? AssetLibrary.UiIconSun : AssetLibrary.UiIconMoon;
-
-            _hpBar.value = Mathf.Clamp01((float)_game.Data.farmer.hp / _game.Data.farmer.maxHp);
-            _mpBar.value = Mathf.Clamp01((float)_game.Data.farmer.mp / _game.Data.farmer.maxMp);
-
             _book?.RefreshStatus();
         }
 
@@ -684,49 +489,20 @@ namespace FarmMVP
 
         private void RefreshMoney()
         {
-            _moneyText.text = _game.Money.ToString("N0");
             _book?.RefreshStatus();
         }
 
         public void RefreshSlots()
         {
-            // 같은 인벤토리를 여러 화면(퀵바 / 책 / 배송함)에서 동시에 보여주므로,
+            // 같은 인벤토리를 여러 화면(배송함 / 퀵 인벤토리)에서 동시에 보여주므로,
             // 리스트 순번이 아니라 각 칸이 가리키는 실제 슬롯 번호를 기준으로 갱신한다.
             int equipped = _game.Data.farmer.equippedHotbarIndex;
             int unlocked = _game.UnlockedSlots;
-            int page = _game.HotbarPage;
-
-            // 퀵바는 지금 보고 있는 배낭 페이지의 10칸을 비춘다.
-            for (int i = 0; i < _hotbarViews.Count; i++)
-            {
-                var v = _hotbarViews[i];
-                v.index = page * Inventory.HotbarSize + i;
-                UpdateSlotView(v, _game.Inventory.GetSlot(v.index), v.index == equipped, v.index >= unlocked);
-            }
-
             foreach (var v in _invViews)
                 UpdateSlotView(v, _game.Inventory.GetSlot(v.index), v.index == equipped, v.index >= unlocked);
 
             foreach (var v in _shippingViews)
                 UpdateSlotView(v, _game.ShippingBox.GetSlot(v.index), false);
-
-            RefreshHotbarPageLabel();
-        }
-
-        private void RefreshHotbarPageLabel()
-        {
-            if (_hotbarPageLabel == null) return;
-            bool multiplePages = _game.HotbarPageCount > 1;
-            _hotbarPageLabel.enabled = multiplePages;
-            if (multiplePages)
-                _hotbarPageLabel.text = $"가방 {_game.HotbarPage + 1}/{_game.HotbarPageCount}  (TAB)";
-        }
-
-        /// <summary>우측 하단에 현재 선택된 마법 이름과 MP 소모량을 표시.</summary>
-        private void RefreshMagic()
-        {
-            var def = MagicSystem.Get(_game.CurrentMagic);
-            _toolLabel.text = $"{def.displayName}\nMP {def.mpCost}";
         }
 
         private void UpdateSlotView(SlotView v, ItemStack stack, bool selected, bool locked = false)
@@ -792,13 +568,6 @@ namespace FarmMVP
 
         private Inventory InventoryOf(SlotContainer container)
             => container == SlotContainer.Shipping ? _game.ShippingBox : _game.Inventory;
-
-        public void OnHotbarClicked(int index)
-        {
-            if (IsStoryRunning) return;
-            _game.SelectHotbar(index);
-            RefreshSlots();
-        }
 
         // ---------- banners ----------
         public void ShowDayBanner(int day)
@@ -891,7 +660,6 @@ namespace FarmMVP
     public class SlotView
     {
         public int index;
-        public bool isHotbar;
         public SlotContainer container;
         public Image frame;
         public Image icon;

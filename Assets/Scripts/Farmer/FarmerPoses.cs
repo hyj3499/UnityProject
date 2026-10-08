@@ -51,9 +51,9 @@ namespace FarmMVP
     /// 쓰고 남는 칸은 비어 있다). 줄 차례는 <see cref="Sheet"/> × <see cref="FarmerFacing"/>다.
     ///
     ///    줄  태그             칸
-    ///     0  Idle_Down         4      3  Walk_Down     4      6  Run_Down       6
-    ///     1  Idle_Side         4      4  Walk_Side     4      7  Run_Side       6
-    ///     2  Idle_Up           4      5  Walk_Up       4      8  Run_Up         6
+    ///     0  Idle_Down         1      3  Walk_Down     4      6  Run_Down       6
+    ///     1  Idle_Side         1      4  Walk_Side     4      7  Run_Side       6
+    ///     2  Idle_Up           1      5  Walk_Up       4      8  Run_Up         6
     ///     9  Interact_Down     4     12  Jump_Down     5
     ///    10  Interact_Side     4     13  Jump_Side     5
     ///    11  Interact_Up       4     14  Jump_Up       5
@@ -90,7 +90,7 @@ namespace FarmMVP
         private enum Sheet { Idle, Walk, Run, Interact, Jump }
 
         /// <summary>줄마다 그려져 있는 칸 수. 방향이 달라도 같다.</summary>
-        private static readonly int[] Frames = { 4, 4, 6, 4, 5 };
+        private static readonly int[] Frames = { 1, 4, 6, 4, 5 };
 
         /// <summary>한 칸을 얼마 동안 보여 줄지. 빠르게·느리게 하려면 이 숫자만 고치면 된다.</summary>
         private static readonly int[] Millis = { 200, 140, 90, 90, 100 };
@@ -197,6 +197,7 @@ namespace FarmMVP
                 case MagicType.Blade: return FarmerAnim.Melee;
                 case MagicType.Wind: return FarmerAnim.Melee;   // 휘둘러 베는 동작
                 case MagicType.Water: return FarmerAnim.Watering;
+                case MagicType.Fishing: return FarmerAnim.FishCast;
                 default: return FarmerAnim.Tool;
             }
         }

@@ -3,37 +3,37 @@ guid: f78f7537ca6b7dd41c25330622907463
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1276713346
-    second: tree1_spring_stage0
+      213: -375870218836772804
+    second: tree1_spring_0
   - first:
-      213: -1048153548
-    second: tree1_spring_stage1
+      213: 5890336397224233438
+    second: tree1_spring_1
   - first:
-      213: 2118077507
-    second: tree1_spring_stage2
+      213: 8313784181956444268
+    second: tree1_spring_2
   - first:
-      213: -1159945535
-    second: tree1_spring_stump
+      213: 415440895487222690
+    second: tree1_spring_3
   - first:
-      213: -1863566582
-    second: tree1_spring_top
+      213: 4796822358439847423
+    second: tree1_spring_4
   - first:
-      213: 811305133
-    second: tree1_spring_leaf0
+      213: -5585430610426301574
+    second: tree1_spring_5
   - first:
-      213: -1278972109
-    second: tree1_spring_leaf1
+      213: -1849248761914161138
+    second: tree1_spring_6
   - first:
-      213: -2124975288
-    second: tree1_spring_leaf2
+      213: -216515494620016719
+    second: tree1_spring_7
   - first:
-      213: 1029394092
-    second: tree1_spring_leaf3
+      213: 2701428504685341740
+    second: tree1_spring_8
   - first:
-      213: 1602646329
-    second: tree1_spring_full
+      213: -4436685121399905887
+    second: tree1_spring_9
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -50,11 +50,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -74,12 +75,12 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 0
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -93,269 +94,287 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 0
   platformSettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
+  - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tree1_spring_stage0
+      name: tree1_spring_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 64
         y: 0
-        width: 48
-        height: 96
+        width: 16
+        height: 22
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 60b31cbc247210ffd16268e3b53df520
-      internalID: -1276713346
+      spriteID: c38f5940704a8caf0800000000000000
+      internalID: -375870218836772804
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree1_spring_stage1
+      name: tree1_spring_2
       rect:
         serializedVersion: 2
-        x: 48
+        x: 97
         y: 0
-        width: 48
-        height: 96
+        width: 47
+        height: 75
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: d33dd3ac2963aee78caa3d070b661fbb
-      internalID: -1048153548
+      spriteID: ed9ca14bebdaeb150800000000000000
+      internalID: 5890336397224233438
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree1_spring_stage2
+      name: tree1_spring_7
       rect:
         serializedVersion: 2
-        x: 96
+        x: 196
         y: 0
-        width: 48
-        height: 96
+        width: 41
+        height: 28
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 755ad773de4c21efadb5cac3968546ae
-      internalID: 2118077507
+      spriteID: c6086c84aae706370800000000000000
+      internalID: 8313784181956444268
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree1_spring_stump
+      name: tree1_spring_8
       rect:
         serializedVersion: 2
-        x: 192
-        y: 0
-        width: 48
-        height: 96
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 260
+        y: 16
+        width: 72
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: -0.18}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 6281f00a4c4893d2b3908a8e8745560b
-      internalID: -1159945535
+      spriteID: 2a3afa81b41f3c500800000000000000
+      internalID: 415440895487222690
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree1_spring_top
+      name: tree1_spring_9
       rect:
         serializedVersion: 2
-        x: 240
-        y: 0
-        width: 48
-        height: 96
+        x: 356
+        y: 1
+        width: 72
+        height: 98
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 4750f23452f37e79f248ae2b94681dad
-      internalID: -1863566582
+      spriteID: ff56575358cb19240800000000000000
+      internalID: 4796822358439847423
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree1_spring_leaf0
+      name: tree1_spring_0
       rect:
         serializedVersion: 2
-        x: 160
-        y: 8
-        width: 8
-        height: 8
+        x: 19
+        y: 0
+        width: 9
+        height: 12
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7372f3e3709c72b0800000000000000
+      internalID: -5585430610426301574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tree1_spring_3
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 9
+        width: 5
+        height: 6
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: a3b0af36831843a25e28a0337b728be2
-      internalID: 811305133
+      spriteID: e0886cc7c062656e0800000000000000
+      internalID: -1849248761914161138
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree1_spring_leaf1
+      name: tree1_spring_4
       rect:
         serializedVersion: 2
-        x: 168
-        y: 8
-        width: 8
-        height: 8
+        x: 169
+        y: 9
+        width: 5
+        height: 6
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: df825a8e898949625ee08ffd88de498b
-      internalID: -1278972109
+      spriteID: 1bf4ec60e48cefcf0800000000000000
+      internalID: -216515494620016719
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree1_spring_leaf2
+      name: tree1_spring_5
       rect:
         serializedVersion: 2
-        x: 160
-        y: 0
-        width: 8
-        height: 8
+        x: 161
+        y: 2
+        width: 6
+        height: 5
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 42bbbd23a489ec510cde770bce739109
-      internalID: -2124975288
+      spriteID: c2c62e789e66d7520800000000000000
+      internalID: 2701428504685341740
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree1_spring_leaf3
+      name: tree1_spring_6
       rect:
         serializedVersion: 2
-        x: 168
-        y: 0
-        width: 8
-        height: 8
+        x: 169
+        y: 2
+        width: 6
+        height: 5
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ed8a1adce9400bc28e07dd5da2d0fe73
-      internalID: 1029394092
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tree1_spring_full
-      rect:
-        serializedVersion: 2
-        x: 288
-        y: 0
-        width: 48
-        height: 96
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4eae6ca352baf6a78d57ebd36f576aaa
-      internalID: 1602646329
+      spriteID: 1a1a2be736abd62c0800000000000000
+      internalID: -4436685121399905887
       vertices: []
       indices: 
       edges: []
       weights: []
     outline: []
+    customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b71e0e3bc89e0ee4aa0e9ca51a19836c
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":1,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      tree1_spring_full: 1602646329
-      tree1_spring_leaf0: 811305133
-      tree1_spring_leaf1: -1278972109
-      tree1_spring_leaf2: -2124975288
-      tree1_spring_leaf3: 1029394092
-      tree1_spring_stage0: -1276713346
-      tree1_spring_stage1: -1048153548
-      tree1_spring_stage2: 2118077507
-      tree1_spring_stump: -1159945535
-      tree1_spring_top: -1863566582
-  spritePackingTag: 
+      3: -1849248761914161138
+      tree1_spring_0: -5585430610426301574
+      tree1_spring_1: -375870218836772804
+      tree1_spring_2: 5890336397224233438
+      tree1_spring_3: -1849248761914161138
+      tree1_spring_4: -216515494620016719
+      tree1_spring_5: 2701428504685341740
+      tree1_spring_6: -4436685121399905887
+      tree1_spring_7: 8313784181956444268
+      tree1_spring_8: 415440895487222690
+      tree1_spring_9: 4796822358439847423
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

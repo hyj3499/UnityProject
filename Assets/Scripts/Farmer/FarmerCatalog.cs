@@ -59,6 +59,8 @@ namespace FarmMVP
 
         private static readonly Entry[] Raw =
         {
+            new Entry(FarmerCategory.Eyes, FarmerEyes.FirstStyle, "눈 1 (하이라이트)", "eyes"),
+            new Entry(FarmerCategory.Eyes, FarmerEyes.SecondStyle, "눈 2 (단색)", "eyes"),
             new Entry(FarmerCategory.Hair, "Hair/Parm_long", "long hair", "hairs"),
             new Entry(FarmerCategory.Pants, "Pants/short", "short pants", "pants"),
             new Entry(FarmerCategory.Top, "Shirts/ribon", "ribon shirt", "shirts", sleeve: "overshirts"),

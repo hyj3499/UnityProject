@@ -1,0 +1,4407 @@
+fileFormatVersion: 2
+guid: 41da5fa8c5c529742af489bb22db4fa8
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3325323030282702524
+    second: Keys and mouse_0
+  - first:
+      213: 2398517711699798848
+    second: Keys and mouse_1
+  - first:
+      213: -5013298819641788130
+    second: Keys and mouse_2
+  - first:
+      213: -7528183618450399915
+    second: Keys and mouse_3
+  - first:
+      213: -6345236024218287675
+    second: Keys and mouse_4
+  - first:
+      213: -1712520715993249932
+    second: Keys and mouse_5
+  - first:
+      213: 8804419990724653116
+    second: Keys and mouse_6
+  - first:
+      213: 4782508586755843557
+    second: Keys and mouse_7
+  - first:
+      213: -6642978427740136528
+    second: Keys and mouse_8
+  - first:
+      213: -2399952071268806445
+    second: Keys and mouse_9
+  - first:
+      213: -4994782840177700927
+    second: Keys and mouse_10
+  - first:
+      213: -4464247010156078917
+    second: Keys and mouse_11
+  - first:
+      213: -3640985263781434939
+    second: Keys and mouse_12
+  - first:
+      213: -6861125828450418652
+    second: Keys and mouse_13
+  - first:
+      213: -2884755539005636569
+    second: Keys and mouse_14
+  - first:
+      213: -2467252769457715451
+    second: Keys and mouse_15
+  - first:
+      213: 9208972392216370797
+    second: Keys and mouse_16
+  - first:
+      213: -1854567720943802697
+    second: Keys and mouse_17
+  - first:
+      213: 3719036525817844030
+    second: Keys and mouse_18
+  - first:
+      213: -8673019792613135047
+    second: Keys and mouse_19
+  - first:
+      213: 7640817101163037115
+    second: Keys and mouse_20
+  - first:
+      213: -3601741341352677925
+    second: Keys and mouse_21
+  - first:
+      213: 4305846280637147884
+    second: Keys and mouse_22
+  - first:
+      213: 5262344676046447144
+    second: Keys and mouse_23
+  - first:
+      213: 7488021864532786620
+    second: Keys and mouse_24
+  - first:
+      213: -2661604206682739575
+    second: Keys and mouse_25
+  - first:
+      213: 7779969082152776746
+    second: Keys and mouse_26
+  - first:
+      213: -4048070532957755879
+    second: Keys and mouse_27
+  - first:
+      213: 8240131879047984768
+    second: Keys and mouse_28
+  - first:
+      213: -6064073816123371447
+    second: Keys and mouse_29
+  - first:
+      213: -940667338013028936
+    second: Keys and mouse_30
+  - first:
+      213: 2900537505896544036
+    second: Keys and mouse_31
+  - first:
+      213: -529282761932196267
+    second: Keys and mouse_32
+  - first:
+      213: -6475517400366828547
+    second: Keys and mouse_33
+  - first:
+      213: 6583596829611276315
+    second: Keys and mouse_34
+  - first:
+      213: 1612150954045892246
+    second: Keys and mouse_35
+  - first:
+      213: 1526363804614501928
+    second: Keys and mouse_36
+  - first:
+      213: -8880734825103761139
+    second: Keys and mouse_37
+  - first:
+      213: -3540932760755040308
+    second: Keys and mouse_38
+  - first:
+      213: -4854650000736931570
+    second: Keys and mouse_39
+  - first:
+      213: -4967003565005861832
+    second: Keys and mouse_40
+  - first:
+      213: 5137511981483561957
+    second: Keys and mouse_41
+  - first:
+      213: -7550406283802295414
+    second: Keys and mouse_42
+  - first:
+      213: 8011788875966052385
+    second: Keys and mouse_43
+  - first:
+      213: 361972422346267116
+    second: Keys and mouse_44
+  - first:
+      213: -6638780785793547092
+    second: Keys and mouse_45
+  - first:
+      213: -311464576454887431
+    second: Keys and mouse_46
+  - first:
+      213: -2002654787821402784
+    second: Keys and mouse_47
+  - first:
+      213: -4826047214691103432
+    second: Keys and mouse_48
+  - first:
+      213: -6527712680372837771
+    second: Keys and mouse_49
+  - first:
+      213: -5636793188231959709
+    second: Keys and mouse_50
+  - first:
+      213: -1715250650253524377
+    second: Keys and mouse_51
+  - first:
+      213: -3236335565172490852
+    second: Keys and mouse_52
+  - first:
+      213: 7888435916532159489
+    second: Keys and mouse_53
+  - first:
+      213: -3260290980811871808
+    second: Keys and mouse_54
+  - first:
+      213: 2293923049389642256
+    second: Keys and mouse_55
+  - first:
+      213: 1755289864504437443
+    second: Keys and mouse_56
+  - first:
+      213: 5636691049803368438
+    second: Keys and mouse_57
+  - first:
+      213: -2972111926352206366
+    second: Keys and mouse_58
+  - first:
+      213: -8565036074738333237
+    second: Keys and mouse_59
+  - first:
+      213: 8294114890525481879
+    second: Keys and mouse_60
+  - first:
+      213: 905973286796871237
+    second: Keys and mouse_61
+  - first:
+      213: 7877575126073704301
+    second: Keys and mouse_62
+  - first:
+      213: -2835964568470885384
+    second: Keys and mouse_63
+  - first:
+      213: 4669473413307720743
+    second: Keys and mouse_64
+  - first:
+      213: -3772839891883768615
+    second: Keys and mouse_65
+  - first:
+      213: -7280788398574855089
+    second: Keys and mouse_66
+  - first:
+      213: -5408542419884181988
+    second: Keys and mouse_67
+  - first:
+      213: -955508740021968269
+    second: Keys and mouse_68
+  - first:
+      213: -1402218526210769455
+    second: Keys and mouse_69
+  - first:
+      213: -2418349101953580431
+    second: Keys and mouse_70
+  - first:
+      213: -8880534594567860834
+    second: Keys and mouse_71
+  - first:
+      213: 786155623710110961
+    second: Keys and mouse_72
+  - first:
+      213: 3359381764542949217
+    second: Keys and mouse_73
+  - first:
+      213: 8102879161467933986
+    second: Keys and mouse_74
+  - first:
+      213: -2058882371597865117
+    second: Keys and mouse_75
+  - first:
+      213: 3391309244915316195
+    second: Keys and mouse_76
+  - first:
+      213: 5530003548746539441
+    second: Keys and mouse_77
+  - first:
+      213: 4027222446704604214
+    second: Keys and mouse_78
+  - first:
+      213: 7427286809549700322
+    second: Keys and mouse_79
+  - first:
+      213: 6950991657808425993
+    second: Keys and mouse_80
+  - first:
+      213: 704986608526151659
+    second: Keys and mouse_81
+  - first:
+      213: -6531231591302523086
+    second: Keys and mouse_82
+  - first:
+      213: -8006767959680157347
+    second: Keys and mouse_83
+  - first:
+      213: 4263718973737869404
+    second: Keys and mouse_84
+  - first:
+      213: -3363494408979989802
+    second: Keys and mouse_85
+  - first:
+      213: 4212636180809097295
+    second: Keys and mouse_86
+  - first:
+      213: -5463525194527751368
+    second: Keys and mouse_87
+  - first:
+      213: -5684192999288478662
+    second: Keys and mouse_88
+  - first:
+      213: -2759639695343139078
+    second: Keys and mouse_89
+  - first:
+      213: -133129537089922845
+    second: Keys and mouse_90
+  - first:
+      213: -2305622615262095292
+    second: Keys and mouse_91
+  - first:
+      213: 6335898479525905160
+    second: Keys and mouse_92
+  - first:
+      213: 7294600978664348547
+    second: Keys and mouse_93
+  - first:
+      213: 4052419053367280049
+    second: Keys and mouse_94
+  - first:
+      213: -2971385637086083297
+    second: Keys and mouse_95
+  - first:
+      213: -2400995375106835364
+    second: Keys and mouse_96
+  - first:
+      213: 6196428194866433915
+    second: Keys and mouse_97
+  - first:
+      213: 3952127654759940298
+    second: Keys and mouse_98
+  - first:
+      213: 499784415162052653
+    second: Keys and mouse_99
+  - first:
+      213: 4837955055112489142
+    second: Keys and mouse_100
+  - first:
+      213: 7568096820482581430
+    second: Keys and mouse_101
+  - first:
+      213: 2264330619554890674
+    second: Keys and mouse_102
+  - first:
+      213: -5651795634488829818
+    second: Keys and mouse_103
+  - first:
+      213: -1056931440475743056
+    second: Keys and mouse_104
+  - first:
+      213: -9169381098181020534
+    second: Keys and mouse_105
+  - first:
+      213: 7973473117793979275
+    second: Keys and mouse_106
+  - first:
+      213: 6490403002024734386
+    second: Keys and mouse_107
+  - first:
+      213: 118208083309564012
+    second: Keys and mouse_108
+  - first:
+      213: -5815622788719473146
+    second: Keys and mouse_109
+  - first:
+      213: -5030759564120773184
+    second: Keys and mouse_110
+  - first:
+      213: 5756239431614941978
+    second: Keys and mouse_111
+  - first:
+      213: -6595992034726141741
+    second: Keys and mouse_112
+  - first:
+      213: -4293817606058772594
+    second: Keys and mouse_113
+  - first:
+      213: -1928385534347269084
+    second: Keys and mouse_114
+  - first:
+      213: -8534171735343310245
+    second: Keys and mouse_115
+  - first:
+      213: -5993966912282382528
+    second: Keys and mouse_116
+  - first:
+      213: -7579177723899969821
+    second: Keys and mouse_117
+  - first:
+      213: -4731911583701698587
+    second: Keys and mouse_118
+  - first:
+      213: 7637684088024785339
+    second: Keys and mouse_119
+  - first:
+      213: -6595742511175124083
+    second: Keys and mouse_120
+  - first:
+      213: 5674606755257482923
+    second: Keys and mouse_121
+  - first:
+      213: -1637712340802268287
+    second: Keys and mouse_122
+  - first:
+      213: 4882100534799900928
+    second: Keys and mouse_123
+  - first:
+      213: -279673836131746101
+    second: Keys and mouse_124
+  - first:
+      213: 3093969844879713031
+    second: Keys and mouse_125
+  - first:
+      213: 2230636665133135742
+    second: Keys and mouse_126
+  - first:
+      213: -7502435544307922511
+    second: Keys and mouse_127
+  - first:
+      213: 6296260032296398525
+    second: Keys and mouse_128
+  - first:
+      213: 797613840983159990
+    second: Keys and mouse_129
+  - first:
+      213: -4265636138133058969
+    second: Keys and mouse_130
+  - first:
+      213: -926378497638599398
+    second: Keys and mouse_131
+  - first:
+      213: 7662064123655440212
+    second: Keys and mouse_132
+  - first:
+      213: -6095230844444360136
+    second: Keys and mouse_133
+  - first:
+      213: -3750883269478886013
+    second: Keys and mouse_134
+  - first:
+      213: -5764128907623052137
+    second: Keys and mouse_135
+  - first:
+      213: 1232625396187348755
+    second: Keys and mouse_136
+  - first:
+      213: -4934951784113066896
+    second: Keys and mouse_137
+  - first:
+      213: 1243600491562220761
+    second: Keys and mouse_138
+  - first:
+      213: 2563508498919973852
+    second: Keys and mouse_139
+  - first:
+      213: -6129689182633686336
+    second: Keys and mouse_140
+  - first:
+      213: -7123088893213232062
+    second: Keys and mouse_141
+  - first:
+      213: 797059381576039097
+    second: Keys and mouse_142
+  - first:
+      213: -6360596754468740193
+    second: Keys and mouse_143
+  - first:
+      213: -1820837647124832820
+    second: Keys and mouse_144
+  - first:
+      213: 1794807944918403352
+    second: Keys and mouse_145
+  - first:
+      213: 2085383615413428914
+    second: Keys and mouse_146
+  - first:
+      213: -8184629443478126788
+    second: Keys and mouse_147
+  - first:
+      213: 8019381205915536155
+    second: Keys and mouse_148
+  - first:
+      213: 7010161471965884400
+    second: Keys and mouse_149
+  - first:
+      213: -493474118613191140
+    second: Keys and mouse_150
+  - first:
+      213: -5581155128239894265
+    second: Keys and mouse_151
+  - first:
+      213: 2530686997296461306
+    second: Keys and mouse_152
+  - first:
+      213: -4072144572136885905
+    second: Keys and mouse_153
+  - first:
+      213: -1127386347658554852
+    second: Keys and mouse_154
+  - first:
+      213: 7958333833509915840
+    second: Keys and mouse_155
+  - first:
+      213: -1111183058150915777
+    second: Keys and mouse_156
+  - first:
+      213: -4615343045463984847
+    second: Keys and mouse_157
+  - first:
+      213: -3542999628098249923
+    second: Keys and mouse_158
+  - first:
+      213: -3425461915672768099
+    second: Keys and mouse_159
+  - first:
+      213: -4268091368044122408
+    second: Keys and mouse_160
+  - first:
+      213: -412895291017377568
+    second: Keys and mouse_161
+  - first:
+      213: -2183787643247883491
+    second: Keys and mouse_162
+  - first:
+      213: 4205833528423341225
+    second: Keys and mouse_163
+  - first:
+      213: -3012520173093590347
+    second: Keys and mouse_164
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Keys and mouse_0
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 208
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 441f29082541ad1d0800000000000000
+      internalID: -3325323030282702524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 225
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04b6951a62f394120800000000000000
+      internalID: 2398517711699798848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 223
+        width: 16
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e19bd5ef84f2d6ab0800000000000000
+      internalID: -5013298819641788130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 225
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55d595292e4868790800000000000000
+      internalID: -7528183618450399915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_4
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 224
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c10578547131f7a0800000000000000
+      internalID: -6345236024218287675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_5
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47789bc6b77eb38e0800000000000000
+      internalID: -1712520715993249932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_6
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c30bd7075559f2a70800000000000000
+      internalID: 8804419990724653116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_7
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e566d88832ee5240800000000000000
+      internalID: 4782508586755843557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_8
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bb57f3e0566fc3a0800000000000000
+      internalID: -6642978427740136528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_9
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d05f028e48a1bed0800000000000000
+      internalID: -2399952071268806445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_10
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cfcdf86877feaab0800000000000000
+      internalID: -4994782840177700927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_11
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb81c023ffecb02c0800000000000000
+      internalID: -4464247010156078917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_12
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c920ef713f987dc0800000000000000
+      internalID: -3640985263781434939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_13
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42084fb296268c0a0800000000000000
+      internalID: -6861125828450418652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_14
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7208ab11f1a47f7d0800000000000000
+      internalID: -2884755539005636569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_15
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 507cf51adae82cdd0800000000000000
+      internalID: -2467252769457715451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_16
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6e9f687997dccf70800000000000000
+      internalID: 9208972392216370797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_17
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 224
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b62d35db704346e0800000000000000
+      internalID: -1854567720943802697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_18
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 224
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e315314140cac9330800000000000000
+      internalID: 3719036525817844030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_19
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 224
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93dac53437e33a780800000000000000
+      internalID: -8673019792613135047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_20
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 224
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb18d84bba2a90a60800000000000000
+      internalID: 7640817101163037115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_21
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdda5d7355b040ec0800000000000000
+      internalID: -3601741341352677925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_22
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 208
+        width: 18
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cea60def06071cb30800000000000000
+      internalID: 4305846280637147884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_23
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 822aa6d0a9a970940800000000000000
+      internalID: 5262344676046447144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_24
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbdb5d9663ccae760800000000000000
+      internalID: 7488021864532786620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_25
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98c6df76315101bd0800000000000000
+      internalID: -2661604206682739575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_26
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a24fc3109a008fb60800000000000000
+      internalID: 7779969082152776746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_27
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 916a3514c4d52d7c0800000000000000
+      internalID: -4048070532957755879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_28
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 086f6013944da5270800000000000000
+      internalID: 8240131879047984768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_29
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 940183a3ef418dba0800000000000000
+      internalID: -6064073816123371447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_30
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bdcbe93a0412f2f0800000000000000
+      internalID: -940667338013028936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_31
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42739a07e77c04820800000000000000
+      internalID: 2900537505896544036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_32
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5563b4dd12c97a8f0800000000000000
+      internalID: -529282761932196267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_33
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df3364eab375226a0800000000000000
+      internalID: -6475517400366828547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_34
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 208
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b183e556f62ad5b50800000000000000
+      internalID: 6583596829611276315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_35
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 208
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 696663c40c28f5610800000000000000
+      internalID: 1612150954045892246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_36
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 208
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 826af041bcbbe2510800000000000000
+      internalID: 1526363804614501928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_37
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 208
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d01ef3d8aba41c480800000000000000
+      internalID: -8880734825103761139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_38
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 208
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccf07ad2a641cdec0800000000000000
+      internalID: -3540932760755040308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_39
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e01b93d9b81d0acb0800000000000000
+      internalID: -4854650000736931570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_40
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83c0abde298a11bb0800000000000000
+      internalID: -4967003565005861832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_41
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e314ad6deb1c4740800000000000000
+      internalID: 5137511981483561957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_42
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8346181d71973790800000000000000
+      internalID: -7550406283802295414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_43
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 128f16fc8879f2f60800000000000000
+      internalID: 8011788875966052385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_44
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce9df64100cf50500800000000000000
+      internalID: 361972422346267116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_45
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca446119c005ed3a0800000000000000
+      internalID: -6638780785793547092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_46
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f7f9403e947dabf0800000000000000
+      internalID: -311464576454887431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_47
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0658b2cb4142534e0800000000000000
+      internalID: -2002654787821402784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_48
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83dc213b0af660db0800000000000000
+      internalID: -4826047214691103432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_49
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 572609a07e7e865a0800000000000000
+      internalID: -6527712680372837771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_50
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36ba717d57616c1b0800000000000000
+      internalID: -5636793188231959709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_51
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76281e21f943238e0800000000000000
+      internalID: -1715250650253524377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_52
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9d3ee743f93613d0800000000000000
+      internalID: -3236335565172490852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_53
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 104155edbaa597d60800000000000000
+      internalID: 7888435916532159489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_54
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c96c4070ae11c2d0800000000000000
+      internalID: -3260290980811871808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_55
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01253f41cd6a5df10800000000000000
+      internalID: 2293923049389642256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_56
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 176
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ca61a3f4da0c5810800000000000000
+      internalID: 1755289864504437443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_57
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 160
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f7472435ac893e40800000000000000
+      internalID: 5636691049803368438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_58
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 160
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e5231d23ffe0c6d0800000000000000
+      internalID: -2972111926352206366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_59
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 160
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc9c0dcc111e22980800000000000000
+      internalID: -8565036074738333237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_60
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 160
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79b9c008c8d9a1370800000000000000
+      internalID: 8294114890525481879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_61
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 160
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 546458f77e9a29c00800000000000000
+      internalID: 905973286796871237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_62
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 160
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6f731907d4c25d60800000000000000
+      internalID: 7877575126073704301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_63
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fbe2b42041a4a8d0800000000000000
+      internalID: -2835964568470885384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_64
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7246658545d4dc040800000000000000
+      internalID: 4669473413307720743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_65
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d448d19b1e24abc0800000000000000
+      internalID: -3772839891883768615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_66
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4c192ad68175fa90800000000000000
+      internalID: -7280788398574855089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_67
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c16fb26235ff0f4b0800000000000000
+      internalID: -5408542419884181988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_68
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 372a53b0dd95db2f0800000000000000
+      internalID: -955508740021968269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_69
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dd3cbffda15a8ce0800000000000000
+      internalID: -1402218526210769455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_70
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1720c230e4c407ed0800000000000000
+      internalID: -2418349101953580431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_71
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9d073b56d002c480800000000000000
+      internalID: -8880534594567860834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_72
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f4ba61ef5cf8ea00800000000000000
+      internalID: 786155623710110961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_73
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 167e1848aebee9e20800000000000000
+      internalID: 3359381764542949217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_74
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 225163d9aa5337070800000000000000
+      internalID: 8102879161467933986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_75
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36f689634616d63e0800000000000000
+      internalID: -2058882371597865117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_76
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 160
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e5fca25ac9501f20800000000000000
+      internalID: 3391309244915316195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_77
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 144
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b1efa9ade48ebc40800000000000000
+      internalID: 5530003548746539441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_78
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 144
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 634be476a7193e730800000000000000
+      internalID: 4027222446704604214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_79
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 144
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ec77287006031760800000000000000
+      internalID: 7427286809549700322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_80
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 144
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 904ff58b512e67060800000000000000
+      internalID: 6950991657808425993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_81
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 128
+        width: 48
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: befcb94d59d98c900800000000000000
+      internalID: 704986608526151659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_82
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 128
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2379a9eb8776c55a0800000000000000
+      internalID: -6531231591302523086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_83
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 128
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d59f84c56fe32e090800000000000000
+      internalID: -8006767959680157347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_84
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 128
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c502db301d5cb2b30800000000000000
+      internalID: 4263718973737869404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_85
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 128
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6da3cb4d7a77251d0800000000000000
+      internalID: -3363494408979989802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_86
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 128
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f40a515794a467a30800000000000000
+      internalID: 4212636180809097295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_87
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 833c6c658c8ad24b0800000000000000
+      internalID: -5463525194527751368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_88
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 128
+        width: 30
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a34e5a25590bd11b0800000000000000
+      internalID: -5684192999288478662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_89
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af6410b715ac3b9d0800000000000000
+      internalID: -2759639695343139078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_90
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e894a03467072ef0800000000000000
+      internalID: -133129537089922845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_91
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44812377278c000e0800000000000000
+      internalID: -2305622615262095292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_92
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 803441d1912ade750800000000000000
+      internalID: 6335898479525905160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_93
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38b518f01f0ab3560800000000000000
+      internalID: 7294600978664348547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_94
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b14bfc88a51d3830800000000000000
+      internalID: 4052419053367280049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_95
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1749c2918483c6d0800000000000000
+      internalID: -2971385637086083297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_96
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5cb6676d63fdaed0800000000000000
+      internalID: -2400995375106835364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_97
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7f8a37fc922ef550800000000000000
+      internalID: 6196428194866433915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_98
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 128
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac0c6f8a927c8d630800000000000000
+      internalID: 3952127654759940298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_99
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 112
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d20b20217479fe600800000000000000
+      internalID: 499784415162052653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_100
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 112
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b809437d7ed32340800000000000000
+      internalID: 4837955055112489142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_101
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 112
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b3a0a2f5f7470960800000000000000
+      internalID: 7568096820482581430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_102
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 112
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b30c9893b48c6f10800000000000000
+      internalID: 2264330619554890674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_103
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 112
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 688903f90d9c091b0800000000000000
+      internalID: -5651795634488829818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_104
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 112
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bc508a64760551f0800000000000000
+      internalID: -1056931440475743056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_105
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 112
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a843db00970dfb080800000000000000
+      internalID: -9169381098181020534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_106
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 112
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8b8c3c2e8777ae60800000000000000
+      internalID: 7973473117793979275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_107
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 112
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2be20d8842b821a50800000000000000
+      internalID: 6490403002024734386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_108
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 112
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c601f3f10a5f3a100800000000000000
+      internalID: 118208083309564012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_109
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 112
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60e85bad2e1ca4fa0800000000000000
+      internalID: -5815622788719473146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_110
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 112
+        width: 48
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cdae2e94d62f2ab0800000000000000
+      internalID: -5030759564120773184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_111
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 96
+        width: 48
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1b4183e34542ef40800000000000000
+      internalID: 5756239431614941978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_112
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 96
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d0a7d401345674a0800000000000000
+      internalID: -6595992034726141741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_113
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 96
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e877c8c03ab4964c0800000000000000
+      internalID: -4293817606058772594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_114
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 96
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42caa33d29ffc35e0800000000000000
+      internalID: -1928385534347269084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_115
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 96
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5adeaec508809980800000000000000
+      internalID: -8534171735343310245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_116
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 96
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04fa6f5c9d621dca0800000000000000
+      internalID: -5993966912282382528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_117
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 96
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ee736d240a51d690800000000000000
+      internalID: -7579177723899969821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_118
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 96
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e777e04c7fd45eb0800000000000000
+      internalID: -4731911583701698587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_119
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 96
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb1ee5d36318ef960800000000000000
+      internalID: 7637684088024785339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_120
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 96
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8bb67fb1273774a0800000000000000
+      internalID: -6595742511175124083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_121
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 96
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bae772f47c040ce40800000000000000
+      internalID: 5674606755257482923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_122
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 96
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18315329d4da549e0800000000000000
+      internalID: -1637712340802268287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_123
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 79
+        width: 16
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0012e76e194b0c340800000000000000
+      internalID: 4882100534799900928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_124
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 80
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bce7568b0266e1cf0800000000000000
+      internalID: -279673836131746101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_125
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 80
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70363dd6e2dffea20800000000000000
+      internalID: 3093969844879713031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_126
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 80
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e77f8308a30d4fe10800000000000000
+      internalID: 2230636665133135742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_127
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 63
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b9034f3f9ef1e790800000000000000
+      internalID: -7502435544307922511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_128
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbe248ee32fc06750800000000000000
+      internalID: 6296260032296398525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_129
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b47cbbff81b11b00800000000000000
+      internalID: 797613840983159990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_130
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76a828d588a6dc4c0800000000000000
+      internalID: -4265636138133058969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_131
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a15f0b02aa7d423f0800000000000000
+      internalID: -926378497638599398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_132
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4574fb0a9be155a60800000000000000
+      internalID: 7662064123655440212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_133
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 832c3e447d3696ba0800000000000000
+      internalID: -6095230844444360136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_134
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38551c81a8f22fbc0800000000000000
+      internalID: -3750883269478886013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_135
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79c41955c43b100b0800000000000000
+      internalID: -5764128907623052137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_136
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31f3fd0644a2b1110800000000000000
+      internalID: 1232625396187348755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_137
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07ca244bf77838bb0800000000000000
+      internalID: -4934951784113066896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_138
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dc3116ee08224110800000000000000
+      internalID: 1243600491562220761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_139
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd3e1d0d569639320800000000000000
+      internalID: 2563508498919973852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_140
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 64
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ca80953a28feeaa0800000000000000
+      internalID: -6129689182633686336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_141
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 64
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 244be703464b52d90800000000000000
+      internalID: -7123088893213232062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_142
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 64
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ba7bb7d849bf0b00800000000000000
+      internalID: 797059381576039097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_143
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f936362a3fe9ab7a0800000000000000
+      internalID: -6360596754468740193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_144
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 48
+        width: 30
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccd5771aec51bb6e0800000000000000
+      internalID: -1820837647124832820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_145
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81909ec015078e810800000000000000
+      internalID: 1794807944918403352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_146
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b223217955c0fc10800000000000000
+      internalID: 2085383615413428914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_147
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3f784b92ea5a6e80800000000000000
+      internalID: -8184629443478126788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_148
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1b0a01e7b09a4f60800000000000000
+      internalID: 8019381205915536155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_149
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ffe7a2a7b8194160800000000000000
+      internalID: 7010161471965884400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_150
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c16363657e3d629f0800000000000000
+      internalID: -493474118613191140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_151
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70159e82bf0cb82b0800000000000000
+      internalID: -5581155128239894265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_152
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af53e877a6ece1320800000000000000
+      internalID: 2530686997296461306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_153
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 48
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f61feb73616dc77c0800000000000000
+      internalID: -4072144572136885905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_154
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 48
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c12df270718ba50f0800000000000000
+      internalID: -1127386347658554852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_155
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 48
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ccc45ed47ea17e60800000000000000
+      internalID: 7958333833509915840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_156
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 32
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f318b7a55e84490f0800000000000000
+      internalID: -1111183058150915777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_157
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 32
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 135bc8a04f103ffb0800000000000000
+      internalID: -4615343045463984847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_158
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 32
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3bdcdf1c9cb4dec0800000000000000
+      internalID: -3542999628098249923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_159
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 32
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9112bc59805670d0800000000000000
+      internalID: -3425461915672768099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_160
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 32
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dea1da9381b4c4c0800000000000000
+      internalID: -4268091368044122408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_161
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 32
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e84a71abe9154af0800000000000000
+      internalID: -412895291017377568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_162
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 32
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1b825b65b0a1b1e0800000000000000
+      internalID: -2183787643247883491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_163
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 32
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9acd9168f4f1e5a30800000000000000
+      internalID: 4205833528423341225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keys and mouse_164
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 32
+        width: 48
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5baee041dd06136d0800000000000000
+      internalID: -3012520173093590347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Keys and mouse_0: -3325323030282702524
+      Keys and mouse_1: 2398517711699798848
+      Keys and mouse_10: -4994782840177700927
+      Keys and mouse_100: 4837955055112489142
+      Keys and mouse_101: 7568096820482581430
+      Keys and mouse_102: 2264330619554890674
+      Keys and mouse_103: -5651795634488829818
+      Keys and mouse_104: -1056931440475743056
+      Keys and mouse_105: -9169381098181020534
+      Keys and mouse_106: 7973473117793979275
+      Keys and mouse_107: 6490403002024734386
+      Keys and mouse_108: 118208083309564012
+      Keys and mouse_109: -5815622788719473146
+      Keys and mouse_11: -4464247010156078917
+      Keys and mouse_110: -5030759564120773184
+      Keys and mouse_111: 5756239431614941978
+      Keys and mouse_112: -6595992034726141741
+      Keys and mouse_113: -4293817606058772594
+      Keys and mouse_114: -1928385534347269084
+      Keys and mouse_115: -8534171735343310245
+      Keys and mouse_116: -5993966912282382528
+      Keys and mouse_117: -7579177723899969821
+      Keys and mouse_118: -4731911583701698587
+      Keys and mouse_119: 7637684088024785339
+      Keys and mouse_12: -3640985263781434939
+      Keys and mouse_120: -6595742511175124083
+      Keys and mouse_121: 5674606755257482923
+      Keys and mouse_122: -1637712340802268287
+      Keys and mouse_123: 4882100534799900928
+      Keys and mouse_124: -279673836131746101
+      Keys and mouse_125: 3093969844879713031
+      Keys and mouse_126: 2230636665133135742
+      Keys and mouse_127: -7502435544307922511
+      Keys and mouse_128: 6296260032296398525
+      Keys and mouse_129: 797613840983159990
+      Keys and mouse_13: -6861125828450418652
+      Keys and mouse_130: -4265636138133058969
+      Keys and mouse_131: -926378497638599398
+      Keys and mouse_132: 7662064123655440212
+      Keys and mouse_133: -6095230844444360136
+      Keys and mouse_134: -3750883269478886013
+      Keys and mouse_135: -5764128907623052137
+      Keys and mouse_136: 1232625396187348755
+      Keys and mouse_137: -4934951784113066896
+      Keys and mouse_138: 1243600491562220761
+      Keys and mouse_139: 2563508498919973852
+      Keys and mouse_14: -2884755539005636569
+      Keys and mouse_140: -6129689182633686336
+      Keys and mouse_141: -7123088893213232062
+      Keys and mouse_142: 797059381576039097
+      Keys and mouse_143: -6360596754468740193
+      Keys and mouse_144: -1820837647124832820
+      Keys and mouse_145: 1794807944918403352
+      Keys and mouse_146: 2085383615413428914
+      Keys and mouse_147: -8184629443478126788
+      Keys and mouse_148: 8019381205915536155
+      Keys and mouse_149: 7010161471965884400
+      Keys and mouse_15: -2467252769457715451
+      Keys and mouse_150: -493474118613191140
+      Keys and mouse_151: -5581155128239894265
+      Keys and mouse_152: 2530686997296461306
+      Keys and mouse_153: -4072144572136885905
+      Keys and mouse_154: -1127386347658554852
+      Keys and mouse_155: 7958333833509915840
+      Keys and mouse_156: -1111183058150915777
+      Keys and mouse_157: -4615343045463984847
+      Keys and mouse_158: -3542999628098249923
+      Keys and mouse_159: -3425461915672768099
+      Keys and mouse_16: 9208972392216370797
+      Keys and mouse_160: -4268091368044122408
+      Keys and mouse_161: -412895291017377568
+      Keys and mouse_162: -2183787643247883491
+      Keys and mouse_163: 4205833528423341225
+      Keys and mouse_164: -3012520173093590347
+      Keys and mouse_17: -1854567720943802697
+      Keys and mouse_18: 3719036525817844030
+      Keys and mouse_19: -8673019792613135047
+      Keys and mouse_2: -5013298819641788130
+      Keys and mouse_20: 7640817101163037115
+      Keys and mouse_21: -3601741341352677925
+      Keys and mouse_22: 4305846280637147884
+      Keys and mouse_23: 5262344676046447144
+      Keys and mouse_24: 7488021864532786620
+      Keys and mouse_25: -2661604206682739575
+      Keys and mouse_26: 7779969082152776746
+      Keys and mouse_27: -4048070532957755879
+      Keys and mouse_28: 8240131879047984768
+      Keys and mouse_29: -6064073816123371447
+      Keys and mouse_3: -7528183618450399915
+      Keys and mouse_30: -940667338013028936
+      Keys and mouse_31: 2900537505896544036
+      Keys and mouse_32: -529282761932196267
+      Keys and mouse_33: -6475517400366828547
+      Keys and mouse_34: 6583596829611276315
+      Keys and mouse_35: 1612150954045892246
+      Keys and mouse_36: 1526363804614501928
+      Keys and mouse_37: -8880734825103761139
+      Keys and mouse_38: -3540932760755040308
+      Keys and mouse_39: -4854650000736931570
+      Keys and mouse_4: -6345236024218287675
+      Keys and mouse_40: -4967003565005861832
+      Keys and mouse_41: 5137511981483561957
+      Keys and mouse_42: -7550406283802295414
+      Keys and mouse_43: 8011788875966052385
+      Keys and mouse_44: 361972422346267116
+      Keys and mouse_45: -6638780785793547092
+      Keys and mouse_46: -311464576454887431
+      Keys and mouse_47: -2002654787821402784
+      Keys and mouse_48: -4826047214691103432
+      Keys and mouse_49: -6527712680372837771
+      Keys and mouse_5: -1712520715993249932
+      Keys and mouse_50: -5636793188231959709
+      Keys and mouse_51: -1715250650253524377
+      Keys and mouse_52: -3236335565172490852
+      Keys and mouse_53: 7888435916532159489
+      Keys and mouse_54: -3260290980811871808
+      Keys and mouse_55: 2293923049389642256
+      Keys and mouse_56: 1755289864504437443
+      Keys and mouse_57: 5636691049803368438
+      Keys and mouse_58: -2972111926352206366
+      Keys and mouse_59: -8565036074738333237
+      Keys and mouse_6: 8804419990724653116
+      Keys and mouse_60: 8294114890525481879
+      Keys and mouse_61: 905973286796871237
+      Keys and mouse_62: 7877575126073704301
+      Keys and mouse_63: -2835964568470885384
+      Keys and mouse_64: 4669473413307720743
+      Keys and mouse_65: -3772839891883768615
+      Keys and mouse_66: -7280788398574855089
+      Keys and mouse_67: -5408542419884181988
+      Keys and mouse_68: -955508740021968269
+      Keys and mouse_69: -1402218526210769455
+      Keys and mouse_7: 4782508586755843557
+      Keys and mouse_70: -2418349101953580431
+      Keys and mouse_71: -8880534594567860834
+      Keys and mouse_72: 786155623710110961
+      Keys and mouse_73: 3359381764542949217
+      Keys and mouse_74: 8102879161467933986
+      Keys and mouse_75: -2058882371597865117
+      Keys and mouse_76: 3391309244915316195
+      Keys and mouse_77: 5530003548746539441
+      Keys and mouse_78: 4027222446704604214
+      Keys and mouse_79: 7427286809549700322
+      Keys and mouse_8: -6642978427740136528
+      Keys and mouse_80: 6950991657808425993
+      Keys and mouse_81: 704986608526151659
+      Keys and mouse_82: -6531231591302523086
+      Keys and mouse_83: -8006767959680157347
+      Keys and mouse_84: 4263718973737869404
+      Keys and mouse_85: -3363494408979989802
+      Keys and mouse_86: 4212636180809097295
+      Keys and mouse_87: -5463525194527751368
+      Keys and mouse_88: -5684192999288478662
+      Keys and mouse_89: -2759639695343139078
+      Keys and mouse_9: -2399952071268806445
+      Keys and mouse_90: -133129537089922845
+      Keys and mouse_91: -2305622615262095292
+      Keys and mouse_92: 6335898479525905160
+      Keys and mouse_93: 7294600978664348547
+      Keys and mouse_94: 4052419053367280049
+      Keys and mouse_95: -2971385637086083297
+      Keys and mouse_96: -2400995375106835364
+      Keys and mouse_97: 6196428194866433915
+      Keys and mouse_98: 3952127654759940298
+      Keys and mouse_99: 499784415162052653
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

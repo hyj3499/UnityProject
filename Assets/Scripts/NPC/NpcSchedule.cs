@@ -46,7 +46,8 @@ namespace FarmMVP
     /// when에 쓸 수 있는 말 (띄어쓰기로 여러 개, 전부 맞아야 한다):
     ///   계절  Spring Summer Fall Winter
     ///   요일  Mon Tue Wed Thu Fri Sat Sun
-    ///   날씨  Sunny Cloudy Rain Storm Snow
+    ///   날씨  VerySunny Sunny Cloudy Windy Thunder ThunderRain Rain Blizzard Storm Snow
+    ///         (Sunny는 VerySunny도, Rain은 ThunderRain도, Snow는 Blizzard도, Storm은 Thunder도 포함)
     /// 비워 두면 <b>언제나</b> 맞는다 — 기본 일과라서 목록의 맨 뒤에 둔다.
     ///
     /// 고르는 방법은 "<b>위에서부터 처음 맞는 것</b>" 하나뿐이다. 우선순위 표 같은 걸 외울 필요 없이
@@ -63,7 +64,7 @@ namespace FarmMVP
             foreach (var tag in Tags(when))
             {
                 if (Enum.TryParse(tag, out Season s)) { if (s != season) return false; continue; }
-                if (Enum.TryParse(tag, out Weather w)) { if (w != weather) return false; continue; }
+                if (Enum.TryParse(tag, out Weather w)) { if (!WeatherSystem.Matches(w, weather)) return false; continue; }
                 if (Seasons.IsWeekdayKey(tag)) { if (tag != weekday) return false; continue; }
                 return false;   // 모르는 말 — 이 일과는 영영 쓰이지 않는다 (검사 도구가 잡아 준다)
             }

@@ -49,6 +49,34 @@ namespace FarmMVP
         }
 
         /// <summary>
+        /// 그루터기를 칠 때 나무 조각이 <b>팍 튀어 오른다</b>. 잎처럼 하늘거리지 않고, 밑동에서 위·옆으로
+        /// 빠르게 솟았다가 중력으로 떨어져 바닥에서 사라진다.
+        /// </summary>
+        public static void ScatterChips(Transform parent, Sprite[] chips, Vector2 foot,
+                                        float height, int sortingOrder)
+        {
+            if (parent == null || chips == null || chips.Length == 0) return;
+            Debug.Log($"[TreeChopFx] 그루터기 조각 {chips.Length}개 튀김");
+
+            for (int i = 0; i < chips.Length; i++)
+            {
+                if (chips[i] == null) continue;
+
+                var go = new GameObject("chip");
+                go.transform.SetParent(parent, false);
+                go.transform.position = new Vector3(foot.x + Random.Range(-0.15f, 0.15f), foot.y + height, 0f);
+
+                var sr = go.AddComponent<SpriteRenderer>();
+                sr.sprite = chips[i];
+                sr.sortingOrder = sortingOrder;
+
+                // 조각마다 좌우로 갈라져 날아가게 — 같은 쪽으로만 튀면 한 덩어리로 보인다.
+                float side = (i % 2 == 0 ? -1f : 1f) * Random.Range(0.8f, 1.8f);
+                go.AddComponent<FlyingChip>().Begin(new Vector2(side, Random.Range(3.2f, 4.6f)), foot.y);
+            }
+        }
+
+        /// <summary>
         /// 다 자란 나무의 윗부분을 옆으로 넘어뜨린다. 그림의 기준점이 밑동이라 그 자리를 축으로
         /// 돌리기만 하면 되고, 밑에 있던 그루터기는 손대지 않아 그대로 남는다.
         /// </summary>
@@ -102,6 +130,50 @@ namespace FarmMVP
             }
 
             if (t >= 1f) Destroy(gameObject);
+        }
+    }
+
+    /// <summary>튀어 오르는 나무 조각 한 개. 초속을 받아 중력으로 포물선을 그리고, 바닥선에 닿으면 사라진다.</summary>
+    public class FlyingChip : MonoBehaviour
+    {
+        private const float Gravity = 16f;
+        private const float MaxLife = 0.7f;
+        private const float FadeTime = 0.12f;
+
+        private SpriteRenderer _sr;
+        private Vector2 _velocity;
+        private float _floorY, _spin, _elapsed;
+
+        internal void Begin(Vector2 velocity, float floorY)
+        {
+            _sr = GetComponent<SpriteRenderer>();
+            _velocity = velocity;
+            _floorY = floorY;
+            _spin = Random.Range(-720f, 720f);
+        }
+
+        private void Update()
+        {
+            float dt = Time.deltaTime;
+            _elapsed += dt;
+
+            _velocity.y -= Gravity * dt;
+            var p = transform.position;
+            p.x += _velocity.x * dt;
+            p.y += _velocity.y * dt;
+            transform.position = p;
+            transform.Rotate(0f, 0f, _spin * dt);
+
+            // 바닥선 아래로 내려가는 중이거나 너무 오래 날면 마지막에 잠깐 옅어지며 사라진다.
+            bool landed = _velocity.y < 0f && p.y <= _floorY;
+            float life = landed ? MaxLife : _elapsed;
+            if (_sr != null)
+            {
+                var c = _sr.color;
+                c.a = life < MaxLife - FadeTime ? 1f : Mathf.Clamp01((MaxLife - life) / FadeTime);
+                _sr.color = c;
+            }
+            if (landed || _elapsed >= MaxLife) Destroy(gameObject);
         }
     }
 

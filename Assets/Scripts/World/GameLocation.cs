@@ -580,7 +580,7 @@ namespace FarmMVP
             if (tillableMask != null)
                 Debug.Log($"[GameLocation] {tillableMask.name}: {tillableCount}칸만 경작할 수 있습니다.");
             if (hasWater)
-                Debug.Log($"[GameLocation] Water_{id}: 물 {waterCount}칸 (통행 불가, 물마법으로 낚시).");
+                Debug.Log($"[GameLocation] Water_{id}: 물 {waterCount}칸 (통행 불가, 낚시마법으로 낚시).");
             if (hasCliff)
                 Debug.Log($"[GameLocation] Cliff_{id}: 절벽 {cliffCount}칸 (통행 불가, 덮을 수 없음).");
             if (pathMask != null)

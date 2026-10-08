@@ -44,7 +44,7 @@ namespace FarmMVP
     {
         // 처음 시작할 때 걸치는 것. 비워 두면 맨몸으로 시작하고, 캐릭터 만들기에서 고른다.
         public const string DefaultHair = "";
-        public const string DefaultEyes = "";
+        public const string DefaultEyes = FarmerEyes.FirstStyle;
         public const string DefaultTop = "";
         public const string DefaultPants = "";
         public const string DefaultShoes = "";

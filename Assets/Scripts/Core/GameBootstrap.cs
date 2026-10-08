@@ -126,7 +126,7 @@ namespace FarmMVP
             ui.ShowDayBanner(gm.Data.currentDay);
 
             Debug.Log("[GameBootstrap] Farm MVP started. Controls: WASD move, LeftClick use tool, " +
-                      "E/Space interact/harvest/sleep, 1-9 & Q select tool, I inventory, F5 save.");
+                      "Space interact/harvest/sleep, 1-9 & Q/E select magic, Ctrl hold quick skill, I inventory, F5 save.");
         }
     }
 }

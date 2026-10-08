@@ -34,6 +34,8 @@ namespace FarmMVP
         private RenderTexture _previewTexture;
         private Direction _previewFacing = Direction.Down;
         private bool _previewWalking;
+        private bool _previewRunning;
+        private Text _previewMotionLabel;
 
         /// <summary>"무엇을 걸칠지" 한 줄. 목록에서 앞뒤로 넘긴다.</summary>
         private class ItemRow
@@ -170,7 +172,7 @@ namespace FarmMVP
 
             Col("피부색", a => a.skin, a => PlayerAppearance.BaseLut);
             Col("머리색", a => a.hairColor, a => FarmerArt.LutPathOr(a.hair, PlayerAppearance.HairLut));
-            Col("눈 색", a => a.eyeColor, a => PlayerAppearance.EyesLut);
+            // 새 2종 눈 시트는 원본 색을 사용한다 (LUT 시트가 아님).
             Col("신발 색", a => a.shoesColor, a => FarmerArt.LutPath(a.shoes));
         }
 
@@ -268,13 +270,17 @@ namespace FarmMVP
             if (i < 0) i = 0;
             int n = order.Length;
             _previewFacing = order[((i + delta) % n + n) % n];
-            _preview?.SetLocomotion(_previewWalking, false, _previewFacing);
+            _preview?.SetLocomotion(_previewWalking, _previewRunning, _previewFacing);
         }
 
         private void ToggleWalk()
         {
-            _previewWalking = !_previewWalking;
-            _preview?.SetLocomotion(_previewWalking, false, _previewFacing);
+            if (!_previewWalking) _previewWalking = true;
+            else if (!_previewRunning) _previewRunning = true;
+            else { _previewWalking = false; _previewRunning = false; }
+            if (_previewMotionLabel != null)
+                _previewMotionLabel.text = !_previewWalking ? "걸어보기" : !_previewRunning ? "뛰어보기" : "멈추기";
+            _preview?.SetLocomotion(_previewWalking, _previewRunning, _previewFacing);
         }
 
         // ---------- 화면 ----------
@@ -312,8 +318,8 @@ namespace FarmMVP
                        new Vector2(48, 34), () => TurnPreview(-1));
             MakeButton(_canvas.transform as RectTransform, "▶", new Vector2(0.30f, 0.19f),
                        new Vector2(48, 34), () => TurnPreview(1));
-            MakeButton(_canvas.transform as RectTransform, "걸어보기", new Vector2(0.20f, 0.19f),
-                       new Vector2(96, 34), ToggleWalk);
+            _previewMotionLabel = MakeButton(_canvas.transform as RectTransform, "걸어보기", new Vector2(0.20f, 0.19f),
+                       new Vector2(96, 34), ToggleWalk).GetComponentInChildren<Text>();
         }
 
         /// <summary>

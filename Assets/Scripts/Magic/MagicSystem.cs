@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace FarmMVP
 {
-    // 농기구 대신 마법을 사용 (대지=경작, 물=물주기, 칼날=나무 베기, 바위=바위 부수기·땅 되돌리기, 바람=풀 베기, 삽=잔디땅 파기)
+    // 농기구 대신 마법을 사용 (대지=경작, 물=물주기, 칼날=나무 베기, 바위=바위 부수기·땅 되돌리기, 바람=풀 베기, 삽=잔디땅 파기, 낚시=낚시)
     // 새로 추가할 때는 <b>맨 뒤에</b> 붙인다 — 저장된 "지금 든 마법"이 번호라서 중간에 끼우면 어긋난다.
-    public enum MagicType { Earth, Water, Blade, Rock, Wind, Shovel }
+    public enum MagicType { Earth, Water, Blade, Rock, Wind, Shovel, Fishing }
 
     /// <summary>한 마법의 스펙: MP 소모량, 길게 눌렀을 때 지속 시전 여부와 간격, 조준 표시 색상.</summary>
     public struct MagicDef
@@ -84,11 +84,46 @@ namespace FarmMVP
             previewColor = new Color(0.88f, 0.68f, 0.35f, 0.45f),
         };
 
+        /// <summary>물가에서 낚시 미니게임을 시작하는 전용 마법.</summary>
+        public static readonly MagicDef Fishing = new MagicDef
+        {
+            displayName = "낚시마법",
+            mpCost = 2,
+            timeCost = 0,
+            continuous = false,
+            tickInterval = 0f,
+            previewColor = new Color(0.35f, 0.75f, 0.95f, 0.45f),
+        };
+
         /// <summary>지금 이 칸에는 쓸 수 없다는 표시 — 조준 사각형을 어둡게 덮는다.</summary>
         public static readonly Color InvalidPreviewColor = new Color(0.08f, 0.08f, 0.1f, 0.45f);
 
         /// <summary>마법 종류 수 (Q키 순환에 쓰인다).</summary>
         public static readonly int Count = System.Enum.GetValues(typeof(MagicType)).Length;
+
+        /// <summary>
+        /// 퀵스킬 아이콘 시트와 원형 메뉴의 순서. 저장값은 MagicType 번호를 계속 쓰므로,
+        /// 보기 좋은 순서를 바꿔도 기존 세이브의 선택 마법은 어긋나지 않는다.
+        /// </summary>
+        public static readonly MagicType[] QuickSkillOrder =
+        {
+            MagicType.Wind, MagicType.Water, MagicType.Fishing, MagicType.Rock,
+            MagicType.Blade, MagicType.Shovel, MagicType.Earth
+        };
+
+        public static int QuickSkillIndex(MagicType type)
+        {
+            for (int i = 0; i < QuickSkillOrder.Length; i++)
+                if (QuickSkillOrder[i] == type) return i;
+            return 0;
+        }
+
+        public static MagicType QuickSkillAt(int index)
+        {
+            int normalized = index % QuickSkillOrder.Length;
+            if (normalized < 0) normalized += QuickSkillOrder.Length;
+            return QuickSkillOrder[normalized];
+        }
 
         /// <summary>
         /// 지금 이 칸에 이 마법이 실제로 먹히는지 미리 물어본다 (아무것도 바꾸지 않는다).
@@ -102,8 +137,7 @@ namespace FarmMVP
             switch (type)
             {
                 case MagicType.Earth: return location.CanTill(x, y);
-                // 물 타일이면 물을 주는 대신 낚시가 시작된다 — 조준 표시도 켜져야 한다.
-                case MagicType.Water: return location.CanWater(x, y) || FishingController.CanFishAt(location, x, y);
+                case MagicType.Water: return location.CanWater(x, y);
                 // 칼날마법은 나무를 베고, 바닥의 나뭇가지·통나무를 치운다.
                 case MagicType.Blade: return location.HasChoppableTree(x, y) || location.HasDebris(x, y, DebrisKind.Wood);
                 // 바위마법은 바위를 부수고, 놓아 둔 설치물(울타리·길·가구)을 걷어낸다.
@@ -116,6 +150,7 @@ namespace FarmMVP
                 case MagicType.Wind: return location.HasCuttablePlant(x, y);
                 // 삽마법: "Tillable_{맵}"을 칠해 둔 잔디땅을 흙땅으로 파낸다. 대지마법은 그 흙땅에만 먹힌다.
                 case MagicType.Shovel: return location.CanDig(x, y);
+                case MagicType.Fishing: return FishingController.CanFishAt(location, x, y);
                 default: return false;
             }
         }
@@ -130,6 +165,7 @@ namespace FarmMVP
                 case MagicType.Rock: return Rock;
                 case MagicType.Wind: return Wind;
                 case MagicType.Shovel: return Shovel;
+                case MagicType.Fishing: return Fishing;
                 default: return Earth;
             }
         }

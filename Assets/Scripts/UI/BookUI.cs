@@ -139,7 +139,7 @@ namespace FarmMVP
         private void BuildTabs()
         {
             // 우측 상단 HUD와 겹치지 않도록 책 중단부터 아래로 배치한다.
-            AddTab(Page.Inventory, "가방", AssetLibrary.UiBookmarkGreen, 44);
+            AddTab(Page.Inventory, "상태", AssetLibrary.UiBookmarkGreen, 44);
             AddTab(Page.Settings, "설정", AssetLibrary.UiBookmarkOrange, 74);
             AddTab(Page.Help, "도움", AssetLibrary.UiBookmarkBlue, 104);
         }
@@ -164,7 +164,7 @@ namespace FarmMVP
             _tabs[page] = img;
         }
 
-        // ---------- 가방 페이지 ----------
+        // ---------- 상태 페이지 ----------
         private void BuildInventoryPage()
         {
             var page = NewPage(Page.Inventory);
@@ -182,62 +182,7 @@ namespace FarmMVP
             _stMagic = AddStatusRow(left, ref y, "마법");
             _stBag = AddStatusRow(left, ref y, "가방");
 
-            // 오른쪽: 아이템 격자 (윗줄 9칸이 곧 핫바)
-            var right = Area(page, "Bag", RightPage);
-            PageTitle(right, "가방");
-
-            // 배낭 한 페이지(10칸) = 5칸씩 2줄. 페이지 사이는 살짝 띄워 구분한다.
-            const int cols = 5;
-            const int rowsPerGroup = 2;
-            const float gapRatio = 0.45f;
-
-            int groups = Inventory.BackpackPages;
-            int rows = groups * rowsPerGroup;
-
-            float availW = right.sizeDelta.x - 10f;
-            float availH = right.sizeDelta.y - 74f;
-            float pitch = Mathf.Min(availW / cols, availH / (rows + (groups - 1) * gapRatio));
-            float groupGap = pitch * gapRatio;
-            float slot = pitch - 5f;
-
-            var grid = new GameObject("Grid").AddComponent<RectTransform>();
-            grid.SetParent(right, false);
-            grid.anchorMin = grid.anchorMax = new Vector2(0.5f, 1f);
-            grid.pivot = new Vector2(0.5f, 1f);
-            grid.anchoredPosition = new Vector2(0, -46);
-            grid.sizeDelta = new Vector2(cols * pitch, rows * pitch + (groups - 1) * groupGap);
-
-            for (int i = 0; i < Inventory.TotalSlots; i++)
-            {
-                int c = i % cols;
-                int r = i / cols;
-                int group = r / rowsPerGroup;
-
-                float slotX = -((cols - 1) * pitch) / 2f + c * pitch;
-                float slotY = -(r * pitch + group * groupGap);
-                var sv = _ui.CreateInventorySlot(grid, i, slotX, slotY, slot);
-
-                // 첫 10칸은 퀵바이므로 대응하는 숫자키를 적어 준다 (10번째는 0).
-                if (i < Inventory.HotbarSize)
-                {
-                    var num = _ui.Label(sv.frame.rectTransform, i == 9 ? "0" : (i + 1).ToString(), 12, Vector2.zero, TextAnchor.UpperLeft);
-                    var nrt = num.rectTransform;
-                    nrt.anchorMin = new Vector2(0, 1);
-                    nrt.anchorMax = new Vector2(0, 1);
-                    nrt.pivot = new Vector2(0, 1);
-                    nrt.anchoredPosition = new Vector2(3, -2);
-                    nrt.sizeDelta = new Vector2(16, 16);
-                    num.color = new Color(1f, 0.93f, 0.75f, 0.9f);
-                }
-            }
-
-            var hint = _ui.Label(right, "1~0번이 퀵바 · TAB으로 배낭 전환", 13, Vector2.zero, TextAnchor.UpperCenter);
-            hint.rectTransform.anchorMin = new Vector2(0, 0);
-            hint.rectTransform.anchorMax = new Vector2(1, 0);
-            hint.rectTransform.pivot = new Vector2(0.5f, 0);
-            hint.rectTransform.anchoredPosition = new Vector2(0, 8);
-            hint.rectTransform.sizeDelta = new Vector2(0, 40);
-            hint.color = new Color(0.45f, 0.32f, 0.25f);
+            // 가방 격자는 씬의 QuickInventory(QuickInventoryHUD)로 옮겼다.
         }
 
         // ---------- 설정 페이지 ----------

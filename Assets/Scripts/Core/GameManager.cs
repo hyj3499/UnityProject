@@ -363,10 +363,20 @@ namespace FarmMVP
         // ---------- 마법 (스펙/발동 로직은 MagicSystem 참고) ----------
         public MagicType CurrentMagic { get; private set; } = MagicType.Earth;
 
-        /// <summary>Q키로 마법 순환 (대지 → 물 → 칼날 → 대지 ...).</summary>
-        public void CycleMagic()
+        /// <summary>단축키로 마법을 순환한다. direction 1은 오른쪽(Q), -1은 왼쪽(E)이다.</summary>
+        public void CycleMagic(int direction = 1)
         {
-            CurrentMagic = (MagicType)(((int)CurrentMagic + 1) % MagicSystem.Count);
+            CurrentMagic = MagicSystem.QuickSkillAt(MagicSystem.QuickSkillIndex(CurrentMagic) + direction);
+            if (Data != null && Data.farmer != null) Data.farmer.currentMagic = (int)CurrentMagic;
+            OnMagicChanged?.Invoke();
+        }
+
+        /// <summary>퀵스킬 원형 메뉴에서 지정한 번호의 마법을 고른다.</summary>
+        public void SelectMagic(MagicType magic)
+        {
+            if ((int)magic < 0 || (int)magic >= MagicSystem.Count || CurrentMagic == magic) return;
+            CurrentMagic = magic;
+            if (Data != null && Data.farmer != null) Data.farmer.currentMagic = (int)CurrentMagic;
             OnMagicChanged?.Invoke();
         }
 
@@ -411,9 +421,18 @@ namespace FarmMVP
         /// </summary>
         private void ApplyCameraSize()
         {
-            if (_cam == null || !_cam.orthographic) return;
-            _cam.orthographicSize = BaseOrthographicSize * ZoomMultiplier;
+            if (_cam == null || !_cam.orthographic || _cam.pixelHeight <= 0) return;
+            _appliedScreenHeight = _cam.pixelHeight;
+
+            // 텍셀 1칸이 화면 픽셀 정수 칸이 되도록 배율을 반올림한다. 정수가 아니면 타일 경계가
+            // 픽셀 사이에 걸려 이동할 때 선이 깜빡인다.
+            float wantedSize = BaseOrthographicSize * ZoomMultiplier;
+            int pixelsPerTexel = Mathf.Max(1, Mathf.RoundToInt(_cam.pixelHeight / (2f * wantedSize * PixelsPerUnit)));
+            _cam.orthographicSize = _cam.pixelHeight / (2f * PixelsPerUnit * pixelsPerTexel);
         }
+
+        private const float PixelsPerUnit = 16f;   // 타일·스프라이트 PPU
+        private int _appliedScreenHeight;
 
         // 시간이 흐르는 속도. 기본값은 DayClock에 적힌 10분 = 현실 7초다 (1시간 ≈ 42초).
         public float minutesPerRealSecond = DayClock.MinutesPerRealSecond;
@@ -474,6 +493,8 @@ namespace FarmMVP
 
             Player.Init(this);
             LoadLocation(Data.currentLocation, new Vector2(Data.farmer.posX, Data.farmer.posY), firstBoot: true);
+
+            gameObject.AddComponent<CloudShadows>().Init(this, cam);   // 구름 그림자 (야외·낮에만 보인다)
         }
 
         /// <summary>
@@ -653,6 +674,8 @@ namespace FarmMVP
                     ui?.ToggleBook(BookUI.Page.Settings);
             }
 
+            if ((_cam != null ? _cam.pixelHeight : 0) != _appliedScreenHeight) ApplyCameraSize();   // 창 크기가 바뀌면 정수 배율을 다시 맞춘다
+
             if (!Paused)
             {
                 AdvanceTime(Time.deltaTime * minutesPerRealSecond);
@@ -703,14 +726,32 @@ namespace FarmMVP
         {
             if (_cam == null) return;
             Vector3 target = ClampToMap(new Vector3(Player.transform.position.x, Player.transform.position.y, -10));
-            _cam.transform.position = Vector3.Lerp(_cam.transform.position, target, Time.deltaTime * 6f);
+            // 스냅하지 않은 위치를 따로 들고 보간한다. 스냅한 위치에서 다시 보간하면 값이 되먹임되어 흔들린다.
+            _camSmoothPos = Vector3.Lerp(_camSmoothPos, target, Time.deltaTime * 6f);
+            _cam.transform.position = SnapToScreenPixel(_camSmoothPos);
+        }
+
+        private Vector3 _camSmoothPos;
+
+        /// <summary>
+        /// 카메라를 화면 픽셀 격자에 맞춘다. 소수점 위치에 두면 타일 경계가 픽셀 중간에 걸려
+        /// 이동할 때 타일 사이에 가는 선이 깜빡인다.
+        /// </summary>
+        private Vector3 SnapToScreenPixel(Vector3 pos)
+        {
+            if (_cam == null || !_cam.orthographic || _cam.pixelHeight <= 0) return pos;
+            float unitsPerPixel = _cam.orthographicSize * 2f / _cam.pixelHeight;
+            pos.x = Mathf.Round(pos.x / unitsPerPixel) * unitsPerPixel;
+            pos.y = Mathf.Round(pos.y / unitsPerPixel) * unitsPerPixel;
+            return pos;
         }
 
         private void CenterCameraInstant()
         {
             if (_cam == null) return;
             ApplyCameraSize();   // 맵을 옮겨도 설정한 배율 그대로
-            _cam.transform.position = ClampToMap(new Vector3(Player.transform.position.x, Player.transform.position.y, -10));
+            _camSmoothPos = ClampToMap(new Vector3(Player.transform.position.x, Player.transform.position.y, -10));
+            _cam.transform.position = SnapToScreenPixel(_camSmoothPos);
         }
 
         /// <summary>
@@ -818,10 +859,10 @@ namespace FarmMVP
 
             var def = MagicSystem.Get(CurrentMagic);
 
-            // 물마법을 물 타일에 쓰면 물을 주는 대신 낚시를 시작한다.
+            // 낚시마법은 물 타일에서 낚시를 시작한다.
             // 낚시는 한 판이 여러 초에 걸쳐 진행되므로 즉시 판정하는 TryApply를 타지 않는다.
             var facing = pc.FacingTile();
-            if (CurrentMagic == MagicType.Water && Fishing != null
+            if (CurrentMagic == MagicType.Fishing && Fishing != null
                 && FishingController.CanFishAt(CurrentLocation, facing.x, facing.y))
             {
                 if (Fishing.IsActive) return true;

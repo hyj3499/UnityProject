@@ -6,10 +6,8 @@ namespace FarmMVP
     /// <summary>
     /// 플레이어를 그리고 동작을 재생한다.
     ///
-    /// 그림은 <b>Base/base_animations.png</b> 한 장이다. 모든 동작이 이미 합쳐진 채로 그려져
-    /// 있어서 그리는 일은 <b>그 시트에서 칸 하나를 골라 놓는 것</b>이 전부다. 부위를 따로 불러
-    /// 겹치지 않으므로 층도, 부위별 칸 번호도, 통통 튀게 하려고 자리를 올리던 장치도 없다 —
-    /// 튀는 것까지 그림에 들어 있다.
+    /// 몸은 Base/base_animations.png의 프레임을 사용한다.
+    /// 눈은 별도 렌더러로 그리고 같은 프레임의 headguide 빨간 점을 따라간다.
     ///
     /// 어느 줄을 몇 칸씩 넘길지는 전부 동작표에 적혀 있다(FarmerPoses). 여기서는 그 줄을
     /// 시간에 맞춰 넘기기만 한다.
@@ -35,6 +33,9 @@ namespace FarmMVP
         private PlayerAppearance _appearance = new PlayerAppearance();
 
         private SpriteRenderer _body;
+        private SpriteRenderer _eyes;
+        private Transform _headAnchor;
+        private float _blinkTimer;
 
         private Direction _facing = Direction.Down;
         private FarmerAnim _current = FarmerAnim.Idle;
@@ -63,6 +64,10 @@ namespace FarmMVP
 
             _body = MakeRenderer("Body", BodyOrder);
             _body.transform.localPosition = new Vector3(0f, FeetOffset, 0f);
+            _headAnchor = new GameObject("HeadAnchor").transform;
+            _headAnchor.SetParent(_body.transform, false);
+            _eyes = MakeRenderer("Eyes", BodyOrder + 1);
+            _eyes.transform.SetParent(_headAnchor, false);
 
             Play(FarmerAnim.Idle, restart: true);
             Draw();
@@ -81,8 +86,7 @@ namespace FarmMVP
         /// <summary>
         /// 외형을 갈아 끼운다.
         ///
-        /// 지금 그림은 모든 동작이 합쳐진 한 장뿐이라 고를 것이 없다 — 받아만 두고 그리는 데는
-        /// 쓰지 않는다. 옷·머리 모양을 다시 갈아입힐 수 있게 되면 여기서 시트를 바꾸면 된다.
+        /// 선택한 눈 종류를 미리보기와 게임에 즉시 반영한다.
         /// </summary>
         public void SetAppearance(PlayerAppearance appearance)
         {
@@ -122,6 +126,7 @@ namespace FarmMVP
         {
             _sortingBase = order;
             if (_body != null) _body.sortingOrder = order + BodyOrder;
+            if (_eyes != null) _eyes.sortingOrder = order + BodyOrder + 1;
         }
 
         // ---------- 재생 ----------
@@ -130,6 +135,7 @@ namespace FarmMVP
         private void Advance(float dt)
         {
             if (_body == null) return;
+            _blinkTimer = Mathf.Repeat(_blinkTimer + dt, 3.5f);
 
             if (_hasOneShot && _finished) _hasOneShot = false;
 
@@ -176,6 +182,7 @@ namespace FarmMVP
 
         private void Draw()
         {
+            if (_eyes != null) _eyes.enabled = false;
             if (_body == null || _clip == null || _clip.count <= 0) return;
 
             var frames = Sheet.Row(_clip.row);
@@ -188,6 +195,16 @@ namespace FarmMVP
             // 왼쪽 그림은 따로 없다 — 측면 줄을 뒤집어 쓴다.
             _body.flipX = FarmerPoses.Mirrored(_facing);
             _body.enabled = true;
+            if (_eyes == null || !FarmerEyes.TryAnchor(_clip.row, frame, out var anchor)) return;
+            _eyes.sprite = FarmerEyes.SpriteFor(_appearance.eyes, _clip.row, frame, _blinkTimer >= 3.36f);
+            if (_eyes.sprite == null) return;
+            var offset = (anchor - new Vector2(FarmerPoses.FrameWidth * 0.5f,
+                                               FarmerPoses.FrameHeight * 0.5f)) / PixelsPerUnit;
+            if (_body.flipX) offset.x = -offset.x;
+            _headAnchor.localPosition = new Vector3(offset.x, offset.y, 0f);
+            _eyes.flipX = _body.flipX;
+            _eyes.sortingLayerID = _body.sortingLayerID;
+            _eyes.enabled = true;
         }
 
         /// <summary>
