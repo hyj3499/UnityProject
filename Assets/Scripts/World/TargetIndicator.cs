@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace FarmMVP
@@ -9,7 +10,7 @@ namespace FarmMVP
     public class TargetIndicator : MonoBehaviour
     {
         private static Sprite _sprite;
-        private SpriteRenderer _sr;
+        private readonly List<SpriteRenderer> _tiles = new List<SpriteRenderer>();
 
         public static TargetIndicator Create()
         {
@@ -24,17 +25,50 @@ namespace FarmMVP
                 var tex = Texture2D.whiteTexture;
                 _sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), tex.width);
             }
-            _sr = gameObject.AddComponent<SpriteRenderer>();
-            _sr.sprite = _sprite;
-            _sr.sortingOrder = Depth.Highlight; // 바닥 위, 서 있는 것들보다는 뒤
             gameObject.SetActive(false);
         }
 
         public void Show(Vector2Int tile, Color color)
         {
-            transform.position = new Vector3(tile.x, tile.y, 0);
-            _sr.color = color;
-            if (!gameObject.activeSelf) gameObject.SetActive(true);
+            ShowTile(0, tile, color);
+            Finish(1);
+        }
+
+        public void ShowMagic(IReadOnlyList<Vector2Int> tiles, MagicType type, GameLocation location)
+        {
+            int count = 0;
+            var color = MagicSystem.Get(type).previewColor;
+            foreach (var tile in tiles)
+            {
+                if (location == null || !location.InBounds(tile.x, tile.y)) continue;
+                bool valid = MagicSystem.CanApply(type, location, tile.x, tile.y);
+                ShowTile(count++, tile, valid ? color : MagicSystem.InvalidPreviewColor);
+            }
+            Finish(count);
+        }
+
+        private void ShowTile(int index, Vector2Int tile, Color color)
+        {
+            if (index == _tiles.Count)
+            {
+                var child = new GameObject("TargetTile");
+                child.transform.SetParent(transform, false);
+                var renderer = child.AddComponent<SpriteRenderer>();
+                renderer.sprite = _sprite;
+                renderer.sortingOrder = Depth.Highlight;
+                child.transform.localScale = Vector3.one * 0.94f;
+                _tiles.Add(renderer);
+            }
+            var sr = _tiles[index];
+            sr.transform.position = new Vector3(tile.x, tile.y, 0);
+            sr.color = color;
+            sr.enabled = true;
+        }
+
+        private void Finish(int count)
+        {
+            for (int i = count; i < _tiles.Count; i++) _tiles[i].enabled = false;
+            gameObject.SetActive(count > 0);
         }
 
         public void Hide()

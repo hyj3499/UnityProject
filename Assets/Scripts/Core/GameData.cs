@@ -97,10 +97,13 @@ namespace FarmMVP
     [Serializable]
     public class FarmerData
     {
+        /// <summary>범위 마법을 한 번에 쓸 수 있도록 정한 MP 통의 고정 최대치.</summary>
+        public const int DefaultMaxMp = 10000;
+
         public float posX, posY;
         public int direction = (int)Direction.Down;
         public int hp = 100, maxHp = 100;
-        public int mp = 100, maxMp = 100;
+        public int mp = DefaultMaxMp, maxMp = DefaultMaxMp;
         public int money = 500;
         public int equippedHotbarIndex = 0; // 전체 슬롯 기준 번호 (0~29)
         public int backpackLevel = 0;       // 0=기본 10칸, 1=20칸, 2=30칸

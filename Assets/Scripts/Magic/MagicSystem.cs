@@ -6,14 +6,12 @@ namespace FarmMVP
     // 새로 추가할 때는 <b>맨 뒤에</b> 붙인다 — 저장된 "지금 든 마법"이 번호라서 중간에 끼우면 어긋난다.
     public enum MagicType { Earth, Water, Blade, Rock, Wind, Shovel, Fishing }
 
-    /// <summary>한 마법의 스펙: MP 소모량, 길게 눌렀을 때 지속 시전 여부와 간격, 조준 표시 색상.</summary>
+    /// <summary>한 마법의 스펙: MP·시간 소모량과 조준 표시 색상.</summary>
     public struct MagicDef
     {
         public string displayName;
         public int mpCost;
         public int timeCost;        // 성공 시 소모되는 게임 내 분
-        public bool continuous;     // true면 길게 누르는 동안 tickInterval마다 반복 시전 (물마법)
-        public float tickInterval;
         public Color previewColor;  // 조준 중 표시할 타일 하이라이트 색상
     }
 
@@ -28,8 +26,6 @@ namespace FarmMVP
             displayName = "대지마법",
             mpCost = 3,
             timeCost = 10,
-            continuous = false,
-            tickInterval = 0f,
             previewColor = new Color(0.55f, 0.42f, 0.2f, 0.45f),
         };
 
@@ -38,8 +34,6 @@ namespace FarmMVP
             displayName = "물마법",
             mpCost = 2,
             timeCost = 5,
-            continuous = true,
-            tickInterval = 0.5f,
             previewColor = new Color(0.25f, 0.5f, 0.9f, 0.45f),
         };
 
@@ -48,8 +42,6 @@ namespace FarmMVP
             displayName = "칼날마법",
             mpCost = 4,
             timeCost = 8,
-            continuous = false,
-            tickInterval = 0f,
             previewColor = new Color(0.8f, 0.25f, 0.25f, 0.45f),
         };
 
@@ -58,8 +50,6 @@ namespace FarmMVP
             displayName = "바위마법",
             mpCost = 5,
             timeCost = 8,
-            continuous = false,
-            tickInterval = 0f,
             previewColor = new Color(0.55f, 0.55f, 0.6f, 0.45f),
         };
 
@@ -68,9 +58,6 @@ namespace FarmMVP
             displayName = "바람마법",
             mpCost = 2,
             timeCost = 2,
-            // 풀은 넓게 깔려 있어서 한 칸씩 끊어 치면 손이 아프다 — 누르고 있으면 이어서 벤다.
-            continuous = true,
-            tickInterval = 0.25f,
             previewColor = new Color(0.55f, 0.85f, 0.6f, 0.45f),
         };
 
@@ -79,8 +66,6 @@ namespace FarmMVP
             displayName = "삽마법",
             mpCost = 2,
             timeCost = 5,
-            continuous = false,
-            tickInterval = 0f,
             previewColor = new Color(0.88f, 0.68f, 0.35f, 0.45f),
         };
 
@@ -90,8 +75,6 @@ namespace FarmMVP
             displayName = "낚시마법",
             mpCost = 2,
             timeCost = 0,
-            continuous = false,
-            tickInterval = 0f,
             previewColor = new Color(0.35f, 0.75f, 0.95f, 0.45f),
         };
 
@@ -147,7 +130,7 @@ namespace FarmMVP
                                          || location.HasDebris(x, y, DebrisKind.Stone)
                                          || location.CanUntill(x, y) || location.CanFillDirt(x, y);
                 // 바람마법: 땅을 덮은 풀(잔디·잡초)을 베어 낸다.
-                case MagicType.Wind: return location.HasCuttablePlant(x, y);
+                case MagicType.Wind: return location.IsHarvestableAt(x, y) || location.HasCuttablePlant(x, y);
                 // 삽마법: "Tillable_{맵}"을 칠해 둔 잔디땅을 흙땅으로 파낸다. 대지마법은 그 흙땅에만 먹힌다.
                 case MagicType.Shovel: return location.CanDig(x, y);
                 case MagicType.Fishing: return FishingController.CanFishAt(location, x, y);
@@ -209,6 +192,11 @@ namespace FarmMVP
                     return location.Untill(x, y) || location.FillDirt(x, y);
 
                 case MagicType.Wind: // 바람마법: 풀 베기 (잔디 -> 목초, 잡초 -> 섬유)
+                    if (location.IsHarvestableAt(x, y))
+                    {
+                        dropTableId = location.HarvestAt(x, y);
+                        return dropTableId != null;
+                    }
                     return location.CutPlant(x, y, out dropTableId);
 
                 case MagicType.Shovel: // 삽마법: 잔디땅 -> 흙땅 (그 칸의 풀은 함께 걷힌다)

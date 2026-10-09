@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -53,7 +54,10 @@ namespace FarmMVP
 
         private TargetIndicator _indicator;
         private bool _magicHeld;
-        private float _waterTickTimer;
+        private float _magicChargeStarted;
+        private MagicType _heldMagic;
+        private GameLocation _chargeLocation;
+        private readonly List<Vector2Int> _magicTiles = new List<Vector2Int>(54);
         private bool _seedHeld;
 
         /// <summary>지난 프레임에 서 있던 칸. 칸이 바뀔 때만 작물을 스치게 하려고 들고 있다.</summary>
@@ -102,7 +106,20 @@ namespace FarmMVP
             if (!_magicHeld && !_seedHeld) return;
             _magicHeld = false;
             _seedHeld = false;
+            _chargeLocation = null;
             _indicator?.Hide();
+        }
+
+        private void OnDisable() => CancelHolds();
+
+        private void OnApplicationFocus(bool focused)
+        {
+            if (!focused) CancelHolds();
+        }
+
+        private void OnDestroy()
+        {
+            if (_indicator != null) Destroy(_indicator.gameObject);
         }
 
         /// <summary>인벤토리/핫바 등 UI 위에서 시작된 클릭이 월드 상호작용으로 새는 것을 막는다.</summary>
@@ -276,7 +293,7 @@ namespace FarmMVP
             // 낚시 중에는 클릭이 전부 낚시로 간다 (FishingController가 직접 읽는다).
             if (_game.Fishing != null && _game.Fishing.IsActive)
             {
-                CancelHolds();   // 물마법은 꾹 누르면 반복 시전이라, 낚시 중에는 홀드를 풀어 둔다
+                CancelHolds();
                 _indicator?.Hide();
                 return;
             }
@@ -291,57 +308,35 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 좌클릭 = 마법 사용.
-        /// 대지/칼날마법: 누르는 즉시 범위를 표시하고, 키를 뗄 때 실제로 시전한다
-        /// (짧게 누르면 거의 즉시 떼어지므로 바로 시전한 것처럼 보이고, 길게 누르면 그동안 이동하며 조준할 수 있다).
-        /// 이어 쓰는 마법(MagicDef.continuous — 물·바람): 누르는 즉시 한 번 시전하고,
-        /// 계속 누르고 있으면 tickInterval마다 반복 시전한다. 넓은 범위를 훑는 마법이라
-        /// 한 칸씩 끊어 누르게 하면 손만 아프다.
+        /// 좌클릭을 누르는 동안 범위를 충전하고, 놓는 순간 유효한 대상을 동시에 시전한다.
+        /// 낚시만 단일 타일을 유지한다. 차징 전용 캐스팅 애니메이션은 추후 연결한다.
         /// </summary>
         private void HandleMagicInput()
         {
             // 원형 메뉴가 열려 있으면 월드 시전보다 방향 클릭을 우선한다.
-            if (QuickSkillHUD.ConsumeRadialClick(_game)) return;
-            if (QuickSkillHUD.IsRadialMenuOpen) return;
+            if (QuickSkillHUD.ConsumeRadialClick(_game) || QuickSkillHUD.IsRadialMenuOpen)
+            {
+                CancelHolds();
+                return;
+            }
+
+            if (_magicHeld && (_heldMagic != _game.CurrentMagic || _chargeLocation != _game.CurrentLocation))
+                CancelHolds();
 
             if (Input.GetMouseButtonDown(0))
             {
                 if (IsPointerOverUI()) return; // 인벤토리/핫바 클릭이 월드 시전으로 새는 것 방지
 
-                _waterTickTimer = 0f;
-
-                if (MagicSystem.Get(_game.CurrentMagic).continuous)
-                {
-                    if (!_game.CastMagicOnFacingTile(this)) return; // MP 부족 - 조준 시작조차 하지 않음
-                    PlayMagicAnimation();
-                }
-
+                _seedHeld = false;
+                _heldMagic = _game.CurrentMagic;
+                _chargeLocation = _game.CurrentLocation;
+                _magicChargeStarted = Time.time;
                 _magicHeld = true;
                 ShowMagicIndicator();
             }
             else if (_magicHeld && Input.GetMouseButton(0))
             {
                 ShowMagicIndicator();
-
-                var held = MagicSystem.Get(_game.CurrentMagic);
-                if (held.continuous)
-                {
-                    _waterTickTimer += Time.deltaTime;
-                    float interval = Mathf.Max(0.05f, held.tickInterval);
-                    if (_waterTickTimer >= interval)
-                    {
-                        _waterTickTimer -= interval;
-                        if (_game.CastMagicOnFacingTile(this))
-                        {
-                            PlayMagicAnimation();
-                        }
-                        else
-                        {
-                            _magicHeld = false;
-                            _indicator.Hide();
-                        }
-                    }
-                }
             }
 
             if (_magicHeld && Input.GetMouseButtonUp(0))
@@ -349,10 +344,12 @@ namespace FarmMVP
                 _magicHeld = false;
                 _indicator.Hide();
 
-                // 이어 쓰는 마법은 누르는 동안 이미 시전했으므로 뗄 때 추가로 시전하지 않는다.
-                if (!MagicSystem.Get(_game.CurrentMagic).continuous && _game.CastMagicOnFacingTile(this))
+                if (IsPointerOverUI()) return;
+                int stage = MagicCharge.Stage(Time.time - _magicChargeStarted, _heldMagic);
+                if (_game.CastMagicOnFacingArea(this, stage))
                     PlayMagicAnimation();
             }
+            else if (_magicHeld && !Input.GetMouseButton(0)) CancelHolds();
         }
 
         /// <summary>
@@ -362,6 +359,7 @@ namespace FarmMVP
         /// </summary>
         private void HandleSeedInput()
         {
+            if (_magicHeld) return;
             bool isSeed = IsSeedSelected();
             bool isPlaceable = _game.SelectedPlaceable != null;
 
@@ -416,16 +414,15 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 조준 사각형을 바라보는 칸에 띄운다. 지금 그 칸에 마법이 먹히지 않으면 —
+        /// 충전 단계에 해당하는 모든 칸을 표시한다. 지금 그 칸에 마법이 먹히지 않으면 —
         /// 경작 마스크 밖이거나, 이미 갈아 둔 땅이거나, 벨 나무가 없거나 — 어두운 색으로 바꿔
         /// 클릭해 보기 전에 알 수 있게 한다.
         /// </summary>
         private void ShowMagicIndicator()
         {
-            var tile = FacingTile();
-            bool ok = MagicSystem.CanApply(_game.CurrentMagic, _game.CurrentLocation, tile.x, tile.y);
-            _indicator.Show(tile, ok ? MagicSystem.Get(_game.CurrentMagic).previewColor
-                                     : MagicSystem.InvalidPreviewColor);
+            int stage = MagicCharge.Stage(Time.time - _magicChargeStarted, _heldMagic);
+            MagicCharge.FillTiles(FacingTile(), facing, stage, _magicTiles);
+            _indicator.ShowMagic(_magicTiles, _heldMagic, _game.CurrentLocation);
         }
 
         /// <summary>

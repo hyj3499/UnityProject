@@ -465,6 +465,7 @@ namespace FarmMVP
             {
                 Data = NewGame();
             }
+            UpgradeMpCapacity();
 
             // 캐릭터 만들기에서 고른 외형이 있으면 세이브 값보다 우선한다 (플레이어를 만들기 전에).
             if (_pendingAppearance != null) Data.farmer.appearance = _pendingAppearance.Clone();
@@ -495,6 +496,24 @@ namespace FarmMVP
             LoadLocation(Data.currentLocation, new Vector2(Data.farmer.posX, Data.farmer.posY), firstBoot: true);
 
             gameObject.AddComponent<CloudShadows>().Init(this, cam);   // 구름 그림자 (야외·낮에만 보인다)
+        }
+
+        /// <summary>
+        /// 기존 세이브도 새 MP 통으로 올리고, 용량이 커진 첫 실행에는 가득 채운다.
+        /// 그 뒤에는 저장된 현재 MP를 그대로 유지한다.
+        /// </summary>
+        private void UpgradeMpCapacity()
+        {
+            if (Data?.farmer == null) return;
+            if (Data.farmer.maxMp != FarmerData.DefaultMaxMp)
+            {
+                Data.farmer.maxMp = FarmerData.DefaultMaxMp;
+                Data.farmer.mp = FarmerData.DefaultMaxMp;
+            }
+            else
+            {
+                Data.farmer.mp = Mathf.Clamp(Data.farmer.mp, 0, Data.farmer.maxMp);
+            }
         }
 
         /// <summary>
@@ -850,42 +869,78 @@ namespace FarmMVP
 
         // ---------- interaction ----------
         /// <summary>
-        /// 좌클릭: 현재 선택된 마법을 바라보는 타일에 시전 시도.
-        /// MP가 부족해 시전 자체를 시작할 수 없었으면 false (호출자가 조준/지속시전을 중단하는 데 사용).
+        /// 단일 타일 시전도 범위 시전과 동일한 판정/이펙트를 사용한다.
         /// </summary>
         public bool CastMagicOnFacingTile(PlayerController pc)
-        {
-            if (Paused) return false;
+            => CastMagicOnFacingArea(pc, 0);
 
-            var def = MagicSystem.Get(CurrentMagic);
+        /// <summary>
+        /// 유효한 대상 중 플레이어에게 가까운 순서대로 적용한다. MP는 대상당 기존 비용,
+        /// 시간은 한 번의 시전 비용이다. MP가 모자라면 가능한 대상까지만 시전한다.
+        /// </summary>
+        public bool CastMagicOnFacingArea(PlayerController pc, int stage)
+        {
+            if (Paused || pc == null || CurrentLocation == null) return false;
+
+            var type = CurrentMagic;
+            var def = MagicSystem.Get(type);
+            var location = CurrentLocation;
 
             // 낚시마법은 물 타일에서 낚시를 시작한다.
             // 낚시는 한 판이 여러 초에 걸쳐 진행되므로 즉시 판정하는 TryApply를 타지 않는다.
             var facing = pc.FacingTile();
-            if (CurrentMagic == MagicType.Fishing && Fishing != null
-                && FishingController.CanFishAt(CurrentLocation, facing.x, facing.y))
+            if (type == MagicType.Fishing)
             {
-                if (Fishing.IsActive) return true;
+                if (Fishing == null || Fishing.IsActive ||
+                    !FishingController.CanFishAt(location, facing.x, facing.y)) return false;
                 if (!TrySpendMp(def.mpCost)) return false;
-                if (!Fishing.TryStartFishing(CurrentLocation, facing)) RefundMp(def.mpCost);
-                return true;
+                bool started = Fishing.TryStartFishing(location, facing);
+                if (!started) RefundMp(def.mpCost);
+                return started;
             }
 
-            if (!TrySpendMp(def.mpCost)) return false;
-
-            var tile = pc.FacingTile();
-            if (MagicSystem.TryApply(CurrentMagic, CurrentLocation, tile.x, tile.y, out string dropTableId))
+            var tiles = new List<Vector2Int>(54);
+            MagicCharge.FillTiles(facing, pc.facing, stage, tiles);
+            var targets = new List<Vector2Int>(tiles.Count);
+            var seen = new HashSet<Vector2Int>();
+            foreach (var tile in tiles)
             {
-                SpendTime(def.timeCost);
+                if (!location.InBounds(tile.x, tile.y) || !MagicSystem.CanApply(type, location, tile.x, tile.y)) continue;
+                var anchor = location.MagicTargetAnchor(type, tile);
+                if (seen.Add(anchor)) targets.Add(anchor);
+            }
+            // 차징 범위의 생성 순서가 아니라 실제 플레이어 위치에서의 거리로 우선순위를 정한다.
+            Vector2 playerPosition = pc.transform.position;
+            targets.Sort((a, b) =>
+            {
+                float aDistance = ((Vector2)a - playerPosition).sqrMagnitude;
+                float bDistance = ((Vector2)b - playerPosition).sqrMagnitude;
+                int comparison = aDistance.CompareTo(bDistance);
+                if (comparison != 0) return comparison;
+                comparison = a.x.CompareTo(b.x);
+                return comparison != 0 ? comparison : a.y.CompareTo(b.y);
+            });
+
+            int affordableCount = def.mpCost > 0 ? Data.farmer.mp / def.mpCost : targets.Count;
+            int castCount = Mathf.Min(targets.Count, affordableCount);
+            if (castCount == 0) return false;
+            if (!TrySpendMp(def.mpCost * castCount)) return false;
+
+            int applied = 0;
+            for (int i = 0; i < castCount; i++)
+            {
+                var tile = targets[i];
+                var position = location.MagicEffectPosition(type, tile);
+                if (!MagicSystem.TryApply(type, location, tile.x, tile.y, out string dropTableId)) continue;
+                applied++;
+                MagicEffect.Play(location.FeatureRoot, type, position, tile.y, pc.facing);
                 if (dropTableId != null)
-                    ItemDropSpawner.Spawn(CurrentLocation.FeatureRoot, this, tile, dropTableId);
+                    ItemDropSpawner.Spawn(location.FeatureRoot, this, tile, dropTableId);
             }
-            else
-            {
-                RefundMp(def.mpCost); // 대상이 없어 아무 일도 없었으면 MP 환불
-            }
-
-            return true;
+            if (applied < castCount) RefundMp(def.mpCost * (castCount - applied));
+            // 시계/날짜 전환이 맵을 다시 만들 수 있으므로 모든 대상 처리 뒤 한 번만 진행한다.
+            if (applied > 0) SpendTime(def.timeCost);
+            return applied > 0;
         }
 
         /// <summary>
