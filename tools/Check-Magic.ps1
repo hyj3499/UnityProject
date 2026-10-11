@@ -1,4 +1,4 @@
-param([string]$UnityEditor = 'C:/Program Files/Unity/Hub/Editor/6000.3.24f1/Editor/Unity.exe')
+param([string]$UnityEditor = 'C:/Program Files/Unity/Hub/Editor/6000.3.24f1/Editor/Unity.exe', [switch]$RenderPreview)
 $ErrorActionPreference = 'Stop'
 $magicRepo = Split-Path $PSScriptRoot -Parent
 $magicProject = Join-Path $magicRepo ('Temp/MagicChecks-' + [guid]::NewGuid().ToString('N'))
@@ -8,9 +8,18 @@ Copy-Item -LiteralPath "$magicRepo/ProjectSettings/ProjectVersion.txt" -Destinat
 Copy-Item -LiteralPath "$magicRepo/Packages/manifest.json" -Destination "$magicProject/Packages/manifest.json"
 Copy-Item -LiteralPath "$magicRepo/Assets/Scripts" -Destination "$magicProject/Assets/Scripts" -Recurse
 Get-ChildItem -LiteralPath "$magicRepo/Assets/Resources/Sprites/MagicEffects" -Filter '*.png' | Copy-Item -Destination "$magicProject/Assets/Resources/Sprites/MagicEffects/"
+# 실제 오브젝트의 크기/피벗도 검증한다. 씬과 세이브는 가져오지 않는다.
+New-Item -ItemType Directory -Path "$magicProject/Assets/Resources/Sprites/Environment", "$magicProject/Assets/Resources/Sprites/Trees" -Force | Out-Null
+foreach ($sheet in @('Stone_spring.png', 'Wood_spring.png')) {
+    Copy-Item -LiteralPath "$magicRepo/Assets/Resources/Sprites/Environment/$sheet", "$magicRepo/Assets/Resources/Sprites/Environment/$sheet.meta" -Destination "$magicProject/Assets/Resources/Sprites/Environment/"
+}
+Get-ChildItem -LiteralPath "$magicRepo/Assets/Resources/Sprites/Trees" -File | Where-Object { $_.Name -match '_spring\.png(\.meta)?$' } | Copy-Item -Destination "$magicProject/Assets/Resources/Sprites/Trees/"
 Copy-Item -LiteralPath "$PSScriptRoot/MagicChecks.cs" -Destination "$magicProject/Assets/Editor/"
 Write-Output "Validation project: $magicProject"
-$magicProcess = Start-Process -FilePath $UnityEditor -ArgumentList @('-batchmode', '-nographics', '-projectPath', ('"' + $magicProject + '"'), '-executeMethod', 'MagicChecks.Run', '-logFile', ('"' + "$magicProject/Editor.log" + '"')) -WindowStyle Hidden -PassThru
+$magicArguments = @('-batchmode', '-projectPath', ('"' + $magicProject + '"'), '-executeMethod', 'MagicChecks.Run', '-logFile', ('"' + "$magicProject/Editor.log" + '"'))
+if ($RenderPreview) { Set-Content -LiteralPath "$magicProject/render-preview" -Value 'render actual artwork' }
+else { $magicArguments += '-nographics' }
+$magicProcess = Start-Process -FilePath $UnityEditor -ArgumentList $magicArguments -WindowStyle Hidden -PassThru
 $magicDeadline = [DateTime]::UtcNow.AddMinutes(4)
 while (-not $magicProcess.WaitForExit(1000)) {
     if ([DateTime]::UtcNow -gt $magicDeadline) {

@@ -1,0 +1,429 @@
+fileFormatVersion: 2
+guid: 6ab3be65560f5a2498ce967656642c48
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3714608990915316426
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_0"
+  - first:
+      213: -6578453627399375341
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_1"
+  - first:
+      213: -8447457985601172560
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_2"
+  - first:
+      213: -3768780134991532973
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_3"
+  - first:
+      213: 4425227560109540479
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_4"
+  - first:
+      213: 5185358022520561584
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_5"
+  - first:
+      213: 9204454096709978677
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_6"
+  - first:
+      213: 7825638033194252648
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_7"
+  - first:
+      213: 6784722612686630509
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_8"
+  - first:
+      213: 4804961215907194630
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_9"
+  - first:
+      213: 9002994044475614708
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_10"
+  - first:
+      213: -4067786599722960472
+    second: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_11"
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_0"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 198
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acacaf64231fc8330800000000000000
+      internalID: 3714608990915316426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_1"
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 82
+        width: 14
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 316fa7fa743a4b4a0800000000000000
+      internalID: -6578453627399375341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_2"
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 80
+        width: 46
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bb8439f7b994ca80800000000000000
+      internalID: -8447457985601172560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_3"
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 0
+        width: 71
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35ce7416f6a92bbc0800000000000000
+      internalID: -3768780134991532973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_4"
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 63
+        width: 65
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7409922501996d30800000000000000
+      internalID: 4425227560109540479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_5"
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 65
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bf5f85f5a716f740800000000000000
+      internalID: 5185358022520561584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_6"
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 16
+        width: 46
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53a89c1db3accbf70800000000000000
+      internalID: 9204454096709978677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_7"
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 64
+        width: 41
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 869745544504a9c60800000000000000
+      internalID: 7825638033194252648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_8"
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 0
+        width: 65
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6e2fbce44d282e50800000000000000
+      internalID: 6784722612686630509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_9"
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 18
+        width: 14
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6076da1a4c6aea240800000000000000
+      internalID: 4804961215907194630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_10"
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 1
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f52def226f01fc70800000000000000
+      internalID: 9002994044475614708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_11"
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 0
+        width: 41
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a93b6db3a15c87c0800000000000000
+      internalID: -4067786599722960472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_0": 3714608990915316426
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_1": -6578453627399375341
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_10": 9002994044475614708
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_11": -4067786599722960472
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_2": -8447457985601172560
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_3": -3768780134991532973
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_4": 4425227560109540479
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_5": 5185358022520561584
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_6": 9204454096709978677
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_7": 7825638033194252648
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_8": 6784722612686630509
+      "Tilled Soil and wet soil - \uBCF5\uC0AC\uBCF8_9": 4804961215907194630
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

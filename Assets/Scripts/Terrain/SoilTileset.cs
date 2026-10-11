@@ -4,9 +4,8 @@ using UnityEngine;
 namespace FarmMVP
 {
     /// <summary>
-    /// "Tilled Soil and wet soil.png"(384x128, 16px 타일)를 런타임에 잘라 쓰는 47-blob 오토타일 시트.
-    /// 시트 왼쪽 12x4 블록이 마른 경작지(Tilled Soil), 오른쪽 12x4 블록이 같은 배치로 짝이 맞는 젖은 흙(Wet Soil)이다.
-    /// (아래쪽 절반은 쓰지 않는 다른 색 변형이라 잘라내지 않는다.)
+    /// "Soil_spring.png"(192x192, 16px 타일)를 런타임에 잘라 쓰는 47-blob 오토타일 시트.
+    /// 위에서부터 12x4 블록씩 개간한 땅, 경작한 땅, 젖은 땅이 같은 배치로 들어 있다.
     ///
     /// 이웃 8칸의 연결 상태를 비트마스크로 만들어 대각선/가로선/세로선/T자/3x3 등
     /// 모든 조합에서 테두리가 자연스럽게 이어지도록 한 칸을 골라 준다.
@@ -15,9 +14,12 @@ namespace FarmMVP
     {
         public const int Tile = 16;                       // 타일 한 변 픽셀 수 (= PPU)
         private const int Cols = 12;                      // 한 블록의 가로 칸 수
-        private const int SheetCols = Cols * 2;           // 시트 한 줄의 전체 칸 수 (마른 흙 + 젖은 흙)
-        private const int WetColOffset = Cols;            // 젖은 흙 블록은 마른 흙 블록 바로 오른쪽
-        private const string SheetPath = "Sprites/Tiles/Tilled Soil and wet soil";
+        private const int SheetCols = Cols;               // 시트 한 줄의 전체 칸 수
+        private const int RowsPerState = 4;                // 한 상태 블록의 세로 칸 수
+        private const int DugRowOffset = 0;                // 개간한 땅은 첫 번째 블록
+        private const int DryRowOffset = RowsPerState;     // 경작한 땅은 두 번째 블록
+        private const int WetRowOffset = RowsPerState * 2; // 젖은 땅은 세 번째 블록
+        private const string SheetPath = "Sprites/Tiles/Soil_spring";
 
         // 이웃 비트. 대각선 비트는 양옆 두 직교 이웃이 모두 이어져 있을 때만 의미가 있다.
         public const int N = 1, NE = 2, E = 4, SE = 8, S = 16, SW = 32, W = 64, NW = 128;
@@ -36,6 +38,7 @@ namespace FarmMVP
             { 241,11, 2 }, { 245,11, 1 }, { 247, 6, 2 }, { 253, 6, 1 }, { 255, 9, 2 },
         };
 
+        private static Sprite[] _dug;   // [정규화 마스크] -> 개간한 땅
         private static Sprite[] _dry;   // [정규화 마스크] -> 마른 경작지
         private static Sprite[] _wet;   // [정규화 마스크] -> 젖은 흙
         private static bool _loaded;
@@ -43,7 +46,14 @@ namespace FarmMVP
         /// <summary>시트를 찾지 못했으면 false — 호출부는 예전 단일 스프라이트로 대체한다.</summary>
         public static bool Available
         {
-            get { EnsureLoaded(); return _dry != null; }
+            get { EnsureLoaded(); return _dug != null && _dry != null && _wet != null; }
+        }
+
+        /// <summary>이웃 8칸 비트마스크에 맞는 개간한 땅 스프라이트.</summary>
+        public static Sprite GetDug(int mask)
+        {
+            EnsureLoaded();
+            return _dug?[Normalize(mask)];
         }
 
         /// <summary>이웃 8칸 비트마스크에 맞는 마른 경작지 스프라이트.</summary>
@@ -82,6 +92,7 @@ namespace FarmMVP
                 return;
             }
 
+            var dug = new Sprite[256];
             var dry = new Sprite[256];
             var wet = new Sprite[256];
             var cache = new Dictionary<int, Sprite>();
@@ -92,17 +103,20 @@ namespace FarmMVP
                 int mask = MaskToCell[i, 0];
                 int tx = MaskToCell[i, 1];
                 int ty = MaskToCell[i, 2];
-                dry[mask] = Slice(tex, tx, ty, cache);
-                wet[mask] = Slice(tex, tx + WetColOffset, ty, cache);
+                dug[mask] = Slice(tex, tx, ty + DugRowOffset, cache);
+                dry[mask] = Slice(tex, tx, ty + DryRowOffset, cache);
+                wet[mask] = Slice(tex, tx, ty + WetRowOffset, cache);
             }
 
             // 표에 없는 마스크(정규화되지 않은 값)는 홀로 떨어진 타일로 대체해 둔다.
             for (int m = 0; m < 256; m++)
             {
+                if (dug[m] == null) dug[m] = dug[0];
                 if (dry[m] == null) dry[m] = dry[0];
                 if (wet[m] == null) wet[m] = wet[0];
             }
 
+            _dug = dug;
             _dry = dry;
             _wet = wet;
         }

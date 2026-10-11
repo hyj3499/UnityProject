@@ -6,12 +6,11 @@ namespace FarmMVP
     // 새로 추가할 때는 <b>맨 뒤에</b> 붙인다 — 저장된 "지금 든 마법"이 번호라서 중간에 끼우면 어긋난다.
     public enum MagicType { Earth, Water, Blade, Rock, Wind, Shovel, Fishing }
 
-    /// <summary>한 마법의 스펙: MP·시간 소모량과 조준 표시 색상.</summary>
+    /// <summary>한 마법의 스펙: MP 소모량과 조준 표시 색상.</summary>
     public struct MagicDef
     {
         public string displayName;
         public int mpCost;
-        public int timeCost;        // 성공 시 소모되는 게임 내 분
         public Color previewColor;  // 조준 중 표시할 타일 하이라이트 색상
     }
 
@@ -25,7 +24,6 @@ namespace FarmMVP
         {
             displayName = "대지마법",
             mpCost = 3,
-            timeCost = 10,
             previewColor = new Color(0.55f, 0.42f, 0.2f, 0.45f),
         };
 
@@ -33,7 +31,6 @@ namespace FarmMVP
         {
             displayName = "물마법",
             mpCost = 2,
-            timeCost = 5,
             previewColor = new Color(0.25f, 0.5f, 0.9f, 0.45f),
         };
 
@@ -41,7 +38,6 @@ namespace FarmMVP
         {
             displayName = "칼날마법",
             mpCost = 4,
-            timeCost = 8,
             previewColor = new Color(0.8f, 0.25f, 0.25f, 0.45f),
         };
 
@@ -49,7 +45,6 @@ namespace FarmMVP
         {
             displayName = "바위마법",
             mpCost = 5,
-            timeCost = 8,
             previewColor = new Color(0.55f, 0.55f, 0.6f, 0.45f),
         };
 
@@ -57,7 +52,6 @@ namespace FarmMVP
         {
             displayName = "바람마법",
             mpCost = 2,
-            timeCost = 2,
             previewColor = new Color(0.55f, 0.85f, 0.6f, 0.45f),
         };
 
@@ -65,7 +59,6 @@ namespace FarmMVP
         {
             displayName = "삽마법",
             mpCost = 2,
-            timeCost = 5,
             previewColor = new Color(0.88f, 0.68f, 0.35f, 0.45f),
         };
 
@@ -74,7 +67,6 @@ namespace FarmMVP
         {
             displayName = "낚시마법",
             mpCost = 2,
-            timeCost = 0,
             previewColor = new Color(0.35f, 0.75f, 0.95f, 0.45f),
         };
 

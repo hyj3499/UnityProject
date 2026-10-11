@@ -11,7 +11,7 @@ namespace FarmMVP.Editor
             var importer = (TextureImporter)assetImporter;
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
-            importer.spritePixelsPerUnit = 32f;
+            importer.spritePixelsPerUnit = MagicEffect.PixelsPerUnit;
             importer.maxTextureSize = 2048;
             importer.npotScale = TextureImporterNPOTScale.None;
             importer.filterMode = FilterMode.Point;

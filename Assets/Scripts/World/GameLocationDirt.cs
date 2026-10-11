@@ -6,10 +6,8 @@ namespace FarmMVP
     /// <summary>
     /// 삽마법으로 잔디땅을 파내 만든 흙땅을 다루는 GameLocation의 반쪽.
     ///
-    /// 저장하는 것은 <b>삽질한 칸</b>뿐이다. 그림은 거기서 계산한다 — 삽질한 칸에는 온전한 흙이,
-    /// 그 둘레 여덟 칸에는 이웃 구덩이에서 넘어오는 테두리 조각이 놓인다 (<see cref="DirtTileset"/>).
-    /// 그래서 한 칸만 파면 3x3 덩어리가 통째로 놓이고, 옆 칸을 더 파면 두 덩어리가 저절로 이어진다.
-    /// 한 칸 띄우고 판 두 구덩이는 이어지지 않는다 — 사이 칸에는 양쪽의 테두리가 겹쳐 놓일 뿐이다.
+    /// 저장하는 것은 <b>삽질한 칸</b>뿐이다. 그림은 경작지와 같은 47-blob 오토타일로 계산하므로,
+    /// 이웃한 개간 칸과 자연스럽게 이어지고 이웃이 바뀐 8칸만 다시 그린다.
     ///
     /// 대지마법은 <b>직접 삽질한 칸</b>에만 쓸 수 있다.
     /// </summary>
@@ -17,19 +15,8 @@ namespace FarmMVP
     {
         public HashSet<Vector2Int> dugTiles = new HashSet<Vector2Int>();
 
-        /// <summary>칸마다 겹쳐 놓은 조각들. 필요한 수만큼만 켜 둔다.</summary>
-        private readonly Dictionary<Vector2Int, List<SpriteRenderer>> _dirtRenderers = new Dictionary<Vector2Int, List<SpriteRenderer>>();
-        private readonly Sprite[] _dirtLayers = new Sprite[DirtTileset.MaxLayers];
+        private readonly Dictionary<Vector2Int, SpriteRenderer> _dirtRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
         private readonly List<DirtData> _outOfBoundsDirts = new List<DirtData>();
-
-        /// <summary>흙 구역인지 — 삽질한 칸이거나 그 둘레 한 칸 (테두리 그림이 놓이는 칸까지 포함).</summary>
-        private bool IsDirtArea(int x, int y)
-        {
-            for (int dy = -1; dy <= 1; dy++)
-                for (int dx = -1; dx <= 1; dx++)
-                    if (dugTiles.Contains(new Vector2Int(x + dx, y + dy))) return true;
-            return false;
-        }
 
         /// <summary>삽마법으로 직접 파낸 칸인지. 대지마법은 이런 칸에만 쓸 수 있다.</summary>
         public bool IsDirt(int x, int y) => dugTiles.Contains(new Vector2Int(x, y));
@@ -104,48 +91,45 @@ namespace FarmMVP
 
         private void RenderDirt(Vector2Int pos)
         {
-            int count = 0;
-            if (dugTiles.Contains(pos))
+            if (!dugTiles.Contains(pos))
             {
-                _dirtLayers[count++] = DirtTileset.Center;
-            }
-            else if (InBounds(pos.x, pos.y) && IsDirtArea(pos.x, pos.y))
-            {
-                count = DirtTileset.GetEdges(
-                    IsDirt(pos.x, pos.y + 1), IsDirt(pos.x + 1, pos.y),
-                    IsDirt(pos.x, pos.y - 1), IsDirt(pos.x - 1, pos.y),
-                    IsDirt(pos.x + 1, pos.y + 1), IsDirt(pos.x + 1, pos.y - 1),
-                    IsDirt(pos.x - 1, pos.y - 1), IsDirt(pos.x - 1, pos.y + 1), _dirtLayers);
+                if (_dirtRenderers.TryGetValue(pos, out var oldRenderer))
+                    oldRenderer.enabled = false;
+                return;
             }
 
-            if (!_dirtRenderers.TryGetValue(pos, out var layers))
+            if (!_dirtRenderers.TryGetValue(pos, out var renderer))
             {
-                if (count == 0) return;
-                layers = new List<SpriteRenderer>();
-                _dirtRenderers[pos] = layers;
+                renderer = PlaceTile(AssetLibrary.Dirt, pos.x, pos.y, Depth.Dirt, _featureRoot);
+                renderer.gameObject.name = $"dirt_{pos.x}_{pos.y}";
+                _dirtRenderers[pos] = renderer;
             }
 
-            for (int i = layers.Count; i < count; i++)
-            {
-                // 겹친 조각끼리 순서가 같으면 누가 위에 그려질지 Unity가 그때그때 정해서, 맵을 다시 지을
-                // 때마다(하루가 지날 때마다) 모양이 달라진다. 한 장씩 순서를 달리해 고정한다.
-                var sr = PlaceTile(null, pos.x, pos.y, Depth.Dirt + i, _featureRoot);
-                sr.gameObject.name = $"dirt_{pos.x}_{pos.y}";
-                layers.Add(sr);
-            }
-            for (int i = 0; i < layers.Count; i++)
-            {
-                layers[i].enabled = i < count;
-                if (i < count) layers[i].sprite = _dirtLayers[i];
-            }
+            renderer.sprite = SoilTileset.GetDug(DirtNeighborMask(pos)) ?? AssetLibrary.Dirt;
+            renderer.enabled = true;
         }
 
-        /// <summary>한 칸을 파거나 메우면 둘레 여덟 칸의 테두리도 달라지므로 같이 다시 그린다.</summary>
+        /// <summary>한 칸을 파거나 메우면 맞닿은 8칸의 오토타일 모양도 달라지므로 같이 다시 그린다.</summary>
         private void RefreshDirtAround(Vector2Int pos)
         {
             for (int dy = -1; dy <= 1; dy++)
                 for (int dx = -1; dx <= 1; dx++)
                     RenderDirt(new Vector2Int(pos.x + dx, pos.y + dy));
+        }
+
+        /// <summary>개간한 땅끼리의 이웃 8칸을 47-blob 오토타일 마스크로 만든다.</summary>
+        private int DirtNeighborMask(Vector2Int p)
+        {
+            int m = 0;
+            if (IsDirt(p.x, p.y + 1)) m |= SoilTileset.N;
+            if (IsDirt(p.x + 1, p.y)) m |= SoilTileset.E;
+            if (IsDirt(p.x, p.y - 1)) m |= SoilTileset.S;
+            if (IsDirt(p.x - 1, p.y)) m |= SoilTileset.W;
+            if (IsDirt(p.x + 1, p.y + 1)) m |= SoilTileset.NE;
+            if (IsDirt(p.x + 1, p.y - 1)) m |= SoilTileset.SE;
+            if (IsDirt(p.x - 1, p.y - 1)) m |= SoilTileset.SW;
+            if (IsDirt(p.x - 1, p.y + 1)) m |= SoilTileset.NW;
+            return SoilTileset.Normalize(m);
         }
 
         // ---------- 저장 / 복원 ----------
@@ -158,11 +142,9 @@ namespace FarmMVP
                 dugTiles.Add(new Vector2Int(d.x, d.y));
             }
 
-            // 이웃 모양을 보려면 전부 채운 뒤에 그려야 한다. 겹치는 칸은 같은 그림으로 다시 놓일 뿐이다.
+            // 이웃 모양을 보려면 전부 채운 뒤에 그려야 한다.
             foreach (var pos in dugTiles)
-                for (int dy = -1; dy <= 1; dy++)
-                    for (int dx = -1; dx <= 1; dx++)
-                        RenderDirt(new Vector2Int(pos.x + dx, pos.y + dy));
+                RenderDirt(pos);
         }
 
         private void SaveDirtInto(LocationData loc)

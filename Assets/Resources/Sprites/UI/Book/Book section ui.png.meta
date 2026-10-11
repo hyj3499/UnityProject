@@ -1,0 +1,1001 @@
+fileFormatVersion: 2
+guid: 78cb3d7ceec61404ea5628f656dcebde
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8890948709361335410
+    second: Book section ui_0
+  - first:
+      213: -9045688879078901166
+    second: Book section ui_1
+  - first:
+      213: -6956112329429694419
+    second: Book section ui_2
+  - first:
+      213: -8711588631509488704
+    second: Book section ui_3
+  - first:
+      213: -6676823024198184566
+    second: Book section ui_4
+  - first:
+      213: 2420745867918574828
+    second: Book section ui_5
+  - first:
+      213: -6191857941655258792
+    second: Book section ui_6
+  - first:
+      213: 7824558240750963871
+    second: Book section ui_7
+  - first:
+      213: 7997811625549321054
+    second: Book section ui_8
+  - first:
+      213: 3959484814558723001
+    second: Book section ui_9
+  - first:
+      213: -8206901142281046242
+    second: Book section ui_10
+  - first:
+      213: -379658730317334049
+    second: Book section ui_11
+  - first:
+      213: -247253817355006145
+    second: Book section ui_12
+  - first:
+      213: 4600782538813240202
+    second: Book section ui_13
+  - first:
+      213: -1161640362059277947
+    second: Book section ui_14
+  - first:
+      213: -1757179280194420255
+    second: Book section ui_15
+  - first:
+      213: -7777627075174934871
+    second: Book section ui_16
+  - first:
+      213: 9175866294205817088
+    second: Book section ui_17
+  - first:
+      213: -9016567699797387401
+    second: Book section ui_18
+  - first:
+      213: 1896142704469848127
+    second: Book section ui_19
+  - first:
+      213: -1010657960738744535
+    second: Book section ui_20
+  - first:
+      213: 6715324706635663731
+    second: Book section ui_21
+  - first:
+      213: -8068479078617316365
+    second: Book section ui_22
+  - first:
+      213: -6106738591154886407
+    second: Book section ui_23
+  - first:
+      213: -447214904853084212
+    second: Book section ui_24
+  - first:
+      213: -1758267075690057564
+    second: Book section ui_25
+  - first:
+      213: -2407347114498196978
+    second: Book section ui_26
+  - first:
+      213: -5435719972482255909
+    second: Book section ui_27
+  - first:
+      213: -6914766022227386834
+    second: Book section ui_28
+  - first:
+      213: -2218667745105600278
+    second: Book section ui_29
+  - first:
+      213: 1827896810532160534
+    second: Book section ui_30
+  - first:
+      213: 7486807435470540767
+    second: Book section ui_31
+  - first:
+      213: -4374502916678925927
+    second: Book section ui_32
+  - first:
+      213: 3506248586414995344
+    second: Book section ui_33
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Book section ui_0
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 860
+        width: 382
+        height: 415
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27c33b1bebef26b70800000000000000
+      internalID: 8890948709361335410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_1
+      rect:
+        serializedVersion: 2
+        x: 668
+        y: 1136
+        width: 391
+        height: 113
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25afccdf3e1477280800000000000000
+      internalID: -9045688879078901166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_2
+      rect:
+        serializedVersion: 2
+        x: 1242
+        y: 1074
+        width: 635
+        height: 189
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d28c0a201bce67f90800000000000000
+      internalID: -6956112329429694419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_3
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 1025
+        width: 243
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cbab8dab483a1780800000000000000
+      internalID: -8711588631509488704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_4
+      rect:
+        serializedVersion: 2
+        x: 749
+        y: 915
+        width: 245
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a819486b5d82753a0800000000000000
+      internalID: -6676823024198184566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_5
+      rect:
+        serializedVersion: 2
+        x: 1238
+        y: 839
+        width: 179
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce408cc8a87389120800000000000000
+      internalID: 2420745867918574828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_6
+      rect:
+        serializedVersion: 2
+        x: 1498
+        y: 900
+        width: 235
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 859f4f7020a121aa0800000000000000
+      internalID: -6191857941655258792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_7
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 624
+        width: 393
+        height: 177
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9c0150834a669c60800000000000000
+      internalID: 7824558240750963871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_8
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 768
+        width: 565
+        height: 113
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e535b599c4fedfe60800000000000000
+      internalID: 7997811625549321054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_9
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 60
+        width: 623
+        height: 505
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bb7359e57ae2f630800000000000000
+      internalID: 3959484814558723001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_10
+      rect:
+        serializedVersion: 2
+        x: 783
+        y: 543
+        width: 578
+        height: 146
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e173793a4ea3b1e80800000000000000
+      internalID: -8206901142281046242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_11
+      rect:
+        serializedVersion: 2
+        x: 1455
+        y: 447
+        width: 66
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd93f83756e2bbaf0800000000000000
+      internalID: -379658730317334049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_12
+      rect:
+        serializedVersion: 2
+        x: 1567
+        y: 447
+        width: 66
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3f023f86f3919cf0800000000000000
+      internalID: -247253817355006145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_13
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 319
+        width: 418
+        height: 191
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8378c2d75349df30800000000000000
+      internalID: 4600782538813240202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_14
+      rect:
+        serializedVersion: 2
+        x: 1455
+        y: 223
+        width: 66
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58953bece3601efe0800000000000000
+      internalID: -1161640362059277947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_15
+      rect:
+        serializedVersion: 2
+        x: 1567
+        y: 223
+        width: 66
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e1c55d21ce3d97e0800000000000000
+      internalID: -1757179280194420255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_16
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 143
+        width: 418
+        height: 146
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a6dcbcf161501490800000000000000
+      internalID: -7777627075174934871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_17
+      rect:
+        serializedVersion: 2
+        x: 1455
+        y: 117
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0012e9c57c9375f70800000000000000
+      internalID: 9175866294205817088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_18
+      rect:
+        serializedVersion: 2
+        x: 1583
+        y: 117
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 777d058e277bed280800000000000000
+      internalID: -9016567699797387401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_19
+      rect:
+        serializedVersion: 2
+        x: 1695
+        y: 117
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f30bf575eb3705a10800000000000000
+      internalID: 1896142704469848127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_20
+      rect:
+        serializedVersion: 2
+        x: 1807
+        y: 117
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9271fbc70fb69f1f0800000000000000
+      internalID: -1010657960738744535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_21
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 15
+        width: 418
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3794c6acd30a13d50800000000000000
+      internalID: 6715324706635663731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_22
+      rect:
+        serializedVersion: 2
+        x: 1455
+        y: 84
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f30851d601070090800000000000000
+      internalID: -8068479078617316365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_23
+      rect:
+        serializedVersion: 2
+        x: 1583
+        y: 84
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f82b023b91804ba0800000000000000
+      internalID: -6106738591154886407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_24
+      rect:
+        serializedVersion: 2
+        x: 1695
+        y: 84
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc7c8f9d96c2bc9f0800000000000000
+      internalID: -447214904853084212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_25
+      rect:
+        serializedVersion: 2
+        x: 1807
+        y: 84
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a0ba3d09616997e0800000000000000
+      internalID: -1758267075690057564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_26
+      rect:
+        serializedVersion: 2
+        x: 1455
+        y: 37
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0af545dd82679ed0800000000000000
+      internalID: -2407347114498196978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_27
+      rect:
+        serializedVersion: 2
+        x: 1583
+        y: 37
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd3f2b51c717094b0800000000000000
+      internalID: -5435719972482255909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_28
+      rect:
+        serializedVersion: 2
+        x: 1695
+        y: 37
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2e123450f0d900a0800000000000000
+      internalID: -6914766022227386834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_29
+      rect:
+        serializedVersion: 2
+        x: 1807
+        y: 37
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae02d5ad075b531e0800000000000000
+      internalID: -2218667745105600278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_30
+      rect:
+        serializedVersion: 2
+        x: 1455
+        y: 4
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 614c6dde67efd5910800000000000000
+      internalID: 1827896810532160534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_31
+      rect:
+        serializedVersion: 2
+        x: 1583
+        y: 4
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdf89fc12bb76e760800000000000000
+      internalID: 7486807435470540767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_32
+      rect:
+        serializedVersion: 2
+        x: 1695
+        y: 4
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 991417e36c4aa43c0800000000000000
+      internalID: -4374502916678925927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book section ui_33
+      rect:
+        serializedVersion: 2
+        x: 1807
+        y: 4
+        width: 82
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0973b7f2382b8a030800000000000000
+      internalID: 3506248586414995344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Book section ui_0: 8890948709361335410
+      Book section ui_1: -9045688879078901166
+      Book section ui_10: -8206901142281046242
+      Book section ui_11: -379658730317334049
+      Book section ui_12: -247253817355006145
+      Book section ui_13: 4600782538813240202
+      Book section ui_14: -1161640362059277947
+      Book section ui_15: -1757179280194420255
+      Book section ui_16: -7777627075174934871
+      Book section ui_17: 9175866294205817088
+      Book section ui_18: -9016567699797387401
+      Book section ui_19: 1896142704469848127
+      Book section ui_2: -6956112329429694419
+      Book section ui_20: -1010657960738744535
+      Book section ui_21: 6715324706635663731
+      Book section ui_22: -8068479078617316365
+      Book section ui_23: -6106738591154886407
+      Book section ui_24: -447214904853084212
+      Book section ui_25: -1758267075690057564
+      Book section ui_26: -2407347114498196978
+      Book section ui_27: -5435719972482255909
+      Book section ui_28: -6914766022227386834
+      Book section ui_29: -2218667745105600278
+      Book section ui_3: -8711588631509488704
+      Book section ui_30: 1827896810532160534
+      Book section ui_31: 7486807435470540767
+      Book section ui_32: -4374502916678925927
+      Book section ui_33: 3506248586414995344
+      Book section ui_4: -6676823024198184566
+      Book section ui_5: 2420745867918574828
+      Book section ui_6: -6191857941655258792
+      Book section ui_7: 7824558240750963871
+      Book section ui_8: 7997811625549321054
+      Book section ui_9: 3959484814558723001
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
