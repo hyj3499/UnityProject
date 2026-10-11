@@ -398,6 +398,10 @@ namespace FarmMVP
         private Camera _cam;
         private float _timeAccum;
 
+        /// <summary>조명용 연속 시각. HUD의 10분 표시 사이에도 부드럽게 흐르며 일시정지 시 멈춘다.</summary>
+        public float LightingMinutes => Data == null ? DayClock.DayStart
+            : Mathf.Min(DayClock.DayEnd, Data.currentMinutes + _timeAccum);
+
         // ---------- camera zoom ----------
         public const float BaseOrthographicSize = 5.5f; // GameBootstrap이 카메라를 만들 때 쓰는 기본값과 같다
         private const string ZoomPrefKey = "farm_mvp_zoom";
@@ -496,6 +500,7 @@ namespace FarmMVP
             LoadLocation(Data.currentLocation, new Vector2(Data.farmer.posX, Data.farmer.posY), firstBoot: true);
 
             gameObject.AddComponent<CloudShadows>().Init(this, cam);   // 구름 그림자 (야외·낮에만 보인다)
+            gameObject.AddComponent<OutdoorLighting>().Init(this, cam);
         }
 
         /// <summary>
@@ -875,8 +880,8 @@ namespace FarmMVP
             => CastMagicOnFacingArea(pc, 0);
 
         /// <summary>
-        /// 유효한 대상 중 플레이어에게 가까운 순서대로 적용한다. MP는 대상당 기존 비용,
-        /// 시간은 한 번의 시전 비용이다. MP가 모자라면 가능한 대상까지만 시전한다.
+        /// 유효한 대상 중 플레이어에게 가까운 순서대로 적용한다. MP는 대상당 기존 비용이며,
+        /// 시간은 평소처럼 실시간으로만 흐른다. MP가 모자라면 가능한 대상까지만 시전한다.
         /// </summary>
         public bool CastMagicOnFacingArea(PlayerController pc, int stage)
         {
@@ -931,15 +936,15 @@ namespace FarmMVP
             {
                 var tile = targets[i];
                 var position = location.MagicEffectPosition(type, tile);
+                var effectSheet = location.MagicEffectSheet(type, tile);
+                var effectSize = location.MagicEffectSize(type, tile);
                 if (!MagicSystem.TryApply(type, location, tile.x, tile.y, out string dropTableId)) continue;
                 applied++;
-                MagicEffect.Play(location.FeatureRoot, type, position, tile.y, pc.facing);
+                MagicEffect.Play(location.FeatureRoot, type, position, tile.y, pc.facing, effectSheet, effectSize);
                 if (dropTableId != null)
                     ItemDropSpawner.Spawn(location.FeatureRoot, this, tile, dropTableId);
             }
             if (applied < castCount) RefundMp(def.mpCost * (castCount - applied));
-            // 시계/날짜 전환이 맵을 다시 만들 수 있으므로 모든 대상 처리 뒤 한 번만 진행한다.
-            if (applied > 0) SpendTime(def.timeCost);
             return applied > 0;
         }
 
@@ -1312,12 +1317,22 @@ namespace FarmMVP
         }
 
         /// <summary>현재 상태를 즉시 저장한다 (F5 단축키와 설정창의 저장 버튼이 공유).</summary>
-        public void SaveNow()
+        public void SaveNow() => TrySaveNow();
+
+        public bool TrySaveNow()
         {
-            if (Events != null && Events.IsRunning) return;
-            SaveInventory();
-            CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
-            SaveSystem.Save(Data);
+            if (Events != null && Events.IsRunning) return false;
+            try
+            {
+                SaveInventory();
+                if (CurrentLocation != null) CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
+                return SaveSystem.TrySave(Data);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[GameManager] Save failed: {e.Message}");
+                return false;
+            }
         }
 
         // manual save hotkey

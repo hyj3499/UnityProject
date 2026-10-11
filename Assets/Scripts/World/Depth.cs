@@ -42,8 +42,7 @@ namespace FarmMVP
         public const int Cliff = -75;
 
         /// <summary>
-        /// 삽마법으로 파낸 흙땅. 장식을 덮고, 절벽·물보다는 뒤라 테두리 조각이 그쪽으로 삐져나오지 않는다.
-        /// 한 칸에 테두리 조각이 여러 장 겹칠 수 있어 -80 ~ -77을 차례로 쓴다 (DirtTileset.MaxLayers).
+        /// 삽마법으로 개간한 땅. 장식을 덮고, 절벽·물보다는 뒤에 그린다.
         /// </summary>
         public const int Dirt = -80;
 
@@ -61,6 +60,9 @@ namespace FarmMVP
 
         /// <summary>낚시 느낌표처럼 무조건 맨 앞에 보여야 하는 것.</summary>
         public const int Overlay = 30000;
+
+        /// <summary>구름 그림자 위, 낚시 느낌표 등 안내 표시 아래의 야외 조명.</summary>
+        public const int OutdoorLighting = Overlay - 500;
 
         /// <summary>y정렬의 기준값. 한 칸 내려올 때마다 PerTile 만큼 앞으로 나온다.</summary>
         private const int YSortBase = 20000;

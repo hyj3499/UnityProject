@@ -156,9 +156,9 @@ namespace FarmMVP
                 Respawn();
             }
 
-            // 목표 가시도: 실내 0, 야간 0, 낮 1 (해 뜨고 질 때 두 시간에 걸쳐 변한다)
+            // 목표 가시도: 실내 0, 야간 0, 낮 1. 야외 조명과 같은 연속 시각을 쓴다.
             bool outdoor = !MapGraph.IsIndoor(_gm.CurrentLocation.id);
-            float target = outdoor ? DaylightFactor(_gm.Data.currentMinutes) : 0f;
+            float target = outdoor ? OutdoorLightingCycle.Sunlight(_gm.LightingMinutes) : 0f;
             _visible = Mathf.MoveTowards(_visible, target, FadeSpeed * Time.deltaTime);
 
             Vector2 half = HalfExtent();
@@ -186,15 +186,5 @@ namespace FarmMVP
             }
         }
 
-        /// <summary>시각(분)에 따른 햇빛 세기 0~1. 06~08시에 밝아지고 17~19시에 어두워진다.</summary>
-        private static float DaylightFactor(int minutes)
-        {
-            float m = minutes % (24 * 60);
-            if (m < 6 * 60) return 0f;                                  // 자정 이후 새벽
-            if (m < 8 * 60) return Mathf.InverseLerp(6 * 60, 8 * 60, m);
-            if (m < 17 * 60) return 1f;
-            if (m < 19 * 60) return 1f - Mathf.InverseLerp(17 * 60, 19 * 60, m);
-            return 0f;
-        }
     }
 }
