@@ -13,6 +13,9 @@ namespace FarmMVP
         /// <summary>게임 중 HUD·인벤토리·상점 등 (UIManager).</summary>
         public const int Gameplay = 0;
 
+        /// <summary>게임 HUD 위의 책 메뉴. 타이틀 화면보다는 아래.</summary>
+        public const int Book = 5;
+
         /// <summary>타이틀 화면.</summary>
         public const int Title = 10;
 

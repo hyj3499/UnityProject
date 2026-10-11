@@ -1,446 +1,368 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace FarmMVP
 {
-    /// <summary>
-    /// I(가방) / ESC(설정) 로 펼쳐지는 책 UI. 오른쪽 가장자리의 책갈피를 누르면 페이지를 넘길 수 있다.
-    /// 모든 위젯은 Book.png 원본 아트의 픽셀 좌표를 기준으로 배치되므로, Scale 상수만 바꿔도
-    /// 전체 배치가 그대로 유지된 채 크기만 달라진다.
-    /// </summary>
+    /// <summary>씬에서 편집한 BookMenuView를 구동한다. UI 배치는 런타임에 재작성하지 않는다.</summary>
     public class BookUI : MonoBehaviour
     {
-        public enum Page { Inventory, Settings, Help }
-
-        private const float Scale = 3f;
-        private const float ArtW = 238f, ArtH = 144f;
-
-        // 9-slice 스프라이트를 아트 3배 크기로 그리기 위한 보정값 (캔버스 기준 100 PPU / 스프라이트 16 PPU)
-        private const float SlicedPpu = 100f / (16f * Scale);
-
-        // 책 양쪽 페이지의 안쪽 사용 영역 (아트 픽셀 좌표)
-        private static readonly Rect LeftPage = new Rect(19, 6, 90, 115);
-        private static readonly Rect RightPage = new Rect(129, 6, 89, 115);
-
-        private const string VolumePrefKey = "farm_mvp_volume";
-
+        public enum Page { Inventory, Skills, Residents, Livestock, Quests, MapEncyclopedia, Tutorial, Settings, Help = Tutorial }
         private UIManager _ui;
         private GameManager _game;
-
-        private RectTransform _root;   // 화면 전체 (어두운 배경 포함)
-        private RectTransform _book;   // 책 자체
-        private Page _current = Page.Inventory;
-
-        private readonly Dictionary<Page, GameObject> _pages = new Dictionary<Page, GameObject>();
-        private readonly Dictionary<Page, Image> _tabs = new Dictionary<Page, Image>();
-
-        private Text _stMoney, _stDate, _stTime, _stHp, _stMp, _stMagic, _stBag;
-        private Slider _volumeSlider;
-        private Slider _zoomSlider;
-
-        public bool IsOpen => _root != null && _root.gameObject.activeSelf;
+        private BookMenuView _view;
+        private Page _current;
+        private bool _open, _closing;
+        private Coroutine _animation;
+        private int _selectedSlot = -1;
+        private readonly List<GameObject> _hiddenHuds = new List<GameObject>();
+        private readonly List<Action> _removeListeners = new List<Action>();
+        private List<Vector2Int> _resolutions;
+        private int _mode, _resolution;
+        private float _zoom;
+        private bool _saveBeforeQuit;
+        public bool IsOpen => _open;
+        public BookMenuView View => _view;
 
         public void Boot(UIManager ui, GameManager game, RectTransform canvas)
         {
             _ui = ui;
             _game = game;
-
-            AudioListener.volume = PlayerPrefs.GetFloat(VolumePrefKey, 1f);
-
-            BuildRoot(canvas);
-            BuildTabs();
-            BuildInventoryPage();
-            BuildSettingsPage();
-            BuildHelpPage();
-
-            _root.gameObject.SetActive(false);
+            AudioListener.volume = PlayerPrefs.GetFloat("farm_mvp_volume", 1f);
+            _view = FindObjectsByType<BookMenuView>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(v => v.configured && v.gameObject.scene == game.gameObject.scene);
+            if (_view == null)
+            {
+                var placeholder = FindObjectsByType<RectTransform>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                    .FirstOrDefault(r => r.name == "MenuBookUI" && r.gameObject.scene == game.gameObject.scene);
+                var root = placeholder != null ? placeholder : BookMenuLayout.Node(canvas, "MenuBookUI", 0, 0, 1, 1);
+                _view = BookMenuLayout.Build(root);
+            }
+            _view.controller = this;
+            _view.gameObject.SetActive(false);
+            _view.confirmation.SetActive(false);
+            Listen(_view.close, Close);
+            for (int i = 0; i < _view.tabs.Length; i++)
+            {
+                int index = i;
+                Listen(_view.tabs[i], () => Open((Page)index));
+            }
+            for (int i = 0; i < _view.slots.Length; i++)
+            {
+                int index = i;
+                Listen(_view.slots[i].button, () => SelectItem(index));
+            }
+            for (int i = 0; i < _view.categories.Length; i++)
+            {
+                int index = i;
+                Listen(_view.categories[i], () => _view.PreviewSettings(index));
+            }
+            Listen(_view.previousMode, () => { _mode = (_mode + 2) % 3; RefreshDisplayLabels(); });
+            Listen(_view.nextMode, () => { _mode = (_mode + 1) % 3; RefreshDisplayLabels(); });
+            Listen(_view.previousResolution, () => StepResolution(-1));
+            Listen(_view.nextResolution, () => StepResolution(1));
+            Listen(_view.applyDisplay, ApplyDisplay);
+            Listen(_view.saveAndQuit, () => AskQuit(true));
+            Listen(_view.quit, () => AskQuit(false));
+            Listen(_view.confirmNo, () => _view.confirmation.SetActive(false));
+            Listen(_view.confirmYes, ConfirmQuit);
+            UnityEngine.Events.UnityAction<float> scaleChanged = value => { _zoom = value; RefreshDisplayLabels(); };
+            _view.scale.onValueChanged.AddListener(scaleChanged);
+            _removeListeners.Add(() => { if (_view != null) _view.scale.onValueChanged.RemoveListener(scaleChanged); });
+            _game.Inventory.OnChanged += RefreshStatus;
+            _game.OnStatsChanged += RefreshStatus;
+            _game.OnMoneyChanged += RefreshStatus;
         }
 
-        // ---------- 열기 / 닫기 ----------
+        private void Listen(Button button, UnityEngine.Events.UnityAction action)
+        {
+            button.onClick.AddListener(action);
+            _removeListeners.Add(() => { if (button != null) button.onClick.RemoveListener(action); });
+        }
+
         public void Toggle(Page page)
         {
-            if (IsOpen && _current == page) { Close(); return; }
-            Open(page);
+            if (_view.confirmation.activeSelf) { _view.confirmation.SetActive(false); return; }
+            if (_open && !_closing && _current == page) Close();
+            else Open(page);
         }
+
+        // 외부 HUD Button의 OnClick에서도 사용할 수 있는 진입점.
+        public void OpenInventory() => Open(Page.Inventory);
+        public void OpenSettings() => Open(Page.Settings);
+        public void OpenPage(int index) => Open((Page)Mathf.Clamp(index, 0, 7));
 
         public void Open(Page page)
         {
+            if (_view == null || _game == null || (int)page < 0 || (int)page >= 8) return;
+            if (_view.confirmation.activeSelf) return;
+            bool opening = !_open || _closing;
+            if (!opening && _current == page) return;
+            bool right = (int)page > (int)_current;
             _current = page;
-            _root.gameObject.SetActive(true);
-            _root.SetAsLastSibling();
-
-            foreach (var kv in _pages)
-                kv.Value.SetActive(kv.Key == page);
-
-            foreach (var kv in _tabs)
-                kv.Value.color = kv.Key == page ? Color.white : new Color(0.62f, 0.62f, 0.62f, 1f);
-
-            if (page == Page.Settings && _volumeSlider != null)
-                _volumeSlider.SetValueWithoutNotify(AudioListener.volume);
-            if (page == Page.Settings && _zoomSlider != null && _game != null)
-                _zoomSlider.SetValueWithoutNotify(_game.ZoomMultiplier);
-
+            _closing = false;
+            _open = true;
+            _view.gameObject.SetActive(true);
+            _view.transform.SetAsLastSibling();
+            HideHuds();
             RefreshStatus();
+            if (page == Page.Inventory) RefreshPortrait();
+            if (page == Page.Settings) LoadDisplay();
+            _ui?.SyncPaused();
+            BeginAnimation(opening ? _view.opening : right ? _view.flipRight : _view.flipLeft, false);
         }
 
         public void Close()
         {
-            _root.gameObject.SetActive(false);
-            PlayerPrefs.Save();
+            if (!_open || _closing) return;
+            _view.confirmation.SetActive(false);
+            _closing = true;
+            BeginAnimation(_view.closing, true);
         }
 
-        /// <summary>왼쪽 페이지의 상태 정보를 현재 게임 상태로 갱신한다.</summary>
+        private void BeginAnimation(Sprite[] frames, bool closing)
+        {
+            if (_animation != null) StopCoroutine(_animation);
+            _animation = StartCoroutine(Animate(frames, closing));
+        }
+
+        private IEnumerator Animate(Sprite[] frames, bool closing)
+        {
+            _view.content.alpha = 0;
+            _view.content.blocksRaycasts = false;
+            _view.bookmarks.SetActive(false);
+            _view.close.gameObject.SetActive(false);
+            foreach (var sprite in frames ?? Array.Empty<Sprite>())
+            {
+                if (sprite == null) continue;
+                SetFrame(sprite);
+                yield return new WaitForSecondsRealtime(1f / Mathf.Max(1, _view.framesPerSecond));
+            }
+            SetFrame(_view.idle);
+            _view.PreviewPage((int)_current);
+            _view.content.alpha = 1;
+            _view.content.blocksRaycasts = true;
+            _view.bookmarks.SetActive(true);
+            _view.close.gameObject.SetActive(true);
+            _animation = null;
+            if (closing) FinishClose();
+        }
+
+        private void SetFrame(Sprite sprite)
+        {
+            // 프레임의 원본 텍스처 좌표로 배치하여 자동 트리밍된 프레임도 제본 위치가 흔들리지 않는다.
+            var rect = _view.background.rectTransform;
+            Vector2 ratio = _view.book.rect.size / _view.idle.rect.size;
+            rect.anchorMin = rect.anchorMax = Vector2.one * .5f;
+            rect.pivot = Vector2.one * .5f;
+            rect.sizeDelta = Vector2.Scale(sprite.rect.size, ratio);
+            rect.anchoredPosition = Vector2.Scale(sprite.rect.center - _view.idle.rect.center, ratio);
+            _view.background.sprite = sprite;
+            _view.background.preserveAspect = false;
+        }
+
+        private void FinishClose()
+        {
+            _open = _closing = false;
+            if (_view != null) _view.gameObject.SetActive(false);
+            RestoreHuds();
+            _ui?.SyncPaused();
+        }
+
+        private void LateUpdate()
+        {
+            if (_open && (_view == null || !_view.gameObject.activeInHierarchy))
+            {
+                if (_animation != null) StopCoroutine(_animation);
+                _animation = null;
+                FinishClose();
+            }
+        }
+
+        private void HideHuds()
+        {
+            var roots = new HashSet<GameObject>(_view.hudRoots.Where(h => h != null));
+            foreach (var rect in FindObjectsByType<RectTransform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (rect.name == "HUD") roots.Add(rect.gameObject);
+            foreach (var hud in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (hud is QuickInventoryHUD || hud is QuickSkillHUD || hud is HPMPBarsHUD || hud is DateTimeHUD)
+                    roots.Add(hud.gameObject);
+            foreach (var root in roots)
+            {
+                if (!root.activeSelf || _view.transform.IsChildOf(root.transform) || transform.IsChildOf(root.transform)) continue;
+                // 이미 HUD 조상을 숨긴 경우에도 activeSelf를 기록하여 원래 상태를 보존한다.
+                if (!_hiddenHuds.Contains(root)) _hiddenHuds.Add(root);
+                root.SetActive(false);
+            }
+        }
+
+        private void RestoreHuds()
+        {
+            foreach (var root in _hiddenHuds) if (root != null) root.SetActive(true);
+            _hiddenHuds.Clear();
+        }
+
         public void RefreshStatus()
         {
-            if (_stMoney == null || _game == null) return;
-            var f = _game.Data.farmer;
-            _stMoney.text = $"{_game.Money:N0} G";
-            _stDate.text = $"{_game.Data.currentDay}일차";
-            _stTime.text = $"{_game.TimeString()} ({(_game.IsDaytime ? "낮" : "밤")})";
-            _stHp.text = $"{f.hp} / {f.maxHp}";
-            _stMp.text = $"{f.mp} / {f.maxMp}";
-            _stMagic.text = MagicSystem.Get(_game.CurrentMagic).displayName;
-            _stBag.text = $"{_game.UnlockedSlots}칸 (Lv.{_game.BackpackLevel})";
-        }
-
-        // ---------- 뼈대 ----------
-        private void BuildRoot(RectTransform canvas)
-        {
-            var rootGo = new GameObject("BookRoot");
-            _root = rootGo.AddComponent<RectTransform>();
-            _root.SetParent(canvas, false);
-            _root.anchorMin = Vector2.zero;
-            _root.anchorMax = Vector2.one;
-            _root.offsetMin = Vector2.zero;
-            _root.offsetMax = Vector2.zero;
-
-            // 뒤 배경을 어둡게 덮어 책에 집중되게 한다 (클릭도 여기서 막힌다).
-            var dim = new GameObject("Dim").AddComponent<Image>();
-            dim.transform.SetParent(_root, false);
-            dim.color = new Color(0, 0, 0, 0.45f);
-            var drt = dim.rectTransform;
-            drt.anchorMin = Vector2.zero; drt.anchorMax = Vector2.one;
-            drt.offsetMin = Vector2.zero; drt.offsetMax = Vector2.zero;
-
-            var bookGo = new GameObject("Book");
-            _book = bookGo.AddComponent<RectTransform>();
-            _book.SetParent(_root, false);
-            _book.anchorMin = _book.anchorMax = new Vector2(0.5f, 0.5f);
-            _book.pivot = new Vector2(0.5f, 0.5f);
-            _book.anchoredPosition = Vector2.zero;
-            _book.sizeDelta = new Vector2(ArtW * Scale, ArtH * Scale);
-
-            var bg = bookGo.AddComponent<Image>();
-            bg.sprite = AssetLibrary.UiBook;
-            bg.raycastTarget = false;
-        }
-
-        private void BuildTabs()
-        {
-            // 우측 상단 HUD와 겹치지 않도록 책 중단부터 아래로 배치한다.
-            AddTab(Page.Inventory, "상태", AssetLibrary.UiBookmarkGreen, 44);
-            AddTab(Page.Settings, "설정", AssetLibrary.UiBookmarkOrange, 74);
-            AddTab(Page.Help, "도움", AssetLibrary.UiBookmarkBlue, 104);
-        }
-
-        private void AddTab(Page page, string label, Sprite sprite, float artY)
-        {
-            // 책 오른쪽 모서리에 살짝 걸쳐서 바깥으로 튀어나오게 배치한다.
-            var rt = Area(_book, "Tab_" + label, new Rect(230, artY, 22, 22));
-
-            var img = rt.gameObject.AddComponent<Image>();
-            img.sprite = sprite;
-
-            var btn = rt.gameObject.AddComponent<Button>();
-            btn.targetGraphic = img;
-            var captured = page;
-            btn.onClick.AddListener(() => Open(captured));
-
-            var text = _ui.Label(rt, label, 15, Vector2.zero, TextAnchor.MiddleCenter);
-            _ui.Stretch(text.rectTransform, 0, 0, 0, 0);
-            text.color = new Color(0.15f, 0.12f, 0.10f);
-
-            _tabs[page] = img;
-        }
-
-        // ---------- 상태 페이지 ----------
-        private void BuildInventoryPage()
-        {
-            var page = NewPage(Page.Inventory);
-
-            // 왼쪽: 상태 정보
-            var left = Area(page, "Status", LeftPage);
-            PageTitle(left, "상태");
-
-            float y = -46f;
-            _stMoney = AddStatusRow(left, ref y, "소지금");
-            _stDate = AddStatusRow(left, ref y, "날짜");
-            _stTime = AddStatusRow(left, ref y, "시간");
-            _stHp = AddStatusRow(left, ref y, "체력");
-            _stMp = AddStatusRow(left, ref y, "마나");
-            _stMagic = AddStatusRow(left, ref y, "마법");
-            _stBag = AddStatusRow(left, ref y, "가방");
-
-            // 가방 격자는 씬의 QuickInventory(QuickInventoryHUD)로 옮겼다.
-        }
-
-        // ---------- 설정 페이지 ----------
-        private void BuildSettingsPage()
-        {
-            var page = NewPage(Page.Settings);
-
-            var left = Area(page, "SettingsInfo", LeftPage);
-            PageTitle(left, "설정");
-
-            var volLabel = _ui.Label(left, "음량", 17, new Vector2(0, -60), TextAnchor.UpperLeft);
-            volLabel.rectTransform.anchorMin = new Vector2(0, 1);
-            volLabel.rectTransform.anchorMax = new Vector2(1, 1);
-            volLabel.rectTransform.pivot = new Vector2(0.5f, 1);
-            volLabel.rectTransform.sizeDelta = new Vector2(0, 26);
-            volLabel.color = TextColor;
-
-            _volumeSlider = BuildSlider(left, new Vector2(0, -92), 0f, 1f, AudioListener.volume, v =>
+            if (_view == null || _game == null || _game.Data == null) return;
+            var farmer = _game.Data.farmer;
+            _view.playerName.text = "이름  " + (string.IsNullOrWhiteSpace(farmer.playerName) ? "농부" : farmer.playerName);
+            string[] seasons = { "봄", "여름", "가을", "겨울" };
+            _view.birthday.text = "생일  " + (farmer.birthdayDay > 0
+                ? seasons[Mathf.Clamp(farmer.birthdaySeason, 0, 3)] + " " + farmer.birthdayDay + "일" : "미등록");
+            _view.money.text = $"소지금  {_game.Money:N0} G";
+            _view.hp.text = $"체력  {farmer.hp} / {farmer.maxHp}";
+            _view.mp.text = $"MP  {farmer.mp} / {farmer.maxMp}";
+            int unlocked = Mathf.Clamp(_game.UnlockedSlots, 0, 30);
+            _view.capacity.text = $"가방  {unlocked} / 30칸";
+            for (int row = 0; row < 3; row++) _view.lockedRows[row].SetActive(row*10 >= unlocked);
+            for (int i = 0; i < _view.slots.Length; i++)
             {
-                AudioListener.volume = v;
-                PlayerPrefs.SetFloat(VolumePrefKey, v);
-            });
+                var slot = _view.slots[i];
+                var stack = _game.Inventory.GetSlot(i);
+                bool filled = i < unlocked && stack != null && !stack.IsEmpty;
+                slot.button.interactable = i < unlocked;
+                slot.icon.sprite = filled ? stack.Def?.GetSprite() : null;
+                slot.icon.enabled = slot.icon.sprite != null;
+                slot.count.text = filled && stack.count > 1 ? stack.count.ToString() : "";
+                slot.selected.enabled = filled && _selectedSlot == i;
+            }
+            if (_selectedSlot >= unlocked) _selectedSlot = -1;
+            ShowItem();
+        }
 
-            var zoomLabel = _ui.Label(left, "화면 확대/축소", 17, new Vector2(0, -120), TextAnchor.UpperLeft);
-            zoomLabel.rectTransform.anchorMin = new Vector2(0, 1);
-            zoomLabel.rectTransform.anchorMax = new Vector2(1, 1);
-            zoomLabel.rectTransform.pivot = new Vector2(0.5f, 1);
-            zoomLabel.rectTransform.sizeDelta = new Vector2(0, 26);
-            zoomLabel.color = TextColor;
+        private void SelectItem(int index)
+        {
+            if (index >= _game.UnlockedSlots) return;
+            _selectedSlot = index;
+            RefreshStatus();
+        }
 
-            _zoomSlider = BuildSlider(left, new Vector2(0, -152), GameManager.MinZoom, GameManager.MaxZoom,
-                _game != null ? _game.ZoomMultiplier : 1f,
-                v => _game?.SetZoom(v));
+        private void ShowItem()
+        {
+            var item = _game.Inventory.GetSlot(_selectedSlot);
+            var def = item != null && !item.IsEmpty ? item.Def : null;
+            _view.itemIcon.sprite = def?.GetSprite();
+            _view.itemIcon.enabled = _view.itemIcon.sprite != null;
+            _view.itemName.text = def != null ? def.displayName : "아이템을 선택하세요";
+            _view.itemDescription.text = def != null ? def.Description : "왼쪽 가방의 아이템을 누르면\n자세한 정보를 볼 수 있습니다.";
+            _view.itemFacts.text = def != null ? $"보유 수량  {item.count}\n" + (def.sellPrice > 0 ? $"판매 가격  {def.sellPrice:N0} G / 개" : "판매할 수 없는 아이템") : "";
+        }
 
-            var note = _ui.Label(left, "ESC 를 다시 누르면 책이 닫힙니다.", 13, new Vector2(0, -190), TextAnchor.UpperLeft);
-            note.rectTransform.anchorMin = new Vector2(0, 1);
-            note.rectTransform.anchorMax = new Vector2(1, 1);
-            note.rectTransform.pivot = new Vector2(0.5f, 1);
-            note.rectTransform.sizeDelta = new Vector2(0, 40);
-            note.color = new Color(0.45f, 0.32f, 0.25f);
-
-            var right = Area(page, "SettingsButtons", RightPage);
-            PageTitle(right, "게임");
-
-            var size = new Vector2(right.sizeDelta.x - 40, 46);
-            BookButton(right, "저장하기", new Vector2(0, -50), size, () =>
+        private void RefreshPortrait()
+        {
+            var parent = _view.portrait;
+            foreach (Transform child in parent)
+                if (child.name.StartsWith("Appearance_")) Destroy(child.gameObject);
+            var player = _game.Player;
+            var animator = player != null ? player.GetComponentInChildren<FarmerAnimator>() : null;
+            var renderers = animator != null ? animator.GetComponentsInChildren<SpriteRenderer>()
+                .Where(r => r.enabled && r.sprite != null).OrderBy(r => r.sortingOrder).ToArray() : Array.Empty<SpriteRenderer>();
+            var placeholder = parent.Find("Placeholder");
+            if (placeholder != null) placeholder.gameObject.SetActive(renderers.Length == 0);
+            if (renderers.Length == 0) return;
+            var bounds = renderers[0].bounds;
+            foreach (var renderer in renderers) bounds.Encapsulate(renderer.bounds);
+            Canvas.ForceUpdateCanvases();
+            float scale = Mathf.Min(parent.rect.width*.88f/Mathf.Max(.01f, bounds.size.x), parent.rect.height*.88f/Mathf.Max(.01f, bounds.size.y));
+            for (int i = 0; i < renderers.Length; i++)
             {
-                _game.SaveNow();
-                _ui.Toast("저장됨");
-            });
-            BookButton(right, "타이틀로 나가기", new Vector2(0, -106), size, () =>
+                var source = renderers[i];
+                var go = new GameObject("Appearance_" + i, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                var rect = (RectTransform)go.transform;
+                rect.SetParent(parent, false);
+                rect.anchorMin = rect.anchorMax = Vector2.one*.5f;
+                rect.anchoredPosition = (Vector2)(source.bounds.center - bounds.center)*scale;
+                rect.sizeDelta = Vector2.Scale(source.sprite.rect.size/source.sprite.pixelsPerUnit,
+                    new Vector2(Mathf.Abs(source.transform.lossyScale.x), Mathf.Abs(source.transform.lossyScale.y)))*scale;
+                rect.localScale = new Vector3(source.flipX ? -1 : 1, source.flipY ? -1 : 1, 1);
+                var image = go.GetComponent<Image>();
+                image.sprite = source.sprite;
+                image.color = source.color;
+                image.raycastTarget = false;
+            }
+        }
+
+        private void LoadDisplay()
+        {
+            _resolutions = BookDisplaySettings.Resolutions();
+            _resolution = _resolutions.FindIndex(r => r.x == Screen.width && r.y == Screen.height);
+            if (_resolution < 0) _resolution = 0;
+            _mode = Mathf.Max(0, Array.IndexOf(BookDisplaySettings.Modes, Screen.fullScreenMode));
+            _zoom = _game.ZoomMultiplier;
+            _view.scale.SetValueWithoutNotify(_zoom);
+            _view.displayMessage.text = "";
+            RefreshDisplayLabels();
+        }
+
+        private void StepResolution(int direction)
+        {
+            _resolution = (_resolution + direction + _resolutions.Count) % _resolutions.Count;
+            RefreshDisplayLabels();
+        }
+
+        private void RefreshDisplayLabels()
+        {
+            _view.modeLabel.text = BookDisplaySettings.ModeNames[_mode];
+            if (_resolutions != null)
             {
-                Close();
-                _ui.SyncPaused();
-                _ui.ShowYesNo("저장하고 타이틀로 나가시겠습니까?", onYes: () =>
-                {
-                    _game.SaveNow();
-                    FindObjectOfType<GameBootstrap>()?.ReturnToTitle();
-                });
-            });
-            BookButton(right, "게임 종료", new Vector2(0, -162), size, () =>
+                var size = _resolutions[_resolution];
+                _view.resolutionLabel.text = $"{size.x} × {size.y}";
+            }
+            _view.scaleLabel.text = $"화면 스케일 (게임 줌)  {_zoom*100:0}%";
+        }
+
+        private void ApplyDisplay()
+        {
+            _game.SetZoom(_zoom);
+            BookDisplaySettings.Apply(_resolutions[_resolution], _mode);
+            _view.displayMessage.text = Application.isEditor ? "저장됨 · 창 모드/해상도는 빌드에서 적용" : "설정을 적용했습니다";
+        }
+
+        private void AskQuit(bool save)
+        {
+            _saveBeforeQuit = save;
+            _view.confirmationText.text = save ? "저장하고 게임을 종료할까요?" : "저장하지 않고 종료할까요?\n저장하지 않은 진행 상황은 사라집니다.";
+            _view.confirmYes.interactable = true;
+            _view.confirmation.SetActive(true);
+        }
+
+        private void ConfirmQuit()
+        {
+            if (_saveBeforeQuit && !_game.TrySaveNow())
             {
-                Close();
-                _ui.SyncPaused();
-                _ui.ShowYesNo("저장하고 게임을 종료하시겠습니까?", onYes: () =>
-                {
-                    _game.SaveNow();
-                    QuitGame();
-                });
-            });
-            BookButton(right, "닫기", new Vector2(0, -218), size, () =>
-            {
-                Close();
-                _ui.SyncPaused();
-            });
-        }
-
-        // ---------- 도움말 페이지 ----------
-        private void BuildHelpPage()
-        {
-            var page = NewPage(Page.Help);
-
-            var left = Area(page, "HelpBasic", LeftPage);
-            PageTitle(left, "조작");
-            BodyText(left,
-                "이동  W A S D\n\n" +
-                "상호작용  E / Space\n(침대에서 잠자기)\n\n" +
-                "가방  I\n\n" +
-                "설정  ESC\n\n" +
-                "빠른 저장  F5\n\n" +
-                "핫바 선택  1 ~ 9\n\n" +
-                "마법 전환  Q");
-
-            var right = Area(page, "HelpAction", RightPage);
-            PageTitle(right, "마법과 농사");
-            BodyText(right,
-                "좌클릭  마법 사용\n" +
-                "우클릭  씨앗 심기 / 수확\n\n" +
-                "대지마법으로 밭을 갈고,\n" +
-                "씨앗을 심은 뒤\n" +
-                "물마법으로 물을 줍니다.\n\n" +
-                "칼날마법으로 나무를,\n" +
-                "바위마법으로 바위를 부숩니다.\n\n" +
-                "다 자란 작물은 옆에 서서\n" +
-                "우클릭하면 바로 수확됩니다.\n\n" +
-                "짧게 누르면 바로 시전,\n" +
-                "길게 누르면 범위를 보며\n" +
-                "이동하다가 손을 뗄 때\n" +
-                "시전됩니다.\n\n" +
-                "물마법은 누르고 있는 동안\n" +
-                "계속 물을 줍니다.");
-        }
-
-        // ---------- 조각 만들기 ----------
-        private static readonly Color TextColor = new Color(0.28f, 0.16f, 0.12f);
-
-        private RectTransform NewPage(Page page)
-        {
-            var go = new GameObject("Page_" + page);
-            var rt = go.AddComponent<RectTransform>();
-            rt.SetParent(_book, false);
-            rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
-            rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
-            _pages[page] = go;
-            return rt;
-        }
-
-        private RectTransform Area(Transform parent, string name, Rect art)
-        {
-            var go = new GameObject(name);
-            var rt = go.AddComponent<RectTransform>();
-            rt.SetParent(parent, false);
-            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            float cx = art.x + art.width / 2f;
-            float cy = art.y + art.height / 2f;
-            rt.anchoredPosition = new Vector2((cx - ArtW / 2f) * Scale, (ArtH / 2f - cy) * Scale);
-            rt.sizeDelta = new Vector2(art.width * Scale, art.height * Scale);
-            return rt;
-        }
-
-        private void PageTitle(RectTransform page, string title)
-        {
-            var t = _ui.Label(page, title, 24, new Vector2(0, -4), TextAnchor.UpperCenter);
-            t.rectTransform.anchorMin = new Vector2(0, 1);
-            t.rectTransform.anchorMax = new Vector2(1, 1);
-            t.rectTransform.pivot = new Vector2(0.5f, 1);
-            t.rectTransform.sizeDelta = new Vector2(0, 34);
-            t.color = TextColor;
-        }
-
-        private void BodyText(RectTransform page, string body)
-        {
-            var t = _ui.Label(page, body, 14, new Vector2(0, -42), TextAnchor.UpperLeft);
-            t.rectTransform.anchorMin = new Vector2(0, 0);
-            t.rectTransform.anchorMax = new Vector2(1, 1);
-            t.rectTransform.pivot = new Vector2(0.5f, 1);
-            t.rectTransform.offsetMin = new Vector2(14, 10);
-            t.rectTransform.offsetMax = new Vector2(-14, -42);
-            t.color = TextColor;
-            t.verticalOverflow = VerticalWrapMode.Truncate;
-            t.horizontalOverflow = HorizontalWrapMode.Wrap;
-        }
-
-        /// <summary>왼쪽 페이지에 "이름 ......... 값" 형태의 한 줄을 추가하고, 값 쪽 Text를 돌려준다.</summary>
-        private Text AddStatusRow(RectTransform page, ref float y, string name)
-        {
-            var nameText = _ui.Label(page, name, 16, Vector2.zero, TextAnchor.MiddleLeft);
-            var nrt = nameText.rectTransform;
-            nrt.anchorMin = new Vector2(0f, 1f);
-            nrt.anchorMax = new Vector2(0.55f, 1f);
-            nrt.offsetMin = new Vector2(14, y - 26);
-            nrt.offsetMax = new Vector2(0, y);
-            nameText.color = new Color(0.5f, 0.36f, 0.28f);
-
-            var valueText = _ui.Label(page, "-", 16, Vector2.zero, TextAnchor.MiddleRight);
-            var vrt = valueText.rectTransform;
-            vrt.anchorMin = new Vector2(0.45f, 1f);
-            vrt.anchorMax = new Vector2(1f, 1f);
-            vrt.offsetMin = new Vector2(0, y - 26);
-            vrt.offsetMax = new Vector2(-14, y);
-            valueText.color = TextColor;
-
-            y -= 32f;
-            return valueText;
-        }
-
-        private Button BookButton(RectTransform parent, string text, Vector2 pos, Vector2 size,
-            UnityEngine.Events.UnityAction onClick)
-        {
-            var go = new GameObject("Btn_" + text);
-            var rt = go.AddComponent<RectTransform>();
-            rt.SetParent(parent, false);
-            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 1f);
-            rt.pivot = new Vector2(0.5f, 1f);
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = size;
-
-            var img = go.AddComponent<Image>();
-            img.sprite = AssetLibrary.UiFrame;
-            img.type = Image.Type.Sliced;
-            img.pixelsPerUnitMultiplier = SlicedPpu;
-
-            var btn = go.AddComponent<Button>();
-            btn.targetGraphic = img;
-            btn.onClick.AddListener(onClick);
-
-            var label = _ui.Label(rt, text, 18, Vector2.zero, TextAnchor.MiddleCenter);
-            _ui.Stretch(label.rectTransform, 0, 0, 0, 0);
-            return btn;
-        }
-
-        private Slider BuildSlider(RectTransform parent, Vector2 pos, float min, float max, float initial,
-            UnityEngine.Events.UnityAction<float> onChanged)
-        {
-            var container = new GameObject("Slider");
-            var rt = container.AddComponent<RectTransform>();
-            rt.SetParent(parent, false);
-            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 1f);
-            rt.pivot = new Vector2(0.5f, 1f);
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = new Vector2(parent.sizeDelta.x - 40, 22);
-
-            var bg = new GameObject("BG").AddComponent<Image>();
-            bg.transform.SetParent(rt, false);
-            bg.color = new Color(0.55f, 0.40f, 0.30f, 1f);
-            _ui.Stretch(bg.rectTransform, 0, 0, 0, 0);
-
-            var fill = new GameObject("Fill").AddComponent<Image>();
-            fill.transform.SetParent(rt, false);
-            fill.color = new Color(0.85f, 0.62f, 0.35f, 1f);
-            _ui.Stretch(fill.rectTransform, 0, 0, 0, 0);
-
-            var handle = new GameObject("Handle");
-            var handleRt = handle.AddComponent<RectTransform>();
-            handleRt.SetParent(rt, false);
-            handleRt.sizeDelta = new Vector2(14, 30);
-            var handleImg = handle.AddComponent<Image>();
-            handleImg.color = new Color(0.35f, 0.20f, 0.14f, 1f);
-
-            var slider = container.AddComponent<Slider>();
-            slider.fillRect = fill.rectTransform;
-            slider.handleRect = handleRt;
-            slider.targetGraphic = handleImg;
-            slider.minValue = min;
-            slider.maxValue = max;
-            slider.value = initial;
-            slider.onValueChanged.AddListener(onChanged);
-            return slider;
-        }
-
-        private static void QuitGame()
-        {
+                _view.confirmationText.text = "저장하지 못했습니다.\n취소 후 다시 시도해 주세요.";
+                _view.confirmYes.interactable = false;
+                return;
+            }
+            PlayerPrefs.Save();
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif
+        }
+
+        private void OnDestroy()
+        {
+            if (_game != null)
+            {
+                _game.Inventory.OnChanged -= RefreshStatus;
+                _game.OnStatsChanged -= RefreshStatus;
+                _game.OnMoneyChanged -= RefreshStatus;
+            }
+            foreach (var remove in _removeListeners) remove();
+            if (_view != null)
+            {
+                _view.controller = null;
+                _view.gameObject.SetActive(false);
+            }
+            RestoreHuds();
+            _open = _closing = false;
+            _ui?.SyncPaused();
         }
     }
 }

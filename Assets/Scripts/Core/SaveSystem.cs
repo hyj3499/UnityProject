@@ -8,17 +8,21 @@ namespace FarmMVP
     {
         private static string Path => System.IO.Path.Combine(Application.persistentDataPath, "farm_save.json");
 
-        public static void Save(GameData data)
+        public static void Save(GameData data) => TrySave(data);
+
+        public static bool TrySave(GameData data)
         {
             try
             {
                 string json = JsonUtility.ToJson(data, true);
                 File.WriteAllText(Path, json);
                 Debug.Log($"[SaveSystem] Saved to {Path}");
+                return true;
             }
             catch (System.Exception e)
             {
                 Debug.LogError($"[SaveSystem] Save failed: {e.Message}");
+                return false;
             }
         }
 

@@ -97,6 +97,10 @@ namespace FarmMVP
     [Serializable]
     public class FarmerData
     {
+        public string playerName = "농부";
+        public int birthdaySeason; // 0=봄, 1=여름, 2=가을, 3=겨울
+        public int birthdayDay;    // 0=미등록. 기존 세이브와 호환된다.
+
         /// <summary>범위 마법을 한 번에 쓸 수 있도록 정한 MP 통의 고정 최대치.</summary>
         public const int DefaultMaxMp = 10000;
 
