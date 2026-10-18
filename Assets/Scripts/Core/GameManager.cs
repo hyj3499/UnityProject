@@ -20,6 +20,7 @@ namespace FarmMVP
         public Inventory ShippingBox { get; private set; }
         public GameLocation CurrentLocation { get; private set; }
         public PlayerController Player { get; private set; }
+        private Vector2Int? _farmHouseReturnDoor;
 
         private bool _uiPaused;
         public StoryEventDirector Events { get; private set; }
@@ -143,6 +144,15 @@ namespace FarmMVP
         {
             if (Paused || CurrentLocation == null) return false;
             if (!InReach(clicked)) return false;
+
+            // 농가 입구는 밟아서 자동으로 들어가지 않는다. 문을 우클릭해야만 실내로 이동하므로
+            // 문 앞을 스치거나 밖으로 나온 직후에 다시 실내로 되돌아가는 일이 없다.
+            if (CurrentLocation.id == LocationId.Farm1 && CurrentLocation.IsDoorAt(clicked))
+            {
+                _farmHouseReturnDoor = clicked;
+                ChangeLocationThroughDoor(LocationId.FarmHouse);
+                return true;
+            }
 
             foreach (var actor in _npcActors)
                 if (actor != null && actor.Tile == clicked) return InteractNpc(actor);
@@ -403,7 +413,8 @@ namespace FarmMVP
             : Mathf.Min(DayClock.DayEnd, Data.currentMinutes + _timeAccum);
 
         // ---------- camera zoom ----------
-        public const float BaseOrthographicSize = 5.5f; // GameBootstrap이 카메라를 만들 때 쓰는 기본값과 같다
+        public const float DefaultOrthographicSize = 5.5f;
+        public float BaseOrthographicSize { get; private set; } = DefaultOrthographicSize;
         private const string ZoomPrefKey = "farm_mvp_zoom";
         public const float MinZoom = 0.6f, MaxZoom = 2.5f;
 
@@ -451,7 +462,11 @@ namespace FarmMVP
             _cam = cam;
             Player = player;
             _locationRoot = locationRoot;
-            SetZoom(PlayerPrefs.GetFloat(ZoomPrefKey, 1f));
+            var cameraSettings = CameraViewSettings.Load();
+            BaseOrthographicSize = cameraSettings != null
+                ? cameraSettings.orthographicSize : DefaultOrthographicSize;
+            float defaultZoom = cameraSettings != null ? cameraSettings.defaultZoom : 1f;
+            SetZoom(PlayerPrefs.GetFloat(ZoomPrefKey, defaultZoom));
 
             ItemDatabase.Init();
             CropDatabase.Init();
@@ -609,7 +624,8 @@ namespace FarmMVP
             if (Events != null && Events.IsRunning) return;
             if (CurrentLocation != null)
                 CurrentLocation.SaveInto(Data.GetLocation(CurrentLocation.id));
-            LoadLocation(id, Vector2.zero, false, spawnAtDoor: true);
+            LoadLocation(id, Vector2.zero, false, spawnAtDoor: true,
+                         doorEntry: id == LocationId.Farm1 ? _farmHouseReturnDoor : null);
         }
 
         /// <summary>
@@ -626,7 +642,8 @@ namespace FarmMVP
         }
 
         private void LoadLocation(LocationId id, Vector2 spawn, bool firstBoot, bool spawnAtDoor = false,
-                                  LocationId? entryFrom = null, Vector2Int entryFromTile = default)
+                                  LocationId? entryFrom = null, Vector2Int entryFromTile = default,
+                                  Vector2Int? doorEntry = null)
         {
             Fishing?.Cancel();   // 던져 둔 찌는 맵을 옮기면 사라진다
 
@@ -648,7 +665,9 @@ namespace FarmMVP
             if (firstBoot)
                 p = new Vector2(Data.farmer.posX, Data.farmer.posY);
             else if (spawnAtDoor)
-                p = CurrentLocation.DoorEntryTile;
+                p = doorEntry.HasValue
+                    ? CurrentLocation.DoorEntryTileFor(doorEntry.Value)
+                    : CurrentLocation.DoorEntryTile;
             else if (entryFrom.HasValue)
                 p = CurrentLocation.FindEntryFrom(entryFrom.Value, entryFromTile);
             // 맵 크기가 칠한 바닥을 따라가므로, 예전 저장 위치가 벽 속일 수 있다.

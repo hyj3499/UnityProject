@@ -63,6 +63,8 @@ namespace FarmMVP
         // 물·절벽은 겹쳐 칠한 레이어("Water_1_{맵}")까지 전부 담는다 — 어느 것에 칠했든 물은 물이다.
         private readonly List<Tilemap> _waterMaps = new List<Tilemap>();
         private readonly List<Tilemap> _cliffMaps = new List<Tilemap>();
+        private CliffPixelCollision _cliffCollision;
+        private bool[,] _cliffBlocked;
         /// <summary>잔디를 깔아 둘 자리를 칠해 둔 마스크. null이면 그런 레이어가 없다.</summary>
         private Tilemap _grassMask;
 
@@ -110,6 +112,7 @@ namespace FarmMVP
 
         public Vector2Int? bedTile;       // FarmHouse
         public Vector2Int? doorExitTile;  // FarmHouse door -> Farm1 ; Farm1 house -> FarmHouse
+        private readonly HashSet<Vector2Int> _doorTiles = new HashSet<Vector2Int>();
 
         /// <summary>
         /// 밟으면 다른 맵으로 넘어가는 칸들. "Obj_Exit{위치}" 마커를 칠해서 만들거나,
@@ -361,6 +364,7 @@ namespace FarmMVP
         ///   장식   "Decor_{id}"     또는 "{id}Decor"      — 꽃·잔디 장식. 막지 않고, 경작지에 덮인다
         ///   절벽   "Cliff_{id}"     또는 "{id}Cliff"      — 칠한 칸은 절벽. 못 지나가고, 덮을 수 없다
         ///   잔디   "Grass_{id}"     또는 "{id}Grass"      — 칠한 칸에 잔디가 <b>처음 한 번</b> 깔린다
+        ///   전경숲 "deepforest_{id}"                    — 항상 캐릭터보다 앞에 보이는 수관·전경 그림
         ///
         /// 마스크 레이어는 "어떤 타일을 칠했는지"는 보지 않고 "칠했는지 아닌지"만 본다. 그래서
         /// 아무 타일이나 하나 골라 영역만 쓱 칠하면 되고, 타일셋의 타일을 하나씩 분류할 필요가 없다.
@@ -384,6 +388,8 @@ namespace FarmMVP
             _breakableObjects = null;
             _waterMaps.Clear();
             _cliffMaps.Clear();
+            _cliffCollision = null;
+            _cliffBlocked = null;
             HasObjectMarkers = false;
             _visibleMaps.Clear();
 
@@ -445,6 +451,11 @@ namespace FarmMVP
                     case TilemapLayer.Cliff:
                         _cliffMaps.Add(tm);
                         Show(tm, tr, Depth.Cliff + overlay);
+                        break;
+                    case TilemapLayer.DeepForest:
+                        // 수관처럼 플레이어가 지나갈 때 그 위로 덮여야 하는 전경 타일이다.
+                        // 타일맵을 그대로 유지하면 투명한 부분에서는 플레이어가 자연스럽게 보인다.
+                        Show(tm, tr, Depth.DeepForest);
                         break;
                     case TilemapLayer.Objects:
                         _objectMarkers = tm;
@@ -532,6 +543,8 @@ namespace FarmMVP
             _tillable = tillableMask != null ? new bool[width, height] : null;
             _water = hasWater ? new bool[width, height] : null;
             _cliff = hasCliff ? new bool[width, height] : null;
+            _cliffCollision = hasCliff ? new CliffPixelCollision(_cliffMaps) : null;
+            _cliffBlocked = hasCliff ? new bool[width, height] : null;
             _path = pathMask != null ? new bool[width, height] : null;
             if (blockedMask == null && tillableMask == null && !hasWater
                 && !hasCliff && pathMask == null) return;
@@ -559,12 +572,12 @@ namespace FarmMVP
                         SetBlocked(x, y, true);
                         waterCount++;
                     }
-                    // 절벽도 칠하기만 하면 못 지나가는 칸이 된다. 경작·씨앗·오브젝트가 덮지 못하는 것은
-                    // CanTill이 IsBlocked를 먼저 보기 때문에 따로 막을 필요가 없다.
+                    // 절벽 지형/배치 제한과 플레이어의 픽셀 충돌을 분리한다.
+                    // NPC 경로·스폰은 막힌 픽셀이 하나라도 있는 칸을 보수적으로 피한다.
                     if (AnyHasTile(_cliffMaps, world))
                     {
                         _cliff[x, y] = true;
-                        SetBlocked(x, y, true);
+                        _cliffBlocked[x, y] = _cliffCollision.HasBlockedPixels(world);
                         cliffCount++;
                     }
                     // 길은 아무것도 막지 않는다 — NPC가 걸을 때만 보는 힌트다.
@@ -582,7 +595,7 @@ namespace FarmMVP
             if (hasWater)
                 Debug.Log($"[GameLocation] Water_{id}: 물 {waterCount}칸 (통행 불가, 낚시마법으로 낚시).");
             if (hasCliff)
-                Debug.Log($"[GameLocation] Cliff_{id}: 절벽 {cliffCount}칸 (통행 불가, 덮을 수 없음).");
+                Debug.Log($"[GameLocation] Cliff_{id}: 절벽 {cliffCount}칸 (플레이어는 팔레트 픽셀 충돌, 덮을 수 없음).");
             if (pathMask != null)
                 Debug.Log($"[GameLocation] {pathMask.name}: NPC가 다니는 길 {pathCount}칸.");
         }
@@ -627,7 +640,7 @@ namespace FarmMVP
             PaintedObjectPlacer.Apply(this, _fixedObjects, _breakableObjects, locData);
         }
 
-        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff, Fixed, Breakable, Grass, Path }
+        private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff, DeepForest, Fixed, Breakable, Grass, Path }
 
         /// <summary>
         /// 레이어 이름을 해석한다. 앞에 계절이 붙어 있으면("Winter_Location_Farm1") 그 계절 전용이다.
@@ -646,6 +659,7 @@ namespace FarmMVP
             ("Water",     "Water",     TilemapLayer.Water,     true),
             ("Decor",     "Decor",     TilemapLayer.Decor,     true),
             ("Cliff",     "Cliff",     TilemapLayer.Cliff,     true),
+            ("deepforest", "DeepForest", TilemapLayer.DeepForest, false),
             ("Fixed",     "Fixed",     TilemapLayer.Fixed,     true),
             ("Breakable", "Breakable", TilemapLayer.Breakable, false),
             ("Grass",     "Grass",     TilemapLayer.Grass,     false),
@@ -674,15 +688,18 @@ namespace FarmMVP
             foreach (LocationId candidate in System.Enum.GetValues(typeof(LocationId)))
                 foreach (var entry in LayerNames)
                 {
-                    if (!name.StartsWith(entry.key, System.StringComparison.Ordinal)
-                        && !name.EndsWith(entry.legacy, System.StringComparison.Ordinal)) continue;
+                    var comparison = entry.layer == TilemapLayer.Cliff
+                        ? System.StringComparison.OrdinalIgnoreCase : System.StringComparison.Ordinal;
+                    if (!name.StartsWith(entry.key, comparison)
+                        && !name.EndsWith(entry.legacy, comparison)) continue;
 
                     locId = candidate; layer = entry.layer; overlay = 0;
-                    if (name == $"{entry.key}_{candidate}" || name == $"{candidate}{entry.legacy}") return true;
+                    if (string.Equals(name, $"{entry.key}_{candidate}", comparison)
+                        || string.Equals(name, $"{candidate}{entry.legacy}", comparison)) return true;
                     if (!entry.stackable) continue;
 
                     for (overlay = 1; overlay <= Depth.MaxOverlay; overlay++)
-                        if (name == $"{entry.key}_{overlay}_{candidate}") return true;
+                        if (string.Equals(name, $"{entry.key}_{overlay}_{candidate}", comparison)) return true;
                 }
             locId = default;
             layer = TilemapLayer.Ground;
@@ -761,7 +778,34 @@ namespace FarmMVP
         public bool IsBlocked(int x, int y)
         {
             if (!InBounds(x, y)) return true;
-            return _blocked[x, y] || _npcBlocked.Contains(new Vector2Int(x, y));
+            return _blocked[x, y] || (_cliffBlocked != null && _cliffBlocked[x, y])
+                || _npcBlocked.Contains(new Vector2Int(x, y));
+        }
+
+        /// <summary>플레이어 발 위치 판정. 절벽만 픽셀 단위이며 물·오브젝트·NPC 충돌은 유지한다.</summary>
+        public bool IsBlockedAtWorld(float x, float y)
+            => IsBlockedAtWorld(x, y, null);
+
+        /// <summary>일반 장애물은 기존 발 위치, 절벽은 Base의 이동 방향 외곽으로 검사한다.</summary>
+        public bool IsBlockedAtWorld(float x, float y, Vector2[] cliffEdge)
+        {
+            if (IsBlockedByNonCliffAtWorld(x, y)) return true;
+            return IsCliffBlockedAtWorld(x, y, cliffEdge);
+        }
+
+        internal bool IsCliffBlockedAtWorld(float x, float y, Vector2[] cliffEdge)
+        {
+            if (_cliffCollision == null) return false;
+            if (cliffEdge == null) return _cliffCollision.IsBlocked(new Vector3(x, y, 0f));
+            foreach (var offset in cliffEdge)
+                if (_cliffCollision.IsBlocked(new Vector3(x + offset.x, y + offset.y, 0f))) return true;
+            return false;
+        }
+
+        internal bool IsBlockedByNonCliffAtWorld(float x, float y)
+        {
+            int tx = Mathf.RoundToInt(x), ty = Mathf.RoundToInt(y);
+            return !InBounds(tx, ty) || _blocked[tx, ty] || _npcBlocked.Contains(new Vector2Int(tx, ty));
         }
 
         internal void SetBlocked(int x, int y, bool v)
@@ -816,7 +860,7 @@ namespace FarmMVP
         }
 
         /// <summary>
-        /// 절벽 칸인지. "Cliff_{id}" 타일맵에 칠한 칸이다. 지나갈 수도, 무언가로 덮을 수도 없다.
+        /// 절벽 칸인지. "Cliff_{id}" 타일맵에 칠한 칸이다. 무언가로 덮을 수 없다.
         /// </summary>
         public bool IsCliff(int x, int y)
         {
@@ -1138,7 +1182,8 @@ namespace FarmMVP
 
         public bool IsBlockedForStory(Vector2Int tile, NpcActor movingNpc)
         {
-            if (!InBounds(tile.x, tile.y) || _blocked[tile.x, tile.y]) return true;
+            if (!InBounds(tile.x, tile.y) || _blocked[tile.x, tile.y]
+                || (_cliffBlocked != null && _cliffBlocked[tile.x, tile.y])) return true;
             if (_npcBlocked.Contains(tile) && (movingNpc == null || movingNpc.Tile != tile)) return true;
             // 컷신 중 출구를 밟고 끝나면 다음 프레임에 의도치 않게 맵이 바뀌므로 제외한다.
             return _exits.ContainsKey(tile) || (doorExitTile.HasValue && doorExitTile.Value == tile);
@@ -1153,12 +1198,33 @@ namespace FarmMVP
             get
             {
                 if (!doorExitTile.HasValue) return new Vector2(width / 2f, height / 2f);
-                var d = doorExitTile.Value;
-                if (!IsBlocked(d.x, d.y + 1)) return new Vector2(d.x, d.y + 1);   // 실내: 문 위쪽
-                if (!IsBlocked(d.x, d.y - 1)) return new Vector2(d.x, d.y - 1);   // 실외: 집 아래쪽
-                return new Vector2(d.x, d.y);
+                return DoorEntryTileFor(doorExitTile.Value);
             }
         }
+
+        /// <summary>
+        /// 특정 문으로 드나들었을 때의 도착 칸. 여러 칸으로 그린 문은 바깥쪽 끝까지 지나서
+        /// 내려놓는다. 그렇지 않으면 문 가운데에서 나와 벽이나 절벽 사이에 갇힐 수 있다.
+        /// </summary>
+        public Vector2 DoorEntryTileFor(Vector2Int door)
+        {
+            var d = door;
+
+            // 야외 문은 아래쪽, 실내 문은 위쪽이 문 앞이다. 세로로 이어진 문 마커는 이 방향의
+            // 끝까지 먼저 훑어 문 그림 한가운데가 아니라 실제 바깥 바닥에 내려놓는다.
+            int direction = MapGraph.IsIndoor(id) ? 1 : -1;
+            while (_doorTiles.Contains(new Vector2Int(d.x, d.y + direction)))
+                d.y += direction;
+
+            int preferredY = d.y + direction;
+            int fallbackY = d.y - direction;
+            if (!IsBlocked(d.x, preferredY)) return new Vector2(d.x, preferredY);
+            if (!IsBlocked(d.x, fallbackY)) return new Vector2(d.x, fallbackY);
+            return new Vector2(d.x, d.y);
+        }
+
+        internal void RegisterDoorTile(Vector2Int tile) => _doorTiles.Add(tile);
+        public bool IsDoorAt(Vector2Int tile) => _doorTiles.Contains(tile);
 
         /// <summary>
         /// 스폰하려는 자리가 막혀 있으면(맵이 줄어들어 벽/테두리 속이 된 경우 등) 가장 가까운

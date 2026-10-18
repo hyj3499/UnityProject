@@ -61,6 +61,12 @@ namespace FarmMVP
         /// <summary>낚시 느낌표처럼 무조건 맨 앞에 보여야 하는 것.</summary>
         public const int Overlay = 30000;
 
+        /// <summary>
+        /// 수관·전경처럼 플레이어와 NPC를 항상 가려야 하는 타일맵. 안내 표시(Overlay) 바로 뒤에
+        /// 두므로, 어느 y좌표에 있든 이 레이어에 칠한 불투명 픽셀은 캐릭터보다 앞에 보인다.
+        /// </summary>
+        public const int DeepForest = Overlay - 100;
+
         /// <summary>구름 그림자 위, 낚시 느낌표 등 안내 표시 아래의 야외 조명.</summary>
         public const int OutdoorLighting = Overlay - 500;
 

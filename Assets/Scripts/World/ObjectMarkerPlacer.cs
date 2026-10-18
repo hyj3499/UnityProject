@@ -192,6 +192,7 @@ namespace FarmMVP
                 case MarkerRole.House:
                     // 아래줄 가운데 칸이 농가로 들어가는 문. 발판에서 이 한 칸만 다시 뚫는다.
                     loc.doorExitTile = new Vector2Int(x + def.size.x / 2, y);
+                    loc.RegisterDoorTile(loc.doorExitTile.Value);
                     loc.SetBlocked(loc.doorExitTile.Value.x, loc.doorExitTile.Value.y, false);
                     break;
 
@@ -214,6 +215,7 @@ namespace FarmMVP
 
                 case MarkerRole.Door:
                     loc.doorExitTile = new Vector2Int(x, y);
+                    loc.RegisterDoorTile(loc.doorExitTile.Value);
                     loc.SetBlocked(x, y, false);
                     loc.SetBlocked(x, y - 1, false);   // 문 아래 벽줄을 열어 준다
                     break;

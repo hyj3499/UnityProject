@@ -1,0 +1,793 @@
+fileFormatVersion: 2
+guid: 41c922d465147d14cb475a4bf73e657f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8468293589203334628
+    second: Tileset_cliff_beach_0
+  - first:
+      213: -1007703829972597358
+    second: Tileset_cliff_beach_1
+  - first:
+      213: -8642668420065559963
+    second: Tileset_cliff_beach_2
+  - first:
+      213: -3501316795992135404
+    second: Tileset_cliff_beach_3
+  - first:
+      213: -7267934357090114917
+    second: Tileset_cliff_beach_4
+  - first:
+      213: -2422801120358206208
+    second: Tileset_cliff_beach_5
+  - first:
+      213: -4626957470504868770
+    second: Tileset_cliff_beach_6
+  - first:
+      213: -7983014460976141198
+    second: Tileset_cliff_beach_7
+  - first:
+      213: 587577641940687365
+    second: Tileset_cliff_beach_8
+  - first:
+      213: -7722912570077444154
+    second: Tileset_cliff_beach_9
+  - first:
+      213: -8671699332104627819
+    second: Tileset_cliff_beach_10
+  - first:
+      213: -4740206009363856482
+    second: Tileset_cliff_beach_11
+  - first:
+      213: -4273045271435927881
+    second: Tileset_cliff_beach_12
+  - first:
+      213: -5987056892657269646
+    second: Tileset_cliff_beach_13
+  - first:
+      213: -7331911528284393046
+    second: Tileset_cliff_beach_14
+  - first:
+      213: -2434838649115693645
+    second: Tileset_cliff_beach_15
+  - first:
+      213: 3309503840570825220
+    second: Tileset_cliff_beach_16
+  - first:
+      213: 3039259949278961908
+    second: Tileset_cliff_beach_17
+  - first:
+      213: -3775987830462971700
+    second: Tileset_cliff_beach_18
+  - first:
+      213: -7271075629162486072
+    second: Tileset_cliff_beach_19
+  - first:
+      213: -3586562022304688325
+    second: Tileset_cliff_beach_20
+  - first:
+      213: -4864921753145038692
+    second: Tileset_cliff_beach_21
+  - first:
+      213: 1515806339959282149
+    second: Tileset_cliff_beach_22
+  - first:
+      213: 5682850161492179764
+    second: Tileset_cliff_beach_23
+  - first:
+      213: 1842582959216761199
+    second: Tileset_cliff_beach_24
+  - first:
+      213: 4097581024390249278
+    second: Tileset_cliff_beach_25
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_0
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 191
+        width: 90
+        height: 257
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1a41d9f8d39a7a80800000000000000
+      internalID: -8468293589203334628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_1
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 367
+        width: 50
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 295cea7a4bae302f0800000000000000
+      internalID: -1007703829972597358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_2
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 399
+        width: 50
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56a718edcd21f0880800000000000000
+      internalID: -8642668420065559963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_3
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 409
+        width: 50
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 419a7c0cce2d86fc0800000000000000
+      internalID: -3501316795992135404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_4
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 409
+        width: 50
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9269ca953c132b90800000000000000
+      internalID: -7267934357090114917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_5
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 401
+        width: 48
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00571a3b73b706ed0800000000000000
+      internalID: -2422801120358206208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 351
+        width: 17
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e54a7bbf1beb9cfb0800000000000000
+      internalID: -4626957470504868770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_7
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 351
+        width: 18
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27ce5b0c4a2a63190800000000000000
+      internalID: -7983014460976141198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_8
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 335
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50a16d190ce772800800000000000000
+      internalID: 587577641940687365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_9
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 319
+        width: 70
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c7822d6fe3b2d490800000000000000
+      internalID: -7722912570077444154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_10
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 319
+        width: 70
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59959eee66fe7a780800000000000000
+      internalID: -8671699332104627819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_11
+      rect:
+        serializedVersion: 2
+        x: 447
+        y: 361
+        width: 50
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9302b9cfb7673eb0800000000000000
+      internalID: -4740206009363856482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 223
+        width: 17
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7be16e617f713b4c0800000000000000
+      internalID: -4273045271435927881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_13
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 223
+        width: 18
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2740c171a73b9eca0800000000000000
+      internalID: -5987056892657269646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_14
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 255
+        width: 50
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa17408af41df3a90800000000000000
+      internalID: -7331911528284393046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_15
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 159
+        width: 230
+        height: 159
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bd21122627b53ed0800000000000000
+      internalID: -2434838649115693645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_16
+      rect:
+        serializedVersion: 2
+        x: 447
+        y: 255
+        width: 81
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40ad3006538bded20800000000000000
+      internalID: 3309503840570825220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_17
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 127
+        width: 61
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f028d832de9d2a20800000000000000
+      internalID: 3039259949278961908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_18
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 162
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc08e01031ff89bc0800000000000000
+      internalID: -3775987830462971700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_19
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 127
+        width: 76
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c625c43d33f71b90800000000000000
+      internalID: -7271075629162486072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_20
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 160
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b375f97d7d8f93ec0800000000000000
+      internalID: -3586562022304688325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_21
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 127
+        width: 20
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9828b3e0735c7cb0800000000000000
+      internalID: -4864921753145038692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_22
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 130
+        width: 13
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e9de89c5d9390510800000000000000
+      internalID: 1515806339959282149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_23
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 128
+        width: 15
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43b3383ec1a8dde40800000000000000
+      internalID: 5682850161492179764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_24
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 63
+        width: 102
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f699d41607b229910800000000000000
+      internalID: 1842582959216761199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tileset_cliff_beach_25
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 63
+        width: 102
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3b79255b388dd830800000000000000
+      internalID: 4097581024390249278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Tileset_cliff_beach_0: -8468293589203334628
+      Tileset_cliff_beach_1: -1007703829972597358
+      Tileset_cliff_beach_10: -8671699332104627819
+      Tileset_cliff_beach_11: -4740206009363856482
+      Tileset_cliff_beach_12: -4273045271435927881
+      Tileset_cliff_beach_13: -5987056892657269646
+      Tileset_cliff_beach_14: -7331911528284393046
+      Tileset_cliff_beach_15: -2434838649115693645
+      Tileset_cliff_beach_16: 3309503840570825220
+      Tileset_cliff_beach_17: 3039259949278961908
+      Tileset_cliff_beach_18: -3775987830462971700
+      Tileset_cliff_beach_19: -7271075629162486072
+      Tileset_cliff_beach_2: -8642668420065559963
+      Tileset_cliff_beach_20: -3586562022304688325
+      Tileset_cliff_beach_21: -4864921753145038692
+      Tileset_cliff_beach_22: 1515806339959282149
+      Tileset_cliff_beach_23: 5682850161492179764
+      Tileset_cliff_beach_24: 1842582959216761199
+      Tileset_cliff_beach_25: 4097581024390249278
+      Tileset_cliff_beach_3: -3501316795992135404
+      Tileset_cliff_beach_4: -7267934357090114917
+      Tileset_cliff_beach_5: -2422801120358206208
+      Tileset_cliff_beach_6: -4626957470504868770
+      Tileset_cliff_beach_7: -7983014460976141198
+      Tileset_cliff_beach_8: 587577641940687365
+      Tileset_cliff_beach_9: -7722912570077444154
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

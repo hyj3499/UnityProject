@@ -41,23 +41,32 @@ namespace FarmMVP
             if (map == null) return;
 
             int placed = 0;
-            for (int x = 0; x < loc.width; x++)
-                for (int y = 0; y < loc.height; y++)
-                {
-                    var cell = map.WorldToCell(new Vector3(x, y, 0f));
-                    var sprite = map.GetSprite(cell);
-                    if (sprite == null) continue;
+            // Location 타일맵의 범위보다 바깥 칸도 훑는다. 키 큰 그림은 발밑이 맵 밖에 있어도
+            // 몸통/윗부분이 화면 안으로 들어올 수 있는데, Location 범위만 순회하면 그 그림 자체가
+            // 만들어지지 않아 카메라에 잘려 보이는 대신 통째로 사라진다.
+            map.CompressBounds();
+            foreach (var cell in map.cellBounds.allPositionsWithin)
+            {
+                var sprite = map.GetSprite(cell);
+                if (sprite == null) continue;
 
-                    // 그림이 한 칸보다 크면 밑동이 칸 바닥에 붙도록 올려 그리고, 앞뒤는 칠한 칸으로 정한다.
-                    // 겹쳐 칠한 것은 밑에 깔린 오브젝트의 발밑을 빌려 와 항상 그 앞에 그린다.
-                    loc.PlaceObject(sprite, x, y + GameLocation.BottomAlignLift(sprite),
-                                    FootBelow(maps, overlay, x, y), overlay);
+                // 씬의 Grid는 Location 타일맵의 왼쪽 아래를 (0, 0)에 맞춰 이동한다.
+                // 그래서 바깥 셀도 월드 중심 좌표로 읽으면 기존의 맵 좌표와 같은 기준으로 놓인다.
+                var world = map.GetCellCenterWorld(cell);
+                int x = Mathf.RoundToInt(world.x);
+                int y = Mathf.RoundToInt(world.y);
 
-                    // 칠한 칸만 막는다. 두 칸을 차지하는 오브젝트는 두 칸에 칠하거나,
-                    // "Blocked_{맵}" 레이어로 막을 자리를 따로 칠하면 된다.
-                    loc.SetObjectBlocked(x, y);
-                    placed++;
-                }
+                // Fixed 타일맵을 SpriteRenderer로 바꾸더라도, 타일 팔레트에서 보던 위치는 그대로여야 한다.
+                // TilemapRenderer도 이 칸 중심에 스프라이트의 pivot을 놓으므로 여기서 BottomAlignLift를
+                // 더하면 키 큰 그림이 플레이 중 위로 한 번 더 밀린다. 정렬 기준(발밑)만 별도로 둔다.
+                // 겹쳐 칠한 것은 밑에 깔린 오브젝트의 발밑을 빌려 와 항상 그 앞에 그린다.
+                loc.PlaceObject(sprite, world.x, world.y, FootBelow(maps, overlay, x, y), overlay);
+
+                // 맵 밖의 타일은 보이기만 하면 된다. 충돌 배열은 Location 범위에만 있으므로
+                // 내부 발밑 칸일 때만 막는다.
+                if (loc.InBounds(x, y)) loc.SetObjectBlocked(x, y);
+                placed++;
+            }
 
             if (placed > 0)
                 Debug.Log($"[PaintedObjects] {map.name}: 부술 수 없는 오브젝트 {placed}개를 놓았습니다.");
@@ -86,9 +95,10 @@ namespace FarmMVP
                         var sprite = below.GetSprite(below.WorldToCell(new Vector3(cx, cy, 0f)));
                         if (sprite == null) continue;
 
-                        // PlaceObject가 놓는 자리 그대로 — 그 그림이 (x, y) 칸 중심을 덮는지 본다.
+                        // Fixed 타일맵/런타임 SpriteRenderer 모두 칸 중심에 sprite pivot을 놓는다.
+                        // 그 위치 그대로, 그림이 (x, y) 칸 중심을 덮는지 본다.
                         var b = sprite.bounds;
-                        float dx = x - cx, dy = y - (cy + GameLocation.BottomAlignLift(sprite));
+                        float dx = x - cx, dy = y - cy;
                         if (dx < b.min.x || dx > b.max.x || dy < b.min.y || dy > b.max.y) continue;
                         if (cy < foot) foot = cy;
                     }

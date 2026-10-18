@@ -82,6 +82,9 @@ namespace FarmMVP
         /// </summary>
         public const int FeetBelowCenter = FrameHeight / 2;
 
+        /// <summary>Base 렌더링과 충돌 외곽이 함께 사용하는 몸의 Y 오프셋.</summary>
+        public const float BodyOffsetY = FeetBelowCenter / PixelsPerUnit - 0.5f;
+
         // =================================================================================
         //  동작표 — 고칠 곳은 여기뿐이다
         // =================================================================================

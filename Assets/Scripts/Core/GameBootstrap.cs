@@ -89,8 +89,9 @@ namespace FarmMVP
                 camGo.tag = "MainCamera";
                 cam = camGo.AddComponent<Camera>();
             }
+            var cameraSettings = CameraViewSettings.Load();
             cam.orthographic = true;
-            cam.orthographicSize = 5.5f;
+            cam.orthographicSize = cameraSettings != null ? cameraSettings.orthographicSize : 5.5f;
             cam.backgroundColor = new Color(0.15f, 0.18f, 0.20f);
             cam.transform.position = new Vector3(8, 7, -10);
 

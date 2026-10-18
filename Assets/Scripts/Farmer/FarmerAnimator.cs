@@ -25,7 +25,7 @@ namespace FarmMVP
         /// 그림을 얼마나 올려 그릴지. 그림의 축은 칸 한가운데에 있고 발바닥은 칸 맨 아래에
         /// 있어서, 그 차이만큼 올려 주면 서 있는 타일의 아래 모서리에 발이 닿는다.
         /// </summary>
-        private const float FeetOffset = FarmerPoses.FeetBelowCenter / PixelsPerUnit - 0.5f;
+        private const float FeetOffset = FarmerPoses.BodyOffsetY;
 
         /// <summary>칸 안에서 몸의 앞뒤 순서.</summary>
         private const int BodyOrder = 2;

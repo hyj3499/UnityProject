@@ -15,6 +15,10 @@ namespace FarmMVP
         public float runSpeed = 5.2f;
         public float walkSpeed = 2.6f;
 
+        [Range(0, 3)]
+        [Tooltip("절벽의 작은 돌출부를 피할 수 있는 최대 픽셀 수. 0이면 보정을 끕니다.")]
+        public int cliffSlidePixels = 3;
+
         public Direction facing = Direction.Down;
 
         private GameManager _game;
@@ -22,6 +26,11 @@ namespace FarmMVP
         private bool _moving;
         private bool _running;
         private bool _storyControlled;
+        private Vector2 _cliffSlideAway, _cliffSlideTangent;
+        private GameLocation _cliffSlideLocation;
+        private bool _cliffUseFeet;
+        private GameLocation _cliffFootprintLocation;
+        private Direction CliffCollisionFacing => _cliffUseFeet ? Direction.Up : facing;
 
         public void BeginStoryControl()
         {
@@ -169,6 +178,7 @@ namespace FarmMVP
                 move = move.normalized * (_running ? runSpeed : walkSpeed) * Time.deltaTime;
                 TryMove(move);
             }
+            else ClearCliffSlide();
 
             UpdateAnimation();
         }
@@ -176,29 +186,162 @@ namespace FarmMVP
         private void TryMove(Vector2 delta)
         {
             var loc = _game.CurrentLocation;
-            Vector3 target = transform.position + (Vector3)delta;
-
-            // axis-separated collision against tile grid using a small footprint
             float cx = transform.position.x, cy = transform.position.y;
+            RefreshCliffFootprint(loc, cx, cy);
+            if (_cliffSlideLocation != loc || cliffSlidePixels <= 0
+                || Vector2.Dot(delta, _cliffSlideTangent) <= 0f
+                || Vector2.Dot(delta, _cliffSlideAway) > 0f)
+                ClearCliffSlide();
+            else if (_cliffSlideAway != Vector2.zero)
+            {
+                // 벽이 끝나면 즉시 원래 대각선 입력으로 돌아간다.
+                var inward = -_cliffSlideAway;
+                var probe = new Vector2(cx, cy) + inward *
+                    (Mathf.Clamp(cliffSlidePixels, 0, 3) / FarmerPoses.PixelsPerUnit + CliffPixelCollision.MovementStep);
+                Direction side = inward.x != 0f ? (inward.x > 0 ? Direction.Right : Direction.Left)
+                    : (inward.y > 0 ? Direction.Up : Direction.Down);
+                if (!loc.IsBlockedAtWorld(probe.x, probe.y, FarmerBodyCollision.LeadingEdge(CliffCollisionFacing, side)))
+                    ClearCliffSlide();
+            }
+            // 반 픽셀씩 검사해 저프레임/달리기에서도 1px 절벽을 건너뛰지 않는다.
+            int steps = Mathf.Max(1, Mathf.CeilToInt(Mathf.Max(Mathf.Abs(delta.x), Mathf.Abs(delta.y))
+                / CliffPixelCollision.MovementStep));
+            Vector2 step = delta / steps;
+            for (int i = 0; i < steps; i++)
+            {
+                // 방향 전환 직후 상체가 절벽에 겹쳐 있으면 발끝 판정을 유지한다.
+                // 소단계마다 확인하므로 절벽에서 벗어나면 즉시 원래 외곽으로 복귀한다.
+                RefreshCliffFootprint(loc, cx, cy);
+                var xEdge = step.x != 0f ? FarmerBodyCollision.LeadingEdge(CliffCollisionFacing,
+                    step.x > 0f ? Direction.Right : Direction.Left) : null;
+                var yEdge = step.y != 0f ? FarmerBodyCollision.LeadingEdge(CliffCollisionFacing,
+                    step.y > 0f ? Direction.Up : Direction.Down) : null;
+                float beforeX = cx, beforeY = cy;
+                if (step.x != 0f && step.x * _cliffSlideAway.x >= 0f)
+                {
+                    float nx = cx + step.x;
+                    if (!loc.IsBlockedAtWorld(nx, cy, xEdge)) cx = nx;
+                    else if (TryLeaveThroughEdge(loc, nx, cy)) return;
+                }
+                if (step.y != 0f && step.y * _cliffSlideAway.y >= 0f)
+                {
+                    float ny = cy + step.y;
+                    if (!loc.IsBlockedAtWorld(cx, ny, yEdge)) cy = ny;
+                    else if (TryLeaveThroughEdge(loc, cx, ny)) return;
+                }
 
-            // X
-            float nx = cx + delta.x;
-            if (!IsSolidAtWorld(nx, cy, loc)) cx = nx;
-            else if (TryLeaveThroughEdge(loc, nx, cy)) return;   // 맵 밖으로 한 발 내디뎠다
-            // Y
-            float ny = cy + delta.y;
-            if (!IsSolidAtWorld(cx, ny, loc)) cy = ny;
-            else if (TryLeaveThroughEdge(loc, cx, ny)) return;
+                // 한 축이라도 진행 중이면 기존 축 분리 슬라이딩을 유지한다.
+                // 완전히 걸린 경우에만 3px 이내의 안전한 우회 경로를 찾는다.
+                if (cx == beforeX && cy == beforeY && cliffSlidePixels > 0)
+                {
+                    var position = new Vector2(cx, cy);
+                    Vector2 correction;
+                    bool horizontalFirst = _cliffSlideTangent != Vector2.zero
+                        ? _cliffSlideTangent.x != 0f : Mathf.Abs(step.x) >= Mathf.Abs(step.y);
+                    bool slid = horizontalFirst
+                        ? TryCliffSlide(loc, position, new Vector2(step.x, 0f), xEdge, step.y, out correction)
+                        : TryCliffSlide(loc, position, new Vector2(0f, step.y), yEdge, step.x, out correction);
+                    if (!slid)
+                        slid = horizontalFirst
+                            ? TryCliffSlide(loc, position, new Vector2(0f, step.y), yEdge, step.x, out correction)
+                            : TryCliffSlide(loc, position, new Vector2(step.x, 0f), xEdge, step.y, out correction);
+                    if (slid)
+                    {
+                        // 옆으로 순간이동하지 않고, 이번 소단계의 이동량만큼만 비켜 간다.
+                        // 이 소단계에는 전진을 더하지 않으므로 보정으로 이동 속도가 늘지 않는다.
+                        cx += correction.x;
+                        cy += correction.y;
+                    }
+                }
 
-            transform.position = new Vector3(cx, cy, 0);
-            CheckExits(loc);
+                transform.position = new Vector3(cx, cy, 0);
+                CheckExits(loc);
+                if (_game.CurrentLocation != loc) return;
+            }
         }
 
-        private bool IsSolidAtWorld(float wx, float wy, GameLocation loc)
+        private void RefreshCliffFootprint(GameLocation loc, float x, float y)
         {
-            int tx = Mathf.RoundToInt(wx);
-            int ty = Mathf.RoundToInt(wy);
-            return loc.IsBlocked(tx, ty);
+            if (_cliffFootprintLocation != loc)
+            {
+                _cliffFootprintLocation = loc;
+                _cliffUseFeet = false;
+            }
+            if (facing == Direction.Up)
+            {
+                _cliffUseFeet = true;
+                return;
+            }
+            if (!_cliffUseFeet) return;
+            // 발끝으로 합법적으로 접근한 위치에서 몸 판정을 갑자기 확대하면 갇힌다.
+            // 시각적인 방향은 그대로 바꾸고, 몸 전체가 절벽 밖일 때만 판정을 확대한다.
+            for (int d = 0; d < 4; d++)
+                if (loc.IsCliffBlockedAtWorld(x, y, FarmerBodyCollision.LeadingEdge(facing, (Direction)d)))
+                    return;
+            _cliffUseFeet = false;
+        }
+
+        private void ClearCliffSlide()
+        {
+            _cliffSlideAway = _cliffSlideTangent = Vector2.zero;
+            _cliffSlideLocation = null;
+        }
+
+        private bool TryCliffSlide(GameLocation loc, Vector2 position, Vector2 forward,
+            Vector2[] forwardEdge, float preferredSide, out Vector2 correction)
+        {
+            correction = Vector2.zero;
+            if (forwardEdge == null || forward.sqrMagnitude == 0f) return false;
+            var target = position + forward;
+            // 물·오브젝트·NPC·맵 경계에 대한 충돌은 절벽 보정으로 우회하지 않는다.
+            if (loc.IsBlockedByNonCliffAtWorld(target.x, target.y)
+                || !loc.IsBlockedAtWorld(target.x, target.y, forwardEdge)) return false;
+
+            bool horizontal = forward.x != 0f;
+            var side = horizontal ? Vector2.up : Vector2.right;
+            if (preferredSide < 0f) side = -side;
+            Direction positive = horizontal ? (side.y > 0 ? Direction.Up : Direction.Down)
+                : (side.x > 0 ? Direction.Right : Direction.Left);
+            Direction negative = horizontal ? (side.y > 0 ? Direction.Down : Direction.Up)
+                : (side.x > 0 ? Direction.Left : Direction.Right);
+            var positiveEdge = FarmerBodyCollision.LeadingEdge(CliffCollisionFacing, positive);
+            var negativeEdge = FarmerBodyCollision.LeadingEdge(CliffCollisionFacing, negative);
+            bool positiveOpen = true, negativeOpen = true;
+            float maxDistance = Mathf.Clamp(cliffSlidePixels, 0, 3) / FarmerPoses.PixelsPerUnit;
+            int samples = Mathf.CeilToInt(maxDistance / CliffPixelCollision.MovementStep);
+            for (int i = 1; i <= samples; i++)
+            {
+                float distance = Mathf.Min(i * CliffPixelCollision.MovementStep, maxDistance);
+                // 모든 중간 위치를 확인한다. 끝점만 보고 얇은 벽 건너편으로 보정하지 않는다.
+                for (int sign = 1; sign >= -1; sign -= 2)
+                {
+                    if (sign > 0 ? !positiveOpen : !negativeOpen) continue;
+                    var candidate = position + side * (distance * sign);
+                    var sideEdge = sign > 0 ? positiveEdge : negativeEdge;
+                    if (loc.IsBlockedAtWorld(candidate.x, candidate.y, sideEdge))
+                    {
+                        if (sign > 0) positiveOpen = false;
+                        else negativeOpen = false;
+                        continue;
+                    }
+                    var onward = candidate + forward;
+                    if (loc.IsBlockedAtWorld(onward.x, onward.y, forwardEdge)) continue;
+                    float amount = Mathf.Min(forward.magnitude, CliffPixelCollision.MovementStep);
+                    correction = side * (amount * sign);
+                    var next = position + correction;
+                    // 짧은 마지막 이동도 별도로 확인한다 (초고프레임/작은 입력량).
+                    if (!loc.IsBlockedAtWorld(next.x, next.y, sideEdge))
+                    {
+                        // 대각선으로 벽을 누르는 입력이 다음 소단계에서 보정을 되돌리지 않게 한다.
+                        _cliffSlideAway = side * sign;
+                        _cliffSlideTangent = forward.normalized;
+                        _cliffSlideLocation = loc;
+                        return true;
+                    }
+                }
+                if (!positiveOpen && !negativeOpen) break;
+            }
+            return false;
         }
 
         /// <summary>
@@ -237,15 +380,6 @@ namespace FarmMVP
             {
                 _game.ChangeLocationThroughExit(exitTarget, new Vector2Int(tx, ty));
                 return;
-            }
-            // Farm1 house door -> FarmHouse
-            if (loc.id == LocationId.Farm1 && loc.doorExitTile.HasValue)
-            {
-                if (tx == loc.doorExitTile.Value.x && ty == loc.doorExitTile.Value.y)
-                {
-                    _game.ChangeLocationThroughDoor(LocationId.FarmHouse);
-                    return;
-                }
             }
             // FarmHouse door -> Farm1
             if (loc.id == LocationId.FarmHouse && loc.doorExitTile.HasValue)

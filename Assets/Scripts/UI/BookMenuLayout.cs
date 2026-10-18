@@ -9,6 +9,8 @@ namespace FarmMVP
     public static class BookMenuLayout
     {
         public const string ArtRoot = "Sprites/UI/Book/";
+        public const float ScaleIncrease = 1.5f;
+        public const float BookScale = 1.25f * ScaleIncrease;
         public static readonly string[] PageNames = { "Inventory", "Skills", "Residents", "Livestock", "Quests", "MapEncyclopedia", "Tutorial", "Settings" };
         private static readonly string[] PageLabels = { "인벤토리", "스킬", "주민", "가축", "퀘스트", "지도도감", "튜토리얼", "설정" };
         private static readonly Color Ink = new Color(0.27f, 0.17f, 0.12f);
@@ -33,7 +35,7 @@ namespace FarmMVP
             view.dim.transform.SetAsFirstSibling();
             view.book = Node(root, "Book", .5f, .5f, .5f, .5f);
             view.book.sizeDelta = new Vector2(663, 418);
-            view.book.localScale = new Vector3(1.25f, 1.25f, 1);
+            view.book.localScale = new Vector3(BookScale, BookScale, 1);
             view.idle = Sprite("Inventory Book/Book Idle/1");
             view.background = Picture(view.book, "Background", 0, 0, 1, 1, view.idle);
             view.background.raycastTarget = true;
@@ -177,6 +179,7 @@ namespace FarmMVP
             v.confirmation = shield.gameObject;
             var card = Picture(shield.transform, "Card", .5f, .5f, .5f, .5f, Sprite("Content/5 Holders/5"));
             card.rectTransform.sizeDelta = new Vector2(340, 180);
+            card.rectTransform.localScale = new Vector3(ScaleIncrease, ScaleIncrease, 1);
             v.confirmationText = Label(card.transform, "Question", "게임을 종료할까요?", .08f, .44f, .92f, .88f, 16, TextAnchor.MiddleCenter);
             v.confirmYes = Button(card.transform, "Yes", "종료", .1f, .12f, .46f, .36f, Sprite("Content/4 Buttons/0"), 14);
             v.confirmNo = Button(card.transform, "No", "취소", .54f, .12f, .9f, .36f, Sprite("Content/4 Buttons/0"), 14);

@@ -15,7 +15,7 @@ namespace FarmMVP
         private const string SpritePath =
             "Assets/Resources/Sprites/UI/Book/Inventory Book/Book Idle/1.png";
         private const string UndoName = "Create Book UI Layout";
-        private const float BookScale = 1.25f;
+        private const float BookScale = BookMenuLayout.BookScale;
 
         private static readonly string[] Pages =
         {
@@ -83,7 +83,7 @@ namespace FarmMVP
             Selection.activeGameObject = view.pages[page];
         }
 
-        [MenuItem(MenuPath + "Apply Book Scale 1.25x", false, 20)]
+        [MenuItem(MenuPath + "Apply Book Scale 1.875x", false, 20)]
         public static void ApplyBookScale()
         {
             if (!CanCreate()) return;
@@ -102,15 +102,22 @@ namespace FarmMVP
                 return;
             }
 
-            Undo.RecordObjects(books, "Apply Book Scale 1.25x");
+            Undo.RecordObjects(books, "Apply Book Scale 1.875x");
             foreach (var book in books)
             {
                 // 절대 배율을 지정하므로 반복 실행해도 계속 커지지 않는다.
                 book.localScale = new Vector3(BookScale, BookScale, book.localScale.z);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(book);
+                var card = book.parent.Find("Confirmation/Card");
+                if (card != null)
+                {
+                    Undo.RecordObject(card, "Apply Book Confirmation Scale");
+                    card.localScale = new Vector3(BookMenuLayout.ScaleIncrease, BookMenuLayout.ScaleIncrease, card.localScale.z);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(card);
+                }
                 EditorSceneManager.MarkSceneDirty(book.gameObject.scene);
             }
-            Debug.Log($"Book UI: {books.Length}개 책의 배경과 모든 하위 UI에 1.25배 크기를 적용했습니다.");
+            Debug.Log($"Book UI: {books.Length}개 책의 배경과 모든 하위 UI에 {BookScale}배 크기를 적용했습니다.");
         }
 
         [MenuItem(MenuPath + "Create Menu Book", true)]

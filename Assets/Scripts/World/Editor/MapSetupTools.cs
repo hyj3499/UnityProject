@@ -14,7 +14,7 @@ namespace FarmMVP
     ///                           이름 규칙(Location_/Blocked_/Objects_...)대로 만들어 주므로
     ///                           만들자마자 타일 팔레트로 칠하기 시작하면 된다.
     ///   맵 연결 검사            MapGraph에 적힌 통로마다 "Obj_Exit{맵}" 마커를 양쪽에 칠했는지 훑어본다.
-    ///   출구 타일 팔레트에 넣기  Obj_Exit* 타일을 마커 팔레트(object.prefab)에 한 줄로 넣어 준다.
+    ///   출구 타일 팔레트에 넣기  Obj_Exit* 타일을 출구 팔레트(exit.prefab)에 한 줄로 넣어 준다.
     ///
     /// 이미 있는 것은 건드리지 않으므로 몇 번을 눌러도 안전하다.
     /// </summary>
@@ -22,7 +22,23 @@ namespace FarmMVP
     {
         private const string MenuRoot = "Tools/FarmMVP/";
         private const string MarkerFolder = "Assets/Resources/Sprites/Tiles/Markers";
-        private const string PalettePath = MarkerFolder + "/object.prefab";
+        private const string PalettePath = MarkerFolder + "/exit.prefab";
+        // GridPalette 설정을 직접 직렬화하지 않기 위해, 기존 팔레트를 복제해 출구 팔레트를 만든다.
+        private const string PaletteTemplatePath = MarkerFolder + "/object.prefab";
+        // 복구된 프로젝트에 남아 있지 않은 예전 출구 마커 그림 대신 쓸, 항상 존재하는 출입문 그림.
+        private const string ExitMarkerFallbackSpritePath = "Assets/Resources/Sprites/Interior/Door.png";
+
+        // 비어 있는 이름만 가진 팔레트가 생기지 않도록, 프로젝트를 연 에디터가 실제 팔레트 에셋을 한 번 만든다.
+        [InitializeOnLoadMethod]
+        private static void CreateMissingExitPaletteAfterCompile()
+        {
+            EditorApplication.delayCall += () =>
+            {
+                RepairMissingExitMarkerSprites();
+                if (AssetDatabase.LoadAssetAtPath<GameObject>(PalettePath) == null)
+                    AddExitTilesToPalette();
+            };
+        }
 
         /// <summary>씬에서 맵들을 나란히 늘어놓을 간격(칸). 서로 겹치지 않을 만큼만 띄운다.</summary>
         private const int LayoutStepX = 45, LayoutStepY = 40, LayoutColumns = 4;
@@ -37,6 +53,7 @@ namespace FarmMVP
             ("Water",     Depth.Water,         true),    // 물 (못 지나감 + 낚시)
             ("Decor",     Depth.Decor,         false),   // 꽃·풀 장식
             ("Cliff",     Depth.Cliff,         true),    // 절벽
+            ("deepforest", Depth.DeepForest,   false),   // 캐릭터를 가리는 수관·전경
             ("Fixed",     0,                   false),   // 못 부수는 배경 오브젝트
             ("Breakable", 0,                   false),   // 걷어낼 수 있는 울타리·길·가구
             ("Objects",   0,                   false),   // 집·문·출구·나무·바위 마커
@@ -159,9 +176,11 @@ namespace FarmMVP
             Debug.Log(report.ToString());
         }
 
-        [MenuItem(MenuRoot + "출구 타일 팔레트에 넣기", false, 3)]
-        private static void AddExitTilesToPalette()
+        [MenuItem(MenuRoot + "출구 타일 팔레트 만들기/갱신", false, 3)]
+        public static void AddExitTilesToPalette()
         {
+            RepairMissingExitMarkerSprites();
+
             var tiles = new List<TileBase>();
             foreach (LocationId id in System.Enum.GetValues(typeof(LocationId)))
             {
@@ -170,12 +189,23 @@ namespace FarmMVP
             }
             if (tiles.Count == 0) { Debug.LogWarning("[MapSetup] Obj_Exit* 타일을 찾지 못했습니다."); return; }
 
+            // exit.prefab이 아직 없으면 object 팔레트의 GridPalette 설정만 복제한다.
+            // 이때 기존 타일은 전부 지워서 출구 전용 팔레트가 되게 한다.
+            bool created = AssetDatabase.LoadAssetAtPath<GameObject>(PalettePath) == null;
+            if (created && !AssetDatabase.CopyAsset(PaletteTemplatePath, PalettePath))
+            {
+                Debug.LogWarning($"[MapSetup] 출구 팔레트를 만들 수 없습니다. 원본 팔레트를 확인하세요: {PaletteTemplatePath}");
+                return;
+            }
+
             var contents = PrefabUtility.LoadPrefabContents(PalettePath);
-            if (contents == null) { Debug.LogWarning($"[MapSetup] 마커 팔레트를 찾지 못했습니다: {PalettePath}"); return; }
+            if (contents == null) { Debug.LogWarning($"[MapSetup] 출구 팔레트를 찾지 못했습니다: {PalettePath}"); return; }
             try
             {
                 var map = contents.GetComponentInChildren<Tilemap>();
                 if (map == null) { Debug.LogWarning("[MapSetup] 팔레트에 Tilemap이 없습니다."); return; }
+
+                if (created) map.ClearAllTiles();
 
                 map.CompressBounds();
                 var already = new HashSet<TileBase>();
@@ -194,14 +224,43 @@ namespace FarmMVP
                     added++;
                 }
 
-                if (added == 0) { Debug.Log("[MapSetup] 팔레트에 이미 모든 출구 타일이 들어 있습니다."); return; }
+                if (added == 0) { Debug.Log("[MapSetup] 출구 팔레트에 이미 모든 Obj_Exit 타일이 들어 있습니다."); return; }
                 PrefabUtility.SaveAsPrefabAsset(contents, PalettePath);
-                Debug.Log($"[MapSetup] 출구 타일 {added}개를 마커 팔레트에 넣었습니다.");
+                Debug.Log($"[MapSetup] 출구 팔레트를 {(created ? "만들고 " : "갱신해 ")}Obj_Exit 타일 {added}개를 넣었습니다.");
             }
             finally
             {
                 PrefabUtility.UnloadPrefabContents(contents);
             }
+        }
+
+        /// <summary>
+        /// 이전에 쓰던 출구 마커 PNG가 없는 프로젝트에서도 팔레트가 투명해지지 않도록 복구한다.
+        /// 타일마다 지정된 색은 그대로 유지되어 목적지 구분에도 쓸 수 있다.
+        /// </summary>
+        private static void RepairMissingExitMarkerSprites()
+        {
+            var fallback = AssetDatabase.LoadAssetAtPath<Sprite>(ExitMarkerFallbackSpritePath);
+            if (fallback == null)
+            {
+                Debug.LogWarning($"[MapSetup] 출구 마커 대체 그림을 찾지 못했습니다: {ExitMarkerFallbackSpritePath}");
+                return;
+            }
+
+            int repaired = 0;
+            foreach (LocationId id in System.Enum.GetValues(typeof(LocationId)))
+            {
+                var tile = AssetDatabase.LoadAssetAtPath<Tile>($"{MarkerFolder}/Obj_Exit{id}.asset");
+                if (tile == null || tile.sprite != null) continue;
+
+                tile.sprite = fallback;
+                EditorUtility.SetDirty(tile);
+                repaired++;
+            }
+
+            if (repaired == 0) return;
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[MapSetup] 그림이 없는 출구 마커 {repaired}개에 Door 스프라이트를 연결했습니다.");
         }
 
         // ---------- helpers ----------
