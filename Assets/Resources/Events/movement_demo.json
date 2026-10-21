@@ -3,7 +3,7 @@
   "trigger": "Manual",
   "triggerId": "demo.movement",
   "repeat": "Always",
-  "conditions": [{ "type": "Location", "id": "PigeonVillage" }],
+  "conditions": [{ "type": "Location", "id": "Campsite1" }],
   "commands": [
     { "op": "Say", "actor": "Leona", "portrait": "happy", "lines": ["이동 연출 예시야. 잠깐 걸어 볼게!"] },
     { "op": "Move", "actor": "Leona", "path": [{ "x": 11, "y": 7 }, { "x": 11, "y": 8 }], "speed": 2 },

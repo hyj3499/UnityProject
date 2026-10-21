@@ -40,7 +40,7 @@ public static class CliffCollisionChecks
             Check(palette.Count > 0, "Current PNG must contain opaque palette colors.");
             var grid = new GameObject("Grid", typeof(Grid));
             grid.transform.position = new Vector3(-0.5f, -0.5f, 0f);
-            var mapObject = new GameObject("Cliff_2_Farm1", typeof(Tilemap));
+            var mapObject = new GameObject("Cliff_2_Farm", typeof(Tilemap));
             mapObject.transform.SetParent(grid.transform, false);
             var map = mapObject.GetComponent<Tilemap>();
             var tile = ScriptableObject.CreateInstance<Tile>();
@@ -102,7 +102,7 @@ public static class CliffCollisionChecks
 
             var location = new GameObject("Location").AddComponent<GameLocation>();
             location.width = location.height = 3;
-            location.id = LocationId.Farm1;
+            location.id = LocationId.Farm;
             var blocked = new bool[3, 3];
             typeof(GameLocation).GetField("_blocked", Private).SetValue(location, blocked);
             ((List<Tilemap>)typeof(GameLocation).GetField("_cliffMaps", Private).GetValue(location)).Add(map);

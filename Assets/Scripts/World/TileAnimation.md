@@ -23,3 +23,13 @@ Tilemap의 Animation Frame Rate가 1일 때 이 속도로 재생됩니다.
 
 기존 시트 이름/번호 간격 등록표와 계절별 프레임 애니메이션은 제거했습니다.
 계절별 정지 이미지 교체와 캐릭터/상호작용 애니메이션은 별도 기능으로 유지합니다.
+
+## 오브젝트 애니메이션
+
+`Fixed_{맵}`, `Fixed_{번호}_{맵}`에 칠한 그림도 개별 오브젝트로 변환된 뒤 자동 재생됩니다.
+`PlaceObject`로 생성하는 오브젝트와 설치물도 같은 Animation 폴더의 스프라이트를 쓰면 재생됩니다.
+씬에 직접 배치한 SpriteRenderer는 `SlicedSpriteAnimation` 컴포넌트를 붙이면 됩니다.
+
+오브젝트도 같은 슬라이스 순서로 첫 프레임부터 반복합니다. 속도는
+`AnimationTileset.FramesPerSecond`를 공유하며 Tilemap의 Animation Frame Rate와는 독립적입니다.
+일시 정지(`Time.timeScale = 0`) 시 멈추며 위치·피벗·앞뒤 정렬·충돌은 바꾸지 않습니다.

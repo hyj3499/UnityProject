@@ -294,6 +294,7 @@ namespace FarmMVP
             }
 
             sr.sprite = sprite;
+            SlicedSpriteAnimation.Apply(sr);
             // 계절이 바뀌면 그림도 바뀔 수 있으므로 자리도 그때마다 다시 맞춘다.
             sr.transform.position = new Vector3(pos.x + def.offset.x, pos.y + lift, 0f);
         }

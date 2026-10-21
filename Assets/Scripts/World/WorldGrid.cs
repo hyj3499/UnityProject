@@ -29,6 +29,7 @@ namespace FarmMVP
         }
 
         private static Dictionary<LocationId, Map> _maps;
+        private static Season _scannedSeason;
 
         /// <summary>씬을 고쳤을 때 다시 훑게 한다 (에디터에서 맵을 새로 칠했을 때 등).</summary>
         public static void Invalidate() => _maps = null;
@@ -71,83 +72,37 @@ namespace FarmMVP
             return false;
         }
 
-        /// <summary>target 맵으로 나가는 칸 중 from에서 가장 가까운 것. 칠해 둔 출구 칸이 없으면 맵의 변.</summary>
+        private static readonly Dictionary<Vector2Int, LocationId> EmptyExits = new Dictionary<Vector2Int, LocationId>();
+
+        public static IReadOnlyDictionary<Vector2Int, LocationId> PaintedExits(LocationId id)
+            => Get(id)?.exits ?? EmptyExits;
+
+        public static bool HasExitTo(LocationId id, LocationId target)
+        {
+            foreach (var exit in PaintedExits(id)) if (exit.Value == target) return true;
+            return false;
+        }
+
+        /// <summary>Only reciprocal, painted exits can be used by players or NPCs.</summary>
         public static bool TryGetExitTile(LocationId id, LocationId target, Vector2Int from, out Vector2Int tile)
         {
             tile = default;
-            var map = Get(id);
-            if (map != null)
-            {
-                int best = int.MaxValue;
-                foreach (var kv in map.exits)
-                {
-                    if (kv.Value != target) continue;
-                    int distance = Mathf.Abs(kv.Key.x - from.x) + Mathf.Abs(kv.Key.y - from.y);
-                    if (distance >= best) continue;
-                    best = distance;
-                    tile = kv.Key;
-                }
-                if (best != int.MaxValue) return true;
-            }
-
-            if (!MapGraph.TryGetSide(id, target, out var side)) return false;
-            return TryGetEdgeTile(id, side, from, out tile);
-        }
-
-        /// <summary>origin 맵에서 넘어왔을 때 내려설 자리.</summary>
-        public static Vector2Int EntryFrom(LocationId id, LocationId origin, Vector2Int hint)
-        {
-            var map = Get(id);
-            if (map != null)
-            {
-                foreach (var kv in map.exits)
-                {
-                    if (kv.Value != origin) continue;
-                    // 출구 칸 위에 서면 곧바로 되돌아가므로 그 옆 칸에 내려놓는다.
-                    foreach (var d in new[] { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down })
-                    {
-                        var n = kv.Key + d;
-                        if (!Blocked(id, n) && !map.exits.ContainsKey(n)) return n;
-                    }
-                }
-            }
-
-            if (MapGraph.TryGetSide(id, origin, out var side) && TryGetEdgeTile(id, side, hint, out var edge))
-                return edge;
-
-            var size = Size(id);
-            return NearestWalkable(id, new Vector2Int(size.x / 2, size.y / 2));
-        }
-
-        /// <summary>그 변에서 hint와 가장 가까운, 걸을 수 있는 칸 (가장자리 한 칸 안쪽).</summary>
-        public static bool TryGetEdgeTile(LocationId id, MapSide side, Vector2Int hint, out Vector2Int tile)
-        {
-            tile = default;
-            var size = Size(id);
-            bool vertical = side == MapSide.Left || side == MapSide.Right;
-            int count = vertical ? size.y : size.x;
+            if (!MapGraph.AreConnected(id, target)) return false;
             int best = int.MaxValue;
-
-            for (int i = 0; i < count; i++)
+            foreach (var exit in PaintedExits(id))
             {
-                int x, y;
-                switch (side)
-                {
-                    case MapSide.Left: x = 0; y = i; break;
-                    case MapSide.Right: x = size.x - 1; y = i; break;
-                    case MapSide.Bottom: x = i; y = 0; break;
-                    default: x = i; y = size.y - 1; break;
-                }
-                var candidate = new Vector2Int(x, y);
-                if (Blocked(id, candidate)) continue;
-
-                int distance = Mathf.Abs(x - hint.x) + Mathf.Abs(y - hint.y);
+                if (exit.Value != target) continue;
+                int distance = Mathf.Abs(exit.Key.x - from.x) + Mathf.Abs(exit.Key.y - from.y);
                 if (distance >= best) continue;
                 best = distance;
-                tile = candidate;
+                tile = exit.Key;
             }
             return best != int.MaxValue;
         }
+
+        /// <summary>Arrive on the return Exit tile; never on an edge or map center.</summary>
+        public static bool TryGetEntryFrom(LocationId id, LocationId origin, Vector2Int hint, out Vector2Int tile)
+            => TryGetExitTile(id, origin, hint, out tile);
 
         /// <summary>그 칸이 막혀 있으면 가장 가까운 걸을 수 있는 칸.</summary>
         public static Vector2Int NearestWalkable(LocationId id, Vector2Int wanted)
@@ -174,12 +129,14 @@ namespace FarmMVP
 
         private static void Scan()
         {
-            if (_maps != null) return;
+            if (_maps != null && _scannedSeason == Seasons.Current) return;
+            _scannedSeason = Seasons.Current;
             _maps = new Dictionary<LocationId, Map>();
 
             var byName = new Dictionary<string, Tilemap>();
             // 꺼 둔 레이어까지 찾아야 한다 — 지금 맵이 아닌 레이어는 전부 꺼져 있다.
-            foreach (var tm in Object.FindObjectsOfType<Tilemap>(true)) byName[tm.name] = tm;
+            var tilemaps = Object.FindObjectsOfType<Tilemap>(true);
+            foreach (var tm in tilemaps) byName[tm.name] = tm;
 
             int scanned = 0;
             foreach (LocationId id in System.Enum.GetValues(typeof(LocationId)))
@@ -209,6 +166,10 @@ namespace FarmMVP
                         blockers.Add(Find(byName, id, $"{stackable}_{n}"));
                 var pathMask = Find(byName, id, "Path");
                 var objects = Find(byName, id, "Objects");
+                var exitLayers = new List<KeyValuePair<Tilemap, LocationId>>();
+                foreach (var tm in tilemaps)
+                    if (MapExits.TryGetLayer(tm, out var owner, out var target) && owner == id)
+                        exitLayers.Add(new KeyValuePair<Tilemap, LocationId>(tm, target));
 
                 for (int x = 0; x < map.size.x; x++)
                     for (int y = 0; y < map.size.y; y++)
@@ -220,9 +181,13 @@ namespace FarmMVP
                             if (layer != null && layer.HasTile(layer.WorldToCell(world))) { map.blocked[x, y] = true; break; }
 
                         if (pathMask != null && pathMask.HasTile(pathMask.WorldToCell(world))) map.path[x, y] = true;
-                        if (objects != null) ReadMarker(map, objects, world, new Vector2Int(x, y));
+                        var tile = new Vector2Int(x, y);
+                        if (objects != null) ReadMarker(map, objects, world, tile);
+                        foreach (var layer in exitLayers)
+                            if (layer.Key.HasTile(layer.Key.WorldToCell(world))) map.exits[tile] = layer.Value;
                     }
 
+                foreach (var exit in map.exits) map.blocked[exit.Key.x, exit.Key.y] = false;
                 _maps[id] = map;
                 scanned++;
             }
@@ -244,7 +209,7 @@ namespace FarmMVP
 
             if (name.StartsWith("Exit", System.StringComparison.OrdinalIgnoreCase) && name.Length > 4)
             {
-                if (System.Enum.TryParse(name.Substring(4), out LocationId target)) map.exits[tile] = target;
+                if (MapExits.TryParseTarget(name, out var target)) map.exits[tile] = target;
                 return;
             }
 
@@ -256,9 +221,8 @@ namespace FarmMVP
         {
             if (prefix != null)
             {
+                if (byName.TryGetValue($"{Seasons.Key(Seasons.Current)}_{prefix}_{id}", out var seasonal)) return seasonal;
                 if (byName.TryGetValue($"{prefix}_{id}", out var tm)) return tm;
-                foreach (Season s in System.Enum.GetValues(typeof(Season)))
-                    if (byName.TryGetValue($"{Seasons.Key(s)}_{prefix}_{id}", out var seasonal)) return seasonal;
                 if (byName.TryGetValue($"{id}{prefix}", out var old)) return old;
             }
             return legacy != null && byName.TryGetValue(legacy, out var byLegacy) ? byLegacy : null;

@@ -62,9 +62,9 @@ public static class TransparentTileCleanerChecks
                 Assert(detector.IsTransparent(missing) == true, "Missing image opt-in works");
 
             CheckSlicedSheet();
-            var map = MakeMap("Cliff_Farm1");
-            var other = MakeMap("Cliff_Farm2");
-            var inactive = MakeMap("Winter_Cliff_2_Farm1");
+            var map = MakeMap("Cliff_Farm");
+            var other = MakeMap("Cliff_Valley");
+            var inactive = MakeMap("Winter_Cliff_2_Farm");
             inactive.gameObject.SetActive(false);
             var previewScene = EditorSceneManager.NewPreviewScene();
             var previewMap = MakeMap("Palette");
@@ -72,10 +72,10 @@ public static class TransparentTileCleanerChecks
             Assert(TransparentTileCleaner.LoadedMaps().Contains(inactive), "Inactive scene layers included");
             Assert(!TransparentTileCleaner.LoadedMaps().Contains(previewMap), "Palette preview excluded");
             EditorSceneManager.ClosePreviewScene(previewScene);
-            Assert(TransparentTileCleaner.MatchesName(inactive.name, "Farm1", "Cliff"), "Season and numbered overlay matching");
-            Assert(TransparentTileCleaner.MatchesName("Farm1Ground", "Farm1", "Location"), "Legacy ground name matching");
-            Assert(!TransparentTileCleaner.MatchesName("Cliff_Farm2", "Farm1", "Cliff"), "Other region excluded");
-            Assert(!TransparentTileCleaner.MatchesName("Water_Farm1", "Farm1", "Cliff"), "Other layer excluded");
+            Assert(TransparentTileCleaner.MatchesName(inactive.name, "Farm", "Cliff"), "Season and numbered overlay matching");
+            Assert(TransparentTileCleaner.MatchesName("FarmGround", "Farm", "Location"), "Legacy ground name matching");
+            Assert(!TransparentTileCleaner.MatchesName("Cliff_Valley", "Farm", "Cliff"), "Other region excluded");
+            Assert(!TransparentTileCleaner.MatchesName("Water_Farm", "Farm", "Cliff"), "Other layer excluded");
 
             var p = new Vector3Int(-2, -3, 0);
             map.SetTile(p, tile);

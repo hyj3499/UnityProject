@@ -22,11 +22,11 @@ namespace FarmMVP.Editor
         public static int RunPure()
         {
             _checks = 0;
-            var data = new GameData { currentDay = 3, currentMinutes = 600, currentLocation = LocationId.Farm1 };
+            var data = new GameData { currentDay = 3, currentMinutes = 600, currentLocation = LocationId.Farm };
             var state = new StoryEventState();
             var conditions = new[] {
                 new StoryCondition { type = "Money", min = 1000, max = 2000 },
-                new StoryCondition { type = "Location", id = "Farm1" },
+                new StoryCondition { type = "Location", id = "Farm" },
                 new StoryCondition { type = "Hearts", id = "leona", min = 2 },
                 new StoryCondition { type = "Time", min = 360, max = 1080 }
             };
@@ -35,9 +35,9 @@ namespace FarmMVP.Editor
             Check(StoryEventRules.Matches(conditions, data, state, 2000, _ => 2), "소지금 상한 포함");
             Check(!StoryEventRules.Matches(conditions, data, state, 2001, _ => 2), "소지금 상한 초과");
             Check(!StoryEventRules.Matches(conditions, data, state, 1000, _ => 1), "호감도 미달");
-            data.currentLocation = LocationId.Farm2;
+            data.currentLocation = LocationId.Valley;
             Check(!StoryEventRules.Matches(conditions, data, state, 1000, _ => 2), "다른 장소");
-            data.currentLocation = LocationId.Farm1;
+            data.currentLocation = LocationId.Farm;
             data.currentMinutes = 1081;
             Check(!StoryEventRules.Matches(conditions, data, state, 1000, _ => 2), "시간 범위 밖");
 

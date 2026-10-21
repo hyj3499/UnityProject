@@ -1,31 +1,64 @@
+using System;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace FarmMVP
 {
-    /// <summary>
-    /// <see cref="MapGraph"/>에 적힌 통로를 <b>맵의 변</b>에 걸어 준다 — 그 변에서 맵 밖으로 한 발
-    /// 내디디면 이어진 맵으로 넘어간다.
-    ///
-    /// 출구 <b>칸</b>("Obj_Exit{맵}" 마커)과 다른 점이 둘 있다.
-    ///   · 밟는다고 넘어가지 않는다. 가장자리 칸에 서 있는 것은 자유롭고, 바깥쪽으로 한 번 더
-    ///     움직여야 넘어간다 — 그래서 도착하자마자 되돌아가 버리는 일이 없다.
-    ///   · 칠할 것이 없다. 맵 밖에는 타일을 칠할 수 없으니(맵 크기는 칠한 바닥이 정한다)
-    ///     "맵 끝을 넘어가면 다음 맵"은 마커가 아니라 이렇게 변으로 다루는 편이 자연스럽다.
-    ///
-    /// 어느 한쪽을 특별한 자리(다리·동굴 입구)로 만들고 싶으면 그 맵에 "Obj_Exit{맵}"을 칠하면 된다.
-    /// 칠해 둔 출구 칸이 있는 이웃은 변을 열지 않는다 — <b>칠한 쪽이 언제나 이긴다</b>.
-    /// </summary>
-    internal static class MapExits
+    /// <summary>Reads painted exits only. An empty layer never creates a connection.</summary>
+    public static class MapExits
     {
-        public static void EnsureEdgeExits(GameLocation loc)
+        public static bool TryParseTarget(string name, out LocationId target)
         {
-            if (loc == null || MapGraph.IsIndoor(loc.id)) return;
+            target = default;
+            name = ObjectMarkerDatabase.StripPrefix(name);
+            if (string.IsNullOrEmpty(name) || !name.StartsWith("Exit", StringComparison.OrdinalIgnoreCase))
+                return false;
+            string key = name.Substring(4).TrimStart('_');
+            return Enum.TryParse(key, true, out target) && Enum.IsDefined(typeof(LocationId), target)
+                && string.Equals(key, target.ToString(), StringComparison.OrdinalIgnoreCase);
+        }
 
-            foreach (var neighbor in MapGraph.Neighbors(loc.id))
+        // Exit_Valley under Farm's Grid, or Exit_Valley_Farm in a shared Grid.
+        public static bool TryGetLayer(Tilemap layer, out LocationId owner, out LocationId target)
+        {
+            owner = target = default;
+            string name = layer.name;
+            if (!name.StartsWith("Exit_", StringComparison.OrdinalIgnoreCase)) return false;
+            foreach (LocationId id in Enum.GetValues(typeof(LocationId)))
             {
-                if (loc.HasExitTo(neighbor.Key)) continue;   // 출구 칸을 칠해 뒀다
-                loc.AddEdgeExit(neighbor.Value, neighbor.Key);
+                string suffix = "_" + id;
+                if (name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase)
+                    && TryParseTarget(name.Substring(0, name.Length - suffix.Length), out target))
+                { owner = id; return owner != target; }
             }
+            if (!TryParseTarget(name, out target)) return false;
+            for (var parent = layer.transform.parent; parent != null; parent = parent.parent)
+                foreach (LocationId id in Enum.GetValues(typeof(LocationId)))
+                    if (string.Equals(parent.name, id.ToString(), StringComparison.OrdinalIgnoreCase)
+                        || parent.name.StartsWith(id + " (", StringComparison.OrdinalIgnoreCase))
+                    { owner = id; return owner != target; }
+
+            var grid = layer.GetComponentInParent<Grid>();
+            if (grid == null) return false;
+            LocationId? found = null;
+            foreach (var sibling in grid.GetComponentsInChildren<Tilemap>(true))
+                foreach (LocationId id in Enum.GetValues(typeof(LocationId)))
+                    if (string.Equals(sibling.name, "Location_" + id, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(sibling.name, id + "Ground", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (found.HasValue && found.Value != id) return false;
+                        found = id;
+                    }
+            if (!found.HasValue) return false;
+            owner = found.Value;
+            return owner != target;
+        }
+
+        public static void Apply(GameLocation location)
+        {
+            foreach (var exit in WorldGrid.PaintedExits(location.id))
+                if (MapGraph.AreConnected(location.id, exit.Value))
+                    location.AddExit(exit.Key.x, exit.Key.y, exit.Value);
         }
     }
 }

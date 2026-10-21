@@ -74,7 +74,7 @@ public class OutdoorLightingChecks : MonoBehaviour
         var data = new GameData { currentMinutes = 720 };
         typeof(GameManager).GetProperty("Data").SetValue(game, data);
         var location = new GameObject("Location").AddComponent<GameLocation>();
-        location.id = LocationId.Farm1;
+        location.id = LocationId.Farm;
         typeof(GameManager).GetProperty("CurrentLocation").SetValue(game, location);
         var camera = new GameObject("Camera").AddComponent<Camera>();
         camera.orthographic = true;
@@ -125,7 +125,7 @@ public class OutdoorLightingChecks : MonoBehaviour
         location.id = LocationId.FarmHouse;
         lighting.SendMessage("LateUpdate");
         Equal(Capture(camera, "indoor").GetPixel(160, 90), world, "Entering indoors removes night tint immediately");
-        location.id = LocationId.Farm1;
+        location.id = LocationId.Farm;
         camera.transform.position = new Vector3(100, 100, -10);
         camera.orthographicSize = 12;
         lighting.SendMessage("LateUpdate");

@@ -16,8 +16,7 @@
 | 파일 | 발생 조건 | 내용 |
 | --- | --- | --- |
 | intro_arrival.json | 새 게임 | 내레이션 → 플레이어 동작 → 농장 안내 |
-| farm2_savings.json | 1,000 G 이상 소지하고 Farm2 진입 | 농장 계획 선택, 선택 결과 저장 |
-| movement_demo.json | PigeonVillage에서 수동 신호 `demo.movement` | NPC·플레이어 경유지 이동, 방향, 대기, 동작 |
+| movement_demo.json | Campsite1에서 수동 신호 `demo.movement` | NPC·플레이어 경유지 이동, 방향, 대기, 동작 |
 
 이동 예시의 좌표는 현재 맵에 맞게 조정하세요. 경로에 플레이어/NPC/가구/나무가 있으면 우회하며, 목적지가 막혀 있거나 다른 장소에 있는 NPC를 이동시키면 이벤트를 오류로 중단합니다.
 
@@ -30,7 +29,7 @@
   "priority": 50,
   "repeat": "Once",
   "conditions": [
-    { "type": "Location", "id": "Farm1" },
+    { "type": "Location", "id": "Farm" },
     { "type": "Money", "min": 2000 },
     { "type": "Hearts", "id": "Leona", "min": 2 },
     { "type": "Completed", "id": "leona.first_visit" }
@@ -63,7 +62,7 @@ game.Events.Signal("Manual", "quest.bridge_repaired");
 ```
 
 `repeat`: `Once`(기본, 게임 전체 1회), `Daily`(하루 1회), `Always`(신호마다 1회).
-조건이 맞는 동안 매 프레임 반복 실행하지 않습니다. 예를 들어 Farm2 안에서 돈이 1,000 G가 되어도 `EnterLocation`은 다시 들어올 때 판정합니다. 장소나 날짜가 바뀌면 이전 장소/날짜의 대기 이벤트는 버립니다. 창이 열려 있거나 낚시 중이면 실행을 기다립니다.
+조건이 맞는 동안 매 프레임 반복 실행하지 않습니다. 예를 들어 Valley 안에서 돈이 1,000 G가 되어도 `EnterLocation`은 다시 들어올 때 판정합니다. 장소나 날짜가 바뀌면 이전 장소/날짜의 대기 이벤트는 버립니다. 창이 열려 있거나 낚시 중이면 실행을 기다립니다.
 
 새 게임 인트로 완료 여부는 저장됩니다. 기존 세이브에는 인트로를 소급 적용하지 않습니다. 인트로 여러 개를 등록할 경우 모두 끝나야 인트로 대기 상태가 해제됩니다. 인트로에는 나중에만 충족 가능한 장소·호감도 조건을 붙이지 마세요.
 
@@ -77,7 +76,7 @@ game.Events.Signal("Manual", "quest.bridge_repaired");
 | Hearts | `id` NPC의 하트 수. 100 호감도 = 1 하트, 최대 10 |
 | Day | 게임 시작 후 날짜, 첫날 1 |
 | Time | 자정부터의 분. 06:00=360, 18:00=1080. 하루는 06:00에 시작해 다음 날 02:00에 끝나고, 자정을 넘긴 시각은 24를 더해 이어 셉니다 (01:30 = 1530) |
-| Location | `id`: Farm1 / Farm2 / FarmHouse |
+| Location | `id`: Farm / Valley / FarmHouse |
 | Flag | `id` 이름의 플래그가 있음 |
 | Completed | `id` 이벤트가 완료됨 |
 
@@ -147,4 +146,4 @@ Unity.exe -batchmode -nographics -projectPath <프로젝트 절대경로> -execu
 
 에디터 실행이 불가능한 환경에서는 저장소 루트에서 `./tools/Check-StoryEvents.ps1`을 실행합니다. 설치된 Unity 컴파일러로 전체 C#을 컴파일하고, 28개 순수 로직 검사와 이벤트 JSON 검증을 실행합니다. 경로가 다르면 `-UnityData`로 Editor/Data 폴더를 지정합니다. 이 검사는 프로젝트가 한 번 임포트되어 Library/ScriptAssemblies의 UI·Tilemap DLL이 있어야 합니다. Unity JsonUtility와 실제 화면/코루틴 재생 검사는 에디터에서 별도로 해야 합니다.
 
-플레이 모드 확인: 새 게임 인트로 → 마지막 대사 이후 조작 복구 → 저장/이어하기에서 인트로 미재생 → 1,000 G로 Farm2 진입 → movement_demo 수동 실행 및 취소 → 가구로 목적지를 막고 실패 시 잠금/위치 복구 확인.
+플레이 모드 확인: 새 게임 인트로 → 마지막 대사 이후 조작 복구 → 저장/이어하기에서 인트로 미재생 → movement_demo 수동 실행 및 취소 → 가구로 목적지를 막고 실패 시 잠금/위치 복구 확인.

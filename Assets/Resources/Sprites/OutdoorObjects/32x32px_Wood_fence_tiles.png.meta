@@ -1,0 +1,819 @@
+fileFormatVersion: 2
+guid: 2097a51d32f5262419ab978926ca2eb5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7523769736796088790
+    second: 32x32px_Wood_fence_tiles_0
+  - first:
+      213: -6212656943121542093
+    second: 32x32px_Wood_fence_tiles_1
+  - first:
+      213: -8658024735733251638
+    second: 32x32px_Wood_fence_tiles_2
+  - first:
+      213: -8430405197119537169
+    second: 32x32px_Wood_fence_tiles_3
+  - first:
+      213: 6667968601479102877
+    second: 32x32px_Wood_fence_tiles_4
+  - first:
+      213: -4359272609180629535
+    second: 32x32px_Wood_fence_tiles_5
+  - first:
+      213: 2872929091504718497
+    second: 32x32px_Wood_fence_tiles_6
+  - first:
+      213: 6831163554639370286
+    second: 32x32px_Wood_fence_tiles_7
+  - first:
+      213: -1213507829124761900
+    second: 32x32px_Wood_fence_tiles_8
+  - first:
+      213: 6894468574048808444
+    second: 32x32px_Wood_fence_tiles_9
+  - first:
+      213: 3055253556665840566
+    second: 32x32px_Wood_fence_tiles_10
+  - first:
+      213: -3404476700519703582
+    second: 32x32px_Wood_fence_tiles_11
+  - first:
+      213: -5290936859048111542
+    second: 32x32px_Wood_fence_tiles_12
+  - first:
+      213: 3251917443706619138
+    second: 32x32px_Wood_fence_tiles_13
+  - first:
+      213: -786985327831362933
+    second: 32x32px_Wood_fence_tiles_14
+  - first:
+      213: -1646231215777800428
+    second: 32x32px_Wood_fence_tiles_15
+  - first:
+      213: 7101153882130984254
+    second: 32x32px_Wood_fence_tiles_16
+  - first:
+      213: 4780455180639685896
+    second: 32x32px_Wood_fence_tiles_17
+  - first:
+      213: 405900560817325928
+    second: 32x32px_Wood_fence_tiles_18
+  - first:
+      213: 4001265215253197781
+    second: 32x32px_Wood_fence_tiles_19
+  - first:
+      213: 2477428484383628221
+    second: 32x32px_Wood_fence_tiles_20
+  - first:
+      213: 5106559968526670821
+    second: 32x32px_Wood_fence_tiles_21
+  - first:
+      213: 7871323442932287867
+    second: 32x32px_Wood_fence_tiles_22
+  - first:
+      213: 8855109855502642898
+    second: 32x32px_Wood_fence_tiles_23
+  - first:
+      213: 6584997788971391724
+    second: 32x32px_Wood_fence_tiles_24
+  - first:
+      213: 5560810809647797331
+    second: 32x32px_Wood_fence_tiles_25
+  - first:
+      213: -7140134548077957086
+    second: 32x32px_Wood_fence_tiles_26
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_0
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 255
+        width: 42
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a265f6a7943369790800000000000000
+      internalID: -7523769736796088790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_1
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 267
+        width: 66
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33450e12d6538c9a0800000000000000
+      internalID: -6212656943121542093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_2
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 255
+        width: 41
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac10312006488d780800000000000000
+      internalID: -8658024735733251638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_3
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 255
+        width: 41
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fef3511b32f210b80800000000000000
+      internalID: -8430405197119537169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_4
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 255
+        width: 41
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d91ce985d12698c50800000000000000
+      internalID: 6667968601479102877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_5
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 237
+        width: 66
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e5c2ba88a0c083c0800000000000000
+      internalID: -4359272609180629535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_6
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 237
+        width: 66
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a2460c89c1bed720800000000000000
+      internalID: 2872929091504718497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_7
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 159
+        width: 19
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e28dfd45f0b2dce50800000000000000
+      internalID: 6831163554639370286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_8
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 203
+        width: 66
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d6fcd01f01c82fe0800000000000000
+      internalID: -1213507829124761900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_9
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 159
+        width: 16
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfde54fb3a21eaf50800000000000000
+      internalID: 6894468574048808444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_10
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 173
+        width: 41
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b3f0df1ce0766a20800000000000000
+      internalID: 3055253556665840566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_11
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 173
+        width: 41
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ebdd638a7ed0c0d0800000000000000
+      internalID: -3404476700519703582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_12
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 141
+        width: 66
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a429a6395f0d296b0800000000000000
+      internalID: -5290936859048111542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_13
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 141
+        width: 66
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20587078fa1212d20800000000000000
+      internalID: 3251917443706619138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_14
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 139
+        width: 17
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b82da2393011415f0800000000000000
+      internalID: -786985327831362933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_15
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 139
+        width: 20
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41f976d6e696729e0800000000000000
+      internalID: -1646231215777800428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_16
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 74
+        width: 42
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3dadcf05dd5c8260800000000000000
+      internalID: 7101153882130984254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_17
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 74
+        width: 66
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80d44baa8a6975240800000000000000
+      internalID: 4780455180639685896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_18
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 74
+        width: 42
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86706a5d86c02a500800000000000000
+      internalID: 405900560817325928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_19
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 24
+        width: 42
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d33b4f7389578730800000000000000
+      internalID: 4001265215253197781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_20
+      rect:
+        serializedVersion: 2
+        x: 479
+        y: 24
+        width: 43
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbbde10a418916220800000000000000
+      internalID: 2477428484383628221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_21
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 10
+        width: 43
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5eb13445c352ed640800000000000000
+      internalID: 5106559968526670821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_22
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 10
+        width: 42
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b790f20a7fe8c3d60800000000000000
+      internalID: 7871323442932287867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_23
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 0
+        width: 19
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2deab484f7ba3ea70800000000000000
+      internalID: 8855109855502642898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_24
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 10
+        width: 19
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cea5f5aa99c926b50800000000000000
+      internalID: 6584997788971391724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_25
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 13
+        width: 43
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 354953c08f7fb2d40800000000000000
+      internalID: 5560810809647797331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 32x32px_Wood_fence_tiles_26
+      rect:
+        serializedVersion: 2
+        x: 567
+        y: 13
+        width: 42
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 220b155657529ec90800000000000000
+      internalID: -7140134548077957086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      32x32px_Wood_fence_tiles_0: -7523769736796088790
+      32x32px_Wood_fence_tiles_1: -6212656943121542093
+      32x32px_Wood_fence_tiles_10: 3055253556665840566
+      32x32px_Wood_fence_tiles_11: -3404476700519703582
+      32x32px_Wood_fence_tiles_12: -5290936859048111542
+      32x32px_Wood_fence_tiles_13: 3251917443706619138
+      32x32px_Wood_fence_tiles_14: -786985327831362933
+      32x32px_Wood_fence_tiles_15: -1646231215777800428
+      32x32px_Wood_fence_tiles_16: 7101153882130984254
+      32x32px_Wood_fence_tiles_17: 4780455180639685896
+      32x32px_Wood_fence_tiles_18: 405900560817325928
+      32x32px_Wood_fence_tiles_19: 4001265215253197781
+      32x32px_Wood_fence_tiles_2: -8658024735733251638
+      32x32px_Wood_fence_tiles_20: 2477428484383628221
+      32x32px_Wood_fence_tiles_21: 5106559968526670821
+      32x32px_Wood_fence_tiles_22: 7871323442932287867
+      32x32px_Wood_fence_tiles_23: 8855109855502642898
+      32x32px_Wood_fence_tiles_24: 6584997788971391724
+      32x32px_Wood_fence_tiles_25: 5560810809647797331
+      32x32px_Wood_fence_tiles_26: -7140134548077957086
+      32x32px_Wood_fence_tiles_3: -8430405197119537169
+      32x32px_Wood_fence_tiles_4: 6667968601479102877
+      32x32px_Wood_fence_tiles_5: -4359272609180629535
+      32x32px_Wood_fence_tiles_6: 2872929091504718497
+      32x32px_Wood_fence_tiles_7: 6831163554639370286
+      32x32px_Wood_fence_tiles_8: -1213507829124761900
+      32x32px_Wood_fence_tiles_9: 6894468574048808444
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

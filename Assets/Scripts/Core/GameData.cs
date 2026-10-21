@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace FarmMVP
@@ -16,7 +16,7 @@ namespace FarmMVP
         /// 자정을 넘긴 시각은 24를 더해 이어서 센다(<see cref="DayClock"/>).
         /// </summary>
         public int currentMinutes = 6 * 60;
-        public LocationId currentLocation = LocationId.Farm1;
+        public LocationId currentLocation = LocationId.Farm;
 
         /// <summary>
         /// 날씨를 뽑는 씨앗. 게임마다 한 번 정해지고 그 뒤로 바뀌지 않는다 — 날씨 자체는
@@ -35,9 +35,8 @@ namespace FarmMVP
 
         public StoryEventState story = new StoryEventState();
 
-        // 처음 세 맵은 예전 세이브가 이 이름으로 저장돼 있어서 그대로 둔다.
+        // 농장과 농가는 예전 세이브가 이 이름으로 저장돼 있어서 그대로 둔다.
         public LocationData farm1 = new LocationData();
-        public LocationData farm2 = new LocationData();
         public LocationData farmHouse = new LocationData();
 
         /// <summary>
@@ -45,6 +44,24 @@ namespace FarmMVP
         /// 맵을 <b>이름</b>으로 찾는다 — LocationId의 순서를 나중에 바꿔도 세이브가 섞이지 않는다.
         /// </summary>
         public List<LocationEntry> locations = new List<LocationEntry>();
+
+        /// <summary>Rename saved map keys without changing their data or numeric enum IDs.</summary>
+        public void MigrateLocations()
+        {
+            foreach (var entry in locations)
+            {
+                if (entry == null) continue;
+                if (entry.id == "PigeonVillage") entry.id = "Campsite1";
+                else if (entry.id == "HawkVillage") entry.id = "Campsite2";
+            }
+            locations.RemoveAll(entry => entry != null && (entry.id == "Farm2" || entry.id == "Mountain3"));
+            // A save made in a deleted map must not recreate that removed map on load.
+            if (!Enum.IsDefined(typeof(LocationId), currentLocation))
+            {
+                currentLocation = LocationId.Farm;
+                farmer.posX = farmer.posY = 0;
+            }
+        }
 
         /// <summary>
         /// 그 맵의 저장 데이터. 아직 한 번도 가 보지 않은 맵이면 이 자리에서 빈 데이터를 만들어 둔다
@@ -54,8 +71,7 @@ namespace FarmMVP
         {
             switch (id)
             {
-                case LocationId.Farm1: return farm1;
-                case LocationId.Farm2: return farm2;
+                case LocationId.Farm: return farm1;
                 case LocationId.FarmHouse: return farmHouse;
             }
 
@@ -78,7 +94,6 @@ namespace FarmMVP
             get
             {
                 yield return farm1;
-                yield return farm2;
                 yield return farmHouse;
                 foreach (var entry in locations)
                     if (entry != null && entry.data != null) yield return entry.data;

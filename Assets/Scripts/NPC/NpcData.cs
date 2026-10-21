@@ -8,7 +8,7 @@ namespace FarmMVP
     [Serializable]
     public class NpcHome
     {
-        public string location = "Farm1"; // LocationId 이름
+        public string location = "Farm"; // LocationId 이름
         public int x;
         public int y;
     }
@@ -123,7 +123,7 @@ namespace FarmMVP
         public NpcSchedule schedule = new NpcSchedule();
 
         public LocationId HomeLocation =>
-            Enum.TryParse(home.location, out LocationId id) ? id : LocationId.Farm1;
+            Enum.TryParse(home.location, out LocationId id) ? id : LocationId.Farm;
 
         public GiftTier TierOf(string itemId)
         {

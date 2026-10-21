@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 7cee1712d6edd7d4cb6e9ee12d0ee422
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5792637775501137638
+    second: 64x64px__meat_cooking_0
+  - first:
+      213: -1654764095519941206
+    second: 64x64px__meat_cooking_1
+  - first:
+      213: -3280584185520501987
+    second: 64x64px__meat_cooking_2
+  - first:
+      213: -7135144342133822510
+    second: 64x64px__meat_cooking_3
+  - first:
+      213: 2664665681931630400
+    second: 64x64px__meat_cooking_4
+  - first:
+      213: -3161089045511852022
+    second: 64x64px__meat_cooking_5
+  - first:
+      213: 7293450643880838667
+    second: 64x64px__meat_cooking_6
+  - first:
+      213: 8172861666500955382
+    second: 64x64px__meat_cooking_7
+  - first:
+      213: 4328896696302343482
+    second: 64x64px__meat_cooking_8
+  - first:
+      213: -773392292553376103
+    second: 64x64px__meat_cooking_9
+  - first:
+      213: 6658343989634471703
+    second: 64x64px__meat_cooking_10
+  - first:
+      213: 7970213379304490426
+    second: 64x64px__meat_cooking_11
+  - first:
+      213: 1974934211563690041
+    second: 64x64px__meat_cooking_12
+  - first:
+      213: -7068814856107161689
+    second: 64x64px__meat_cooking_13
+  - first:
+      213: 1251905087154157274
+    second: 64x64px__meat_cooking_14
+  - first:
+      213: 5485458829374124570
+    second: 64x64px__meat_cooking_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_0
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 68
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a19eeb642aa6c9fa0800000000000000
+      internalID: -5792637775501137638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_1
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 68
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aad967b82d81909e0800000000000000
+      internalID: -1654764095519941206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_2
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 68
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1b494680160972d0800000000000000
+      internalID: -3280584185520501987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_3
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 68
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dba9f14600eafc90800000000000000
+      internalID: -7135144342133822510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_4
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 68
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04775b8d15bcaf420800000000000000
+      internalID: 2664665681931630400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_5
+      rect:
+        serializedVersion: 2
+        x: 324
+        y: 68
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0033e2e24e8124d0800000000000000
+      internalID: -3161089045511852022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_6
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 68
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b068c5fd7ba873560800000000000000
+      internalID: 7293450643880838667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_7
+      rect:
+        serializedVersion: 2
+        x: 452
+        y: 68
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6fc423e4266db6170800000000000000
+      internalID: 8172861666500955382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_8
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 4
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a35967c1c94531c30800000000000000
+      internalID: 4328896696302343482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_9
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 4
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99eb45abecb5445f0800000000000000
+      internalID: -773392292553376103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_10
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 4
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7171586c490376c50800000000000000
+      internalID: 6658343989634471703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_11
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 4
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab5828927d2eb9e60800000000000000
+      internalID: 7970213379304490426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_12
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 4
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9381507a330686b10800000000000000
+      internalID: 1974934211563690041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_13
+      rect:
+        serializedVersion: 2
+        x: 324
+        y: 4
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a78abe275686ed90800000000000000
+      internalID: -7068814856107161689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_14
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 4
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad6f35c3b09af5110800000000000000
+      internalID: 1251905087154157274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 64x64px__meat_cooking_15
+      rect:
+        serializedVersion: 2
+        x: 452
+        y: 4
+        width: 56
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a12ffdafdb3402c40800000000000000
+      internalID: 5485458829374124570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      64x64px__meat_cooking_0: -5792637775501137638
+      64x64px__meat_cooking_1: -1654764095519941206
+      64x64px__meat_cooking_10: 6658343989634471703
+      64x64px__meat_cooking_11: 7970213379304490426
+      64x64px__meat_cooking_12: 1974934211563690041
+      64x64px__meat_cooking_13: -7068814856107161689
+      64x64px__meat_cooking_14: 1251905087154157274
+      64x64px__meat_cooking_15: 5485458829374124570
+      64x64px__meat_cooking_2: -3280584185520501987
+      64x64px__meat_cooking_3: -7135144342133822510
+      64x64px__meat_cooking_4: 2664665681931630400
+      64x64px__meat_cooking_5: -3161089045511852022
+      64x64px__meat_cooking_6: 7293450643880838667
+      64x64px__meat_cooking_7: 8172861666500955382
+      64x64px__meat_cooking_8: 4328896696302343482
+      64x64px__meat_cooking_9: -773392292553376103
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEditor;
@@ -45,7 +45,7 @@ namespace FarmMVP.Editor
             var sprite = MarkerSprite();
             if (sprite == null)
             {
-                Debug.LogWarning($"[NpcSchedule] 마커 그림을 찾지 못했습니다 ({MarkerFolder}/Obj_ExitFarm1.asset).");
+                Debug.LogWarning($"[NpcSchedule] 마커 그림을 찾지 못했습니다 ({MarkerFolder}/Obj_ExitFarm.asset).");
                 return;
             }
 
@@ -215,7 +215,7 @@ namespace FarmMVP.Editor
         private static Sprite MarkerSprite()
         {
             // 출구 마커와 같은 그림을 쓴다 — 어차피 색으로 구분하고, 그림을 새로 만들 이유가 없다.
-            var exit = AssetDatabase.LoadAssetAtPath<Tile>($"{MarkerFolder}/Obj_ExitFarm1.asset");
+            var exit = AssetDatabase.LoadAssetAtPath<Tile>($"{MarkerFolder}/Obj_ExitFarm.asset");
             return exit != null ? exit.sprite : null;
         }
 

@@ -12,7 +12,7 @@ namespace FarmMVP
     /// 낚시터(FishingZone)와 위치(LocationId)를 <b>따로</b> 두는 이유:
     ///  - 같은 물고기를 여러 낚시터에 서로 다른 확률로 넣을 수 있다
     ///  - 나중에 한 맵 안에 여러 물웅덩이(강/바다)를 넣고 싶어지면, 물 타일맵 레이어 이름에
-    ///    낚시터를 붙이는 식으로("Water_Farm1_Sea") 확장하면 되고 물고기 데이터는 그대로다
+    ///    낚시터를 붙이는 식으로("Water_Farm_Sea") 확장하면 되고 물고기 데이터는 그대로다
     ///  - 계절/날씨/시간대별 낚시터도 ForLocation을 바꾸는 것만으로 얹을 수 있다
     ///
     /// 새 맵을 추가할 때는 낚시터를 하나 Register 하고 _byLocation에 한 줄 넣으면 되고,
@@ -61,8 +61,7 @@ namespace FarmMVP
 
             _byLocation = new Dictionary<LocationId, string>
             {
-                { LocationId.Farm1, "river_shallow" },
-                { LocationId.Farm2, "river_deep" },
+                { LocationId.Farm, "river_shallow" },
                 // FarmHouse는 실내라 낚시터가 없다 — 물 타일을 칠해도 낚이지 않는다
             };
         }

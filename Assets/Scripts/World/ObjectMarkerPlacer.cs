@@ -13,7 +13,7 @@ namespace FarmMVP
     /// 무엇을 놓을지 정한다. 이름 규칙:
     ///   Obj_{그림 파일 이름}  ObjectMarkerDatabase에 등록된 오브젝트 (Obj_ShopCart, Obj_Rock_0)
     ///   Obj_{나무 id}         TreeDatabase의 나무 (Obj_Tree1)
-    ///   Obj_Exit{맵이름}      밟으면 그 맵으로 넘어가는 칸 (Obj_ExitFarm2)
+    ///   Obj_Exit{맵이름}      밟으면 그 맵으로 넘어가는 칸 (Obj_ExitValley)
     ///   Obj_Spot{자리이름}    NPC 스케줄이 이름으로 부르는 자리 (Obj_SpotPlaza) — 그림도 없고 길도 막지 않는다
     ///
     /// "Obj_"는 붙여도 되고 안 붙여도 되며, <b>시트에서 잘라 낸 조각 이름을 그대로 써도 된다</b>
@@ -51,10 +51,10 @@ namespace FarmMVP
                     string name = ObjectMarkerDatabase.StripPrefix(tile.name);
                     if (string.IsNullOrEmpty(name)) continue;
 
-                    // "Obj_ExitFarm2" 처럼 목적지 이름이 붙은 마커 — 밟으면 그 맵으로 간다.
+                    // "Obj_ExitValley" 처럼 목적지 이름이 붙은 마커 — 밟으면 그 맵으로 간다.
                     if (name.StartsWith("Exit", System.StringComparison.OrdinalIgnoreCase))
                     {
-                        if (TryParseLocationName(name.Substring(4), out var target)) { loc.AddExit(x, y, target); placed++; }
+                        if (MapExits.TryParseTarget(name, out _)) placed++;
                         else unknown.Add(tile.name);
                         continue;
                     }
@@ -98,10 +98,10 @@ namespace FarmMVP
                 }
             }
 
-            if (!loc.doorExitTile.HasValue && (loc.id == LocationId.Farm1 || loc.id == LocationId.FarmHouse))
+            if (!loc.doorExitTile.HasValue && (loc.id == LocationId.Farm || loc.id == LocationId.FarmHouse))
             {
                 Debug.LogWarning($"[ObjectMarkers] {markers.name}: 출입구가 없습니다. " +
-                                 "Farm1에는 Obj_House를, FarmHouse에는 Obj_Door를 칠해야 집을 드나들 수 있습니다.");
+                                 "건물 표시에는 Obj_House/Obj_Door를, 실제 이동에는 양쪽 맵의 Exit를 칠하세요.");
             }
         }
 
@@ -223,16 +223,5 @@ namespace FarmMVP
             return true;
         }
 
-        /// <summary>"Farm2" -> LocationId.Farm2 (대소문자 무시).</summary>
-        private static bool TryParseLocationName(string name, out LocationId locId)
-        {
-            string key = ObjectMarkerDatabase.Normalize(name);
-            foreach (LocationId candidate in System.Enum.GetValues(typeof(LocationId)))
-            {
-                if (key == ObjectMarkerDatabase.Normalize(candidate.ToString())) { locId = candidate; return true; }
-            }
-            locId = default;
-            return false;
-        }
     }
 }

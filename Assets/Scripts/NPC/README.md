@@ -88,13 +88,13 @@ python tools/build_npc_metas.py
 "schedule": {
   "routines": [
     { "when": "Storm", "stops": [
-        { "time": "06:00", "map": "PigeonVillage", "spot": "Home", "facing": "Down" }
+        { "time": "06:00", "map": "Campsite1", "spot": "Home", "facing": "Down" }
     ]},
     { "when": "Fall Sat", "stops": [
-        { "time": "06:00", "map": "PigeonVillage", "spot": "Home" },
+        { "time": "06:00", "map": "Campsite1", "spot": "Home" },
         { "time": "09:00", "spot": "Plaza", "wander": 3 },
         { "time": "13:00", "map": "Valley", "spot": "River", "wander": 2 },
-        { "time": "17:00", "map": "PigeonVillage", "spot": "Tavern" },
+        { "time": "17:00", "map": "Campsite1", "spot": "Tavern" },
         { "time": "23:00", "spot": "Home" }
     ]},
     { "when": "", "stops": [ ... ] }
@@ -149,11 +149,11 @@ python tools/build_npc_metas.py
 정류장의 `map` 이 바뀌면 NPC는 **그 맵의 출구까지 걸어가서 실제로 넘어갑니다**. 넘어간 뒤에는
 새 맵의 입구에서 다시 길을 찾아 이어 걷습니다 — 맵을 몇 개든 그렇게 건너갑니다.
 
-- 나가는 자리는 ① `Obj_Exit{맵}` 출구 칸을 칠해 뒀으면 **그 칸**(다리·동굴 입구),
-  ② 없으면 `MapGraph` 가 말하는 **그쪽 변**에서 가장 가까운 걸을 수 있는 칸입니다.
-- 목적지가 **이웃 맵이 아니어도** 됩니다. `MapGraph.TryGetNextHop` 이 통로를 따라
-  "먼저 어느 맵으로 나가야 하는지"를 찾아 주므로, 비둘기 마을 → 산 정상 같은 일과도
-  계곡 → 산1 → … 순서대로 제 발로 건너갑니다.
+- 양쪽 맵에 서로를 가리키는 Exit가 칠해져 있어야 이동합니다. 출구가 없거나 한쪽에만 있으면 이동하지 않습니다.
+- `Farm`의 `Exit_Valley`와 `Valley`의 `Exit_Farm` 레이어에 칠한 칸을 연결합니다.
+  기존 `Objects_{맵}` 레이어의 `Obj_Exit{목적지}` 타일도 같은 규칙으로 읽습니다.
+- 도착 위치는 반대편 Exit를 칠한 칸입니다. 맵 경계나 중앙으로 보내는 대체 이동은 없습니다.
+- `MapGraph.TryGetNextHop`은 실제로 연결된 출구만 따라 여러 맵을 거치는 경로를 찾습니다.
 - 걸리는 시간은 **실제로 걸은 시간**입니다. 적어 둘 값도, 어림잡을 값도 없습니다.
 
 ### 굴러가는 방식 — 모든 맵을 한꺼번에 굴린다

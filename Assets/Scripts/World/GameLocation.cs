@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -106,17 +106,16 @@ namespace FarmMVP
         private readonly Dictionary<Vector2Int, SpriteRenderer> _rockRenderers = new Dictionary<Vector2Int, SpriteRenderer>();
 
         // Special interaction points
-        public Vector2Int? shippingBoxTile; // Farm1 배송함
-        public Vector2Int? shopTile;        // Farm1 상점 수레
+        public Vector2Int? shippingBoxTile; // Farm 배송함
+        public Vector2Int? shopTile;        // Farm 상점 수레
         private SpriteRenderer _shippingBoxSr;
 
         public Vector2Int? bedTile;       // FarmHouse
-        public Vector2Int? doorExitTile;  // FarmHouse door -> Farm1 ; Farm1 house -> FarmHouse
+        public Vector2Int? doorExitTile;  // FarmHouse door -> Farm ; Farm house -> FarmHouse
         private readonly HashSet<Vector2Int> _doorTiles = new HashSet<Vector2Int>();
 
         /// <summary>
-        /// 밟으면 다른 맵으로 넘어가는 칸들. "Obj_Exit{위치}" 마커를 칠해서 만들거나,
-        /// 마커가 없으면 빌더가 가장자리 영역을 여기에 등록한다.
+        /// 양쪽 맵에 실제로 칠해진 Exit가 있는 칸만 등록한다.
         /// </summary>
         private readonly Dictionary<Vector2Int, LocationId> _exits = new Dictionary<Vector2Int, LocationId>();
 
@@ -132,7 +131,7 @@ namespace FarmMVP
         public bool TryGetExit(int x, int y, out LocationId target)
             => _exits.TryGetValue(new Vector2Int(x, y), out target);
 
-        /// <summary>이 맵에 target으로 가는 출구 <b>칸</b>이 하나라도 있는지 (마커로 칠했든 빌더가 넣었든).</summary>
+        /// <summary>이 맵에 target으로 가는 출구 <b>칸</b>이 하나라도 있는지.</summary>
         public bool HasExitTo(LocationId target)
         {
             foreach (var kv in _exits) if (kv.Value == target) return true;
@@ -157,20 +156,6 @@ namespace FarmMVP
             }
             return best != int.MaxValue;
         }
-
-        /// <summary>
-        /// 맵의 <b>변</b>을 넘어가면 이어지는 맵. 칸이 아니라 변이라서, 그 변 어디에서든 맵 밖으로
-        /// 한 발 내디디면 넘어간다 (<see cref="MapExits"/>가 MapGraph를 보고 등록한다).
-        /// 출구 칸과 달리 <b>밟는다고</b> 넘어가지 않는다 — 가장자리 칸에 서 있는 것은 자유롭고,
-        /// 바깥쪽으로 한 번 더 움직여야 넘어간다. 그래서 도착하자마자 되돌아가는 일이 없다.
-        /// </summary>
-        private readonly Dictionary<MapSide, LocationId> _edgeExits = new Dictionary<MapSide, LocationId>();
-
-        /// <summary>이 변을 넘어가면 target 맵으로 가도록 등록한다.</summary>
-        public void AddEdgeExit(MapSide side, LocationId target) => _edgeExits[side] = target;
-
-        /// <summary>이 변을 넘어가면 갈 곳이 있는지.</summary>
-        public bool TryGetEdgeExit(MapSide side, out LocationId target) => _edgeExits.TryGetValue(side, out target);
 
         /// <summary>
         /// NPC 스케줄이 이름으로 부르는 자리들. "Objects_{맵}" 레이어에 "Obj_Spot{이름}" 마커를
@@ -218,65 +203,9 @@ namespace FarmMVP
         /// <summary>씬에 "Location_{맵}" 바닥을 칠해 뒀는지. 안 칠했으면 빌더가 임시 바닥을 깐다.</summary>
         internal bool HasPaintedGround => _groundMap != null;
 
-        /// <summary>
-        /// origin 맵에서 넘어왔을 때 내려설 자리. 되돌아가는 출구(= origin을 가리키는 칸) 중
-        /// 떠나온 높이와 가장 가까운 것을 고르고, 그 <b>옆</b>의 걸을 수 있는 칸에 내려놓는다.
-        /// 출구 칸 위에 그대로 세우면 다음 프레임에 곧바로 되돌아가 버리기 때문이다.
-        /// </summary>
-        public Vector2 FindEntryFrom(LocationId origin, Vector2Int fromTile)
-        {
-            Vector2Int? best = null;
-            int bestScore = int.MaxValue;
-            foreach (var kv in _exits)
-            {
-                if (kv.Value != origin) continue;
-                int score = Mathf.Abs(kv.Key.y - fromTile.y) * 100 + Mathf.Abs(kv.Key.x - fromTile.x);
-                if (score < bestScore) { bestScore = score; best = kv.Key; }
-            }
-
-            if (best.HasValue)
-            {
-                // 안쪽(오른쪽/왼쪽/위/아래) 순으로 출구가 아닌 빈 칸을 찾는다.
-                var dirs = new[] { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down };
-                foreach (var d in dirs)
-                {
-                    var n = best.Value + d;
-                    if (IsBlocked(n.x, n.y) || _exits.ContainsKey(n)) continue;
-                    return new Vector2(n.x, n.y);
-                }
-            }
-
-            // 칠해 둔 출구 칸이 없으면 변을 넘어 들어온 것이다 — 그 변의 한 칸 안쪽에 내려놓는다.
-            foreach (var kv in _edgeExits)
-            {
-                if (kv.Value != origin) continue;
-                return FindWalkableNear(EntryPointOnSide(kv.Key, fromTile));
-            }
-
-            Debug.LogWarning($"[GameLocation] {id}: {origin}에서 되돌아올 길이 없어 맵 가운데에 내려놓습니다. " +
-                             $"\"Obj_Exit{origin}\" 마커를 칠하거나 MapGraph에 통로를 적어 주세요.");
-            return FindWalkableNear(new Vector2(width / 2f, height / 2f));
-        }
-
-        /// <summary>
-        /// 변을 넘어 들어왔을 때 내려설 칸. 떠나온 칸의 나란한 좌표를 그대로 써서, 맵 위쪽에서
-        /// 나가면 위쪽으로 들어온다. 가장자리 <b>한 칸 안쪽</b>에 세우는 이유는 출구 칸으로 드나들 때와
-        /// 같다 — 테두리에 딱 붙여 세우면 손가락을 떼기도 전에 되돌아가 버린다.
-        /// </summary>
-        private Vector2 EntryPointOnSide(MapSide side, Vector2Int fromTile)
-        {
-            int x = Mathf.Clamp(fromTile.x, 0, Mathf.Max(0, width - 1));
-            int y = Mathf.Clamp(fromTile.y, 0, Mathf.Max(0, height - 1));
-            int inX = Mathf.Min(1, Mathf.Max(0, width - 1));     // 맵이 한 칸짜리면 안쪽이 없다
-            int inY = Mathf.Min(1, Mathf.Max(0, height - 1));
-            switch (side)
-            {
-                case MapSide.Left:   return new Vector2(inX, y);
-                case MapSide.Right:  return new Vector2(width - 1 - inX, y);
-                case MapSide.Bottom: return new Vector2(x, inY);
-                default:             return new Vector2(x, height - 1 - inY);
-            }
-        }
+        /// <summary>도착지는 반대편에 칠한 Exit 칸 자체다. 출구가 없으면 실패한다.</summary>
+        public bool TryFindEntryFrom(LocationId origin, Vector2Int fromTile, out Vector2Int tile)
+            => TryGetExitTile(origin, fromTile, out tile);
 
         public void Build(GameData data)
         {
@@ -306,17 +235,15 @@ namespace FarmMVP
 
             switch (id)
             {
-                case LocationId.Farm1: Farm1Builder.Build(this, data); break;
-                case LocationId.Farm2: Farm2Builder.Build(this, data); break;
+                case LocationId.Farm: FarmBuilder.Build(this, data); break;
                 case LocationId.FarmHouse: FarmHouseBuilder.Build(this, data); break;
                 // 전용 빌더가 없는 바깥 맵은 전부 같은 방식으로 짓는다 (씬에 칠한 대로).
                 // 그래서 LocationId에 맵을 하나 더 넣어도 여기를 고칠 일이 없다.
                 default: OutdoorMapBuilder.Build(this, data); break;
             }
 
-            // MapGraph에 적힌 통로 중 "Obj_Exit{맵}" 마커로 칠하지 않은 것은 맵의 변에 걸어 둔다 —
-            // 그 변에서 맵 밖으로 한 발 내디디면 넘어간다 (출구 칸과 달리 밟는다고 넘어가지 않는다).
-            MapExits.EnsureEdgeExits(this);
+            WorldGrid.Invalidate();
+            MapExits.Apply(this);
 
             ApplyMaskTilemaps();
 
@@ -380,6 +307,13 @@ namespace FarmMVP
         /// </summary>
         private void FindSceneTilemaps()
         {
+            // Exit layers are editor-only masks, including exits belonging to other maps.
+            foreach (var tm in FindObjectsOfType<Tilemap>(true))
+                if (tm.name.StartsWith("Exit_", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    var renderer = tm.GetComponent<TilemapRenderer>();
+                    if (renderer != null) renderer.enabled = false;
+                }
             _groundMap = _blockedMask = _tillableMask = _objectMarkers = null;
             _grassMask = null;
             _pathMask = null;
@@ -643,7 +577,7 @@ namespace FarmMVP
         private enum TilemapLayer { Ground, Blocked, Tillable, Objects, Water, Decor, Cliff, DeepForest, Fixed, Breakable, Grass, Path }
 
         /// <summary>
-        /// 레이어 이름을 해석한다. 앞에 계절이 붙어 있으면("Winter_Location_Farm1") 그 계절 전용이다.
+        /// 레이어 이름을 해석한다. 앞에 계절이 붙어 있으면("Winter_Location_Farm") 그 계절 전용이다.
         /// season이 null이면 계절과 무관한 기본 레이어.
         /// </summary>
         /// <summary>
@@ -681,7 +615,7 @@ namespace FarmMVP
             return TryParseLayerName(name, out locId, out layer, out overlay);
         }
 
-        /// <summary>overlay는 겹쳐 칠한 번호 — "Fixed_Farm1"은 0, "Fixed_2_Farm1"은 2.</summary>
+        /// <summary>overlay는 겹쳐 칠한 번호 — "Fixed_Farm"은 0, "Fixed_2_Farm"은 2.</summary>
         private static bool TryParseLayerName(string name, out LocationId locId, out TilemapLayer layer,
                                               out int overlay)
         {
@@ -732,6 +666,7 @@ namespace FarmMVP
             var sr = go.AddComponent<SpriteRenderer>();
             sr.sprite = sprite;
             sr.sortingOrder = Depth.YSort(footY, bias);
+            SlicedSpriteAnimation.Apply(sr);
             return sr;
         }
 
@@ -875,7 +810,7 @@ namespace FarmMVP
             _objectBlocked = null;
         }
 
-        /// <summary>배송함 스프라이트 렌더러를 등록한다 (Farm1Builder에서 사용).</summary>
+        /// <summary>배송함 스프라이트 렌더러를 등록한다 (FarmBuilder에서 사용).</summary>
         internal void SetShippingBoxRenderer(SpriteRenderer sr) => _shippingBoxSr = sr;
 
         // ---------- feature restore / render ----------
@@ -1187,40 +1122,6 @@ namespace FarmMVP
             if (_npcBlocked.Contains(tile) && (movingNpc == null || movingNpc.Tile != tile)) return true;
             // 컷신 중 출구를 밟고 끝나면 다음 프레임에 의도치 않게 맵이 바뀌므로 제외한다.
             return _exits.ContainsKey(tile) || (doorExitTile.HasValue && doorExitTile.Value == tile);
-        }
-
-        /// <summary>
-        /// 문으로 드나들었을 때 내려설 칸 — 문 바로 위/아래 중 걸을 수 있는 쪽.
-        /// 집을 어디에 놓든(마커로 옮기든, 맵이 줄어들든) 출입구 좌표를 따로 적어 둘 필요가 없다.
-        /// </summary>
-        public Vector2 DoorEntryTile
-        {
-            get
-            {
-                if (!doorExitTile.HasValue) return new Vector2(width / 2f, height / 2f);
-                return DoorEntryTileFor(doorExitTile.Value);
-            }
-        }
-
-        /// <summary>
-        /// 특정 문으로 드나들었을 때의 도착 칸. 여러 칸으로 그린 문은 바깥쪽 끝까지 지나서
-        /// 내려놓는다. 그렇지 않으면 문 가운데에서 나와 벽이나 절벽 사이에 갇힐 수 있다.
-        /// </summary>
-        public Vector2 DoorEntryTileFor(Vector2Int door)
-        {
-            var d = door;
-
-            // 야외 문은 아래쪽, 실내 문은 위쪽이 문 앞이다. 세로로 이어진 문 마커는 이 방향의
-            // 끝까지 먼저 훑어 문 그림 한가운데가 아니라 실제 바깥 바닥에 내려놓는다.
-            int direction = MapGraph.IsIndoor(id) ? 1 : -1;
-            while (_doorTiles.Contains(new Vector2Int(d.x, d.y + direction)))
-                d.y += direction;
-
-            int preferredY = d.y + direction;
-            int fallbackY = d.y - direction;
-            if (!IsBlocked(d.x, preferredY)) return new Vector2(d.x, preferredY);
-            if (!IsBlocked(d.x, fallbackY)) return new Vector2(d.x, fallbackY);
-            return new Vector2(d.x, d.y);
         }
 
         internal void RegisterDoorTile(Vector2Int tile) => _doorTiles.Add(tile);

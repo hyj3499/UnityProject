@@ -93,6 +93,8 @@ public static class TileAnimationChecks
             Assert(!seasonal.GetTileAnimationData(Vector3Int.zero, null, ref data), "Seasonal tile has no legacy animation");
             Assert(AnimationTileset.Apply(null) == 0, "Null map is safe");
 
+            CheckObjects(map, beach);
+
             Debug.Log("TILE_ANIMATION_CHECKS_PASSED: " + checks);
             File.WriteAllText("result.txt", "PASS: " + checks + " checks");
             EditorApplication.Exit(0);
@@ -105,6 +107,80 @@ public static class TileAnimationChecks
         }
     }
 
+    private static void CheckObjects(Tilemap map, Sprite[] frames)
+    {
+        var locationObject = new GameObject("Animation object checks");
+        var location = locationObject.AddComponent<GameLocation>();
+        var featureRoot = new GameObject("Features").transform;
+        featureRoot.SetParent(location.transform);
+        const System.Reflection.BindingFlags hidden = System.Reflection.BindingFlags.Instance |
+                                                      System.Reflection.BindingFlags.NonPublic;
+        typeof(GameLocation).GetField("_featureRoot", hidden).SetValue(location, featureRoot);
+        typeof(GameLocation).GetMethod("ResetBlocked", hidden).Invoke(location, null);
+        map.ClearAllTiles();
+        map.name = "Fixed_Farm";
+        var original = MakeTile(frames[6]);
+        map.SetTile(Vector3Int.zero, original);
+        var plain = Load("Outside")[0];
+        map.SetTile(Vector3Int.right, MakeTile(plain));
+        var overlayObject = new GameObject("Fixed_1_Farm", typeof(Tilemap), typeof(TilemapRenderer));
+        overlayObject.transform.SetParent(map.transform.parent);
+        var overlay = overlayObject.GetComponent<Tilemap>();
+        var tall = Load("Animation/tall");
+        overlay.SetTile(Vector3Int.zero, MakeTile(tall[2]));
+        var placer = typeof(GameLocation).Assembly.GetType("FarmMVP.PaintedObjectPlacer");
+        placer.GetMethod("Apply").Invoke(null, new object[] { location, new[] { map, overlay }, null, null });
+
+        var renderers = featureRoot.GetComponentsInChildren<SpriteRenderer>();
+        Assert(renderers.Length == 3, "Fixed and overlay maps produce three objects");
+        var animated = renderers.Single(sr => sr.sprite == frames[0]);
+        var top = renderers.Single(sr => sr.sprite == tall[0]);
+        Assert(animated.GetComponent<SlicedSpriteAnimation>() != null &&
+               top.GetComponent<SlicedSpriteAnimation>() != null, "Both Fixed layers animate automatically");
+        Assert(renderers.Single(sr => sr.sprite == plain).GetComponent<SlicedSpriteAnimation>() == null,
+               "Ordinary Fixed object stays static");
+        var world = map.GetCellCenterWorld(Vector3Int.zero);
+        Assert(animated.transform.position == world && top.transform.position == world,
+               "Object position and imported pivot placement preserved");
+        Assert(top.sortingOrder > animated.sortingOrder, "Fixed overlay stays in front");
+        Assert(location.IsBlocked(Mathf.RoundToInt(world.x), Mathf.RoundToInt(world.y)),
+               "Animated Fixed object still blocks its cell");
+        Assert(map.GetTile(Vector3Int.zero) == original && original.sprite == frames[6],
+               "Fixed source tile remains unchanged");
+
+        var player = animated.GetComponent<SlicedSpriteAnimation>();
+        var advance = typeof(SlicedSpriteAnimation).GetMethod("Advance", hidden);
+        int order = animated.sortingOrder;
+        animated.color = Color.magenta;
+        animated.flipX = true;
+        advance.Invoke(player, new object[] { 0.125f });
+        Assert(animated.sprite == frames[1], "Object advances at eight frames per second");
+        advance.Invoke(player, new object[] { 0f });
+        Assert(animated.sprite == frames[1], "Zero game delta pauses animation");
+        advance.Invoke(player, new object[] { 0.875f });
+        Assert(animated.sprite == frames[0], "Object loops to first frame");
+        advance.Invoke(player, new object[] { 2.25f });
+        Assert(animated.sprite == frames[2], "Large frame delta wraps correctly");
+        Assert(animated.transform.position == world && animated.sortingOrder == order &&
+               animated.color == Color.magenta && animated.flipX, "Animation preserves renderer settings");
+        SlicedSpriteAnimation.Apply(animated);
+        Assert(animated.GetComponents<SlicedSpriteAnimation>().Length == 1, "Reapplying does not duplicate component");
+        animated.sprite = plain;
+        advance.Invoke(player, new object[] { 0.125f });
+        Assert(animated.sprite == plain && !player.enabled, "External static sprite change stops old animation");
+        animated.sprite = tall[2];
+        SlicedSpriteAnimation.Apply(animated);
+        advance.Invoke(player, new object[] { 0.125f });
+        Assert(player.enabled && animated.sprite == tall[1], "Rebinding resumes with new sheet");
+        var still = new GameObject("Single slice").AddComponent<SpriteRenderer>();
+        still.sprite = Load("Animation/still")[0];
+        SlicedSpriteAnimation.Apply(still);
+        Assert(still.GetComponent<SlicedSpriteAnimation>() == null, "Single-slice object stays static");
+        SlicedSpriteAnimation.Apply(null);
+        UnityEngine.Object.DestroyImmediate(still.gameObject);
+        UnityEngine.Object.DestroyImmediate(locationObject);
+        UnityEngine.Object.DestroyImmediate(overlayObject);
+    }
     private static void CheckSheet(Tilemap map, string path, int count, Vector2 size)
     {
         map.ClearAllTiles();

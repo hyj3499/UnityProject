@@ -53,7 +53,7 @@ namespace FarmMVP
         public int DebrisDamage { get; private set; }
 
         /// <summary>잔해는 농장에만 깔린다.</summary>
-        private bool HasDebrisField => id == LocationId.Farm1 || id == LocationId.Farm2;
+        private bool HasDebrisField => id == LocationId.Farm;
 
         // ---------- 조회 / 부수기 ----------
 

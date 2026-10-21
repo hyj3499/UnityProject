@@ -35,6 +35,7 @@ namespace FarmMVP
                 if (!File.Exists(Path)) return null;
                 string json = File.ReadAllText(Path);
                 var data = JsonUtility.FromJson<GameData>(json);
+                data?.MigrateLocations();
                 Debug.Log("[SaveSystem] Loaded save.");
                 return data;
             }

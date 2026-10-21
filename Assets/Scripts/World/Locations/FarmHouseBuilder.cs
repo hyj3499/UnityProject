@@ -48,7 +48,7 @@ namespace FarmMVP
             loc.PlaceObject(AssetLibrary.Fireplace, 6f, loc.height - 3.0f);
             loc.SetBlocked(6, loc.height - 3, true);
 
-            // door (bottom) -> back to Farm1
+            // door (bottom) -> back to Farm
             loc.doorExitTile = new Vector2Int(loc.width / 2, 1);
             loc.PlaceObject(AssetLibrary.Door, loc.width / 2f, 0.6f, 1f);
             loc.SetBlocked(loc.doorExitTile.Value.x, 0, false);

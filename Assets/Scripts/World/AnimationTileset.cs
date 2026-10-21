@@ -68,6 +68,15 @@ namespace FarmMVP
             return converted;
         }
 
+        /// <summary>타일과 오브젝트가 같은 임포트된 프레임/순서를 공유한다.</summary>
+        public static bool TryGetFrames(Sprite sprite, out Sprite[] frames)
+        {
+            frames = null;
+            if (sprite == null) return false;
+            EnsureFramesLoaded();
+            return _frames.TryGetValue(sprite, out frames);
+        }
+
         private static void EnsureFramesLoaded()
         {
             if (_frames != null) return;

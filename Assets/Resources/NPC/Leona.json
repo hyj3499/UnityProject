@@ -1,7 +1,7 @@
 {
   "id": "Leona",
   "displayName": "레오나",
-  "home": { "location": "PigeonVillage", "x": 10, "y": 8 },
+  "home": { "location": "Campsite1", "x": 10, "y": 8 },
 
   "defaultPortrait": "happy",
 
@@ -228,7 +228,7 @@
       {
         "when": "",
         "stops": [
-          { "time": "06:10", "map": "PigeonVillage", "spot": "Home", "facing": "Down" },
+          { "time": "06:10", "map": "Campsite1", "spot": "Home", "facing": "Down" },
           { "time": "06:20", "map": "Valley", "spot": "Plaza", "facing": "Down" }
         ]
       }

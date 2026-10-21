@@ -206,11 +206,11 @@ namespace FarmMVP
             }
 
             // 이웃이 아니면 통로를 따라 첫 걸음을 구한다.
-            var hop = MapGraph.TryGetNextHop(npc.map, targetMap, out var next) ? next : targetMap;
-            if (!ExitTile(npc.map, hop, npc.Tile, out var exit))
+            if (!MapGraph.TryGetNextHop(npc.map, targetMap, out var hop)
+                || !ExitTile(npc.map, hop, npc.Tile, out var exit))
             {
                 Warn($"{npc.def.id}: {npc.map}에서 {hop}(으)로 나가는 길이 없습니다. " +
-                     "MapGraph에 통로를 적었는지, 출구 마커를 칠했는지 확인하세요.");
+                     "양쪽 맵에 서로를 가리키는 Exit 타일을 칠했는지 확인하세요.");
                 return;
             }
 
@@ -259,9 +259,9 @@ namespace FarmMVP
         private void CrossTo(Npc npc)
         {
             var from = npc.map;
+            if (!TryEntryPoint(npc.nextMap, from, npc.Tile, out var entry)) return;
             npc.map = npc.nextMap;
-            var hint = Vector2Int.RoundToInt(TileOf(npc, npc.stop, npc.map));
-            npc.position = EntryPoint(npc.map, from, hint);
+            npc.position = entry;
             npc.blockedTime = 0f;
             npc.retry = 0f;
             npc.repath = true;
@@ -335,10 +335,10 @@ namespace FarmMVP
             return WorldGrid.TryGetExitTile(map, target, from, out tile);
         }
 
-        private Vector2 EntryPoint(LocationId map, LocationId from, Vector2Int hint)
+        private bool TryEntryPoint(LocationId map, LocationId from, Vector2Int hint, out Vector2Int tile)
             => IsCurrent(map)
-                ? _game.CurrentLocation.FindEntryFrom(from, hint)
-                : WorldGrid.EntryFrom(map, from, hint);
+                ? _game.CurrentLocation.TryFindEntryFrom(from, hint, out tile)
+                : WorldGrid.TryGetEntryFrom(map, from, hint, out tile);
 
         /// <summary>길(Path)을 되도록 밟는 경로. 오래 막혀 있었으면 플레이어를 없는 셈 친다.</summary>
         private List<Vector2Int> Path(Npc npc, Vector2Int start, Vector2Int goal, bool goalIsExit)

@@ -81,7 +81,7 @@ namespace FarmMVP
             EditorGUILayout.Space(5f);
             EditorGUILayout.HelpBox(
                 _previewMap == null
-                    ? "Location_Farm1을 선택한 뒤 '선택한 타일맵 사용'을 누르면 Scene 창에 흰 화면 범위 미리보기가 보입니다."
+                    ? "Location_Farm을 선택한 뒤 '선택한 타일맵 사용'을 누르면 Scene 창에 흰 화면 범위 미리보기가 보입니다."
                     : "Scene 창의 흰 테두리는 이 타일맵 중앙을 기준으로 한 카메라 한 화면 크기 미리보기입니다.",
                 MessageType.None);
             if (!string.IsNullOrEmpty(_status)) EditorGUILayout.LabelField(_status, EditorStyles.miniLabel);

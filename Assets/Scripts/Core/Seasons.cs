@@ -109,7 +109,7 @@ namespace FarmMVP
             return string.Join("·", parts);
         }
 
-        /// <summary>스프라이트/타일맵 이름에 붙는 접두사 ("Winter_Location_Farm1").</summary>
+        /// <summary>스프라이트/타일맵 이름에 붙는 접두사 ("Winter_Location_Farm").</summary>
         public static string Key(Season s) => s.ToString();   // Spring / Summer / Fall / Winter
 
         public static string NameOfDay(int day) => Name(Of(day));
