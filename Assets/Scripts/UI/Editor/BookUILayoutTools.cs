@@ -25,11 +25,59 @@ namespace FarmMVP
 
         private static readonly string[] Settings = { "Gameplay", "Display", "Controls", "Exit" };
 
-        [MenuItem(MenuPath + "Create Menu Book", false, 10)]
-        public static void CreateMenuBook() => Create(false);
+        [InitializeOnLoadMethod]
+        private static void UpgradeLoadedInventoryAfterCompile()
+        {
+            EditorApplication.delayCall += UpgradeLoadedInventory;
+            EditorSceneManager.sceneOpened -= OnInventorySceneOpened;
+            EditorSceneManager.sceneOpened += OnInventorySceneOpened;
+            EditorApplication.playModeStateChanged -= OnInventoryPlayModeChanged;
+            EditorApplication.playModeStateChanged += OnInventoryPlayModeChanged;
+        }
 
-        [MenuItem(MenuPath + "Create Shop Crafting Book", false, 11)]
-        public static void CreateShopBook() => Create(true);
+        private static void OnInventorySceneOpened(Scene scene, OpenSceneMode mode)
+            => EditorApplication.delayCall += UpgradeLoadedInventory;
+
+        private static void OnInventoryPlayModeChanged(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.EnteredEditMode)
+                EditorApplication.delayCall += UpgradeLoadedInventory;
+        }
+
+        private static void UpgradeLoadedInventory()
+        {
+                if (EditorApplication.isPlayingOrWillChangePlaymode || PrefabStageUtility.GetCurrentPrefabStage() != null) return;
+                var scene = SceneManager.GetActiveScene();
+                if (!scene.IsValid() || !scene.isLoaded) return;
+                var view = UnityEngine.Object.FindObjectsByType<BookMenuView>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                    .FirstOrDefault(v => v.gameObject.scene == scene);
+                var shop = UnityEngine.Object.FindObjectsByType<ShopBookView>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                    .FirstOrDefault(v => v.gameObject.scene == scene);
+                bool upgradeMenu = view != null && view.configured && view.inventoryLayoutVersion < 10;
+                bool upgradeShop = shop != null && shop.configured && shop.layoutVersion < 10;
+                if (!upgradeMenu && !upgradeShop) return;
+                if (upgradeMenu)
+                {
+                    Undo.RegisterFullObjectHierarchyUndo(view.gameObject, "Upgrade Menu Book Inventory Presentation");
+                    BookMenuLayout.UpgradeInventory(view);
+                    view.gameObject.SetActive(true);
+                    view.PreviewPage(0);
+                    EditorUtility.SetDirty(view);
+                }
+                if (upgradeShop)
+                {
+                    Undo.RegisterFullObjectHierarchyUndo(shop.gameObject, "Upgrade Shop Book Inventory Presentation");
+                    ShopBookLayout.Upgrade(shop);
+                    ShopBookLayout.ArrangeInventory(shop, 10, true);
+                    EditorUtility.SetDirty(shop);
+                }
+                EditorSceneManager.MarkSceneDirty(scene);
+                Debug.Log("Book UI: 열려 있는 Canvas의 인벤토리 슬롯과 선택 애니메이션을 갱신했습니다.", view != null ? view : (UnityEngine.Object)shop);
+        }
+
+        [MenuItem(MenuPath + "Create Menu Book", false, 10)]
+        public static void CreateMenuBook() => Create();
+
 
         [MenuItem(MenuPath + "Build Interactive Menu Book", false, 1)]
         public static void BuildInteractiveMenu()
@@ -56,6 +104,34 @@ namespace FarmMVP
             }
             catch { Undo.RevertAllDownToGroup(group); throw; }
             finally { Undo.CollapseUndoOperations(group); }
+        }
+
+        [MenuItem(MenuPath + "Apply Inventory Presentation To Scene", false, 4)]
+        public static void ApplyInventoryPresentationToScene()
+        {
+            if (!CanCreate()) return;
+            var scene = SceneManager.GetActiveScene();
+            var menu = UnityEngine.Object.FindObjectsByType<BookMenuView>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(v => v.gameObject.scene == scene);
+            var shop = UnityEngine.Object.FindObjectsByType<ShopBookView>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(v => v.gameObject.scene == scene);
+            if (menu == null) { Debug.LogWarning("Book UI: MenuBookUI를 찾을 수 없습니다."); return; }
+            Undo.RegisterFullObjectHierarchyUndo(menu.gameObject, "Apply Inventory Presentation");
+            BookMenuLayout.UpgradeInventory(menu);
+            menu.gameObject.SetActive(true);
+            menu.PreviewPage(0);
+            if (shop != null)
+            {
+                Undo.RegisterFullObjectHierarchyUndo(shop.gameObject, "Apply Shop Inventory Presentation");
+                ShopBookLayout.Upgrade(shop);
+                ShopBookLayout.ArrangeInventory(shop, 10, true);
+            }
+            EditorUtility.SetDirty(menu);
+            if (shop != null) EditorUtility.SetDirty(shop);
+            EditorSceneManager.MarkSceneDirty(scene);
+            Selection.activeGameObject = menu.pages[0];
+            EditorGUIUtility.PingObject(menu.pages[0]);
+            Debug.Log("Book UI: Main Canvas에 프로필/인벤토리 헤더, 개별 슬롯, 빈 상세 페이지, 선택 애니메이션을 반영했습니다. 씬을 저장하세요.", menu);
         }
 
         [MenuItem(MenuPath + "Preview Inventory", false, 30)]
@@ -93,12 +169,12 @@ namespace FarmMVP
             var books = UnityEngine.Object.FindObjectsByType<RectTransform>(
                 FindObjectsInactive.Include, FindObjectsSortMode.None)
                 .Where(r => r.name == "Book" && r.parent != null
-                    && (r.parent.name == "MenuBookUI" || r.parent.name == "ShopBookUI")
+                    && (r.parent.name == "MenuBookUI")
                     && (canvas != null ? r.IsChildOf(canvas.transform) : r.gameObject.scene == scene))
                 .ToArray();
             if (books.Length == 0)
             {
-                Debug.LogWarning("Book UI: 크기를 적용할 MenuBookUI / ShopBookUI가 없습니다.");
+                Debug.LogWarning("Book UI: 크기를 적용할 MenuBookUI가 없습니다.");
                 return;
             }
 
@@ -121,8 +197,8 @@ namespace FarmMVP
         }
 
         [MenuItem(MenuPath + "Create Menu Book", true)]
-        [MenuItem(MenuPath + "Create Shop Crafting Book", true)]
         [MenuItem(MenuPath + "Build Interactive Menu Book", true)]
+        [MenuItem(MenuPath + "Apply Inventory Presentation To Scene", true)]
         [MenuItem(MenuPath + "Preview Inventory", true)]
         [MenuItem(MenuPath + "Preview Display Settings", true)]
         [MenuItem(MenuPath + "Preview Exit Settings", true)]
@@ -130,7 +206,7 @@ namespace FarmMVP
         private static bool CanCreate() => !EditorApplication.isPlayingOrWillChangePlaymode
             && PrefabStageUtility.GetCurrentPrefabStage() == null;
 
-        private static void Create(bool shop)
+        private static void Create()
         {
             if (!CanCreate()) return;
 
@@ -148,7 +224,7 @@ namespace FarmMVP
             try
             {
                 var canvas = FindOrCreateCanvas();
-                string rootName = shop ? "ShopBookUI" : "MenuBookUI";
+                string rootName = "MenuBookUI";
                 var existing = canvas.transform.Find(rootName);
                 if (existing != null)
                 {
@@ -171,11 +247,10 @@ namespace FarmMVP
                 image.preserveAspect = true;
                 image.raycastTarget = false;
 
-                if (shop) BuildShop(book);
-                else BuildMenu(book);
+                BuildMenu(book);
 
                 // 다른 책과 겹치지 않게 두 번째로 생성한 책은 비활성 상태로 준비한다.
-                var other = canvas.transform.Find(shop ? "MenuBookUI" : "ShopBookUI");
+                var other = canvas.transform.Find("ShopBookUi");
                 if (other != null && other.gameObject.activeSelf) root.gameObject.SetActive(false);
 
                 EditorSceneManager.MarkSceneDirty(canvas.gameObject.scene);
@@ -273,21 +348,6 @@ namespace FarmMVP
                 var panel = Area(panels, "Panel_" + Settings[i], Vector2.zero, Vector2.one);
                 panel.gameObject.SetActive(i == 0);
             }
-        }
-
-        private static void BuildShop(RectTransform book)
-        {
-            var pages = Area(book, "Pages", Vector2.zero, Vector2.one);
-            var left = PageArea(pages, false);
-            var right = PageArea(pages, true);
-            Area(left, "ShopTitle", new Vector2(0, 0.87f), Vector2.one);
-            Area(left, "ProductList", new Vector2(0, 0.1f), new Vector2(1, 0.84f));
-            Area(left, "PlayerCurrency", Vector2.zero, new Vector2(1, 0.08f));
-            Area(right, "ProductDetails", new Vector2(0, 0.34f), Vector2.one);
-            Area(right, "PriceOrMaterials", new Vector2(0, 0.17f), new Vector2(1, 0.31f));
-            Area(right, "Quantity", new Vector2(0, 0.09f), new Vector2(1, 0.15f));
-            Area(right, "BuyOrCraftAction", Vector2.zero, new Vector2(1, 0.07f));
-            Area(book, "SectionBookmarks", new Vector2(0.04f, 0.93f), new Vector2(0.96f, 1.08f));
         }
 
         private static RectTransform PageArea(RectTransform parent, bool right)

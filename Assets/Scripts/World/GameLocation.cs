@@ -44,13 +44,10 @@ namespace FarmMVP
         }
 
         private bool[,] _blocked;
+        private readonly ObjectCollisionMap _objectCollisions = new ObjectCollisionMap();
+        internal float CollisionMovementStep => _objectCollisions.MovementStep;
         // NPC 점유를 지형과 분리해 이동 시 원래 지형/오브젝트 충돌을 지우지 않는다.
         private readonly HashSet<Vector2Int> _npcBlocked = new HashSet<Vector2Int>();
-        /// <summary>
-        /// 오브젝트 발판처럼 <b>치울 수 없는</b> 이유로 막힌 칸. 나무를 베거나 바위를 부술 때 그 칸을
-        /// 무조건 열어 버리면, 집 발판 위에 서 있던 나무를 벤 순간 집에 구멍이 뚫린다.
-        /// </summary>
-        private bool[,] _objectBlocked;
         /// <summary>경작 마스크. null이면 마스크 레이어가 없다는 뜻이라 어디든 경작할 수 있다.</summary>
         private bool[,] _tillable;
         /// <summary>맵 크기를 씬에 칠한 바닥에서 가져왔는지. true면 빌더의 기본 크기를 무시한다.</summary>
@@ -210,6 +207,7 @@ namespace FarmMVP
         public void Build(GameData data)
         {
             AssetLibrary.EnsureLoaded();
+            _objectCollisions.Clear();
             _today = data != null ? data.currentDay : 1;
 
             _tileRoot = new GameObject("Tiles").transform;
@@ -562,7 +560,7 @@ namespace FarmMVP
         /// 칠해 둔 오브젝트 레이어 셋을 차례로 읽어 실제 오브젝트를 놓는다.
         ///
         ///   "Objects_{맵}"    특별한 일을 하는 마커 — 집·문·맵 이동 출구·나무·바위
-        ///                     (ObjectMarkerDatabase에 등록된 이름만 알아본다)
+        ///                     등록된 마커는 해당 기능을 사용하고 일반 PNG는 그림과 충돌을 그대로 놓는다.
         ///   "Fixed_{맵}"      부술 수 없는 배경 오브젝트 — 칠한 그림을 그대로 놓고 그 칸을 막는다.
         ///                     아무 png나 팔레트에 넣어 칠하면 되고, 등록할 것이 없다.
         ///   "Breakable_{맵}"  부술 수 있는 오브젝트 — 울타리·길·가구. 진짜 설치물로 바뀌므로
@@ -590,6 +588,7 @@ namespace FarmMVP
             ("Blocked",   "Blocked",   TilemapLayer.Blocked,   false),
             ("Tillable",  "Tillable",  TilemapLayer.Tillable,  false),
             ("Objects",   "Objects",   TilemapLayer.Objects,   false),
+            ("Object",    "Object",    TilemapLayer.Objects,   false),
             ("Water",     "Water",     TilemapLayer.Water,     true),
             ("Decor",     "Decor",     TilemapLayer.Decor,     true),
             ("Cliff",     "Cliff",     TilemapLayer.Cliff,     true),
@@ -622,7 +621,7 @@ namespace FarmMVP
             foreach (LocationId candidate in System.Enum.GetValues(typeof(LocationId)))
                 foreach (var entry in LayerNames)
                 {
-                    var comparison = entry.layer == TilemapLayer.Cliff
+                    var comparison = entry.layer == TilemapLayer.Cliff || entry.layer == TilemapLayer.Objects || entry.layer == TilemapLayer.Fixed
                         ? System.StringComparison.OrdinalIgnoreCase : System.StringComparison.Ordinal;
                     if (!name.StartsWith(entry.key, comparison)
                         && !name.EndsWith(entry.legacy, comparison)) continue;
@@ -673,6 +672,19 @@ namespace FarmMVP
         internal SpriteRenderer PlaceObject(Sprite sprite, float x, float y)
             => PlaceObject(sprite, x, y, y);
 
+        internal void RegisterObjectCollision(SpriteRenderer renderer, RectInt footprint, bool blocks = true,
+            Vector2Int? doorway = null, Sprite collisionSprite = null)
+        {
+            var sprite = collisionSprite != null ? collisionSprite : renderer.sprite;
+            _objectCollisions.Set(renderer, sprite, renderer.transform.position, footprint, blocks, doorway);
+        }
+
+        /// <summary>Static object order that must cover the player in a keyed mask's unpainted Y band.</summary>
+        internal int PlayerForegroundMaskSortingOrderAtWorld(float worldX, float worldY)
+            => _objectCollisions.ForegroundMaskSortingOrderAt(worldX, worldY);
+
+        internal void RemoveObjectCollision(SpriteRenderer renderer) => _objectCollisions.Remove(renderer);
+
         /// <summary>
         /// 한 칸(16px)보다 큰 그림을 얼마나 위로 올려 그려야 밑동이 칸 바닥에 붙는지.
         /// 그냥 두면 키가 큰 그림일수록 아래로 파묻힌다.
@@ -713,11 +725,11 @@ namespace FarmMVP
         public bool IsBlocked(int x, int y)
         {
             if (!InBounds(x, y)) return true;
-            return _blocked[x, y] || (_cliffBlocked != null && _cliffBlocked[x, y])
+            return _blocked[x, y] || _objectCollisions.HasAny(x, y) || (_cliffBlocked != null && _cliffBlocked[x, y])
                 || _npcBlocked.Contains(new Vector2Int(x, y));
         }
 
-        /// <summary>플레이어 발 위치 판정. 절벽만 픽셀 단위이며 물·오브젝트·NPC 충돌은 유지한다.</summary>
+        /// <summary>지정한 월드 점의 충돌 판정. 플레이어 이동은 IsPlayerBlockedAtWorld를 쓴다.</summary>
         public bool IsBlockedAtWorld(float x, float y)
             => IsBlockedAtWorld(x, y, null);
 
@@ -726,6 +738,32 @@ namespace FarmMVP
         {
             if (IsBlockedByNonCliffAtWorld(x, y)) return true;
             return IsCliffBlockedAtWorld(x, y, cliffEdge);
+        }
+
+        /// <summary>Player anchor -> idle sole line for painted object masks.</summary>
+        internal bool IsPlayerBlockedAtWorld(float x, float y, Direction facing, Vector2[] cliffEdge)
+            => IsPlayerBlockedByNonCliffAtWorld(x, y, facing) || IsCliffBlockedAtWorld(x, y, cliffEdge);
+
+        internal bool IsPlayerBlockedByNonCliffAtWorld(float x, float y, Direction facing)
+            => IsBlockedByNonCliffAtWorld(x, y, FarmerBodyCollision.IdleFootLine(facing));
+
+        /// <summary>Painted object order at the player's idle sole; no hit is <see cref="int.MinValue"/>.</summary>
+        internal int PlayerMaskSortingOrderAtWorld(float x, float y, Direction facing)
+            => _objectCollisions.MaskSortingOrderAt(x, y, FarmerBodyCollision.IdleFootLine(facing));
+
+        /// <summary>
+        /// A save/load or an older one-point collision can leave the player inside a painted mask.
+        /// Permit only existing sole contacts to remain while preserving all terrain, NPC and cliff blocks.
+        /// This lets a player who touched an older mask slide along its edge and find an exit,
+        /// without letting a previously free part of the sole enter the object.
+        /// </summary>
+        internal bool CanPlayerLeaveObjectMask(Vector2 from, Vector2 to, Direction facing, Vector2[] cliffEdge)
+        {
+            var sole = FarmerBodyCollision.IdleFootLine(facing);
+            if (!_objectCollisions.CanResolveMaskOverlap(from, to, sole)) return false;
+            int tx = Mathf.RoundToInt(to.x), ty = Mathf.RoundToInt(to.y);
+            return InBounds(tx, ty) && !_blocked[tx, ty] && !_npcBlocked.Contains(new Vector2Int(tx, ty))
+                && !IsCliffBlockedAtWorld(to.x, to.y, cliffEdge);
         }
 
         internal bool IsCliffBlockedAtWorld(float x, float y, Vector2[] cliffEdge)
@@ -738,34 +776,29 @@ namespace FarmMVP
         }
 
         internal bool IsBlockedByNonCliffAtWorld(float x, float y)
+            => IsBlockedByNonCliffAtWorld(x, y, Vector2.zero);
+
+        private bool IsBlockedByNonCliffAtWorld(float x, float y, Vector2 maskOffset)
         {
             int tx = Mathf.RoundToInt(x), ty = Mathf.RoundToInt(y);
-            return !InBounds(tx, ty) || _blocked[tx, ty] || _npcBlocked.Contains(new Vector2Int(tx, ty));
+            return !InBounds(tx, ty) || _blocked[tx, ty] || _objectCollisions.IsBlocked(x, y, maskOffset)
+                || _npcBlocked.Contains(new Vector2Int(tx, ty));
+        }
+
+        private bool IsBlockedByNonCliffAtWorld(float x, float y, Vector2[] maskOffsets)
+        {
+            int tx = Mathf.RoundToInt(x), ty = Mathf.RoundToInt(y);
+            return !InBounds(tx, ty) || _blocked[tx, ty] || _objectCollisions.IsBlocked(x, y, maskOffsets)
+                || _npcBlocked.Contains(new Vector2Int(tx, ty));
         }
 
         internal void SetBlocked(int x, int y, bool v)
         {
             if (!InBounds(x, y)) return;
             _blocked[x, y] = v;
-            // 일부러 연 칸(문·출구)은 오브젝트 발판에서도 빼야 다시 막히지 않는다.
-            if (!v && _objectBlocked != null) _objectBlocked[x, y] = false;
+            // 문·출구는 그 칸에 이미 놓인 오브젝트에서도 연다.
+            if (!v) _objectCollisions.OpenCell(new Vector2Int(x, y));
         }
-
-        /// <summary>
-        /// 오브젝트 발판으로 막는다. 그냥 SetBlocked와 달리, 이 칸에 있던 나무/바위를 치워도
-        /// 계속 막힌 채로 남는다.
-        /// </summary>
-        internal void SetObjectBlocked(int x, int y)
-        {
-            if (!InBounds(x, y)) return;
-            if (_objectBlocked == null) _objectBlocked = new bool[width, height];
-            _objectBlocked[x, y] = true;
-            _blocked[x, y] = true;
-        }
-
-        /// <summary>나무/바위가 사라진 칸을 연다. 그 칸이 오브젝트 발판이면 막힌 채로 둔다.</summary>
-        private void ClearFeatureBlock(Vector2Int pos)
-            => SetBlocked(pos.x, pos.y, _objectBlocked != null && _objectBlocked[pos.x, pos.y]);
 
         /// <summary>
         /// 이 칸에서 대지마법(경작)을 쓸 수 있는지. "Tillable_{id}" 마스크 레이어를 칠해 두면
@@ -807,7 +840,7 @@ namespace FarmMVP
         internal void ResetBlocked()
         {
             _blocked = new bool[width, height];
-            _objectBlocked = null;
+            _objectCollisions.Clear();
         }
 
         /// <summary>배송함 스프라이트 렌더러를 등록한다 (FarmBuilder에서 사용).</summary>
@@ -832,7 +865,7 @@ namespace FarmMVP
             foreach (var t in loc.trees)
             {
                 // 맵 밖의 자리만 건너뛴다. 집 발판처럼 이미 막힌 칸이어도 그린다 — 집 뒤에 칠해 둔
-                // 나무가 통째로 사라지지 않게. 베고 나서도 발판은 ClearFeatureBlock이 지켜 준다.
+                // 나무가 통째로 사라지지 않게. 충돌은 오브젝트별로 소유하므로 베어도 집은 남는다.
                 if (!InBounds(t.x, t.y)) { _outOfBoundsTrees.Add(t); continue; }
                 var pos = new Vector2Int(t.x, t.y);
                 trees[pos] = new TreeFeature(t.x, t.y, t.treeId, t.growthStage)
@@ -841,7 +874,6 @@ namespace FarmMVP
                     dayCounter = t.dayCounter,
                     isStump = t.isStump
                 };
-                SetBlocked(t.x, t.y, true);
                 RenderTree(pos);
             }
 
@@ -850,7 +882,6 @@ namespace FarmMVP
                 if (!InBounds(r.x, r.y)) { _outOfBoundsRocks.Add(r); continue; }
                 var pos = new Vector2Int(r.x, r.y);
                 rocks[pos] = new RockFeature(r.x, r.y, r.variant) { hp = r.hp };
-                SetBlocked(r.x, r.y, true);
                 RenderRock(pos);
             }
 
@@ -980,16 +1011,20 @@ namespace FarmMVP
             {
                 if (_treeRenderers.TryGetValue(pos, out var dead))
                 {
+                    RemoveObjectCollision(dead);
                     Destroy(dead.gameObject);
                     _treeRenderers.Remove(pos);
                 }
                 DestroyTreeTop(pos);
-                ClearFeatureBlock(pos);
                 return;
             }
 
             if (_treeRenderers.TryGetValue(pos, out var sr)) sr.sprite = tree.GetSprite();
             else _treeRenderers[pos] = PlaceObject(tree.GetSprite(), pos.x, TreeFootY(pos.y), pos.y, Depth.TreeBaseBias);
+
+            // Mature trees use the complete sprite's mask; stump/stage masks follow their current art.
+            var collisionSprite = tree.IsMature ? TreeArt.Full(tree.Def.sheet, Seasons.Current) : tree.GetSprite();
+            RegisterObjectCollision(_treeRenderers[pos], new RectInt(pos.x, pos.y, 1, 1), collisionSprite: collisionSprite);
 
             var top = tree.GetTopSprite();
             if (top == null) { DestroyTreeTop(pos); return; }
@@ -1013,9 +1048,9 @@ namespace FarmMVP
             {
                 if (!alive)
                 {
+                    RemoveObjectCollision(sr);
                     Destroy(sr.gameObject);
                     _rockRenderers.Remove(pos);
-                    ClearFeatureBlock(pos);
                 }
                 return;
             }
@@ -1023,6 +1058,7 @@ namespace FarmMVP
             if (!alive) return;
             var created = PlaceObject(rock.GetSprite(), pos.x, pos.y, pos.y);
             _rockRenderers[pos] = created;
+            RegisterObjectCollision(created, new RectInt(pos.x, pos.y, 1, 1));
         }
 
         // ---------- gameplay actions ----------
@@ -1117,7 +1153,7 @@ namespace FarmMVP
 
         public bool IsBlockedForStory(Vector2Int tile, NpcActor movingNpc)
         {
-            if (!InBounds(tile.x, tile.y) || _blocked[tile.x, tile.y]
+            if (!InBounds(tile.x, tile.y) || _blocked[tile.x, tile.y] || _objectCollisions.HasAny(tile.x, tile.y)
                 || (_cliffBlocked != null && _cliffBlocked[tile.x, tile.y])) return true;
             if (_npcBlocked.Contains(tile) && (movingNpc == null || movingNpc.Tile != tile)) return true;
             // 컷신 중 출구를 밟고 끝나면 다음 프레임에 의도치 않게 맵이 바뀌므로 제외한다.
@@ -1301,6 +1337,7 @@ namespace FarmMVP
         {
             var pos = new Vector2Int(x, y);
             if (!InBounds(x, y) || IsBlocked(x, y)) return false;
+            if (_debrisAnchors.ContainsKey(pos)) return false;
             return !trees.ContainsKey(pos) && !rocks.ContainsKey(pos) && !hoeDirts.ContainsKey(pos);
         }
 
@@ -1310,7 +1347,6 @@ namespace FarmMVP
             if (!CanPlantTree(x, y)) return false;
 
             trees[pos] = new TreeFeature(x, y, treeId, 0);
-            SetBlocked(x, y, true);
             RenderTree(pos);
             return true;
         }

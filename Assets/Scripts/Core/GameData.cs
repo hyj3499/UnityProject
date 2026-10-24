@@ -30,6 +30,9 @@ namespace FarmMVP
         /// <summary>배송함에 넣어 둔, 다음 날 아침에 팔릴 아이템들.</summary>
         public List<SlotData> shippingBox = new List<SlotData>();
 
+        /// <summary>상점에 판 물건의 재구매 재고. 상점 ID/판매 당시 가격/다음 월요일을 저장한다.</summary>
+        public List<ShopBuybackData> shopBuybacks = new List<ShopBuybackData>();
+
         /// <summary>NPC별 호감도와 대화/선물 기록.</summary>
         public List<NpcStateData> npcs = new List<NpcStateData>();
 
@@ -113,6 +116,7 @@ namespace FarmMVP
     public class FarmerData
     {
         public string playerName = "농부";
+        public string gender = ""; // male / female; empty for legacy saves
         public int birthdaySeason; // 0=봄, 1=여름, 2=가을, 3=겨울
         public int birthdayDay;    // 0=미등록. 기존 세이브와 호환된다.
 

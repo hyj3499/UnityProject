@@ -40,13 +40,12 @@ namespace FarmMVP
 
             // bed (top-left interior)
             loc.bedTile = new Vector2Int(2, loc.height - 3);
-            loc.PlaceObject(AssetLibrary.Bed, 2f, loc.height - 3.0f);
-            loc.SetBlocked(2, loc.height - 3, true);
-            loc.SetBlocked(2, loc.height - 4, true);
+            var bed = loc.PlaceObject(AssetLibrary.Bed, 2f, loc.height - 3.0f);
+            loc.RegisterObjectCollision(bed, new RectInt(2, loc.height - 4, 1, 2));
 
             // fireplace decor
-            loc.PlaceObject(AssetLibrary.Fireplace, 6f, loc.height - 3.0f);
-            loc.SetBlocked(6, loc.height - 3, true);
+            var fireplace = loc.PlaceObject(AssetLibrary.Fireplace, 6f, loc.height - 3.0f);
+            loc.RegisterObjectCollision(fireplace, new RectInt(6, loc.height - 3, 1, 1));
 
             // door (bottom) -> back to Farm
             loc.doorExitTile = new Vector2Int(loc.width / 2, 1);

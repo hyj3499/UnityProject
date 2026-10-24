@@ -16,6 +16,7 @@ namespace FarmMVP
         }
 
         public bool configured;
+        [HideInInspector] public int inventoryLayoutVersion;
         [Header("Book / animation")]
         public RectTransform book;
         public Image background;
@@ -35,9 +36,15 @@ namespace FarmMVP
         public RectTransform portrait;
         public Text playerName, birthday, money, hp, mp;
         public Slot[] slots;
+        public RectTransform inventorySlotsRoot;
+        public Image inventoryBackground;
         public GameObject[] lockedRows;
-        public Text capacity, itemName, itemDescription, itemFacts;
+        public Text capacity, profileHeader, inventoryHeader, itemHeader, itemName, itemDescription, itemFacts;
+        public GameObject itemDetails;
+        public RectTransform iconHolder;
+        public CanvasGroup detailReveal;
         public Image itemIcon;
+        [Min(.1f)] public float itemDropSeconds = .38f;
 
         [Header("Settings: Gameplay / Display / Audio / Controls / Exit")]
         public Button[] categories;

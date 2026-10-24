@@ -36,7 +36,7 @@ namespace FarmMVP
         private DialogueUI _dialogue;
 
         // 상점
-        private ShopUI _shop;
+        private ShopBookController _shop;
         private CraftingUI _crafting;
 
         // Banner / toast
@@ -78,19 +78,19 @@ namespace FarmMVP
             RefreshSlots();
         }
 
-        private void OnDestroy()
-        {
-            // 타이틀로 돌아갈 때 UIManager와 함께 캔버스도 정리한다 (캔버스는 별도 오브젝트로 만들어짐).
-            if (Instance == this) Instance = null;
-            if (_canvas != null) Destroy(_canvas.gameObject);
-        }
-
         private Font BuildFont()
         {
             var f = Resources.Load<Font>("Fonts/PF스타더스트 3.0");
             if (f == null) f = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             if (f == null) f = Resources.GetBuiltinResource<Font>("Arial.ttf");
             return f;
+        }
+
+        private void OnDestroy()
+        {
+            // 타이틀로 돌아갈 때 UIManager와 함께 캔버스도 정리한다 (캔버스는 별도 오브젝트로 만들어짐).
+            if (Instance == this) Instance = null;
+            if (_canvas != null) Destroy(_canvas.gameObject);
         }
 
         private void BuildCanvas()
@@ -131,9 +131,9 @@ namespace FarmMVP
 
         private void BuildShop()
         {
-            var go = new GameObject("ShopUI");
+            var go = new GameObject("ShopBookController");
             go.transform.SetParent(_canvas.transform, false);
-            _shop = go.AddComponent<ShopUI>();
+            _shop = go.AddComponent<ShopBookController>();
             _shop.Boot(this, _game, _canvas.transform as RectTransform);
         }
 
@@ -141,10 +141,16 @@ namespace FarmMVP
         public bool IsStoryRunning => _game != null && _game.Events != null && _game.Events.IsRunning;
 
         public void OpenShop()
+            => OpenShop(ShopDatabase.DefaultShopId);
+
+        public void OpenShop(string shopId)
+            => OpenShop(ShopDatabase.Get(shopId));
+
+        public void OpenShop(ShopDefinition shop)
         {
             if (IsStoryRunning) return;
-            if (_shop == null || IsBookOpen) return;
-            _shop.Open();
+            if (_shop == null || IsBookOpen || IsShippingOpen || IsCraftingOpen || IsDialogueOpen) return;
+            _shop.Open(shop);
             SyncPaused();
         }
 

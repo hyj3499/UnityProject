@@ -30,7 +30,12 @@ namespace FarmMVP
         private GameLocation _cliffSlideLocation;
         private bool _cliffUseFeet;
         private GameLocation _cliffFootprintLocation;
+        private int _maskFrontOrder = int.MinValue;
+        private Vector2 _maskFrontContact;
+        private const float MaskFrontReleaseDistance = 0.75f;
         private Direction CliffCollisionFacing => _cliffUseFeet ? Direction.Up : facing;
+        /// <summary>World Y of the visible idle sole; all player depth decisions use this, not the body pivot.</summary>
+        internal float FootY => transform.position.y + FarmerBodyCollision.IdleFootProbe(facing).y;
 
         public void BeginStoryControl()
         {
@@ -143,7 +148,36 @@ namespace FarmMVP
         /// </summary>
         private void LateUpdate()
         {
-            _anim?.SetSortingOrder(Depth.YSort(transform.position.y));
+            // Any painted collision contact is gameplay foreground. Keep the player readable
+            // even when its Y sort or facing direction would otherwise put the object on top.
+            var location = _game != null ? _game.CurrentLocation : null;
+            int foregroundOrder = int.MinValue;
+            if (location != null)
+            {
+                // An unpainted mask row is a visual foreground band. It takes priority over
+                // the short-lived front order left by a collision from the previous frame.
+                foregroundOrder = location.PlayerForegroundMaskSortingOrderAtWorld(transform.position.x, FootY);
+                if (foregroundOrder != int.MinValue)
+                {
+                    _maskFrontOrder = int.MinValue;
+                }
+                else
+                {
+                    int touchedOrder = location.PlayerMaskSortingOrderAtWorld(transform.position.x, transform.position.y, facing);
+                    if (touchedOrder != int.MinValue)
+                    {
+                        _maskFrontOrder = Mathf.Max(_maskFrontOrder, touchedOrder + 1);
+                        _maskFrontContact = transform.position;
+                    }
+                }
+            }
+            int order = Depth.YSort(FootY);
+            if (foregroundOrder != int.MinValue)
+                // FarmerAnimator draws body/eyes at base +2/+3; keep both behind the object.
+                order = Mathf.Min(order, foregroundOrder - 4);
+            else if (_maskFrontOrder != int.MinValue)
+                order = Mathf.Max(order, _maskFrontOrder + 1);
+            _anim?.SetSortingOrder(order);
 
             // 밟고 선 칸이 바뀌는 순간에만 스친다 (매 프레임 흔들면 계속 떨린다)
             var tile = new Vector2Int(Mathf.RoundToInt(transform.position.x),
@@ -178,7 +212,10 @@ namespace FarmMVP
                 move = move.normalized * (_running ? runSpeed : walkSpeed) * Time.deltaTime;
                 TryMove(move);
             }
-            else ClearCliffSlide();
+            else
+            {
+                ClearCliffSlide();
+            }
 
             UpdateAnimation();
         }
@@ -186,6 +223,7 @@ namespace FarmMVP
         private void TryMove(Vector2 delta)
         {
             var loc = _game.CurrentLocation;
+            bool hitPaintedMask = false;
             float cx = transform.position.x, cy = transform.position.y;
             RefreshCliffFootprint(loc, cx, cy);
             if (_cliffSlideLocation != loc || cliffSlidePixels <= 0
@@ -197,15 +235,16 @@ namespace FarmMVP
                 // 벽이 끝나면 즉시 원래 대각선 입력으로 돌아간다.
                 var inward = -_cliffSlideAway;
                 var probe = new Vector2(cx, cy) + inward *
-                    (Mathf.Clamp(cliffSlidePixels, 0, 3) / FarmerPoses.PixelsPerUnit + CliffPixelCollision.MovementStep);
+                    (Mathf.Clamp(cliffSlidePixels, 0, 3) / FarmerPoses.PixelsPerUnit + loc.CollisionMovementStep);
                 Direction side = inward.x != 0f ? (inward.x > 0 ? Direction.Right : Direction.Left)
                     : (inward.y > 0 ? Direction.Up : Direction.Down);
-                if (!loc.IsBlockedAtWorld(probe.x, probe.y, FarmerBodyCollision.LeadingEdge(CliffCollisionFacing, side)))
+                if (!loc.IsPlayerBlockedAtWorld(probe.x, probe.y, facing,
+                    FarmerBodyCollision.LeadingEdge(CliffCollisionFacing, side)))
                     ClearCliffSlide();
             }
-            // 반 픽셀씩 검사해 저프레임/달리기에서도 1px 절벽을 건너뛰지 않는다.
+            // 가장 촘촘한 충돌 마스크의 반 픽셀씩 검사해 달리기에서도 얇은 영역을 건너뛰지 않는다.
             int steps = Mathf.Max(1, Mathf.CeilToInt(Mathf.Max(Mathf.Abs(delta.x), Mathf.Abs(delta.y))
-                / CliffPixelCollision.MovementStep));
+                / loc.CollisionMovementStep));
             Vector2 step = delta / steps;
             for (int i = 0; i < steps; i++)
             {
@@ -220,12 +259,20 @@ namespace FarmMVP
                 if (step.x != 0f && step.x * _cliffSlideAway.x >= 0f)
                 {
                     float nx = cx + step.x;
-                    if (!loc.IsBlockedAtWorld(nx, cy, xEdge)) cx = nx;
+                    var next = new Vector2(nx, cy);
+                    bool blocked = loc.IsPlayerBlockedAtWorld(nx, cy, facing, xEdge);
+                    if (blocked) hitPaintedMask |= SetMaskFrontOrder(loc, next);
+                    if (!blocked
+                        || loc.CanPlayerLeaveObjectMask(new Vector2(cx, cy), next, facing, xEdge)) cx = nx;
                 }
                 if (step.y != 0f && step.y * _cliffSlideAway.y >= 0f)
                 {
                     float ny = cy + step.y;
-                    if (!loc.IsBlockedAtWorld(cx, ny, yEdge)) cy = ny;
+                    var next = new Vector2(cx, ny);
+                    bool blocked = loc.IsPlayerBlockedAtWorld(cx, ny, facing, yEdge);
+                    if (blocked) hitPaintedMask |= SetMaskFrontOrder(loc, next);
+                    if (!blocked
+                        || loc.CanPlayerLeaveObjectMask(new Vector2(cx, cy), next, facing, yEdge)) cy = ny;
                 }
 
                 // 한 축이라도 진행 중이면 기존 축 분리 슬라이딩을 유지한다.
@@ -256,6 +303,18 @@ namespace FarmMVP
                 CheckExits(loc);
                 if (_game.CurrentLocation != loc) return;
             }
+            if (!hitPaintedMask && _maskFrontOrder != int.MinValue
+                && Vector2.Distance(new Vector2(cx, cy), _maskFrontContact) > MaskFrontReleaseDistance)
+                _maskFrontOrder = int.MinValue;
+        }
+
+        private bool SetMaskFrontOrder(GameLocation loc, Vector2 at)
+        {
+            int objectOrder = loc.PlayerMaskSortingOrderAtWorld(at.x, at.y, facing);
+            if (objectOrder == int.MinValue) return false;
+            _maskFrontOrder = Mathf.Max(_maskFrontOrder, objectOrder + 1);
+            _maskFrontContact = at;
+            return true;
         }
 
         private void RefreshCliffFootprint(GameLocation loc, float x, float y)
@@ -292,8 +351,8 @@ namespace FarmMVP
             if (forwardEdge == null || forward.sqrMagnitude == 0f) return false;
             var target = position + forward;
             // 물·오브젝트·NPC·맵 경계에 대한 충돌은 절벽 보정으로 우회하지 않는다.
-            if (loc.IsBlockedByNonCliffAtWorld(target.x, target.y)
-                || !loc.IsBlockedAtWorld(target.x, target.y, forwardEdge)) return false;
+            if (loc.IsPlayerBlockedByNonCliffAtWorld(target.x, target.y, facing)
+                || !loc.IsPlayerBlockedAtWorld(target.x, target.y, facing, forwardEdge)) return false;
 
             bool horizontal = forward.x != 0f;
             var side = horizontal ? Vector2.up : Vector2.right;
@@ -306,29 +365,29 @@ namespace FarmMVP
             var negativeEdge = FarmerBodyCollision.LeadingEdge(CliffCollisionFacing, negative);
             bool positiveOpen = true, negativeOpen = true;
             float maxDistance = Mathf.Clamp(cliffSlidePixels, 0, 3) / FarmerPoses.PixelsPerUnit;
-            int samples = Mathf.CeilToInt(maxDistance / CliffPixelCollision.MovementStep);
+            int samples = Mathf.CeilToInt(maxDistance / loc.CollisionMovementStep);
             for (int i = 1; i <= samples; i++)
             {
-                float distance = Mathf.Min(i * CliffPixelCollision.MovementStep, maxDistance);
+                float distance = Mathf.Min(i * loc.CollisionMovementStep, maxDistance);
                 // 모든 중간 위치를 확인한다. 끝점만 보고 얇은 벽 건너편으로 보정하지 않는다.
                 for (int sign = 1; sign >= -1; sign -= 2)
                 {
                     if (sign > 0 ? !positiveOpen : !negativeOpen) continue;
                     var candidate = position + side * (distance * sign);
                     var sideEdge = sign > 0 ? positiveEdge : negativeEdge;
-                    if (loc.IsBlockedAtWorld(candidate.x, candidate.y, sideEdge))
+                    if (loc.IsPlayerBlockedAtWorld(candidate.x, candidate.y, facing, sideEdge))
                     {
                         if (sign > 0) positiveOpen = false;
                         else negativeOpen = false;
                         continue;
                     }
                     var onward = candidate + forward;
-                    if (loc.IsBlockedAtWorld(onward.x, onward.y, forwardEdge)) continue;
-                    float amount = Mathf.Min(forward.magnitude, CliffPixelCollision.MovementStep);
+                    if (loc.IsPlayerBlockedAtWorld(onward.x, onward.y, facing, forwardEdge)) continue;
+                    float amount = Mathf.Min(forward.magnitude, loc.CollisionMovementStep);
                     correction = side * (amount * sign);
                     var next = position + correction;
                     // 짧은 마지막 이동도 별도로 확인한다 (초고프레임/작은 입력량).
-                    if (!loc.IsBlockedAtWorld(next.x, next.y, sideEdge))
+                    if (!loc.IsPlayerBlockedAtWorld(next.x, next.y, facing, sideEdge))
                     {
                         // 대각선으로 벽을 누르는 입력이 다음 소단계에서 보정을 되돌리지 않게 한다.
                         _cliffSlideAway = side * sign;

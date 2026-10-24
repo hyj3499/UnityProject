@@ -79,6 +79,7 @@ namespace FarmMVP
 
             var pos = new Vector2Int(x, y);
             if (placed.ContainsKey(pos)) return false;
+            if (_debrisAnchors.ContainsKey(pos)) return false;
             if (hoeDirts.ContainsKey(pos) || trees.ContainsKey(pos) || rocks.ContainsKey(pos)) return false;
             if (IsWater(x, y) || IsCliff(x, y)) return false;
             if (_exits.ContainsKey(pos)) return false;             // 출구를 막아 버리면 갇힌다
@@ -95,7 +96,6 @@ namespace FarmMVP
 
             var pos = new Vector2Int(x, y);
             placed[pos] = new PlacedFeature(x, y, defId);
-            if (def.BlocksNow(false)) SetBlocked(x, y, true);
 
             RefreshPlacedAround(pos);
             RefreshGateRun(pos, defId);   // 옆에 문이 있으면 이제 짝이 될 수 있다
@@ -118,11 +118,10 @@ namespace FarmMVP
             placed.Remove(pos);
             if (_placedRenderers.TryGetValue(pos, out var sr))
             {
+                RemoveObjectCollision(sr);
                 Destroy(sr.gameObject);
                 _placedRenderers.Remove(pos);
             }
-            // 오브젝트 발판 위에 놓여 있었다면 그 막힘은 그대로 둔다.
-            ClearFeatureBlock(pos);
 
             RefreshPlacedAround(pos);
             RefreshGateRun(pos, defId);   // 짝을 잃은 문은 다시 홀로 선 모습이 된다
@@ -152,7 +151,6 @@ namespace FarmMVP
         private void SetGateOpen(Vector2Int pos, PlacedFeature feature, bool open)
         {
             feature.open = open;
-            ApplyBlocked(pos, feature);
             RenderPlaced(pos);
         }
 
@@ -204,16 +202,8 @@ namespace FarmMVP
 
                 // 짝을 잃은 문은 다시 닫힌 것으로 본다 — 혼자 열려 있는 문은 없다.
                 if (GatePart(p, f) < 0 && f.open) f.open = false;
-                ApplyBlocked(p, f);
                 RenderPlaced(p);
             }
-        }
-
-        /// <summary>지금 상태에 맞게 막힘을 다시 정한다 (오브젝트 발판 위라면 그 막힘은 남긴다).</summary>
-        private void ApplyBlocked(Vector2Int pos, PlacedFeature feature)
-        {
-            if (feature.BlocksNow) SetBlocked(pos.x, pos.y, true);
-            else ClearFeatureBlock(pos);
         }
 
         // ---------- 저장 / 복원 ----------
@@ -234,7 +224,6 @@ namespace FarmMVP
             {
                 var f = placed[key];
                 if (f.IsGate && GatePart(key, f) < 0) f.open = false;
-                ApplyBlocked(key, f);
                 RenderPlaced(key);
             }
         }
@@ -270,6 +259,7 @@ namespace FarmMVP
             {
                 if (_placedRenderers.TryGetValue(pos, out var old))
                 {
+                    RemoveObjectCollision(old);
                     Destroy(old.gameObject);
                     _placedRenderers.Remove(pos);
                 }
@@ -297,6 +287,7 @@ namespace FarmMVP
             SlicedSpriteAnimation.Apply(sr);
             // 계절이 바뀌면 그림도 바뀔 수 있으므로 자리도 그때마다 다시 맞춘다.
             sr.transform.position = new Vector3(pos.x + def.offset.x, pos.y + lift, 0f);
+            RegisterObjectCollision(sr, new RectInt(pos.x, pos.y, 1, 1), feature.BlocksNow);
         }
 
         /// <summary>붙어 있는 같은 종류의 설치물을 비트로 모은다 (울타리는 울타리끼리만 이어진다).</summary>

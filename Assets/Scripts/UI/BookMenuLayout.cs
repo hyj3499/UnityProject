@@ -19,7 +19,7 @@ namespace FarmMVP
         public static BookMenuView Build(RectTransform root)
         {
             var view = Component<BookMenuView>(root);
-            if (view.configured) return view;
+            if (view.configured) { UpgradeInventory(view); return view; }
 #if UNITY_EDITOR
             var viewFields = typeof(BookMenuView).GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public)
                 .Where(f => !Attribute.IsDefined(f, typeof(NonSerializedAttribute))).ToArray();
@@ -63,6 +63,7 @@ namespace FarmMVP
             view.close = Button(view.book, "Close", "닫기", .84f, .015f, .94f, .085f, Sprite("Content/4 Buttons/0"), 11);
             BuildConfirmation(view, root);
             view.configured = true;
+            UpgradeInventory(view);
             view.PreviewPage(0);
             view.PreviewSettings(1);
 #if UNITY_EDITOR
@@ -82,7 +83,7 @@ namespace FarmMVP
 
         private static void Inventory(BookMenuView v, RectTransform left, RectTransform right)
         {
-            Header(left, "인벤토리", .89f);
+            v.profileHeader = Header(left, "프로필", .89f);
             var status = Node(left, "PlayerStatus", 0, .44f, 1, .87f);
             var portraitFrame = Picture(status, "PortraitFrame", 0, .02f, .34f, .98f, Sprite("Content/5 Holders/5"));
             portraitFrame.color = new Color(.92f, .87f, .74f);
@@ -94,8 +95,11 @@ namespace FarmMVP
             v.money = Label(status, "Money", "소지금  0 G", .38f, .4f, 1, .6f, 12);
             v.hp = Label(status, "HP", "체력  100 / 100", .38f, .2f, 1, .4f, 12);
             v.mp = Label(status, "MP", "MP  100 / 100", .38f, 0, 1, .2f, 12);
-            v.capacity = Label(left, "Capacity", "가방  10 / 30칸", 0, .35f, 1, .43f, 12);
+            var inventoryHeader = Picture(left, "InventoryHeader", 0, .35f, 1, .43f, Sprite("Content/14 Banners & Headers/Plain/4"));
+            v.inventoryHeader = Label(inventoryHeader.transform, "Title", "인벤토리", .04f, 0, .96f, 1, 17, TextAnchor.MiddleCenter);
+            v.capacity = v.inventoryHeader;
             var inventory = Node(left, "InventorySlots", 0, .025f, 1, .34f);
+            v.inventorySlotsRoot = inventory;
             v.slots = new BookMenuView.Slot[30];
             v.lockedRows = new GameObject[3];
             for (int row = 0; row < 3; row++)
@@ -116,18 +120,86 @@ namespace FarmMVP
                 var locked = Picture(rowRoot, "Locked", 0, .08f, 1, .92f, null);
                 locked.color = new Color(.75f, .66f, .49f, .94f);
                 locked.raycastTarget = true;
-                Label(locked.transform, "Label", "가방 확장 시 사용 가능", 0, 0, 1, 1, 11, TextAnchor.MiddleCenter);
-                locked.gameObject.SetActive(row > 0);
+                locked.gameObject.SetActive(false);
                 v.lockedRows[row] = locked.gameObject;
             }
             var detail = Node(right, "ItemDetails", 0, 0, 1, 1);
-            Header(detail, "아이템 정보", .89f);
-            Picture(detail, "IconHolder", .31f, .57f, .69f, .84f, Sprite("Content/5 Holders/2"));
-            v.itemIcon = Picture(detail, "ItemIcon", .36f, .61f, .64f, .8f, null);
+            v.itemDetails = detail.gameObject;
+            v.itemHeader = Header(detail, "아이템 정보", .89f);
+            v.iconHolder = Picture(detail, "IconHolder", .31f, .57f, .69f, .84f, Sprite("Content/5 Holders/2")).rectTransform;
+            var reveal = Node(detail, "DetailReveal", 0, 0, 1, 1);
+            v.detailReveal = Component<CanvasGroup>(reveal);
+            v.itemIcon = Picture(reveal, "ItemIcon", .36f, .61f, .64f, .8f, null);
             v.itemIcon.enabled = false;
-            v.itemName = Label(detail, "Name", "아이템을 선택하세요", 0, .46f, 1, .56f, 16, TextAnchor.MiddleCenter);
-            v.itemDescription = Label(detail, "Description", "왼쪽 가방의 아이템을 누르면\n자세한 정보를 볼 수 있습니다.", .025f, .14f, .975f, .43f, 13, TextAnchor.UpperLeft);
-            v.itemFacts = Label(detail, "Facts", "", .025f, 0, .975f, .13f, 11);
+            v.itemName = Label(reveal, "Name", "", 0, .46f, 1, .56f, 16, TextAnchor.MiddleCenter);
+            v.itemDescription = Label(reveal, "Description", "", .025f, .14f, .975f, .43f, 13, TextAnchor.UpperLeft);
+            v.itemFacts = Label(reveal, "Facts", "", .025f, 0, .975f, .13f, 11);
+            SetItemDetailsVisible(v, false);
+        }
+
+        public static void UpgradeInventory(BookMenuView v)
+        {
+            if (v == null || v.slots == null || v.slots.Length == 0) return;
+            var inventoryPage = v.pages != null && v.pages.Length > 0 ? v.pages[0]?.transform : null;
+            var left = inventoryPage?.Find("LeftPage") as RectTransform;
+            var right = inventoryPage?.Find("RightPage") as RectTransform;
+            if (left != null)
+            {
+                var profileTitle = left.Find("Header/Title")?.GetComponent<Text>();
+                if (profileTitle != null) { profileTitle.text = "프로필"; v.profileHeader = profileTitle; }
+                if (v.capacity != null && v.capacity.transform.parent.name != "InventoryHeader")
+                    v.capacity.gameObject.SetActive(false);
+                var banner = Picture(left, "InventoryHeader", 0, .35f, 1, .43f, Sprite("Content/14 Banners & Headers/Plain/4"));
+                var title = banner.transform.Find("Title")?.GetComponent<Text>()
+                    ?? Label(banner.transform, "Title", "인벤토리", .04f, 0, .96f, 1, 14, TextAnchor.MiddleCenter);
+                title.text = "인벤토리";
+                title.fontSize = 17;
+                v.inventoryHeader = title;
+                v.capacity = title;
+            }
+            if (right != null)
+            {
+                var detail = right.Find("ItemDetails") as RectTransform;
+                if (detail != null)
+                {
+                    v.itemDetails = detail.gameObject;
+                    v.itemHeader = detail.Find("Header/Title")?.GetComponent<Text>();
+                    if (v.itemHeader != null) v.itemHeader.text = "아이템 정보";
+                    v.iconHolder = detail.Find("IconHolder") as RectTransform;
+                    var reveal = detail.Find("DetailReveal") as RectTransform ?? Node(detail, "DetailReveal", 0, 0, 1, 1);
+                    v.detailReveal = Component<CanvasGroup>(reveal);
+                    MoveToReveal(v.itemIcon?.transform, reveal);
+                    MoveToReveal(v.itemName?.transform, reveal);
+                    MoveToReveal(v.itemDescription?.transform, reveal);
+                    MoveToReveal(v.itemFacts?.transform, reveal);
+                }
+            }
+            BookInventoryLayout.ApplyMenu(v, 10);
+            SetItemDetailsVisible(v, false);
+            v.inventoryLayoutVersion = 10;
+        }
+
+        private static void MoveToReveal(Transform child, RectTransform reveal)
+        {
+            if (child == null || child.parent == reveal) return;
+#if UNITY_EDITOR
+            if (!Application.isPlaying) UnityEditor.Undo.SetTransformParent(child, reveal, "Update Item Detail Presentation");
+            else
+#endif
+                child.SetParent(reveal, false);
+        }
+
+        public static void SetItemDetailsVisible(BookMenuView v, bool visible)
+        {
+            if (v.itemHeader != null) v.itemHeader.transform.parent.gameObject.SetActive(visible);
+            if (v.iconHolder != null) v.iconHolder.gameObject.SetActive(visible);
+            if (v.detailReveal != null)
+            {
+                v.detailReveal.gameObject.SetActive(visible);
+                v.detailReveal.alpha = visible ? 1 : 0;
+                v.detailReveal.interactable = false;
+                v.detailReveal.blocksRaycasts = false;
+            }
         }
 
         private static void Settings(BookMenuView v, RectTransform left, RectTransform right)
@@ -209,10 +281,10 @@ namespace FarmMVP
         private static Button Arrow(Transform parent, string name, string label, float x, float y)
             => Button(parent, name, label, x, y, x+.14f, y+.11f, Sprite("Content/5 Holders/7"), 15);
 
-        private static void Header(Transform parent, string title, float y)
+        private static Text Header(Transform parent, string title, float y)
         {
             var banner = Picture(parent, "Header", 0, y, 1, 1, Sprite("Content/14 Banners & Headers/Plain/4"));
-            Label(banner.transform, "Title", title, .04f, 0, .96f, 1, 17, TextAnchor.MiddleCenter);
+            return Label(banner.transform, "Title", title, .04f, 0, .96f, 1, 17, TextAnchor.MiddleCenter);
         }
 
         public static Sprite Sprite(string path) => Resources.LoadAll<Sprite>(ArtRoot + path).FirstOrDefault();
@@ -285,7 +357,7 @@ namespace FarmMVP
             return rect;
         }
 
-        private static T Component<T>(Transform node) where T : Component
+        internal static T Component<T>(Transform node) where T : Component
         {
             var existing = node.GetComponent<T>();
 #if UNITY_EDITOR

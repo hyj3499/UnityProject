@@ -49,6 +49,7 @@ namespace FarmMVP
             {
                 var sprite = map.GetSprite(cell);
                 if (sprite == null) continue;
+                var tile = map.GetTile(cell);
 
                 // 씬의 Grid는 Location 타일맵의 왼쪽 아래를 (0, 0)에 맞춰 이동한다.
                 // 그래서 바깥 셀도 월드 중심 좌표로 읽으면 기존의 맵 좌표와 같은 기준으로 놓인다.
@@ -60,11 +61,16 @@ namespace FarmMVP
                 // TilemapRenderer도 이 칸 중심에 스프라이트의 pivot을 놓으므로 여기서 BottomAlignLift를
                 // 더하면 키 큰 그림이 플레이 중 위로 한 번 더 밀린다. 정렬 기준(발밑)만 별도로 둔다.
                 // 겹쳐 칠한 것은 밑에 깔린 오브젝트의 발밑을 빌려 와 항상 그 앞에 그린다.
-                loc.PlaceObject(sprite, world.x, world.y, FootBelow(maps, overlay, x, y), overlay);
+                var renderer = loc.PlaceObject(sprite, world.x, world.y, FootBelow(maps, overlay, x, y), overlay);
 
-                // 맵 밖의 타일은 보이기만 하면 된다. 충돌 배열은 Location 범위에만 있으므로
-                // 내부 발밑 칸일 때만 막는다.
-                if (loc.InBounds(x, y)) loc.SetObjectBlocked(x, y);
+                // 기본은 배치한 한 칸. 마스크가 있으면 그림의 유효한 색칠 영역으로 바꾼다.
+                loc.RegisterObjectCollision(renderer, new RectInt(x, y, 1, 1));
+
+                // Fixed 레이어도 그림 이름에 등록된 상호작용을 알아본다.
+                // 따라서 test_shop.png을 팔레트에서 Fixed_Farm에 바로 칠해도 우클릭 상점이 된다.
+                var interaction = tile == null ? null : ObjectMarkerDatabase.Find(tile.name);
+                if (interaction != null && interaction.role == MarkerRole.Shop)
+                    loc.shopTile = new Vector2Int(x, y);
                 placed++;
             }
 

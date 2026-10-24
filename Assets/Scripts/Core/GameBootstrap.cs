@@ -70,7 +70,7 @@ namespace FarmMVP
         /// appearance를 주면 (새 게임에서 캐릭터를 만들었을 때) 그 외형으로 시작하고,
         /// null이면 세이브에 담긴 외형을 그대로 쓴다.
         /// </summary>
-        public void StartGame(PlayerAppearance appearance)
+        public void StartGame(PlayerAppearance appearance, CharacterProfile profile = null)
         {
             // "이 모습으로 시작" 버튼이 겹클릭 등으로 두 번 눌려도 게임을 두 번 만들지 않는다.
             if (_playerGo != null)
@@ -119,6 +119,7 @@ namespace FarmMVP
             // Boot order: game first (creates Inventory/Data), then UI reads them.
             // 고른 외형은 Boot이 세이브를 읽은 다음, 플레이어가 만들어지기 전에 넣어야 한다.
             gm.SetPendingAppearance(appearance);
+            gm.SetPendingProfile(profile);
             gm.Boot(cam, pc, locationRoot);
             ui.Boot(gm);
             gm.InitFishing(ui);   // 미니게임 바가 UI 캔버스에 붙으므로 UI 다음에

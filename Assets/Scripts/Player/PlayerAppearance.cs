@@ -16,6 +16,8 @@ namespace FarmMVP
         public float hue = 0f;          // -180 ~ 180
         public float saturation = 1f;   // 0 ~ 2
         public float value = 1f;        // 0 ~ 2
+        public bool custom;
+        public Color rgb = Color.white;
 
         public AppearanceColor() { }
         public AppearanceColor(int palette) { this.palette = palette; }
@@ -85,14 +87,22 @@ namespace FarmMVP
         public AppearanceColor hairColor = new AppearanceColor(1);
         public AppearanceColor eyeColor = new AppearanceColor(1);
         public AppearanceColor shoesColor = new AppearanceColor(1);
+        public AppearanceColor topColor = new AppearanceColor(1);
+        public AppearanceColor pantsColor = new AppearanceColor(1);
+        public AppearanceColor outfitColor = new AppearanceColor(1);
+        public AppearanceColor accessoryColor = new AppearanceColor(1);
 
         public PlayerAppearance Clone()
         {
             var c = (PlayerAppearance)MemberwiseClone();
-            c.skin = skin.Clone();
-            c.hairColor = hairColor.Clone();
-            c.eyeColor = eyeColor.Clone();
-            c.shoesColor = shoesColor.Clone();
+            c.skin = skin?.Clone() ?? new AppearanceColor(1);
+            c.hairColor = hairColor?.Clone() ?? new AppearanceColor(1);
+            c.eyeColor = eyeColor?.Clone() ?? new AppearanceColor(1);
+            c.shoesColor = shoesColor?.Clone() ?? new AppearanceColor(1);
+            c.topColor = topColor?.Clone() ?? new AppearanceColor(1);
+            c.pantsColor = pantsColor?.Clone() ?? new AppearanceColor(1);
+            c.outfitColor = outfitColor?.Clone() ?? new AppearanceColor(1);
+            c.accessoryColor = accessoryColor?.Clone() ?? new AppearanceColor(1);
             return c;
         }
 

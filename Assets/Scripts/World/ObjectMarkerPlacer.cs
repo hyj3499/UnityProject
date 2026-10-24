@@ -20,10 +20,8 @@ namespace FarmMVP
     /// ("tree1_spring_top" → 나무 tree1). 그래서 나무를 하나 더 넣어도 마커 타일 에셋을 손으로
     /// 만들 필요 없이, 시트의 아무 조각이나 팔레트에 끌어다 칠하면 된다.
     ///
-    /// 이 레이어에는 <b>특별한 일을 하는 것만</b> 칠한다 — 집·문·맵 이동 출구·나무·바위처럼
-    /// 코드가 알아야 하는 것들. 평범한 배경 오브젝트는 "Fixed_{맵}", 부수고 다시 놓을 수 있는
-    /// 것은 "Breakable_{맵}" 레이어에 칠하면 되고 그 둘은 등록할 표가 없다
-    /// (PaintedObjectPlacer가 칠한 그림을 그대로 쓴다).
+    /// 등록된 집·문·나무·바위는 해당 기능으로 배치한다. 이름이 등록되지 않은 일반 PNG도
+    /// Fixed와 같은 방식으로 그림과 충돌을 배치한다. 부수고 다시 놓을 설치물은 Breakable을 쓴다.
     /// </summary>
     internal static class ObjectMarkerPlacer
     {
@@ -68,7 +66,18 @@ namespace FarmMVP
                     }
 
                     var def = ObjectMarkerDatabase.Find(tile.name);
-                    if (def == null) { unknown.Add(tile.name); continue; }
+                    if (def == null)
+                    {
+                        // Ordinary PNG tiles work here too; named markers keep their special behavior.
+                        var cell = markers.WorldToCell(new Vector3(x, y, 0f));
+                        var sprite = markers.GetSprite(cell);
+                        if (sprite == null) { unknown.Add(tile.name); continue; }
+                        var world = markers.GetCellCenterWorld(cell);
+                        var renderer = loc.PlaceObject(sprite, world.x, world.y, y);
+                        loc.RegisterObjectCollision(renderer, new RectInt(x, y, 1, 1));
+                        placed++;
+                        continue;
+                    }
 
                     if (Place(loc, def, x, y, locData, spawned, ref created)) placed++;
                 }
@@ -178,14 +187,9 @@ namespace FarmMVP
             var sr = loc.PlaceObject(def.GetSprite(), x + def.offset.x, y + def.offset.y, y, def.sortBias);
             if (def.floorDecor) sr.sortingOrder = Depth.FloorDecor;
 
-            if (def.blocks)
-            {
-                // 발판은 "치울 수 없는" 막힘이다 — 이 위에 선 나무를 베어도 집은 계속 막아야 한다.
-                int x0 = x + def.footprintAnchor.x, y0 = y + def.footprintAnchor.y;
-                for (int fx = 0; fx < def.size.x; fx++)
-                    for (int fy = 0; fy < def.size.y; fy++)
-                        loc.SetObjectBlocked(x0 + fx, y0 + fy);
-            }
+            var footprint = new RectInt(x + def.footprintAnchor.x, y + def.footprintAnchor.y, def.size.x, def.size.y);
+            Vector2Int? doorway = def.role == MarkerRole.House ? new Vector2Int(x + def.size.x / 2, y) : (Vector2Int?)null;
+            loc.RegisterObjectCollision(sr, footprint, def.blocks, doorway);
 
             switch (def.role)
             {

@@ -23,6 +23,10 @@ foreach ($folder in $bookFolders) {
     }
 }
 Write-Output "Validation project: $bookProject"
+Copy-Item "$bookRepo/Assets/Resources/Sprites/UI/Book/Book Inventory.png*" "$bookProject/Assets/Resources/Sprites/UI/Book/"
+Copy-Item "$bookRepo/Assets/Resources/Sprites/UI/Book/Book Inventory Selector.png*" "$bookProject/Assets/Resources/Sprites/UI/Book/"
+Copy-Item "$bookRepo/Assets/Resources/Sprites/UI/BoldPixels.ttf*" "$bookProject/Assets/Resources/Sprites/UI/"
+New-Item -ItemType Directory -Path "$bookRepo/Temp/BookUI" -Force | Out-Null
 Set-Content "$bookRepo/Temp/BookUI/latest-check-project.txt" $bookProject
 $bookProcess = Start-Process -FilePath $UnityEditor -ArgumentList @('-batchmode','-projectPath',('"' + $bookProject + '"'),'-executeMethod','BookUIChecks.Run','-logFile',('"' + "$bookProject/Editor.log" + '"')) -WindowStyle Hidden -PassThru
 $bookDeadline = [DateTime]::UtcNow.AddMinutes(5)

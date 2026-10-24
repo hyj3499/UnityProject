@@ -1,102 +1,78 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FarmMVP
 {
-    /// <summary>잡화 수레에 걸리는 품목 하나.</summary>
-    public class ShopEntry
-    {
-        public string itemId;
-        public int price;
-
-        /// <summary>목록에서 어느 묶음에 들어가는지 (계절 이름 등). 같은 값끼리 붙어서 머리글 하나로 묶인다.</summary>
-        public string group;
-
-        /// <summary>가격 아래 한 줄 설명 (자라는 데 걸리는 날짜 등).</summary>
-        public string note;
-
-        public ItemDef Def => ItemDatabase.Get(itemId);
-    }
-
-    /// <summary>
-    /// 상점에 무엇이 걸리는지를 정하는 곳. 씨앗은 CropDatabase에서 그대로 끌어오므로,
-    /// 작물을 추가할 때 이 파일은 손대지 않아도 저절로 상점에 올라온다.
-    /// </summary>
+    /// <summary>상점 등록부. 새 상점의 팩토리를 등록하면 같은 ShopBookUi를 사용한다.</summary>
     public static class ShopDatabase
     {
-        private static List<ShopEntry> _entries;
-
-        /// <summary>지금 계절 것이 맨 위에 오도록 정렬된 판매 목록.</summary>
-        public static IReadOnlyList<ShopEntry> Entries
-        {
-            get
+        public const string DefaultShopId = "general";
+        private static readonly Dictionary<string, Func<ShopDefinition>> Factories =
+            new Dictionary<string, Func<ShopDefinition>>(StringComparer.Ordinal)
             {
-                if (_entries == null) Build();
-                Sort();
-                return _entries;
-            }
+                { DefaultShopId, CreateGeneralShop },
+                { "materials", CreateMaterialsShop }
+            };
+
+        public static void Register(string id, Func<ShopDefinition> factory)
+        {
+            if (string.IsNullOrWhiteSpace(id) || factory == null) throw new ArgumentException("상점 id와 factory가 필요합니다.");
+            Factories[id] = factory;
         }
 
-        private static void Build()
+        public static ShopDefinition Get(string id)
         {
-            _entries = new List<ShopEntry>();
-            foreach (var crop in CropDatabase.All)
-            {
-                _entries.Add(new ShopEntry
-                {
-                    itemId = crop.SeedItemId,
-                    price = crop.seedPrice,
-                    group = Seasons.Label(crop.seasons),
-                    note = $"다 자라기까지 {crop.MaxGrowthStage * crop.daysPerStage}일"
-                           + (crop.regrow ? " · 다작" : "")
-                });
-            }
+            if (id == null || !Factories.TryGetValue(id, out var factory)) throw new ArgumentException("등록되지 않은 상점: " + id);
+            var shop = factory();
+            if (shop == null || shop.id != id) throw new ArgumentException("등록 id와 정의의 id가 다릅니다: " + id);
+            shop.Validate();
+            return shop;
+        }
 
+        private static ShopDefinition CreateGeneralShop()
+        {
+            var shop = new ShopDefinition(DefaultShopId, "Farmer's shop") { allowSelling = true, useCategories = true };
+            for (int level = 1; level <= GameManager.BackpackPrices.Length; level++)
+                shop.products.Add(new ShopProduct
+                {
+                    id = "backpack_" + level, backpackLevel = level,
+                    displayName = $"배낭 {level}단계", price = GameManager.BackpackPrices[level - 1], category = "가방",
+                    description = "소지품을 담을 공간이 10칸 늘어납니다.\n\n배낭은 순서대로 확장할 수 있으며, 구매한 공간은 계속 유지됩니다."
+                });
+            foreach (var crop in CropDatabase.All.OrderBy(c => Seasons.AllowsNow(c.seasons) ? 0 : 1))
+                shop.products.Add(new ShopProduct
+                {
+                    id = crop.SeedItemId, itemId = crop.SeedItemId, price = crop.seedPrice,
+                    category = Seasons.Label(crop.seasons),
+                    note = $"다 자라기까지 {crop.MaxGrowthStage * crop.daysPerStage}일" + (crop.regrow ? " · 다작" : "")
+                        + (Seasons.AllowsNow(crop.seasons) ? "" : "\n현재 계절에는 자라지 않습니다.")
+                });
             foreach (var plant in PlantDatabase.All)
             {
                 if (plant.maxStage <= 0) continue;
-                _entries.Add(new ShopEntry
+                shop.products.Add(new ShopProduct
                 {
-                    itemId = plant.plantId + "_seed",
-                    price = 60,
-                    group = "풀",
-                    note = "빈 땅에 심으면 옆으로 번진다"
+                    id = plant.plantId + "_seed", itemId = plant.plantId + "_seed", price = 60,
+                    category = "풀", note = "빈 땅에 심으면 옆으로 번집니다."
                 });
             }
-
-            // 나무 씨앗도 TreeDatabase에서 그대로 따라온다 — 나무를 추가하면 상점에도 따라 올라온다.
             foreach (var tree in TreeDatabase.All)
-            {
-                _entries.Add(new ShopEntry
+                shop.products.Add(new ShopProduct
                 {
-                    itemId = tree.SeedItemId,
-                    price = tree.seedPrice,
-                    group = "나무",
-                    note = $"밭이 아닌 빈 땅에 심는다 · 다 자라기까지 {tree.maxGrowthStage * tree.daysPerStage}일"
+                    id = tree.SeedItemId, itemId = tree.SeedItemId, price = tree.seedPrice,
+                    category = "나무", note = $"밭이 아닌 빈 땅에 심습니다.\n다 자라기까지 {tree.maxGrowthStage * tree.daysPerStage}일"
                 });
-            }
+            return shop;
         }
 
-        /// <summary>
-        /// 지금 계절에 심을 수 있는 씨앗을 맨 위로 올린다 — 목록이 길어서, 오늘 쓸 수 있는 것이
-        /// 스크롤 없이 바로 보이는 편이 낫다. 묶음 안의 순서(CropDatabase 등록 순서)는 그대로 둔다.
-        /// </summary>
-        private static void Sort()
+        // 다른 상점 예시. 이 메서드를 별도 C# 파일로 옮겨 등록해도 된다.
+        private static ShopDefinition CreateMaterialsShop()
         {
-            int Rank(ShopEntry e)
-            {
-                var crop = CropDatabase.Get(e.Def?.cropId);
-                if (crop == null) return 2;                              // 나무 씨앗 등은 맨 아래
-                return Seasons.AllowsNow(crop.seasons) ? 0 : 1;
-            }
-
-            // List.Sort는 안정 정렬이 아니라서, 같은 순위면 원래 자리를 보고 순서를 지킨다.
-            var order = new Dictionary<ShopEntry, int>(_entries.Count);
-            for (int i = 0; i < _entries.Count; i++) order[_entries[i]] = i;
-            _entries.Sort((a, b) =>
-            {
-                int r = Rank(a).CompareTo(Rank(b));
-                return r != 0 ? r : order[a].CompareTo(order[b]);
-            });
+            var shop = new ShopDefinition("materials", "Robin's shop") { allowSelling = false, useCategories = false };
+            shop.products.Add(new ShopProduct { id = "wood", itemId = "wood", price = 20, description = "가구를 만들기 좋은 목재입니다.\n필요한 만큼 골라 보세요." });
+            shop.products.Add(new ShopProduct { id = "stone", itemId = "stone", price = 15 });
+            return shop;
         }
     }
 }

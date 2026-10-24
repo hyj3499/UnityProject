@@ -17,7 +17,10 @@ namespace FarmMVP
         private Page _current;
         private bool _open, _closing;
         private Coroutine _animation;
+        private Coroutine _detailAnimation;
         private int _selectedSlot = -1;
+        private int _shownSlot = -1;
+        private Vector2 _iconHolderHome;
         private readonly List<GameObject> _hiddenHuds = new List<GameObject>();
         private readonly List<Action> _removeListeners = new List<Action>();
         private List<Vector2Int> _resolutions;
@@ -41,6 +44,8 @@ namespace FarmMVP
                 var root = placeholder != null ? placeholder : BookMenuLayout.Node(canvas, "MenuBookUI", 0, 0, 1, 1);
                 _view = BookMenuLayout.Build(root);
             }
+            BookMenuLayout.UpgradeInventory(_view);
+            if (_view.iconHolder != null) _iconHolderHome = _view.iconHolder.anchoredPosition;
             _view.controller = this;
             _view.gameObject.SetActive(false);
             _view.confirmation.SetActive(false);
@@ -103,6 +108,12 @@ namespace FarmMVP
             if (!opening && _current == page) return;
             bool right = (int)page > (int)_current;
             _current = page;
+            if (page == Page.Inventory)
+            {
+                _selectedSlot = -1;
+                _shownSlot = -1;
+                HideItemDetails();
+            }
             _closing = false;
             _open = true;
             _view.gameObject.SetActive(true);
@@ -217,8 +228,7 @@ namespace FarmMVP
             _view.hp.text = $"체력  {farmer.hp} / {farmer.maxHp}";
             _view.mp.text = $"MP  {farmer.mp} / {farmer.maxMp}";
             int unlocked = Mathf.Clamp(_game.UnlockedSlots, 0, 30);
-            _view.capacity.text = $"가방  {unlocked} / 30칸";
-            for (int row = 0; row < 3; row++) _view.lockedRows[row].SetActive(row*10 >= unlocked);
+            BookInventoryLayout.ApplyMenu(_view, unlocked);
             for (int i = 0; i < _view.slots.Length; i++)
             {
                 var slot = _view.slots[i];
@@ -228,7 +238,7 @@ namespace FarmMVP
                 slot.icon.sprite = filled ? stack.Def?.GetSprite() : null;
                 slot.icon.enabled = slot.icon.sprite != null;
                 slot.count.text = filled && stack.count > 1 ? stack.count.ToString() : "";
-                slot.selected.enabled = filled && _selectedSlot == i;
+                BookInventoryLayout.SetSelected(slot, filled && _selectedSlot == i);
             }
             if (_selectedSlot >= unlocked) _selectedSlot = -1;
             ShowItem();
@@ -238,18 +248,74 @@ namespace FarmMVP
         {
             if (index >= _game.UnlockedSlots) return;
             _selectedSlot = index;
+            _shownSlot = -1;
             RefreshStatus();
+            if (_selectedSlot == index)
+                BookInventoryLayout.SetSelected(_view.slots[index], _view.slots[index].icon.enabled, true);
         }
 
         private void ShowItem()
         {
             var item = _game.Inventory.GetSlot(_selectedSlot);
             var def = item != null && !item.IsEmpty ? item.Def : null;
+            if (def == null)
+            {
+                _shownSlot = -1;
+                HideItemDetails();
+                return;
+            }
             _view.itemIcon.sprite = def?.GetSprite();
             _view.itemIcon.enabled = _view.itemIcon.sprite != null;
-            _view.itemName.text = def != null ? def.displayName : "아이템을 선택하세요";
-            _view.itemDescription.text = def != null ? def.Description : "왼쪽 가방의 아이템을 누르면\n자세한 정보를 볼 수 있습니다.";
-            _view.itemFacts.text = def != null ? $"보유 수량  {item.count}\n" + (def.sellPrice > 0 ? $"판매 가격  {def.sellPrice:N0} G / 개" : "판매할 수 없는 아이템") : "";
+            _view.itemName.text = def.displayName;
+            _view.itemDescription.text = def.Description;
+            _view.itemFacts.text = $"보유 수량  {item.count}\n" + (def.sellPrice > 0 ? $"판매 가격  {def.sellPrice:N0} G / 개" : "판매할 수 없는 아이템");
+            if (_shownSlot != _selectedSlot)
+            {
+                _shownSlot = _selectedSlot;
+                if (_detailAnimation != null) StopCoroutine(_detailAnimation);
+                _detailAnimation = StartCoroutine(DropItemDetails());
+            }
+        }
+
+        private void HideItemDetails()
+        {
+            if (_detailAnimation != null) StopCoroutine(_detailAnimation);
+            _detailAnimation = null;
+            BookMenuLayout.SetItemDetailsVisible(_view, false);
+            if (_view != null && _view.iconHolder != null) _view.iconHolder.anchoredPosition = _iconHolderHome;
+        }
+
+        private IEnumerator DropItemDetails()
+        {
+            if (_view.itemHeader != null) _view.itemHeader.transform.parent.gameObject.SetActive(true);
+            if (_view.iconHolder != null)
+            {
+                _view.iconHolder.gameObject.SetActive(true);
+                _view.iconHolder.anchoredPosition = _iconHolderHome + Vector2.up * 115;
+            }
+            if (_view.detailReveal != null)
+            {
+                _view.detailReveal.gameObject.SetActive(true);
+                _view.detailReveal.alpha = 0;
+            }
+            float seconds = Mathf.Max(.1f, _view.itemDropSeconds);
+            float elapsed = 0;
+            while (elapsed < seconds)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = Mathf.Clamp01(elapsed / seconds);
+                // 살짝 지나쳤다가 제자리로 돌아오는 착지 곡선.
+                float c = 1.70158f;
+                float eased = 1 + (c + 1) * Mathf.Pow(t - 1, 3) + c * Mathf.Pow(t - 1, 2);
+                if (_view.iconHolder != null)
+                    _view.iconHolder.anchoredPosition = Vector2.LerpUnclamped(_iconHolderHome + Vector2.up * 115, _iconHolderHome, eased);
+                if (_view.detailReveal != null)
+                    _view.detailReveal.alpha = Mathf.InverseLerp(.68f, 1, t);
+                yield return null;
+            }
+            if (_view.iconHolder != null) _view.iconHolder.anchoredPosition = _iconHolderHome;
+            if (_view.detailReveal != null) _view.detailReveal.alpha = 1;
+            _detailAnimation = null;
         }
 
         private void RefreshPortrait()
@@ -348,6 +414,7 @@ namespace FarmMVP
 
         private void OnDestroy()
         {
+            if (_detailAnimation != null) StopCoroutine(_detailAnimation);
             if (_game != null)
             {
                 _game.Inventory.OnChanged -= RefreshStatus;

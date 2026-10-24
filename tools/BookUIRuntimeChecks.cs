@@ -45,7 +45,7 @@ public class BookUIRuntimeChecks : MonoBehaviour
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         var scaler = canvasGo.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(960, 540);
+        scaler.referenceResolution = new Vector2(1920, 1080);
         var root = BookMenuLayout.Node(canvas.transform, "MenuBookUI", 0, 0, 1, 1);
         var view = BookMenuLayout.Build(root);
         Check(view.pages.Length == 8 && view.tabs.All(b => b != null), "Eight editable pages and bookmark buttons");
@@ -90,20 +90,87 @@ public class BookUIRuntimeChecks : MonoBehaviour
         Check(book.IsOpen && view.content.alpha == 1 && view.pages[0].activeSelf, "Opening finishes with Time.timeScale zero");
         Check(view.playerName.text.Contains("하루") && view.birthday.text.Contains("12일"), "Player identity bound");
         Check(view.portrait.Find("Appearance_0") != null, "Player appearance copied into portrait UI");
-        Check(view.lockedRows[1].activeSelf && view.lockedRows[2].activeSelf, "Base bag keeps rows two and three locked");
+        int activeSlots = view.slots.Count(s => s.button.gameObject.activeSelf);
+        bool backgroundHidden = view.inventoryBackground == null || !view.inventoryBackground.enabled;
+        string slotSprite = view.slots[0].button.image.sprite != null ? view.slots[0].button.image.sprite.name : "null";
+        Canvas.ForceUpdateCanvases();
+        var firstSlotRect = (RectTransform)view.slots[0].button.transform;
+        var secondSlotRect = (RectTransform)view.slots[1].button.transform;
+        Check(view.lockedRows.All(r => !r.activeSelf) && activeSlots == 10 && backgroundHidden && slotSprite == "Book Inventory_4",
+            $"Base bag shows ten individual masked slots (active={activeSlots}, backgroundHidden={backgroundHidden}, sprite={slotSprite})");
+        Check(Mathf.Abs(firstSlotRect.rect.width - firstSlotRect.rect.height) < .25f
+            && secondSlotRect.anchorMin.x > firstSlotRect.anchorMax.x,
+            $"Menu slots are square with a visible gap (size={firstSlotRect.rect.size}, gap={secondSlotRect.anchorMin.x - firstSlotRect.anchorMax.x})");
+        Check(view.profileHeader.text == "프로필" && view.inventoryHeader.text == "인벤토리"
+            && !view.itemHeader.transform.parent.gameObject.activeSelf, "Inventory page headers and empty detail page");
+        // Fitters update in a later layout pass. Check after refreshes, not just creation.
+        for (int pass = 0; pass < 3; pass++)
+        {
+            book.RefreshStatus();
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            var slotCorners = new Vector3[4];
+            var headerCorners = new Vector3[4];
+            firstSlotRect.GetWorldCorners(slotCorners);
+            ((RectTransform)view.inventoryHeader.transform.parent).GetWorldCorners(headerCorners);
+            Check(slotCorners[1].y < headerCorners[0].y, "Inventory remains below its header after layout pass " + pass);
+        }
+        Check(view.slots.All(s => s.selected.GetComponent<BookInventorySelection>().corners.All(c => !c.enabled && c.sprite != null)),
+            "Every unselected slot starts with initialized, hidden corners");
+        Check(view.slots.All(s => s.button.GetComponentsInChildren<Text>(true).Where(t => t.name == "Count").All(t => t.font != null
+            && t.font.name == "BoldPixels" && t.color == Color.white && t.canvasRenderer.GetColor() == Color.white && t.GetComponent<Outline>() != null)),
+            "Every MenuBookUI count, including serialized duplicates, uses BoldPixels with white CanvasRenderer tint and black outline");
+        Render(canvas, "inventory-first-open.png");
+        // Let the first FitInParent calculation settle before measuring click behavior.
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        // Clicking an item must only change selection. In particular, it must not
+        // recreate/reset the fitted grid and move every slot down a row.
+        Vector3 slotPositionBeforeClick = firstSlotRect.position;
+        view.slots[0].button.onClick.Invoke();
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        Vector3 slotPositionAfterFirstClick = firstSlotRect.position;
+        view.slots[1].button.onClick.Invoke();
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        Vector3 slotPositionAfterSecondClick = firstSlotRect.position;
+        Check(Vector3.Distance(slotPositionBeforeClick, slotPositionAfterFirstClick) < .01f
+            && Vector3.Distance(slotPositionBeforeClick, slotPositionAfterSecondClick) < .01f,
+            $"Selecting slots keeps the inventory grid fixed (before={slotPositionBeforeClick}, first={slotPositionAfterFirstClick}, second={slotPositionAfterSecondClick})");
         view.slots[0].button.onClick.Invoke();
         Check(view.itemName.text == "나무" && view.itemIcon.enabled && view.itemDescription.text.Contains("목재"), "Selecting real inventory item updates enlarged icon and description");
-        Check(view.slots[0].selected.enabled && view.itemFacts.text.Contains("23"), "Selection highlight and count match inventory");
+        Check(view.slots[0].selected.GetComponent<BookInventorySelection>().Selected && view.itemFacts.text.Contains("23"), "Animated selection and count match inventory");
+        Check(view.itemHeader.transform.parent.gameObject.activeSelf && view.iconHolder.anchoredPosition.y > 0 && view.detailReveal.alpha == 0, "Item holder starts above its destination");
+        var menuSelector = view.slots[0].selected.GetComponent<BookInventorySelection>();
+        int firstSelectorFrame = menuSelector.CurrentFrame;
+        Vector2 firstSelectorCorner = menuSelector.corners[0].rectTransform.anchorMin;
+        float selectorDeadline = Time.realtimeSinceStartup + 1f;
+        while (menuSelector.CurrentFrame == firstSelectorFrame && Time.realtimeSinceStartup < selectorDeadline)
+            yield return null;
+        Check(menuSelector.CurrentFrame != firstSelectorFrame && menuSelector.corners.All(c => c.enabled)
+            && menuSelector.corners[0].rectTransform.anchorMin != firstSelectorCorner,
+            $"Menu inventory selector advances four-corner animation frames (selected={menuSelector.Selected}, before={firstSelectorFrame}, after={menuSelector.CurrentFrame}, frames={menuSelector.frames?.Length ?? 0}, enabledCorners={menuSelector.corners.Count(c => c != null && c.enabled)})");
+        yield return new WaitForSecondsRealtime(.38f);
+        Check(view.detailReveal.alpha == 1 && view.iconHolder.anchoredPosition.y < 1, "Item holder lands and reveals item information");
         Render(canvas, "inventory.png");
         var countText = view.slots[0].count;
         File.WriteAllText("count-layout.txt", $"text={countText.text}; rect={countText.rectTransform.rect}; preferred={countText.preferredWidth} x {countText.preferredHeight}; visible={countText.cachedTextGenerator.characterCountVisible}; enabled={countText.isActiveAndEnabled}; color={countText.color}");
-        Check(countText.cachedTextGenerator.characterCountVisible >= 2, "Inventory stack count fits and renders");
+        Check(countText.cachedTextGenerator.characterCountVisible >= 2 && countText.color == Color.white
+            && countText.GetComponent<Outline>() != null
+            && (countText.GetComponent<Image>() == null || !countText.GetComponent<Image>().enabled),
+            "Inventory stack count fits with white text, black outline, and no background box");
         game.Data.farmer.backpackLevel = 1; book.RefreshStatus();
-        Check(!view.lockedRows[1].activeSelf && view.lockedRows[2].activeSelf, "First expansion unlocks exactly twenty slots");
+        Check(view.slots.Count(s => s.button.gameObject.activeSelf) == 20
+            && view.slots[0].button.image.sprite.name == "Book Inventory_4"
+            && view.slots[10].button.image.sprite.name == "Book Inventory_5", "First expansion shows row-specific slot art");
         game.Data.farmer.backpackLevel = 2; book.RefreshStatus();
-        Check(view.lockedRows.All(r => !r.activeSelf), "Second expansion unlocks all thirty slots");
+        Check(view.slots.Count(s => s.button.gameObject.activeSelf) == 30
+            && view.slots[20].button.image.sprite.name == "Book Inventory_5", "Second expansion shows three rows with third-row art");
+        yield return null;
+        Render(canvas, "inventory-three-rows.png");
         game.Inventory.Remove("wood", 23);
-        Check(!view.itemIcon.enabled && view.itemName.text.Contains("선택"), "Removed selected stack clears details");
+        Check(!view.itemHeader.transform.parent.gameObject.activeSelf && !view.detailReveal.gameObject.activeSelf, "Removed selected stack leaves right page empty");
         view.tabs[7].onClick.Invoke();
         Check(view.background.sprite == view.flipRight[0], "Forward bookmark plays right animation");
         yield return new WaitForSecondsRealtime(.8f);

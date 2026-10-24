@@ -145,8 +145,20 @@ namespace FarmMVP
 
             Register(new ObjectMarkerDef
             {
-                spritePath = "Sprites/Environment/ShopCart",
-                offset = new Vector2(0f, 0.6f),
+                // Farm에 이미 칠해 둔 Obj_ShopCart 마커도 이 그림을 사용한다.
+                // 그래서 씬을 다시 칠하지 않아도 test_shop이 곧 기본 Farmer's shop이 된다.
+                spritePath = "Sprites/UtilityObjects/test_shop",
+                nameOverride = "ShopCart",
+                offset = new Vector2(0f, 0.84f),
+                role = MarkerRole.Shop,
+            });
+
+            // UtilityObjects/test_shop.png은 Fixed 타일맵에 바로 칠할 수 있는 기본 상점 그림이다.
+            // PaintedObjectPlacer가 이 이름의 Fixed 타일을 Shop 역할로 등록한다.
+            Register(new ObjectMarkerDef
+            {
+                spritePath = "Sprites/UtilityObjects/test_shop",
+                offset = new Vector2(0f, 0.84f),
                 role = MarkerRole.Shop,
             });
 

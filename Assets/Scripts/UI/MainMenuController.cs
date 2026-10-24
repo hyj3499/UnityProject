@@ -1,147 +1,96 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace FarmMVP
 {
-    /// <summary>
-    /// Title screen shown before gameplay starts: 새 게임 / 이어하기 / 설정 / 종료.
-    /// Built entirely from code (same approach as UIManager) so no scene/prefab setup is needed.
-    /// </summary>
     public class MainMenuController : MonoBehaviour
     {
         private const string VolumePrefKey = "farm_mvp_volume";
-
         private GameBootstrap _bootstrap;
-        private Canvas _canvas;
-        private Font _font;
-
-        private GameObject _mainPanel;
-        private GameObject _settingsPanel;
-        private GameObject _confirmPanel;
-
-        private Text _confirmText;
-        private Action _confirmYesAction;
-
-        private Button _continueButton;
-        private Slider _volumeSlider;
+        private StartScreenView _view;
+        private CharacterCreatorUI _creator;
+        private Action _confirmed;
+        private bool _starting;
 
         public void Boot(GameBootstrap bootstrap)
         {
             _bootstrap = bootstrap;
-            _font = Resources.Load<Font>("Fonts/PF스타더스트 3.0");
-            if (_font == null) _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            if (_font == null) _font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-
+            _view = FindFirstObjectByType<StartScreenView>(FindObjectsInactive.Include);
+            if (_view == null)
+            {
+                var canvas = new GameObject("StartScreenCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+                canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+                var scaler = canvas.GetComponent<CanvasScaler>();
+                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920, 1080);
+                scaler.matchWidthOrHeight = .5f;
+                var prefab = Resources.Load<StartScreenView>("UI/StartScreenUI");
+                _view = prefab != null ? Instantiate(prefab, canvas.transform, false) : StartScreenLayout.Build(canvas.transform);
+            }
+            _view.gameObject.SetActive(true);
+            if (FindFirstObjectByType<EventSystem>() == null)
+                new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+            _view.ShowMain();
+            _view.continueGame.interactable = SaveSystem.HasSave;
             AudioListener.volume = PlayerPrefs.GetFloat(VolumePrefKey, 1f);
-
-            BuildCanvas();
-            BuildMainPanel();
-            BuildSettingsPanel();
-            BuildConfirmPanel();
+            _view.volume.SetValueWithoutNotify(AudioListener.volume);
+            _creator = gameObject.AddComponent<CharacterCreatorUI>();
+            _creator.Bind(_view, this);
+            _view.newGame.onClick.AddListener(_creator.Begin);
+            _view.continueGame.onClick.AddListener(Continue);
+            _view.settings.onClick.AddListener(Settings);
+            _view.exit.onClick.AddListener(Quit);
+            _view.settingsBack.onClick.AddListener(SettingsBack);
+            _view.volume.onValueChanged.AddListener(Volume);
+            _view.modalYes.onClick.AddListener(ConfirmYes);
+            _view.modalNo.onClick.AddListener(ConfirmNo);
         }
-
-        // ---------- canvas / background ----------
-        private void BuildCanvas()
+        public void Confirm(string message, Action yes)
         {
-            var go = new GameObject("TitleCanvas");
-            _canvas = go.AddComponent<Canvas>();
-            _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            // 화면 겹침 순서를 손으로 정해 둔다. 같은 Overlay 캔버스가 둘 다 0이면 어느 쪽이
-            // 위로 갈지 정해져 있지 않아서, 이 캔버스의 불투명한 배경이 다른 화면을 덮어 버린다.
-            _canvas.sortingOrder = UILayers.Title;
-            var scaler = go.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(960, 540);
-            go.AddComponent<GraphicRaycaster>();
-
-            if (FindObjectOfType<EventSystem>() == null)
-            {
-                var es = new GameObject("EventSystem");
-                es.AddComponent<EventSystem>();
-                es.AddComponent<StandaloneInputModule>();
-            }
-
-            var bgGo = new GameObject("Background");
-            var bgRt = bgGo.AddComponent<RectTransform>();
-            bgRt.SetParent(_canvas.transform, false);
-            Stretch(bgRt);
-            var bgImg = bgGo.AddComponent<Image>();
-            bgImg.color = new Color(0.10f, 0.14f, 0.12f, 1f);
+            _confirmed = yes;
+            _view.modalMessage.text = message;
+            _view.modalNo.gameObject.SetActive(true);
+            _view.modalYes.GetComponentInChildren<Text>().text = "예";
+            _view.modalPanel.SetActive(true);
+            _view.modalYes.Select();
         }
-
-        // ---------- main panel ----------
-        private void BuildMainPanel()
+        public void Alert(string message)
         {
-            _mainPanel = new GameObject("MainPanel");
-            var rt = _mainPanel.AddComponent<RectTransform>();
-            rt.SetParent(_canvas.transform, false);
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.sizeDelta = new Vector2(280, 340);
-
-            var title = Label(rt, "농장 이야기", 36, new Vector2(0, 130), TextAnchor.MiddleCenter);
-            title.rectTransform.sizeDelta = new Vector2(280, 60);
-
-            MakeMenuButton(rt, "새 게임", new Vector2(0, 40), OnNewGameClicked);
-            _continueButton = MakeMenuButton(rt, "이어하기", new Vector2(0, -20), OnContinueClicked);
-            _continueButton.interactable = SaveSystem.HasSave;
-            MakeMenuButton(rt, "설정", new Vector2(0, -80), OnSettingsClicked);
-            MakeMenuButton(rt, "종료", new Vector2(0, -140), OnQuitClicked);
+            Confirm(message, null);
+            _view.modalNo.gameObject.SetActive(false);
+            _view.modalYes.GetComponentInChildren<Text>().text = "확인";
         }
-
-        private void OnNewGameClicked()
+        private void ConfirmYes()
         {
+            _view.modalPanel.SetActive(false);
+            var action = _confirmed; _confirmed = null; action?.Invoke();
+        }
+        private void ConfirmNo() { _view.modalPanel.SetActive(false); _confirmed = null; }
+        private void Settings() { _view.mainMenu.SetActive(false); _view.settingsPanel.SetActive(true); }
+        private void SettingsBack() { PlayerPrefs.Save(); _view.ShowMain(); }
+        private void Volume(float value) { AudioListener.volume = value; PlayerPrefs.SetFloat(VolumePrefKey, value); }
+        private void Continue() { if (SaveSystem.HasSave) StartGame(null, null); }
+        public void Complete(CharacterCreationDraft draft)
+        {
+            var error = draft.Profile.Validate();
+            if (error != null) { Alert(error); return; }
+            draft.Discard();
             if (SaveSystem.HasSave)
-            {
-                ShowConfirm("기존 저장 데이터를 삭제하고 새로 시작하시겠습니까?", () =>
-                {
-                    SaveSystem.DeleteSave();
-                    ShowCharacterCreator();
-                });
-            }
-            else
-            {
-                ShowCharacterCreator();
-            }
+                Confirm("기존 저장 데이터 대신 새 게임을 시작하시겠습니까?", () => StartGame(draft.Appearance, draft.Profile));
+            else StartGame(draft.Appearance, draft.Profile);
         }
-
-        /// <summary>
-        /// 새 게임은 캐릭터 만들기를 거쳐 시작한다. 고른 외형은 게임을 만든 뒤 플레이어에게 넘기고,
-        /// 그대로 세이브에도 들어간다 (이어하기는 저장된 외형을 그대로 쓰므로 이 화면을 지나지 않는다).
-        /// </summary>
-        private void ShowCharacterCreator()
+        private void StartGame(PlayerAppearance appearance, CharacterProfile profile)
         {
-            // 타이틀 화면은 통째로 감춘다 — 배경이 불투명해서 위에 뜬 화면을 가리고,
-            // 살아 있으면 클릭도 가로챈다.
-            _canvas.gameObject.SetActive(false);
-
-            var creator = CharacterCreatorUI.Create(_font, new PlayerAppearance(),
-                onDone: appearance => StartGame(appearance),
-                onCancel: ReturnFromCharacterCreator);
-
-            // 만들다 실패했으면(그림을 못 읽는 등) 아무것도 못 하는 빈 화면이 되지 않도록 되돌린다.
-            if (creator == null) ReturnFromCharacterCreator();
+            if (_starting) return;
+            _starting = true;
+            _creator.ReleasePreview();
+            _view.gameObject.SetActive(false);
+            _bootstrap.StartGame(appearance, profile);
+            Destroy(gameObject);
         }
-
-        private void ReturnFromCharacterCreator()
-        {
-            if (_canvas != null) _canvas.gameObject.SetActive(true);
-            _mainPanel.SetActive(true);
-        }
-
-        private void OnContinueClicked() => StartGame(null);
-
-        private void OnSettingsClicked()
-        {
-            _mainPanel.SetActive(false);
-            _volumeSlider.value = AudioListener.volume;
-            _settingsPanel.SetActive(true);
-        }
-
-        private void OnQuitClicked()
+        private void Quit()
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
@@ -149,188 +98,25 @@ namespace FarmMVP
             Application.Quit();
 #endif
         }
-
-        /// <summary>appearance가 null이면 저장된(또는 기본) 외형을 그대로 쓴다.</summary>
-        private void StartGame(PlayerAppearance appearance)
+        private void Update()
         {
-            Destroy(_canvas.gameObject);
-            _bootstrap.StartGame(appearance);
-            Destroy(gameObject);
+            if (_view == null || !Input.GetKeyDown(KeyCode.Escape)) return;
+            if (_view.modalPanel.activeSelf) ConfirmNo();
+            else if (_view.pickerPanel.activeSelf) _creator.ClosePicker();
+            else if (_view.creatorPanel.activeSelf) _creator.RequestCancel();
+            else if (_view.settingsPanel.activeSelf) SettingsBack();
         }
-
-        // ---------- settings panel ----------
-        private void BuildSettingsPanel()
+        private void OnDestroy()
         {
-            _settingsPanel = new GameObject("SettingsPanel");
-            var rt = _settingsPanel.AddComponent<RectTransform>();
-            rt.SetParent(_canvas.transform, false);
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.sizeDelta = new Vector2(320, 220);
-
-            var bg = _settingsPanel.AddComponent<Image>();
-            bg.color = new Color(0.08f, 0.08f, 0.10f, 0.96f);
-
-            var title = Label(rt, "설정", 26, new Vector2(0, 80), TextAnchor.MiddleCenter);
-            title.rectTransform.sizeDelta = new Vector2(320, 40);
-
-            var volLabel = Label(rt, "음량", 18, new Vector2(-110, 10), TextAnchor.MiddleLeft);
-            volLabel.rectTransform.sizeDelta = new Vector2(60, 30);
-
-            _volumeSlider = MakeSlider(rt, new Vector2(20, 10));
-            _volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
-
-            MakeMenuButton(rt, "뒤로", new Vector2(0, -70), OnSettingsBackClicked, new Vector2(140, 44));
-
-            _settingsPanel.SetActive(false);
-        }
-
-        private void OnVolumeChanged(float v)
-        {
-            AudioListener.volume = v;
-            PlayerPrefs.SetFloat(VolumePrefKey, v);
-        }
-
-        private void OnSettingsBackClicked()
-        {
-            PlayerPrefs.Save();
-            _settingsPanel.SetActive(false);
-            _mainPanel.SetActive(true);
-        }
-
-        private Slider MakeSlider(RectTransform parent, Vector2 pos)
-        {
-            var container = new GameObject("VolumeSlider");
-            var rt = container.AddComponent<RectTransform>();
-            rt.SetParent(parent, false);
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = new Vector2(160, 20);
-
-            var bg = new GameObject("BG").AddComponent<Image>();
-            bg.transform.SetParent(rt, false);
-            bg.color = new Color(0.2f, 0.2f, 0.24f, 0.9f);
-            Stretch(bg.rectTransform);
-
-            var fillArea = new GameObject("Fill").AddComponent<Image>();
-            fillArea.transform.SetParent(rt, false);
-            fillArea.color = new Color(0.4f, 0.7f, 0.4f, 1f);
-            Stretch(fillArea.rectTransform);
-
-            var handleGo = new GameObject("Handle");
-            var handleRt = handleGo.AddComponent<RectTransform>();
-            handleRt.SetParent(rt, false);
-            handleRt.sizeDelta = new Vector2(12, 26);
-            var handleImg = handleGo.AddComponent<Image>();
-            handleImg.color = Color.white;
-
-            var slider = container.AddComponent<Slider>();
-            slider.fillRect = fillArea.rectTransform;
-            slider.handleRect = handleRt;
-            slider.targetGraphic = handleImg;
-            slider.minValue = 0f;
-            slider.maxValue = 1f;
-            slider.value = 1f;
-            return slider;
-        }
-
-        // ---------- confirm panel (used for the "new game overwrites save" warning) ----------
-        private void BuildConfirmPanel()
-        {
-            _confirmPanel = new GameObject("ConfirmPanel");
-            var rt = _confirmPanel.AddComponent<RectTransform>();
-            rt.SetParent(_canvas.transform, false);
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.sizeDelta = new Vector2(360, 160);
-
-            var bg = _confirmPanel.AddComponent<Image>();
-            bg.color = new Color(0.08f, 0.08f, 0.10f, 0.96f);
-
-            _confirmText = Label(rt, "", 20, Vector2.zero, TextAnchor.MiddleCenter);
-            _confirmText.rectTransform.anchorMin = new Vector2(0, 0);
-            _confirmText.rectTransform.anchorMax = new Vector2(1, 1);
-            _confirmText.rectTransform.offsetMin = new Vector2(16, 56);
-            _confirmText.rectTransform.offsetMax = new Vector2(-16, -16);
-            _confirmText.rectTransform.anchoredPosition = Vector2.zero;
-
-            MakeMenuButton(rt, "예", new Vector2(-90, 20), () => OnConfirmClicked(true), new Vector2(120, 40));
-            MakeMenuButton(rt, "아니오", new Vector2(90, 20), () => OnConfirmClicked(false), new Vector2(120, 40));
-
-            _confirmPanel.SetActive(false);
-        }
-
-        private void ShowConfirm(string message, Action onYes)
-        {
-            _confirmText.text = message;
-            _confirmYesAction = onYes;
-            _mainPanel.SetActive(false);
-            _confirmPanel.SetActive(true);
-        }
-
-        private void OnConfirmClicked(bool yes)
-        {
-            _confirmPanel.SetActive(false);
-            var action = _confirmYesAction;
-            _confirmYesAction = null;
-            if (yes) action?.Invoke();
-            else _mainPanel.SetActive(true);
-        }
-
-        // ---------- small UI builders ----------
-        private Button MakeMenuButton(RectTransform parent, string text, Vector2 pos, UnityEngine.Events.UnityAction onClick, Vector2? size = null)
-        {
-            var go = new GameObject("Button_" + text);
-            var rt = go.AddComponent<RectTransform>();
-            rt.SetParent(parent, false);
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = size ?? new Vector2(200, 44);
-
-            var img = go.AddComponent<Image>();
-            img.color = new Color(0.22f, 0.24f, 0.22f, 0.95f);
-
-            var btn = go.AddComponent<Button>();
-            btn.targetGraphic = img;
-            btn.onClick.AddListener(onClick);
-
-            var label = Label(rt, text, 20, Vector2.zero, TextAnchor.MiddleCenter);
-            Stretch(label.rectTransform);
-            label.raycastTarget = false;
-
-            return btn;
-        }
-
-        private Text Label(RectTransform parent, string text, int size, Vector2 pos, TextAnchor anchor)
-        {
-            var go = new GameObject("Label");
-            var rt = go.AddComponent<RectTransform>();
-            rt.SetParent(parent, false);
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = new Vector2(200, 30);
-            var t = go.AddComponent<Text>();
-            t.font = _font;
-            t.fontSize = size;
-            t.alignment = anchor;
-            t.color = Color.white;
-            t.text = text;
-            t.horizontalOverflow = HorizontalWrapMode.Overflow;
-            t.verticalOverflow = VerticalWrapMode.Overflow;
-            return t;
-        }
-
-        private void Stretch(RectTransform rt)
-        {
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(1, 1);
-            rt.offsetMin = Vector2.zero;
-            rt.offsetMax = Vector2.zero;
+            if (_view == null) return;
+            _view.newGame.onClick.RemoveListener(_creator.Begin);
+            _view.continueGame.onClick.RemoveListener(Continue);
+            _view.settings.onClick.RemoveListener(Settings);
+            _view.exit.onClick.RemoveListener(Quit);
+            _view.settingsBack.onClick.RemoveListener(SettingsBack);
+            _view.volume.onValueChanged.RemoveListener(Volume);
+            _view.modalYes.onClick.RemoveListener(ConfirmYes);
+            _view.modalNo.onClick.RemoveListener(ConfirmNo);
         }
     }
 }

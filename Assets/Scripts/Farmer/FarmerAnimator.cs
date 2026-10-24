@@ -31,6 +31,8 @@ namespace FarmMVP
         private const int BodyOrder = 2;
 
         private PlayerAppearance _appearance = new PlayerAppearance();
+        private readonly FarmerAppearancePalette _palette = new FarmerAppearancePalette();
+        private void OnDestroy() => _palette.Clear();
 
         private SpriteRenderer _body;
         private SpriteRenderer _eyes;
@@ -90,6 +92,7 @@ namespace FarmMVP
         /// </summary>
         public void SetAppearance(PlayerAppearance appearance)
         {
+            _palette.Clear();
             _appearance = appearance != null ? appearance.Clone() : new PlayerAppearance();
             Draw();
         }
@@ -191,12 +194,12 @@ namespace FarmMVP
             int frame = Mathf.Clamp(_frame, 0, Mathf.Min(_clip.count, frames.Length) - 1);
             if (frame < 0) { _body.enabled = false; return; }
 
-            _body.sprite = frames[frame];
+            _body.sprite = _palette.Apply(frames[frame], _appearance.skin, true);
             // 왼쪽 그림은 따로 없다 — 측면 줄을 뒤집어 쓴다.
             _body.flipX = FarmerPoses.Mirrored(_facing);
             _body.enabled = true;
             if (_eyes == null || !FarmerEyes.TryAnchor(_clip.row, frame, out var anchor)) return;
-            _eyes.sprite = FarmerEyes.SpriteFor(_appearance.eyes, _clip.row, frame, _blinkTimer >= 3.36f);
+            _eyes.sprite = _palette.Apply(FarmerEyes.SpriteFor(_appearance.eyes, _clip.row, frame, _blinkTimer >= 3.36f), _appearance.eyeColor, false);
             if (_eyes.sprite == null) return;
             var offset = (anchor - new Vector2(FarmerPoses.FrameWidth * 0.5f,
                                                FarmerPoses.FrameHeight * 0.5f)) / PixelsPerUnit;

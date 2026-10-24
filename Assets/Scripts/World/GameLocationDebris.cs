@@ -95,6 +95,8 @@ namespace FarmMVP
             if (!InBounds(x, y) || IsBlocked(x, y)) return false;   // 나무·바위·울타리·물·절벽·다른 잔해
             if (!IsTillable(x, y)) return false;
             var pos = new Vector2Int(x, y);
+            // Walkable holes in a mask do not free the debris's interaction/ownership footprint.
+            if (_debrisAnchors.ContainsKey(pos)) return false;
             if (hoeDirts.ContainsKey(pos) || plants.ContainsKey(pos) || placed.ContainsKey(pos)) return false;
             if (IsPath(x, y)) return false;
             return !NearEntrance(pos);
@@ -122,12 +124,12 @@ namespace FarmMVP
                 {
                     if (!InBounds(x + dx, y + dy)) continue;
                     _debrisAnchors[new Vector2Int(x + dx, y + dy)] = anchor;
-                    SetBlocked(x + dx, y + dy, true);
                 }
 
             // 넓은 그림은 발판의 가운데에, 밑동은 아랫줄 칸의 바닥에 맞춘다.
             var sprite = def.GetSprite();
             _debrisRenderers[anchor] = PlaceObject(sprite, x + (def.size.x - 1) * 0.5f, y + BottomAlignLift(sprite), y);
+            RegisterObjectCollision(_debrisRenderers[anchor], new RectInt(x, y, def.size.x, def.size.y));
         }
 
         private void AddSmallDebris(Vector2Int pos, DebrisKind kind)
@@ -162,6 +164,7 @@ namespace FarmMVP
         {
             if (!debris.TryGetValue(anchor, out var feature)) return;
             debris.Remove(anchor);
+            if (_debrisRenderers.TryGetValue(anchor, out var renderer)) RemoveObjectCollision(renderer);
             DestroyRenderer(_debrisRenderers, anchor);
 
             var size = feature.Def.size;
@@ -169,8 +172,7 @@ namespace FarmMVP
                 for (int dy = 0; dy < size.y; dy++)
                 {
                     var p = new Vector2Int(anchor.x + dx, anchor.y + dy);
-                    if (!_debrisAnchors.Remove(p)) continue;
-                    ClearFeatureBlock(p);
+                    _debrisAnchors.Remove(p);
                 }
         }
 

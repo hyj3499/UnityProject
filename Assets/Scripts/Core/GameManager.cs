@@ -444,6 +444,8 @@ namespace FarmMVP
 
         /// <summary>새 게임에서 캐릭터를 만들었을 때 그 외형. Boot이 세이브를 읽은 뒤에 덮어쓴다.</summary>
         private PlayerAppearance _pendingAppearance;
+        private CharacterProfile _pendingProfile;
+        public void SetPendingProfile(CharacterProfile profile) => _pendingProfile = profile;
 
         public void SetPendingAppearance(PlayerAppearance appearance) => _pendingAppearance = appearance;
 
@@ -469,7 +471,7 @@ namespace FarmMVP
             AssetLibrary.EnsureLoaded();
 
             // load or new game
-            Data = SaveSystem.Load();
+            Data = _pendingAppearance != null ? NewGame() : SaveSystem.Load();
             if (Data == null)
             {
                 Data = NewGame();
@@ -479,6 +481,8 @@ namespace FarmMVP
             // 캐릭터 만들기에서 고른 외형이 있으면 세이브 값보다 우선한다 (플레이어를 만들기 전에).
             if (_pendingAppearance != null) Data.farmer.appearance = _pendingAppearance.Clone();
             if (Data.farmer.appearance == null) Data.farmer.appearance = new PlayerAppearance();
+            _pendingProfile?.Apply(Data.farmer);
+            _pendingProfile = null;
             _pendingAppearance = null;
 
             Seasons.SetSilently(Data.currentDay);   // 계절은 날짜에서 나온다 (따로 저장하지 않는다)
@@ -1166,6 +1170,7 @@ namespace FarmMVP
             int income = SellShippingBox();
 
             Data.currentDay += 1;
+            ShopSellService.PruneExpired(Data);
             Data.currentMinutes = DayClock.DayStart;   // 06:00
             _timeAccum = 0f;
 
