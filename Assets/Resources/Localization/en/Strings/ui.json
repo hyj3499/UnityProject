@@ -1,0 +1,736 @@
+{
+  "entries": [
+    {
+      "key": "ui.gamedata.farmer",
+      "value": "Farmer"
+    },
+    {
+      "key": "ui.bookdisplaysettings.windowed",
+      "value": "Windowed"
+    },
+    {
+      "key": "ui.bookdisplaysettings.borderless_fullscreen",
+      "value": "Borderless Fullscreen"
+    },
+    {
+      "key": "ui.bookdisplaysettings.fullscreen",
+      "value": "Fullscreen"
+    },
+    {
+      "key": "ui.bookmenulayout.inventory",
+      "value": "Inventory"
+    },
+    {
+      "key": "ui.bookmenulayout.skills",
+      "value": "Skills"
+    },
+    {
+      "key": "ui.bookmenulayout.residents",
+      "value": "Residents"
+    },
+    {
+      "key": "ui.bookmenulayout.livestock",
+      "value": "Livestock"
+    },
+    {
+      "key": "ui.bookmenulayout.quests",
+      "value": "Quests"
+    },
+    {
+      "key": "ui.bookmenulayout.map_journal",
+      "value": "Map Journal"
+    },
+    {
+      "key": "ui.bookmenulayout.tutorial",
+      "value": "Tutorial"
+    },
+    {
+      "key": "ui.bookmenulayout.settings",
+      "value": "Settings"
+    },
+    {
+      "key": "ui.bookmenulayout.close",
+      "value": "Close"
+    },
+    {
+      "key": "ui.bookmenulayout.profile",
+      "value": "Profile"
+    },
+    {
+      "key": "ui.bookmenulayout.character_preview",
+      "value": "Character\nPreview"
+    },
+    {
+      "key": "ui.bookmenulayout.name_farmer",
+      "value": "Name  Farmer"
+    },
+    {
+      "key": "ui.bookmenulayout.birthday_not_set",
+      "value": "Birthday  Not Set"
+    },
+    {
+      "key": "ui.bookmenulayout.gold_0_g",
+      "value": "Gold  0 G"
+    },
+    {
+      "key": "ui.bookmenulayout.hp_100_100",
+      "value": "HP  100 / 100"
+    },
+    {
+      "key": "ui.bookmenulayout.inventory_275",
+      "value": "Inventory"
+    },
+    {
+      "key": "ui.bookmenulayout.item_details",
+      "value": "Item Details"
+    },
+    {
+      "key": "ui.bookmenulayout.profile_277",
+      "value": "Profile"
+    },
+    {
+      "key": "ui.bookmenulayout.inventory_278",
+      "value": "Inventory"
+    },
+    {
+      "key": "ui.bookmenulayout.item_details_280",
+      "value": "Item Details"
+    },
+    {
+      "key": "ui.bookmenulayout.settings_281",
+      "value": "Settings"
+    },
+    {
+      "key": "ui.bookmenulayout.gameplay",
+      "value": "Gameplay"
+    },
+    {
+      "key": "ui.bookmenulayout.display",
+      "value": "Display"
+    },
+    {
+      "key": "ui.bookmenulayout.audio",
+      "value": "Audio"
+    },
+    {
+      "key": "ui.bookmenulayout.controls",
+      "value": "Controls"
+    },
+    {
+      "key": "ui.bookmenulayout.exit",
+      "value": "Exit"
+    },
+    {
+      "key": "ui.bookmenulayout.coming_soon",
+      "value": "Coming Soon"
+    },
+    {
+      "key": "ui.bookmenulayout.screen_mode",
+      "value": "Screen Mode"
+    },
+    {
+      "key": "ui.bookmenulayout.windowed",
+      "value": "Windowed"
+    },
+    {
+      "key": "ui.bookmenulayout.resolution",
+      "value": "Resolution"
+    },
+    {
+      "key": "ui.bookmenulayout.game_zoom_100",
+      "value": "Game Zoom  100%"
+    },
+    {
+      "key": "ui.bookmenulayout.apply",
+      "value": "Apply"
+    },
+    {
+      "key": "ui.bookmenulayout.exit_the_game_unsaved_progress_will_be",
+      "value": "Exit the game.\nUnsaved progress will be lost\nif you exit without saving."
+    },
+    {
+      "key": "ui.bookmenulayout.save_and_exit",
+      "value": "Save and Exit"
+    },
+    {
+      "key": "ui.bookmenulayout.exit_without_saving",
+      "value": "Exit Without Saving"
+    },
+    {
+      "key": "ui.bookmenulayout.exit_the_game",
+      "value": "Exit the game?"
+    },
+    {
+      "key": "ui.bookmenulayout.exit_297",
+      "value": "Exit"
+    },
+    {
+      "key": "ui.bookmenulayout.cancel",
+      "value": "Cancel"
+    },
+    {
+      "key": "ui.bookui.name",
+      "value": "Name  "
+    },
+    {
+      "key": "ui.bookui.farmer",
+      "value": "Farmer"
+    },
+    {
+      "key": "ui.bookui.spring",
+      "value": "Spring"
+    },
+    {
+      "key": "ui.bookui.summer",
+      "value": "Summer"
+    },
+    {
+      "key": "ui.bookui.fall",
+      "value": "Fall"
+    },
+    {
+      "key": "ui.bookui.winter",
+      "value": "Winter"
+    },
+    {
+      "key": "ui.bookui.birthday",
+      "value": "Birthday  "
+    },
+    {
+      "key": "ui.bookui.not_set",
+      "value": "Not Set"
+    },
+    {
+      "key": "ui.bookui.gold_0_n0_g",
+      "value": "Gold  {0:N0} G"
+    },
+    {
+      "key": "ui.bookui.hp_0_1",
+      "value": "HP  {0} / {1}"
+    },
+    {
+      "key": "ui.bookui.owned_0",
+      "value": "Owned  {0}\n"
+    },
+    {
+      "key": "ui.bookui.sell_price_0_n0_g_each",
+      "value": "Sell Price  {0:N0} G each"
+    },
+    {
+      "key": "ui.bookui.this_item_cannot_be_sold",
+      "value": "This item cannot be sold."
+    },
+    {
+      "key": "ui.bookui.game_zoom_0_0",
+      "value": "Game Zoom  {0:0}%"
+    },
+    {
+      "key": "ui.bookui.saved_screen_settings_apply_in_the_game",
+      "value": "Saved - Screen settings apply in the game build."
+    },
+    {
+      "key": "ui.bookui.settings_applied",
+      "value": "Settings applied."
+    },
+    {
+      "key": "ui.bookui.save_and_exit_the_game",
+      "value": "Save and exit the game?"
+    },
+    {
+      "key": "ui.bookui.exit_without_saving_unsaved_progress_will_be",
+      "value": "Exit without saving?\nUnsaved progress will be lost."
+    },
+    {
+      "key": "ui.bookui.could_not_save_cancel_and_try_again",
+      "value": "Could not save.\nCancel and try again."
+    },
+    {
+      "key": "ui.charactercreationdraft.please_enter_a_name",
+      "value": "Please enter a name."
+    },
+    {
+      "key": "ui.charactercreationdraft.please_select_a_gender",
+      "value": "Please select a gender."
+    },
+    {
+      "key": "ui.charactercreatorui.cancel_character_creation",
+      "value": "Cancel character creation?"
+    },
+    {
+      "key": "ui.charactercreatorui.customize_character",
+      "value": "Customize Character"
+    },
+    {
+      "key": "ui.charactercreatorui.character_setup",
+      "value": "Character Setup"
+    },
+    {
+      "key": "ui.charactercreatorui.spring",
+      "value": "Spring"
+    },
+    {
+      "key": "ui.charactercreatorui.summer",
+      "value": "Summer"
+    },
+    {
+      "key": "ui.charactercreatorui.fall",
+      "value": "Fall"
+    },
+    {
+      "key": "ui.charactercreatorui.winter",
+      "value": "Winter"
+    },
+    {
+      "key": "ui.charactercreatorui.none",
+      "value": "None"
+    },
+    {
+      "key": "ui.confirmationdialogview.make_this_purchase",
+      "value": "Make this purchase?"
+    },
+    {
+      "key": "ui.confirmationdialogview.yes",
+      "value": "Yes"
+    },
+    {
+      "key": "ui.confirmationdialogview.no",
+      "value": "No"
+    },
+    {
+      "key": "ui.craftingui.craft",
+      "value": "Craft"
+    },
+    {
+      "key": "ui.craftingui.workbench",
+      "value": "Workbench"
+    },
+    {
+      "key": "ui.craftingui.hold_a_crafted_fence_or_path_and",
+      "value": "Hold a crafted fence or path and right-click to place it / ESC to close"
+    },
+    {
+      "key": "ui.dialogueui.click_space",
+      "value": "Click / Space"
+    },
+    {
+      "key": "ui.fishingui.casting",
+      "value": "Casting..."
+    },
+    {
+      "key": "ui.mainmenucontroller.yes",
+      "value": "Yes"
+    },
+    {
+      "key": "ui.mainmenucontroller.ok",
+      "value": "OK"
+    },
+    {
+      "key": "ui.mainmenucontroller.you_can_have_up_to_5_saves",
+      "value": "You can have up to 5 saves. Delete an existing save in Continue."
+    },
+    {
+      "key": "ui.mainmenucontroller.save_0_1_up_to_2",
+      "value": "Save  {0} / {1}   (up to {2})"
+    },
+    {
+      "key": "ui.mainmenucontroller.0_1",
+      "value": "{0} {1}"
+    },
+    {
+      "key": "ui.mainmenucontroller.not_set",
+      "value": "Not Set"
+    },
+    {
+      "key": "ui.mainmenucontroller.year_0_1_2",
+      "value": "Year {0}, {1} {2}"
+    },
+    {
+      "key": "ui.mainmenucontroller.0_h_1_m",
+      "value": "{0}h {1}m"
+    },
+    {
+      "key": "ui.mainmenucontroller.could_not_load_the_selected_save",
+      "value": "Could not load the selected save."
+    },
+    {
+      "key": "ui.mainmenucontroller.delete_the_save_for_0_this_cannot",
+      "value": "Delete the save for '{0}'?\nThis cannot be undone."
+    },
+    {
+      "key": "ui.mainmenucontroller.could_not_delete_the_save",
+      "value": "Could not delete the save."
+    },
+    {
+      "key": "ui.mainmenucontroller.you_can_have_up_to_5_saves_354",
+      "value": "You can have up to 5 saves. Delete an existing save first."
+    },
+    {
+      "key": "ui.shippingui.shipping_bin",
+      "value": "Shipping Bin"
+    },
+    {
+      "key": "ui.shippingui.expected_sales_0_g",
+      "value": "Expected Sales 0 G"
+    },
+    {
+      "key": "ui.shippingui.my_bag",
+      "value": "My Bag"
+    },
+    {
+      "key": "ui.shippingui.drag_to_move_shift_click_to_transfer",
+      "value": "Drag to move - Shift+click to transfer all - ESC to close"
+    },
+    {
+      "key": "ui.shippingui.expected_sales_0_n0_g",
+      "value": "Expected Sales {0:N0} G"
+    },
+    {
+      "key": "ui.shopbookcontroller.other",
+      "value": "Other"
+    },
+    {
+      "key": "ui.shopbookcontroller.all",
+      "value": "All"
+    },
+    {
+      "key": "ui.shopbookcontroller.sold",
+      "value": "Sold"
+    },
+    {
+      "key": "ui.shopbookcontroller.select_a_product",
+      "value": "Select a product."
+    },
+    {
+      "key": "ui.shopbookcontroller.no_products_for_sale",
+      "value": "No products for sale."
+    },
+    {
+      "key": "ui.shopbookcontroller.0_remaining",
+      "value": " - {0} remaining"
+    },
+    {
+      "key": "ui.shopbookcontroller.sell_price_0_n0_g_each",
+      "value": "Sell Price {0:N0} G each"
+    },
+    {
+      "key": "ui.shopbookcontroller.this_item_cannot_be_sold",
+      "value": "This item cannot be sold."
+    },
+    {
+      "key": "ui.shopbookcontroller.right_click_sell_one",
+      "value": "\n\nRight-click: Sell one"
+    },
+    {
+      "key": "ui.shopbooklayout.products",
+      "value": "Products"
+    },
+    {
+      "key": "ui.shopbooklayout.no_products_for_sale",
+      "value": "No products for sale."
+    },
+    {
+      "key": "ui.shopbooklayout.scroll_drag_to_browse",
+      "value": "Scroll / drag to browse"
+    },
+    {
+      "key": "ui.shopbooklayout.categories",
+      "value": "Categories"
+    },
+    {
+      "key": "ui.shopbooklayout.product_details",
+      "value": "Product Details"
+    },
+    {
+      "key": "ui.shopbooklayout.select_a_product",
+      "value": "Select a product."
+    },
+    {
+      "key": "ui.shopbooklayout.select_a_product_from_the_list_to",
+      "value": "Select a product from the list\nto see its details."
+    },
+    {
+      "key": "ui.shopbooklayout.buy",
+      "value": "Buy"
+    },
+    {
+      "key": "ui.shopbooklayout.close_x",
+      "value": "Close x"
+    },
+    {
+      "key": "ui.shopbooklayout.cancel",
+      "value": "Cancel"
+    },
+    {
+      "key": "ui.shopbooklayout.strawberry_seeds",
+      "value": "Strawberry Seeds"
+    },
+    {
+      "key": "ui.shopbooklayout.tree_seeds",
+      "value": "Tree Seeds"
+    },
+    {
+      "key": "ui.shopbooklayout.backpack_level_1",
+      "value": "Backpack Level 1"
+    },
+    {
+      "key": "ui.shopbooklayout.products_385",
+      "value": "Products"
+    },
+    {
+      "key": "ui.shopbooklayout.products_386",
+      "value": "Products"
+    },
+    {
+      "key": "ui.shopbooklayout.all",
+      "value": "All"
+    },
+    {
+      "key": "ui.shopbooklayout.seeds",
+      "value": "Seeds"
+    },
+    {
+      "key": "ui.shopbooklayout.bags",
+      "value": "Bags"
+    },
+    {
+      "key": "ui.shopbooklayout.product_name",
+      "value": "Product Name"
+    },
+    {
+      "key": "ui.startscreenlayout.edit",
+      "value": "Edit"
+    },
+    {
+      "key": "ui.startscreenlayout.character_setup",
+      "value": "Character Setup"
+    },
+    {
+      "key": "ui.startscreenlayout.rotate",
+      "value": "Rotate"
+    },
+    {
+      "key": "ui.startscreenlayout.gender",
+      "value": "Gender"
+    },
+    {
+      "key": "ui.startscreenlayout.male",
+      "value": "Male"
+    },
+    {
+      "key": "ui.startscreenlayout.female",
+      "value": "Female"
+    },
+    {
+      "key": "ui.startscreenlayout.birthday",
+      "value": "Birthday"
+    },
+    {
+      "key": "ui.startscreenlayout.spring",
+      "value": "Spring"
+    },
+    {
+      "key": "ui.startscreenlayout.day_1",
+      "value": "Day 1"
+    },
+    {
+      "key": "ui.startscreenlayout.next",
+      "value": "Next"
+    },
+    {
+      "key": "ui.startscreenlayout.back",
+      "value": "Back"
+    },
+    {
+      "key": "ui.startscreenlayout.start_game",
+      "value": "Start Game"
+    },
+    {
+      "key": "ui.startscreenlayout.skin",
+      "value": "Skin"
+    },
+    {
+      "key": "ui.startscreenlayout.eyes",
+      "value": "Eyes"
+    },
+    {
+      "key": "ui.startscreenlayout.hair",
+      "value": "Hair"
+    },
+    {
+      "key": "ui.startscreenlayout.top",
+      "value": "Top"
+    },
+    {
+      "key": "ui.startscreenlayout.bottom",
+      "value": "Bottom"
+    },
+    {
+      "key": "ui.startscreenlayout.outfit",
+      "value": "Outfit"
+    },
+    {
+      "key": "ui.startscreenlayout.shoes",
+      "value": "Shoes"
+    },
+    {
+      "key": "ui.startscreenlayout.accessories",
+      "value": "Accessories"
+    },
+    {
+      "key": "ui.startscreenlayout.select_save",
+      "value": "Select Save"
+    },
+    {
+      "key": "ui.startscreenlayout.save_1_5_up_to_5",
+      "value": "Save  1 / 5   (up to 5)"
+    },
+    {
+      "key": "ui.startscreenlayout.character_name",
+      "value": "Character Name"
+    },
+    {
+      "key": "ui.startscreenlayout.birthday_417",
+      "value": "Birthday"
+    },
+    {
+      "key": "ui.startscreenlayout.current_date",
+      "value": "Current Date"
+    },
+    {
+      "key": "ui.startscreenlayout.gold",
+      "value": "Gold"
+    },
+    {
+      "key": "ui.startscreenlayout.play_time",
+      "value": "Play Time"
+    },
+    {
+      "key": "ui.startscreenlayout.spring_1",
+      "value": "Spring 1"
+    },
+    {
+      "key": "ui.startscreenlayout.year_1_spring_1",
+      "value": "Year 1, Spring 1"
+    },
+    {
+      "key": "ui.startscreenlayout.0h_0m",
+      "value": "0h 0m"
+    },
+    {
+      "key": "ui.startscreenlayout.start",
+      "value": "Start"
+    },
+    {
+      "key": "ui.startscreenlayout.delete",
+      "value": "Delete"
+    },
+    {
+      "key": "ui.startscreenlayout.none",
+      "value": "None"
+    },
+    {
+      "key": "ui.startscreenlayout.suggested",
+      "value": "Suggested"
+    },
+    {
+      "key": "ui.startscreenlayout.apply",
+      "value": "Apply"
+    },
+    {
+      "key": "ui.startscreenlayout.preview_a_slot_then_press_apply_to",
+      "value": "Preview a slot, then\npress Apply to confirm."
+    },
+    {
+      "key": "ui.startscreenlayout.settings",
+      "value": "Settings"
+    },
+    {
+      "key": "ui.startscreenlayout.volume",
+      "value": "Volume"
+    },
+    {
+      "key": "ui.startscreenlayout.back_433",
+      "value": "Back"
+    },
+    {
+      "key": "ui.startscreenlayout.cancel_character_creation",
+      "value": "Cancel character creation?"
+    },
+    {
+      "key": "ui.startscreenlayout.yes",
+      "value": "Yes"
+    },
+    {
+      "key": "ui.startscreenlayout.no",
+      "value": "No"
+    },
+    {
+      "key": "ui.uimanager.me",
+      "value": "Me"
+    },
+    {
+      "key": "ui.uimanager.day_0_06_00",
+      "value": "Day {0}\n06:00"
+    },
+    {
+      "key": "ui.menu.new_game",
+      "value": "NEW GAME"
+    },
+    {
+      "key": "ui.menu.continue",
+      "value": "CONTINUE"
+    },
+    {
+      "key": "ui.menu.settings",
+      "value": "SETTINGS"
+    },
+    {
+      "key": "ui.menu.exit",
+      "value": "EXIT"
+    },
+    {
+      "key": "ui.settings.language",
+      "value": "Language"
+    },
+    {
+      "key": "ui.settings.resolution",
+      "value": "Resolution"
+    },
+    {
+      "key": "ui.settings.saved",
+      "value": "Saved. Screen size changes in the game build."
+    },
+    {
+      "key": "ui.character.name",
+      "value": "Name"
+    },
+    {
+      "key": "ui.character.day",
+      "value": "Day {0}"
+    },
+    {
+      "key": "ui.character.birthday",
+      "value": "Birthday  {0} {1}"
+    },
+    {
+      "key": "ui.shop.general",
+      "value": "Farmer's Shop"
+    },
+    {
+      "key": "ui.shop.materials",
+      "value": "Robin's Shop"
+    },
+    {
+      "key": "ui.character.long_hair",
+      "value": "Long Hair"
+    },
+    {
+      "key": "ui.character.short_pants",
+      "value": "Short Pants"
+    },
+    {
+      "key": "ui.character.ribbon_shirt",
+      "value": "Ribbon Shirt"
+    }
+  ]
+}

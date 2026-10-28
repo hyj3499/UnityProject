@@ -19,7 +19,7 @@ namespace FarmMVP
         [SerializeField] private TMP_Text timeText;
 
         [Tooltip("선택 사항. 비워 두면 각 텍스트에 지정된 폰트를 그대로 쓴다.")]
-        [SerializeField] private TMP_FontAsset fontAsset;
+        [SerializeField, HideInInspector] private TMP_FontAsset fontAsset; // Legacy scene data; LocalizedText now controls the font.
 
         [Header("Season icon (DatePanel 옆)")]
         [SerializeField] private Image seasonIcon;
@@ -44,10 +44,11 @@ namespace FarmMVP
             _group = GetComponent<CanvasGroup>();
             if (_group == null) _group = gameObject.AddComponent<CanvasGroup>();
             ApplyFont();
+            Localization.Changed += Refresh;
             SetVisible(false);
         }
 
-        private void OnDestroy() => Unbind();
+        private void OnDestroy() { Localization.Changed -= Refresh; Unbind(); }
 
         private void Update()
         {
@@ -89,6 +90,7 @@ namespace FarmMVP
             int day = _game.Data.currentDay;
             int minutes = _game.Data.currentMinutes;
 
+            // HUD 날짜는 선택 언어와 관계없이 게임 내 영문 표기를 유지한다.
             if (dateText != null)
                 dateText.text = $"{Seasons.Key(Seasons.Of(day))} {Seasons.DayOfSeason(day)}, {Seasons.WeekdayKey(day)}";
 
@@ -150,9 +152,8 @@ namespace FarmMVP
         // 에디터에서 텍스트에 직접 지정한 폰트가 기본이고, 아래 슬롯을 채웠을 때만 덮어쓴다.
         private void ApplyFont()
         {
-            if (fontAsset == null) return;
-            if (dateText != null) dateText.font = fontAsset;
-            if (timeText != null) timeText.font = fontAsset;
+            if (dateText != null) LocalizedText.Attach(dateText, null, FontRole.System1);
+            if (timeText != null) LocalizedText.Attach(timeText, null, FontRole.System1);
         }
 
     }

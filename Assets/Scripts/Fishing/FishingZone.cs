@@ -18,13 +18,14 @@ namespace FarmMVP
         }
 
         public readonly string zoneId;
-        public readonly string displayName;
+        private readonly string _displayName;
+        public string displayName => Localization.Resolve(_displayName);
         private readonly List<Entry> _entries = new List<Entry>();
 
         public FishingZone(string zoneId, string displayName)
         {
             this.zoneId = zoneId;
-            this.displayName = displayName;
+            _displayName = displayName;
         }
 
         /// <summary>

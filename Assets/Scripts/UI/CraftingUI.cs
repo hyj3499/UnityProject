@@ -108,7 +108,7 @@ namespace FarmMVP
             sub.rectTransform.offsetMax = new Vector2(0, 0);
             sub.color = canCraft ? OkColor : LackColor;
 
-            var btn = MakeButton(rt, "제작", canCraft, () =>
+            var btn = MakeButton(rt, Localization.Get("ui.craftingui.craft"), canCraft, () =>
             {
                 if (_game.Craft(recipe)) Refresh();
             });
@@ -176,7 +176,7 @@ namespace FarmMVP
             bg.type = Image.Type.Sliced;
             bg.pixelsPerUnitMultiplier = SlicedPpu;
 
-            var title = _ui.Label(panel, "작업대", 22, Vector2.zero, TextAnchor.UpperLeft);
+            var title = _ui.Label(panel, Localization.Get("ui.craftingui.workbench"), 22, Vector2.zero, TextAnchor.UpperLeft);
             title.rectTransform.anchorMin = new Vector2(0, 1);
             title.rectTransform.anchorMax = new Vector2(0.6f, 1);
             title.rectTransform.offsetMin = new Vector2(Pad, -56);
@@ -191,7 +191,7 @@ namespace FarmMVP
             _rowRoot.offsetMin = new Vector2(Pad, -(PanelH - Pad));
             _rowRoot.offsetMax = new Vector2(-Pad, -64);
 
-            var hint = _ui.Label(panel, "만든 울타리·길은 손에 들고 우클릭하면 놓입니다 / ESC 로 닫기",
+            var hint = _ui.Label(panel, Localization.Get("ui.craftingui.hold_a_crafted_fence_or_path_and"),
                                  14, Vector2.zero, TextAnchor.LowerCenter);
             hint.rectTransform.anchorMin = new Vector2(0, 0);
             hint.rectTransform.anchorMax = new Vector2(1, 0);

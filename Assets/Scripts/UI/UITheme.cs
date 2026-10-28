@@ -108,7 +108,7 @@ namespace FarmMVP
                 var rect = StartScreenLayout.Node(button.transform, "Label", 0, 0, 0, 0);
                 StartScreenLayout.Stretch(rect, 2);
                 label = rect.gameObject.AddComponent<Text>();
-                label.font = Resources.Load<Font>("Fonts/PF스타더스트 3.0") ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                label.font = LocalizedFonts.Get();
                 var bounds = ((RectTransform)button.transform).rect;
                 label.fontSize = Mathf.Max(1, Mathf.FloorToInt(Mathf.Min(bounds.height * .5f, (bounds.width - 4) / glyph.Length)));
                 label.alignment = TextAnchor.MiddleCenter;

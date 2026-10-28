@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -69,7 +69,7 @@ namespace FarmMVP
             // 창을 연 그 클릭이 곧바로 첫 줄을 넘겨 버리지 않도록 한 프레임 무시한다.
             _openedFrame = Time.frameCount;
 
-            _nameText.text = displayName;
+            _nameText.text = Localization.Resolve(displayName);
             SetPortrait(portrait);
             ClearChoices();
 
@@ -129,7 +129,7 @@ namespace FarmMVP
 
         private void ShowCurrentLine()
         {
-            _bodyText.text = _lines[_lineIndex];
+            _bodyText.text = Localization.Resolve(_lines[_lineIndex]);
             bool last = _lineIndex >= _lines.Length - 1;
             _nextHint.enabled = !(last && _choices != null);
         }
@@ -163,7 +163,7 @@ namespace FarmMVP
                 var captured = choice;
                 btn.onClick.AddListener(() => OnChoicePicked(captured));
 
-                var label = _ui.Label(rt, choice.text, 16, Vector2.zero, TextAnchor.MiddleCenter);
+                var label = _ui.Label(rt, Localization.Resolve(choice.text), 16, Vector2.zero, TextAnchor.MiddleCenter);
                 _ui.Stretch(label.rectTransform, 0, 0, 10, 10);
 
                 _choiceButtons.Add(go);
@@ -242,7 +242,7 @@ namespace FarmMVP
             _choiceRoot.SetParent(panel, false);
             Anchor(_choiceRoot, textLeft, Pad, 132f, PanelH - 132f - Pad);
 
-            _nextHint = _ui.Label(panel, "▼ 클릭 / Space", 14, Vector2.zero, TextAnchor.LowerRight);
+            _nextHint = _ui.Label(panel, Localization.Get("ui.dialogueui.click_space"), 14, Vector2.zero, TextAnchor.LowerRight);
             Anchor(_nextHint.rectTransform, textLeft, Pad, PanelH - Pad - 22f, 22f);
             _nextHint.color = new Color(0.6f, 0.45f, 0.35f);
         }

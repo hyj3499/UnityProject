@@ -76,7 +76,7 @@ namespace FarmMVP
             _view.nameInput.readOnly = false;
             _view.nameInput.Select(); _view.nameInput.ActivateInputField(); _view.nameInput.MoveTextEnd(false);
         }
-        public void RequestCancel() => _menu.Confirm("캐릭터 생성을 취소하시겠습니까?", () => {
+        public void RequestCancel() => _menu.Confirm(Localization.Get("ui.charactercreatorui.cancel_character_creation"), () => {
             ClosePicker(); ReleasePreview(); _draft = null; _view.ShowMain();
         });
         private void Next()
@@ -91,13 +91,13 @@ namespace FarmMVP
         private void ShowStep(bool custom)
         {
             _view.basicPanel.SetActive(!custom); _view.customPanel.SetActive(custom);
-            _view.creatorTitle.text = custom ? "캐릭터 커스텀 설정" : "캐릭터 기본 설정";
+            _view.creatorTitle.text = custom ? Localization.Get("ui.charactercreatorui.customize_character") : Localization.Get("ui.charactercreatorui.character_setup");
             _view.next.gameObject.SetActive(!custom); _view.back.gameObject.SetActive(custom); _view.finish.gameObject.SetActive(custom);
         }
         private void RefreshBasic()
         {
-            _view.seasonLabel.text = new[] { "봄", "여름", "가을", "겨울" }[_draft.Profile.birthdaySeason];
-            _view.dayLabel.text = _draft.Profile.birthdayDay + "일";
+            _view.seasonLabel.text = new[] { Localization.Get("ui.charactercreatorui.spring"), Localization.Get("ui.charactercreatorui.summer"), Localization.Get("ui.charactercreatorui.fall"), Localization.Get("ui.charactercreatorui.winter") }[_draft.Profile.birthdaySeason];
+            _view.dayLabel.text = Localization.Format("ui.character.day", _draft.Profile.birthdayDay);
         }
         private void Rotate(int delta) { _draft.Rotate(delta); RefreshPreview(); }
         private void RefreshPreview()
@@ -134,7 +134,7 @@ namespace FarmMVP
         public void OpenPicker(int part)
         {
             ClearSlots(); _draft.Open(part); var row = _view.parts[part];
-            _view.pickerTitle.text = row.label; _view.pickerPanel.SetActive(true);
+            _view.pickerTitle.text = Localization.Resolve(row.label); _view.pickerPanel.SetActive(true);
             var options = row.options;
             for (int i = 0; i < options.Length; i++)
             {
@@ -142,7 +142,7 @@ namespace FarmMVP
                 var slot = Instantiate(_view.slotTemplate, _view.pickerContent, false);
                 slot.name = string.IsNullOrEmpty(option) ? "EmptySlot" : "Slot_" + i;
                 slot.gameObject.SetActive(true);
-                slot.GetComponentInChildren<Text>(true).text = string.IsNullOrEmpty(option) ? "없음" : "";
+                slot.GetComponentInChildren<Text>(true).text = string.IsNullOrEmpty(option) ? Localization.Get("ui.charactercreatorui.none") : "";
                 slot.onClick.AddListener(() => { _draft.Select(option); RefreshSlotSelection(); RefreshPreview(); });
                 _slots.Add(slot);
             }

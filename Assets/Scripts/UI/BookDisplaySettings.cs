@@ -12,7 +12,7 @@ namespace FarmMVP
         {
             FullScreenMode.Windowed, FullScreenMode.FullScreenWindow, FullScreenMode.ExclusiveFullScreen
         };
-        public static readonly string[] ModeNames = { "창 모드", "테두리 없는 전체 화면", "전체 화면" };
+        public static string[] ModeNames => new[] { Localization.Get("ui.bookdisplaysettings.windowed"), Localization.Get("ui.bookdisplaysettings.borderless_fullscreen"), Localization.Get("ui.bookdisplaysettings.fullscreen") };
 
         public static List<Vector2Int> Resolutions()
         {

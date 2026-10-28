@@ -12,9 +12,9 @@ namespace FarmMVP
         public const float ScaleIncrease = 1.5f;
         public const float BookScale = 1.25f * ScaleIncrease;
         public static readonly string[] PageNames = { "Inventory", "Skills", "Residents", "Livestock", "Quests", "MapEncyclopedia", "Tutorial", "Settings" };
-        private static readonly string[] PageLabels = { "인벤토리", "스킬", "주민", "가축", "퀘스트", "지도도감", "튜토리얼", "설정" };
+        private static string[] PageLabels => new[] { Localization.Get("ui.bookmenulayout.inventory"), Localization.Get("ui.bookmenulayout.skills"), Localization.Get("ui.bookmenulayout.residents"), Localization.Get("ui.bookmenulayout.livestock"), Localization.Get("ui.bookmenulayout.quests"), Localization.Get("ui.bookmenulayout.map_journal"), Localization.Get("ui.bookmenulayout.tutorial"), Localization.Get("ui.bookmenulayout.settings_281") };
         private static readonly Color Ink = new Color(0.27f, 0.17f, 0.12f);
-        private static Font Font => Resources.Load<Font>("Fonts/PF스타더스트 3.0") ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        private static Font Font => LocalizedFonts.Get();
 
         public static BookMenuView Build(RectTransform root)
         {
@@ -60,7 +60,7 @@ namespace FarmMVP
             view.tabs = new Button[8];
             for (int i = 0; i < 8; i++)
                 view.tabs[i] = Button(tabs, "Tab_" + PageNames[i], PageLabels[i], 0, 1-(i+1)/8f, 1, 1-i/8f-.008f, Sprite("Content/8 Side tabs/2"), 11);
-            view.close = Button(view.book, "Close", "닫기", .84f, .015f, .94f, .085f, Sprite("Content/4 Buttons/0"), 11);
+            view.close = Button(view.book, "Close", Localization.Get("ui.bookmenulayout.close"), .84f, .015f, .94f, .085f, Sprite("Content/4 Buttons/0"), 11);
             BuildConfirmation(view, root);
             view.configured = true;
             UpgradeInventory(view);
@@ -83,20 +83,20 @@ namespace FarmMVP
 
         private static void Inventory(BookMenuView v, RectTransform left, RectTransform right)
         {
-            v.profileHeader = Header(left, "프로필", .89f);
+            v.profileHeader = Header(left, Localization.Get("ui.bookmenulayout.profile_277"), .89f);
             var status = Node(left, "PlayerStatus", 0, .44f, 1, .87f);
             var portraitFrame = Picture(status, "PortraitFrame", 0, .02f, .34f, .98f, Sprite("Content/5 Holders/5"));
             portraitFrame.color = new Color(.92f, .87f, .74f);
             v.portrait = Node(status, "Portrait", .025f, .04f, .315f, .96f);
             Component<RectMask2D>(v.portrait);
-            Label(v.portrait, "Placeholder", "플레이어\n모습", 0, 0, 1, 1, 12, TextAnchor.MiddleCenter);
-            v.playerName = Label(status, "PlayerName", "이름  농부", .38f, .8f, 1, 1, 13);
-            v.birthday = Label(status, "Birthday", "생일  미등록", .38f, .6f, 1, .8f, 12);
-            v.money = Label(status, "Money", "소지금  0 G", .38f, .4f, 1, .6f, 12);
-            v.hp = Label(status, "HP", "체력  100 / 100", .38f, .2f, 1, .4f, 12);
+            Label(v.portrait, "Placeholder", Localization.Get("ui.bookmenulayout.character_preview"), 0, 0, 1, 1, 12, TextAnchor.MiddleCenter);
+            v.playerName = Label(status, "PlayerName", Localization.Get("ui.bookmenulayout.name_farmer"), .38f, .8f, 1, 1, 13);
+            v.birthday = Label(status, "Birthday", Localization.Get("ui.bookmenulayout.birthday_not_set"), .38f, .6f, 1, .8f, 12);
+            v.money = Label(status, "Money", Localization.Get("ui.bookmenulayout.gold_0_g"), .38f, .4f, 1, .6f, 12);
+            v.hp = Label(status, "HP", Localization.Get("ui.bookmenulayout.hp_100_100"), .38f, .2f, 1, .4f, 12);
             v.mp = Label(status, "MP", "MP  100 / 100", .38f, 0, 1, .2f, 12);
             var inventoryHeader = Picture(left, "InventoryHeader", 0, .35f, 1, .43f, Sprite("Content/14 Banners & Headers/Plain/4"));
-            v.inventoryHeader = Label(inventoryHeader.transform, "Title", "인벤토리", .04f, 0, .96f, 1, 17, TextAnchor.MiddleCenter);
+            v.inventoryHeader = Label(inventoryHeader.transform, "Title", Localization.Get("ui.bookmenulayout.inventory"), .04f, 0, .96f, 1, 17, TextAnchor.MiddleCenter);
             v.capacity = v.inventoryHeader;
             var inventory = Node(left, "InventorySlots", 0, .025f, 1, .34f);
             v.inventorySlotsRoot = inventory;
@@ -125,7 +125,7 @@ namespace FarmMVP
             }
             var detail = Node(right, "ItemDetails", 0, 0, 1, 1);
             v.itemDetails = detail.gameObject;
-            v.itemHeader = Header(detail, "아이템 정보", .89f);
+            v.itemHeader = Header(detail, Localization.Get("ui.bookmenulayout.item_details_280"), .89f);
             v.iconHolder = Picture(detail, "IconHolder", .31f, .57f, .69f, .84f, Sprite("Content/5 Holders/2")).rectTransform;
             var reveal = Node(detail, "DetailReveal", 0, 0, 1, 1);
             v.detailReveal = Component<CanvasGroup>(reveal);
@@ -146,13 +146,13 @@ namespace FarmMVP
             if (left != null)
             {
                 var profileTitle = left.Find("Header/Title")?.GetComponent<Text>();
-                if (profileTitle != null) { profileTitle.text = "프로필"; v.profileHeader = profileTitle; }
+                if (profileTitle != null) { profileTitle.text = Localization.Get("ui.bookmenulayout.profile_277"); v.profileHeader = profileTitle; }
                 if (v.capacity != null && v.capacity.transform.parent.name != "InventoryHeader")
                     v.capacity.gameObject.SetActive(false);
                 var banner = Picture(left, "InventoryHeader", 0, .35f, 1, .43f, Sprite("Content/14 Banners & Headers/Plain/4"));
                 var title = banner.transform.Find("Title")?.GetComponent<Text>()
-                    ?? Label(banner.transform, "Title", "인벤토리", .04f, 0, .96f, 1, 14, TextAnchor.MiddleCenter);
-                title.text = "인벤토리";
+                    ?? Label(banner.transform, "Title", Localization.Get("ui.bookmenulayout.inventory"), .04f, 0, .96f, 1, 14, TextAnchor.MiddleCenter);
+                title.text = Localization.Get("ui.bookmenulayout.inventory");
                 title.fontSize = 17;
                 v.inventoryHeader = title;
                 v.capacity = title;
@@ -164,7 +164,7 @@ namespace FarmMVP
                 {
                     v.itemDetails = detail.gameObject;
                     v.itemHeader = detail.Find("Header/Title")?.GetComponent<Text>();
-                    if (v.itemHeader != null) v.itemHeader.text = "아이템 정보";
+                    if (v.itemHeader != null) v.itemHeader.text = Localization.Get("ui.bookmenulayout.item_details_280");
                     v.iconHolder = detail.Find("IconHolder") as RectTransform;
                     var reveal = detail.Find("DetailReveal") as RectTransform ?? Node(detail, "DetailReveal", 0, 0, 1, 1);
                     v.detailReveal = Component<CanvasGroup>(reveal);
@@ -204,11 +204,11 @@ namespace FarmMVP
 
         private static void Settings(BookMenuView v, RectTransform left, RectTransform right)
         {
-            Header(left, "설정", .89f);
+            Header(left, Localization.Get("ui.bookmenulayout.settings_281"), .89f);
             var categories = Node(left, "Categories", 0, 0, 1, .86f);
             var panels = Node(right, "SettingPanels", 0, 0, 1, 1);
             string[] ids = { "Gameplay", "Display", "Audio", "Controls", "Exit" };
-            string[] titles = { "게임 플레이", "디스플레이", "오디오", "조작", "종료" };
+            string[] titles = { Localization.Get("ui.bookmenulayout.gameplay"), Localization.Get("ui.bookmenulayout.display"), Localization.Get("ui.bookmenulayout.audio"), Localization.Get("ui.bookmenulayout.controls"), Localization.Get("ui.bookmenulayout.exit_297") };
             v.categories = new Button[5];
             v.settingPanels = new GameObject[5];
             for (int i = 0; i < 5; i++)
@@ -218,27 +218,27 @@ namespace FarmMVP
                 v.settingPanels[i] = panel.gameObject;
                 Header(panel, titles[i], .89f);
                 if (i != 1 && i != 4)
-                    Label(panel, "ComingSoon", "준비 중입니다", 0, .4f, 1, .65f, 15, TextAnchor.MiddleCenter);
+                    Label(panel, "ComingSoon", Localization.Get("ui.bookmenulayout.coming_soon"), 0, .4f, 1, .65f, 15, TextAnchor.MiddleCenter);
                 if (i == 1)
                 {
-                    Label(panel, "ModeTitle", "화면 모드", 0, .78f, 1, .86f, 13);
+                    Label(panel, "ModeTitle", Localization.Get("ui.bookmenulayout.screen_mode"), 0, .78f, 1, .86f, 13);
                     v.previousMode = Arrow(panel, "PreviousMode", "<", 0, .66f);
                     v.nextMode = Arrow(panel, "NextMode", ">", .86f, .66f);
-                    v.modeLabel = Label(panel, "Mode", "창 모드", .14f, .66f, .86f, .77f, 12, TextAnchor.MiddleCenter);
-                    Label(panel, "ResolutionTitle", "해상도", 0, .53f, 1, .62f, 13);
+                    v.modeLabel = Label(panel, "Mode", Localization.Get("ui.bookmenulayout.windowed"), .14f, .66f, .86f, .77f, 12, TextAnchor.MiddleCenter);
+                    Label(panel, "ResolutionTitle", Localization.Get("ui.bookmenulayout.resolution"), 0, .53f, 1, .62f, 13);
                     v.previousResolution = Arrow(panel, "PreviousResolution", "<", 0, .41f);
                     v.nextResolution = Arrow(panel, "NextResolution", ">", .86f, .41f);
                     v.resolutionLabel = Label(panel, "Resolution", "1920 × 1080", .14f, .41f, .86f, .52f, 13, TextAnchor.MiddleCenter);
-                    v.scaleLabel = Label(panel, "ScaleLabel", "화면 스케일 (게임 줌)  100%", 0, .29f, 1, .38f, 12);
+                    v.scaleLabel = Label(panel, "ScaleLabel", Localization.Get("ui.bookmenulayout.game_zoom_100"), 0, .29f, 1, .38f, 12);
                     v.scale = MakeSlider(panel);
-                    v.applyDisplay = Button(panel, "Apply", "적용", .45f, .07f, 1, .18f, Sprite("Content/4 Buttons/0"), 13);
+                    v.applyDisplay = Button(panel, "Apply", Localization.Get("ui.bookmenulayout.apply"), .45f, .07f, 1, .18f, Sprite("Content/4 Buttons/0"), 13);
                     v.displayMessage = Label(panel, "Message", "", 0, -.02f, 1, .065f, 10);
                 }
                 if (i == 4)
                 {
-                    Label(panel, "ExitNote", "게임을 종료합니다.\n저장하지 않은 진행 상황은\n바로 종료 시 사라집니다.", .03f, .5f, .97f, .79f, 14, TextAnchor.MiddleCenter);
-                    v.saveAndQuit = Button(panel, "SaveAndQuit", "저장하고 종료", .06f, .3f, .94f, .44f, Sprite("Content/4 Buttons/0"), 14);
-                    v.quit = Button(panel, "Quit", "바로 종료", .06f, .1f, .94f, .24f, Sprite("Content/4 Buttons/0"), 14);
+                    Label(panel, "ExitNote", Localization.Get("ui.bookmenulayout.exit_the_game_unsaved_progress_will_be"), .03f, .5f, .97f, .79f, 14, TextAnchor.MiddleCenter);
+                    v.saveAndQuit = Button(panel, "SaveAndQuit", Localization.Get("ui.bookmenulayout.save_and_exit"), .06f, .3f, .94f, .44f, Sprite("Content/4 Buttons/0"), 14);
+                    v.quit = Button(panel, "Quit", Localization.Get("ui.bookmenulayout.exit_without_saving"), .06f, .1f, .94f, .24f, Sprite("Content/4 Buttons/0"), 14);
                 }
             }
         }
@@ -253,9 +253,9 @@ namespace FarmMVP
             card.rectTransform.sizeDelta = new Vector2(340, 180);
             UITheme.ApplyPanel(card, 2);
             card.rectTransform.localScale = new Vector3(ScaleIncrease, ScaleIncrease, 1);
-            v.confirmationText = Label(card.transform, "Question", "게임을 종료할까요?", .08f, .44f, .92f, .88f, 16, TextAnchor.MiddleCenter);
-            v.confirmYes = Button(card.transform, "Yes", "종료", .1f, .12f, .46f, .36f, Sprite("Content/4 Buttons/0"), 14);
-            v.confirmNo = Button(card.transform, "No", "취소", .54f, .12f, .9f, .36f, Sprite("Content/4 Buttons/0"), 14);
+            v.confirmationText = Label(card.transform, "Question", Localization.Get("ui.bookmenulayout.exit_the_game"), .08f, .44f, .92f, .88f, 16, TextAnchor.MiddleCenter);
+            v.confirmYes = Button(card.transform, "Yes", Localization.Get("ui.bookmenulayout.exit_297"), .1f, .12f, .46f, .36f, Sprite("Content/4 Buttons/0"), 14);
+            v.confirmNo = Button(card.transform, "No", Localization.Get("ui.bookmenulayout.cancel"), .54f, .12f, .9f, .36f, Sprite("Content/4 Buttons/0"), 14);
             v.confirmation.SetActive(false);
         }
 
@@ -333,6 +333,7 @@ namespace FarmMVP
             label.horizontalOverflow = HorizontalWrapMode.Wrap;
             label.verticalOverflow = VerticalWrapMode.Truncate;
             label.raycastTarget = false;
+            LocalizedText.Attach(label, null, name.Contains("Title") || name.Contains("Header") ? FontRole.Bold : FontRole.Default);
             return label;
         }
 

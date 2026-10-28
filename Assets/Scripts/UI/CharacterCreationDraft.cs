@@ -13,8 +13,8 @@ namespace FarmMVP
 
         public string Validate()
         {
-            if (string.IsNullOrWhiteSpace(playerName)) return "이름을 입력해주세요.";
-            if (gender != "male" && gender != "female") return "성별을 선택해주세요.";
+            if (string.IsNullOrWhiteSpace(playerName)) return Localization.Get("ui.charactercreationdraft.please_enter_a_name");
+            if (gender != "male" && gender != "female") return Localization.Get("ui.charactercreationdraft.please_select_a_gender");
             return null;
         }
 

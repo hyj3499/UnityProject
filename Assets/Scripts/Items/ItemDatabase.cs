@@ -20,7 +20,7 @@ namespace FarmMVP
             Register(new ItemDef
             {
                 id = "wood",
-                displayName = "나무",
+                displayName = "@items.itemdatabase.wood",
                 type = ItemType.Resource,
                 maxStack = 99,
                 spriteKey = "Wood",
@@ -30,7 +30,7 @@ namespace FarmMVP
             Register(new ItemDef
             {
                 id = "stone",
-                displayName = "돌",
+                displayName = "@items.itemdatabase.stone",
                 type = ItemType.Resource,
                 maxStack = 99,
                 spriteKey = "Stone",
@@ -40,7 +40,7 @@ namespace FarmMVP
             Register(new ItemDef
             {
                 id = "hay",
-                displayName = "목초",
+                displayName = "@items.itemdatabase.hay",
                 type = ItemType.Resource,
                 maxStack = 99,
                 // 아이콘은 다 자란 잔디 그림을 그대로 쓴다 — 목초가 곧 벤 잔디다.
@@ -51,7 +51,7 @@ namespace FarmMVP
             Register(new ItemDef
             {
                 id = "fiber",
-                displayName = "섬유",
+                displayName = "@items.itemdatabase.fiber",
                 type = ItemType.Resource,
                 maxStack = 99,
                 spriteKey = "Plants/weed_spring_2",
@@ -61,7 +61,7 @@ namespace FarmMVP
             Register(new ItemDef
             {
                 id = "hoe",
-                displayName = "괭이",
+                displayName = "@items.itemdatabase.hoe",
                 type = ItemType.Tool,
                 maxStack = 1,
                 spriteKey = "Hoe",
@@ -71,7 +71,7 @@ namespace FarmMVP
             Register(new ItemDef
             {
                 id = "watering_can",
-                displayName = "물뿌리개",
+                displayName = "@items.itemdatabase.watering_can",
                 type = ItemType.Tool,
                 maxStack = 1,
                 spriteKey = "WateringCan",
@@ -81,7 +81,7 @@ namespace FarmMVP
             Register(new ItemDef
             {
                 id = "axe",
-                displayName = "도끼",
+                displayName = "@items.itemdatabase.axe",
                 type = ItemType.Tool,
                 maxStack = 1,
                 spriteKey = "Axe",
@@ -119,7 +119,7 @@ namespace FarmMVP
         private static ItemDef PlaceableItem(PlaceableDef def) => new ItemDef
         {
             id = def.id,
-            displayName = def.displayName,
+            displayName = def.NameReference,
             type = ItemType.Resource,
             maxStack = def.IsFurniture ? 1 : 99,   // 가구는 부피가 커서 한 칸에 하나만
             spriteKey = "Placeable/" + def.id,
@@ -130,7 +130,7 @@ namespace FarmMVP
         private static ItemDef SeedItem(CropDef crop) => new ItemDef
         {
             id = crop.SeedItemId,
-            displayName = crop.name + " 씨앗",
+            seedNameReference = crop.NameReference,
             type = ItemType.Seed,
             maxStack = 99,
             spriteKey = "Crops/" + crop.SeedSpriteName,
@@ -145,7 +145,7 @@ namespace FarmMVP
         private static ItemDef TreeSeedItem(TreeDef tree) => new ItemDef
         {
             id = tree.SeedItemId,
-            displayName = tree.name + " 씨앗",
+            seedNameReference = tree.NameReference,
             type = ItemType.Seed,
             maxStack = 99,
             spriteKey = "Crops/" + tree.seedSpriteName,
@@ -160,7 +160,7 @@ namespace FarmMVP
         private static ItemDef PlantSeedItem(PlantDef plant) => new ItemDef
         {
             id = plant.plantId + "_seed",
-            displayName = plant.name + " 씨앗",
+            seedNameReference = plant.NameReference,
             type = ItemType.Seed,
             maxStack = 99,
             spriteKey = "Plants/" + plant.sheet + "_spring_0",
@@ -175,7 +175,7 @@ namespace FarmMVP
         private static ItemDef HarvestItem(CropDef crop, CropVariant harvest) => new ItemDef
         {
             id = harvest.id,
-            displayName = harvest.name,
+            displayName = harvest.NameReference,
             type = ItemType.Crop,
             maxStack = 99,
             spriteKey = $"Crops/{crop.sheet}_{harvest.fruitIndex}",

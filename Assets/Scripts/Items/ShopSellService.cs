@@ -38,7 +38,7 @@ namespace FarmMVP
                 {
                     id = "buyback:" + e.id, itemId = e.itemId, price = e.unitPrice,
                     buybackId = e.id, buybackShopId = e.shopId,
-                    category = "판매", note = "판매한 물건입니다. 다음 주 월요일에 목록에서 사라집니다."
+                    category = Localization.Get("items.shopsellservice.sold"), note = Localization.Get("items.shopsellservice.a_sold_item_it_will_disappear_from")
                 }).ToList();
         }
 
@@ -56,13 +56,13 @@ namespace FarmMVP
 
         public static string UnavailableReason(GameManager game, ShopDefinition shop, int slotIndex)
         {
-            if (shop == null || !shop.allowSelling) return "판매할 수 없는 상점입니다";
+            if (shop == null || !shop.allowSelling) return Localization.Get("items.shopsellservice.this_shop_does_not_buy_items");
             if (game?.Data == null || game.Inventory == null || slotIndex < 0
-                || slotIndex >= Math.Min(game.Inventory.unlockedSlots, game.Inventory.slots.Length)) return "아이템을 선택하세요";
+                || slotIndex >= Math.Min(game.Inventory.unlockedSlots, game.Inventory.slots.Length)) return Localization.Get("items.shopsellservice.select_an_item");
             var stack = game.Inventory.slots[slotIndex];
-            if (stack == null || stack.IsEmpty) return "아이템을 선택하세요";
-            if (stack.Def == null || stack.Def.sellPrice <= 0) return "판매할 수 없는 아이템입니다";
-            if ((long)game.Money + stack.Def.sellPrice > int.MaxValue) return "소지금 한도에 도달했습니다";
+            if (stack == null || stack.IsEmpty) return Localization.Get("items.shopsellservice.select_an_item");
+            if (stack.Def == null || stack.Def.sellPrice <= 0) return Localization.Get("items.shopsellservice.this_item_cannot_be_sold");
+            if ((long)game.Money + stack.Def.sellPrice > int.MaxValue) return Localization.Get("items.shopsellservice.you_have_reached_the_gold_limit");
             return null;
         }
 
@@ -70,7 +70,7 @@ namespace FarmMVP
         {
             message = UnavailableReason(game, shop, slotIndex);
             if (message != null) return false;
-            if (!BeginTransaction(game)) { message = "거래 처리 중입니다"; return false; }
+            if (!BeginTransaction(game)) { message = Localization.Get("items.shopsellservice.transaction_in_progress"); return false; }
             try
             {
                 PruneExpired(game.Data);
@@ -90,7 +90,7 @@ namespace FarmMVP
                 if (stack.count == 0) game.Inventory.slots[slotIndex] = null;
                 game.AddMoney(entry.unitPrice);
                 game.Inventory.RaiseChanged();
-                message = $"{def.displayName} 1개 판매! +{entry.unitPrice:N0} G";
+                message = Localization.Format("items.shopsellservice.sold_0_x1_1_n0_g", def.displayName, entry.unitPrice);
                 return true;
             }
             finally { EndTransaction(game); }

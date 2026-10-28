@@ -52,7 +52,7 @@ namespace FarmMVP
             Register(new PlaceableDef
             {
                 id = WhiteFenceId,
-                displayName = "하얀 울타리",
+                displayName = "@items.fencedatabase.white_fence",
                 kind = PlaceableKind.Fence,
                 sheetPath = sheet,
                 blocks = true,
@@ -65,7 +65,7 @@ namespace FarmMVP
             Register(new PlaceableDef
             {
                 id = WhiteGateId,
-                displayName = "하얀 울타리 문",
+                displayName = "@items.fencedatabase.white_fence_gate",
                 kind = PlaceableKind.Fence,
                 sheetPath = sheet,
                 blocks = true,
@@ -79,14 +79,14 @@ namespace FarmMVP
             });
 
             // 아래 셋은 시트만 다르고 나머지는 같다. 새 울타리도 이 다섯 줄이면 끝난다.
-            RegisterSimple(WoodFenceId, "나무 울타리", "Sprites/Fence/WoodFence", 8);
-            RegisterSimple(StoneFenceId, "돌담", "Sprites/Fence/StoneFence", 10);
-            RegisterSimple(IronFenceId, "철제 울타리", "Sprites/Fence/IronFence", 16);
+            RegisterSimple(WoodFenceId, "@items.fencedatabase.wooden_fence", "Sprites/Fence/WoodFence", 8);
+            RegisterSimple(StoneFenceId, "@items.fencedatabase.stone_wall", "Sprites/Fence/StoneFence", 10);
+            RegisterSimple(IronFenceId, "@items.fencedatabase.iron_fence", "Sprites/Fence/IronFence", 16);
 
             // 문. 두 칸짜리인지 한 칸짜리인지는 시트에 GateClosedL 조각이 있는지로 저절로 갈린다.
-            RegisterGate(WoodGateId, "나무 울타리 문", "Sprites/Fence/WoodFence", 20);
-            RegisterGate(StoneGateId, "돌담 문", "Sprites/Fence/StoneFence", 24);
-            RegisterGate(IronGateId, "철제 울타리 문", "Sprites/Fence/IronFence", 32);
+            RegisterGate(WoodGateId, "@items.fencedatabase.wooden_fence_gate", "Sprites/Fence/WoodFence", 20);
+            RegisterGate(StoneGateId, "@items.fencedatabase.stone_wall_gate", "Sprites/Fence/StoneFence", 24);
+            RegisterGate(IronGateId, "@items.fencedatabase.iron_fence_gate", "Sprites/Fence/IronFence", 32);
         }
 
         /// <summary>울타리 문 하나. 시트의 문 조각 이름만 있으면 나머지는 다 따라온다.</summary>

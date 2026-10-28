@@ -55,17 +55,17 @@ namespace FarmMVP
         {
             switch (id)
             {
-                case LocationId.Farm:         return "목장";
-                case LocationId.FarmHouse:     return "농가";
-                case LocationId.Valley:        return "계곡";
-                case LocationId.Campsite1: return "야영지 1";
-                case LocationId.Campsite2:   return "야영지 2";
-                case LocationId.Meadow:        return "초원";
-                case LocationId.DeepForest:    return "깊은 숲";
-                case LocationId.Sea:           return "바다";
-                case LocationId.Mountain1:     return "산 1";
-                case LocationId.Mountain2:     return "산 2";
-                case LocationId.MountainPeak:  return "산 정상";
+                case LocationId.Farm:         return Localization.Get("world.mapgraph.farm");
+                case LocationId.FarmHouse:     return Localization.Get("world.mapgraph.farmhouse");
+                case LocationId.Valley:        return Localization.Get("world.mapgraph.valley");
+                case LocationId.Campsite1: return Localization.Get("world.mapgraph.campsite_1");
+                case LocationId.Campsite2:   return Localization.Get("world.mapgraph.campsite_2");
+                case LocationId.Meadow:        return Localization.Get("world.mapgraph.meadow");
+                case LocationId.DeepForest:    return Localization.Get("world.mapgraph.deep_forest");
+                case LocationId.Sea:           return Localization.Get("world.mapgraph.sea");
+                case LocationId.Mountain1:     return Localization.Get("world.mapgraph.mountain_1");
+                case LocationId.Mountain2:     return Localization.Get("world.mapgraph.mountain_2");
+                case LocationId.MountainPeak:  return Localization.Get("world.mapgraph.mountain_summit");
                 default:                       return id.ToString();
             }
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -77,14 +77,12 @@ namespace FarmMVP
             RefreshTime();
             RefreshMoney();
             RefreshSlots();
+            LocalizationBindings.Apply(_canvas.gameObject);
         }
 
         private Font BuildFont()
         {
-            var f = Resources.Load<Font>("Fonts/PF스타더스트 3.0");
-            if (f == null) f = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            if (f == null) f = Resources.GetBuiltinResource<Font>("Arial.ttf");
-            return f;
+            return LocalizedFonts.Get();
         }
 
         private void OnDestroy()
@@ -210,7 +208,7 @@ namespace FarmMVP
             if (_dialogue == null) throw new InvalidOperationException("대화 UI가 준비되지 않았습니다.");
             var def = NpcDatabase.Get(command.actor);
             string name = !string.IsNullOrEmpty(command.speaker) ? command.speaker
-                : def != null ? def.displayName : command.actor == "player" ? "나" : "";
+                : def != null ? Localization.Resolve(def.displayName) : command.actor == "player" ? Localization.Get("ui.uimanager.me") : "";
             DialogueChoice[] choices = null;
             if (command.op == "Choice")
             {
@@ -239,7 +237,7 @@ namespace FarmMVP
             DialogueChoice[] choices, Action<DialogueChoice> onChoice)
         {
             if (_dialogue == null) return;
-            _dialogue.Show(def.id, def.displayName, portrait, lines, choices, onChoice, SyncPaused);
+            _dialogue.Show(def.id, Localization.Resolve(def.displayName), portrait, lines, choices, onChoice, SyncPaused);
             SyncPaused();
         }
 
@@ -247,7 +245,7 @@ namespace FarmMVP
         public void ContinueDialogue(NpcDefinition def, string portrait, string[] lines)
         {
             if (_dialogue == null) return;
-            _dialogue.Show(def.id, def.displayName, portrait, lines, null, null, SyncPaused);
+            _dialogue.Show(def.id, Localization.Resolve(def.displayName), portrait, lines, null, null, SyncPaused);
             SyncPaused();
         }
 
@@ -425,7 +423,8 @@ namespace FarmMVP
             countRt.anchoredPosition = new Vector2(-3, 2);
             countRt.sizeDelta = new Vector2(30, 18);
             var count = countGo.AddComponent<Text>();
-            count.font = _font;
+            count.font = LocalizedFonts.Get();
+            LocalizedText.Attach(count);
             count.fontSize = 14;
             count.alignment = TextAnchor.LowerRight;
             count.color = Color.white;
@@ -550,7 +549,7 @@ namespace FarmMVP
         public void ShowDayBanner(int day)
         {
             StopAllCoroutines();
-            StartCoroutine(BannerRoutine($"{day}일차\n06:00"));
+            StartCoroutine(BannerRoutine(Localization.Format("ui.uimanager.day_0_06_00", day)));
         }
 
         private IEnumerator BannerRoutine(string msg)
@@ -615,6 +614,7 @@ namespace FarmMVP
             t.alignment = anchor;
             t.color = Color.white;
             t.text = text;
+            LocalizedText.Attach(t);
             t.horizontalOverflow = HorizontalWrapMode.Overflow;
             t.verticalOverflow = VerticalWrapMode.Overflow;
             t.raycastTarget = false; // 텍스트는 클릭을 가로채지 않음 (버튼은 배경 Image가 받는다)

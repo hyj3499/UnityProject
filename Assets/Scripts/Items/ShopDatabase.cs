@@ -32,21 +32,21 @@ namespace FarmMVP
 
         private static ShopDefinition CreateGeneralShop()
         {
-            var shop = new ShopDefinition(DefaultShopId, "Farmer's shop") { allowSelling = true, useCategories = true };
+            var shop = new ShopDefinition(DefaultShopId, Localization.Get("ui.shop.general")) { allowSelling = true, useCategories = true };
             for (int level = 1; level <= GameManager.BackpackPrices.Length; level++)
                 shop.products.Add(new ShopProduct
                 {
                     id = "backpack_" + level, backpackLevel = level,
-                    displayName = $"배낭 {level}단계", price = GameManager.BackpackPrices[level - 1], category = "가방",
-                    description = "소지품을 담을 공간이 10칸 늘어납니다.\n\n배낭은 순서대로 확장할 수 있으며, 구매한 공간은 계속 유지됩니다."
+                    displayName = Localization.Format("items.shopdatabase.backpack_level_0", level), price = GameManager.BackpackPrices[level - 1], category = Localization.Get("items.shopdatabase.bags"),
+                    description = Localization.Get("items.shopdatabase.adds_10_inventory_slots_backpacks_must_be")
                 });
             foreach (var crop in CropDatabase.All.OrderBy(c => Seasons.AllowsNow(c.seasons) ? 0 : 1))
                 shop.products.Add(new ShopProduct
                 {
                     id = crop.SeedItemId, itemId = crop.SeedItemId, price = crop.seedPrice,
                     category = Seasons.Label(crop.seasons),
-                    note = $"다 자라기까지 {crop.MaxGrowthStage * crop.daysPerStage}일" + (crop.regrow ? " · 다작" : "")
-                        + (Seasons.AllowsNow(crop.seasons) ? "" : "\n현재 계절에는 자라지 않습니다.")
+                    note = Localization.Format("items.shopdatabase.matures_in_0_days", crop.MaxGrowthStage * crop.daysPerStage) + (crop.regrow ? Localization.Get("items.shopdatabase.regrows") : "")
+                        + (Seasons.AllowsNow(crop.seasons) ? "" : Localization.Get("items.shopdatabase.matures_in_0_days"))
                 });
             foreach (var plant in PlantDatabase.All)
             {
@@ -54,14 +54,14 @@ namespace FarmMVP
                 shop.products.Add(new ShopProduct
                 {
                     id = plant.plantId + "_seed", itemId = plant.plantId + "_seed", price = 60,
-                    category = "풀", note = "빈 땅에 심으면 옆으로 번집니다."
+                    category = Localization.Get("items.shopdatabase.grass"), note = Localization.Get("items.shopdatabase.plant_on_empty_ground_to_let_it")
                 });
             }
             foreach (var tree in TreeDatabase.All)
                 shop.products.Add(new ShopProduct
                 {
                     id = tree.SeedItemId, itemId = tree.SeedItemId, price = tree.seedPrice,
-                    category = "나무", note = $"밭이 아닌 빈 땅에 심습니다.\n다 자라기까지 {tree.maxGrowthStage * tree.daysPerStage}일"
+                    category = Localization.Get("items.shopdatabase.trees"), note = Localization.Format("items.shopdatabase.plant_on_empty_untilled_ground_matures_in", tree.maxGrowthStage * tree.daysPerStage)
                 });
             return shop;
         }
@@ -69,8 +69,8 @@ namespace FarmMVP
         // 다른 상점 예시. 이 메서드를 별도 C# 파일로 옮겨 등록해도 된다.
         private static ShopDefinition CreateMaterialsShop()
         {
-            var shop = new ShopDefinition("materials", "Robin's shop") { allowSelling = false, useCategories = false };
-            shop.products.Add(new ShopProduct { id = "wood", itemId = "wood", price = 20, description = "가구를 만들기 좋은 목재입니다.\n필요한 만큼 골라 보세요." });
+            var shop = new ShopDefinition("materials", Localization.Get("ui.shop.materials")) { allowSelling = false, useCategories = false };
+            shop.products.Add(new ShopProduct { id = "wood", itemId = "wood", price = 20, description = Localization.Get("items.shopdatabase.wood_for_making_furniture_choose_as_much") });
             shop.products.Add(new ShopProduct { id = "stone", itemId = "stone", price = 15 });
             return shop;
         }

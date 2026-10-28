@@ -11,32 +11,34 @@ namespace FarmMVP
     public class ItemDef
     {
         public string id;
-        public string displayName;
+        [UnityEngine.SerializeField, UnityEngine.Serialization.FormerlySerializedAs("displayName")] private string _displayName;
+        public string seedNameReference;
+        public string displayName
+        {
+            get => string.IsNullOrEmpty(seedNameReference) ? Localization.Resolve(_displayName)
+                : Localization.Format("items.seed_name", Localization.Resolve(seedNameReference));
+            set => _displayName = value;
+        }
         [TextArea] public string description;
 
         public string Description
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(description)) return description;
+                if (!string.IsNullOrWhiteSpace(description)) return Localization.Resolve(description);
                 switch (id)
                 {
-                    case "wood": return "나무에서 얻은 단단한 목재. 가구와 여러 시설을 만드는 재료로 사용합니다.";
-                    case "stone": return "땅에서 얻은 돌. 건축과 제작에 두루 사용하는 기본 재료입니다.";
-                    case "hay": return "잘 말린 목초. 농장에서 모아 두는 풀 재료입니다.";
-                    case "fiber": return "식물에서 얻은 질긴 섬유. 여러 물건을 만드는 데 사용합니다.";
-                    case "hoe": return "땅을 일구어 작물을 심을 밭을 만드는 농기구입니다.";
-                    case "watering_can": return "작물이 자랄 수 있도록 밭에 물을 주는 도구입니다.";
-                    case "axe": return "나무를 베어 목재를 얻는 데 사용하는 도구입니다.";
+                    case "wood": return Localization.Get("items.item.sturdy_wood_gathered_from_trees_used_to");
+                    case "stone": return Localization.Get("items.item.stone_gathered_from_the_ground_a_basic");
+                    case "hay": return Localization.Get("items.item.dried_grass_gathered_on_the_farm");
+                    case "fiber": return Localization.Get("items.item.tough_plant_fibers_used_to_craft_various");
+                    case "hoe": return Localization.Get("items.item.a_farming_tool_for_tilling_soil_before");
+                    case "watering_can": return Localization.Get("items.item.a_tool_for_watering_crops_to_help");
+                    case "axe": return Localization.Get("items.item.a_tool_for_chopping_trees_and_gathering");
                 }
-                switch (type)
-                {
-                    case ItemType.Seed: return displayName + ". 알맞은 땅에 심어 키울 수 있습니다.";
-                    case ItemType.Crop: return "정성껏 길러 수확한 " + displayName + ". 배송함에 넣어 판매할 수 있습니다.";
-                    case ItemType.Fish: return "낚시로 잡은 " + displayName + ". 배송함에 넣어 판매할 수 있습니다.";
-                    case ItemType.Tool: return "농장 일을 도와주는 " + displayName + ".";
-                    default: return "농장에서 사용하는 " + displayName + ".";
-                }
+                string category = type == ItemType.Seed ? "seed" : type == ItemType.Crop ? "crop"
+                    : type == ItemType.Fish ? "fish" : type == ItemType.Tool ? "tool" : "other";
+                return Localization.Format("items.description." + category, displayName);
             }
         }
         public ItemType type;

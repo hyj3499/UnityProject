@@ -9,7 +9,9 @@ namespace FarmMVP
     public class TreeDef
     {
         public string treeId;
-        public string name;
+        [UnityEngine.SerializeField, UnityEngine.Serialization.FormerlySerializedAs("name")] private string _name;
+        public string name { get => Localization.Resolve(_name); set => _name = value; }
+        public string NameReference => _name;
 
         /// <summary>Resources/Sprites/Trees/{sheet}_{계절}.png 의 앞부분 (TreeArt 참고).</summary>
         public string sheet;
@@ -60,7 +62,7 @@ namespace FarmMVP
             Register(new TreeDef
             {
                 treeId = "tree1",
-                name = "벚나무",
+                name = "@items.treedatabase.cherry_tree",
                 sheet = "tree1",
                 daysPerStage = 2,
                 maxHp = 3,
@@ -76,7 +78,7 @@ namespace FarmMVP
             Register(new TreeDef
             {
                 treeId = "tree2",
-                name = "자작나무",
+                name = "@items.treedatabase.birch_tree",
                 sheet = "tree2",
                 daysPerStage = 3,
                 maxHp = 4,
@@ -92,7 +94,7 @@ namespace FarmMVP
             Register(new TreeDef
             {
                 treeId = "tree3",
-                name = "보라꽃나무",
+                name = "@items.treedatabase.purple_blossom_tree",
                 sheet = "tree3",
                 daysPerStage = 4,
                 maxHp = 5,

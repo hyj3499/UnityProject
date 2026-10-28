@@ -97,16 +97,16 @@ namespace FarmMVP
         {
             switch (w)
             {
-                case Weather.VerySunny: return "매우 맑음";
-                case Weather.Cloudy: return "흐림";
-                case Weather.Windy: return "바람";
-                case Weather.Thunder: return "번개";
-                case Weather.ThunderRain: return "번개와 비";
-                case Weather.Rain: return "비";
-                case Weather.Blizzard: return "폭설";
-                case Weather.Storm: return "폭풍";
-                case Weather.Snow: return "눈";
-                default: return "맑음";
+                case Weather.VerySunny: return Localization.Get("world.weather.very_sunny");
+                case Weather.Cloudy: return Localization.Get("world.weather.cloudy");
+                case Weather.Windy: return Localization.Get("world.weather.windy");
+                case Weather.Thunder: return Localization.Get("world.weather.lightning");
+                case Weather.ThunderRain: return Localization.Get("world.weather.thunderstorm");
+                case Weather.Rain: return Localization.Get("world.weather.rain");
+                case Weather.Blizzard: return Localization.Get("world.weather.heavy_snow");
+                case Weather.Storm: return Localization.Get("world.weather.storm");
+                case Weather.Snow: return Localization.Get("world.weather.snow");
+                default: return Localization.Get("world.weather.sunny");
             }
         }
 

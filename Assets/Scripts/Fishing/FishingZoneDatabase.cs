@@ -38,7 +38,7 @@ namespace FarmMVP
 
             // 농장 앞 얕은 개울 — 흔한 물고기 위주, 아주 낮은 확률로 황금물고기.
             // 계절을 항목마다 붙이므로 낚시터를 계절 수만큼 복사하지 않아도 된다.
-            Register(new FishingZone("river_shallow", "얕은 개울")
+            Register(new FishingZone("river_shallow", "@items.fishingzonedatabase.shallow_creek")
                 .Add("carp", 30, All)
                 .Add("sunfish", 25, Spring | Summer)
                 .Add("chub", 20, Spring | Fall)
@@ -48,7 +48,7 @@ namespace FarmMVP
                 .Add("golden_fish", 1, All));
 
             // 두 번째 농장의 깊은 강 — 크고 어려운 물고기
-            Register(new FishingZone("river_deep", "깊은 강")
+            Register(new FishingZone("river_deep", "@items.fishingzonedatabase.deep_river")
                 .Add("chub", 15, Spring | Fall)
                 .Add("perch", 15, Fall | Winter)
                 .Add("pike", 14, Summer | Fall)

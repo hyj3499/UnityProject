@@ -27,20 +27,20 @@ namespace FarmMVP
             _init = true;
 
             //       id                 이름            등급                   난이도  스프라이트           가격
-            Register("carp", "잉어", FishRarity.Common, 1, "Carp", 30);
-            Register("sunfish", "블루길", FishRarity.Common, 1, "Sunfish", 35);
-            Register("chub", "황어", FishRarity.Common, 2, "Chub", 45);
-            Register("perch", "농어", FishRarity.Uncommon, 2, "Perch", 60);
-            Register("bullhead_catfish", "동자개", FishRarity.Uncommon, 3, "BullheadCatfish", 90);
-            Register("largemouth_bass", "배스", FishRarity.Rare, 3, "LargeMouthBass", 140);
-            Register("pike", "강꼬치고기", FishRarity.Uncommon, 3, "PikeFish", 110);
-            Register("walleye", "월아이", FishRarity.Uncommon, 3, "Walleye", 120);
-            Register("tiger_trout", "호랑이송어", FishRarity.Rare, 3, "TigerTrout", 160);
-            Register("sturgeon", "철갑상어", FishRarity.Rare, 4, "Sturgeon", 220);
-            Register("dorado", "도라도", FishRarity.Epic, 4, "Dorado", 320);
-            Register("ghost_catfish", "유령메기", FishRarity.Epic, 5, "GhostCatfish", 400);
-            Register("golden_fish", "황금물고기", FishRarity.Legendary, 5, "GoldenFish", 500);
-            Register("faeries_fish", "요정물고기", FishRarity.Legendary, 5, "FaeriesFish", 650);
+            Register("carp", "@items.fishdatabase.carp", FishRarity.Common, 1, "Carp", 30);
+            Register("sunfish", "@items.fishdatabase.bluegill", FishRarity.Common, 1, "Sunfish", 35);
+            Register("chub", "@items.fishdatabase.dace", FishRarity.Common, 2, "Chub", 45);
+            Register("perch", "@items.fishdatabase.perch", FishRarity.Uncommon, 2, "Perch", 60);
+            Register("bullhead_catfish", "@items.fishdatabase.bullhead", FishRarity.Uncommon, 3, "BullheadCatfish", 90);
+            Register("largemouth_bass", "@items.fishdatabase.bass", FishRarity.Rare, 3, "LargeMouthBass", 140);
+            Register("pike", "@items.fishdatabase.pike", FishRarity.Uncommon, 3, "PikeFish", 110);
+            Register("walleye", "@items.fishdatabase.walleye", FishRarity.Uncommon, 3, "Walleye", 120);
+            Register("tiger_trout", "@items.fishdatabase.tiger_trout", FishRarity.Rare, 3, "TigerTrout", 160);
+            Register("sturgeon", "@items.fishdatabase.sturgeon", FishRarity.Rare, 4, "Sturgeon", 220);
+            Register("dorado", "@items.fishdatabase.dorado", FishRarity.Epic, 4, "Dorado", 320);
+            Register("ghost_catfish", "@items.fishdatabase.ghost_catfish", FishRarity.Epic, 5, "GhostCatfish", 400);
+            Register("golden_fish", "@items.fishdatabase.golden_fish", FishRarity.Legendary, 5, "GoldenFish", 500);
+            Register("faeries_fish", "@items.fishdatabase.fairy_fish", FishRarity.Legendary, 5, "FaeriesFish", 650);
         }
 
         private static void Register(string id, string name, FishRarity rarity, int difficulty,

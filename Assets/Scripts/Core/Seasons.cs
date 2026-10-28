@@ -32,7 +32,7 @@ namespace FarmMVP
 
         /// <summary>요일 이름. 스케줄 JSON의 when 태그로 그대로 쓴다.</summary>
         private static readonly string[] WeekdayKeys = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-        private static readonly string[] WeekdayNames = { "월", "화", "수", "목", "금", "토", "일" };
+        private static string[] WeekdayNames => new[] { Localization.Get("world.seasons.mon"), Localization.Get("world.seasons.tue"), Localization.Get("world.seasons.wed"), Localization.Get("world.seasons.thu"), Localization.Get("world.seasons.fri"), Localization.Get("world.seasons.sat"), Localization.Get("world.seasons.sun") };
 
         /// <summary>
         /// 지금 계절. GameManager가 날짜를 바꿀 때마다 갱신한다.
@@ -87,10 +87,10 @@ namespace FarmMVP
         {
             switch (s)
             {
-                case Season.Spring: return "봄";
-                case Season.Summer: return "여름";
-                case Season.Fall: return "가을";
-                case Season.Winter: return "겨울";
+                case Season.Spring: return Localization.Get("world.seasons.spring");
+                case Season.Summer: return Localization.Get("world.seasons.summer");
+                case Season.Fall: return Localization.Get("world.seasons.fall");
+                case Season.Winter: return Localization.Get("world.seasons.winter");
                 default: return "";
             }
         }
@@ -98,7 +98,7 @@ namespace FarmMVP
         /// <summary>"봄", "봄·여름", "사계절" 처럼 여러 계절을 한 줄로 (작물이 자라는 계절 표시).</summary>
         public static string Label(SeasonFlags mask)
         {
-            if (mask == SeasonFlags.None || mask == SeasonFlags.All) return "사계절";
+            if (mask == SeasonFlags.None || mask == SeasonFlags.All) return Localization.Get("world.seasons.all_seasons");
 
             var parts = new System.Collections.Generic.List<string>(SeasonCount);
             for (int i = 0; i < SeasonCount; i++)

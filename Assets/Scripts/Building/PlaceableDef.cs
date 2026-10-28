@@ -91,7 +91,9 @@ namespace FarmMVP
     {
         /// <summary>저장과 아이템에 함께 쓰는 id. 아이템 id도 같은 값을 쓴다.</summary>
         public string id;
-        public string displayName;
+        [UnityEngine.SerializeField, UnityEngine.Serialization.FormerlySerializedAs("displayName")] private string _displayName;
+        public string displayName { get => Localization.Resolve(_displayName); set => _displayName = value; }
+        public string NameReference => _displayName;
         public PlaceableKind kind;
 
         /// <summary>잘라 쓸 시트의 Resources 경로 (예: "Sprites/Fence/WhiteFence").</summary>

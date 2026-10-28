@@ -15,6 +15,7 @@ namespace FarmMVP
         public InputField nameInput;
         public Toggle male, female;
         public Slider volume;
+        public TMPro.TMP_Dropdown resolution, language;
         public RawImage characterPreview;
         public ScrollRect customScroll, pickerScroll;
         public RectTransform pickerContent;

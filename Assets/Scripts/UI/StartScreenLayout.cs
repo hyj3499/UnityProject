@@ -9,7 +9,7 @@ namespace FarmMVP
     public static class StartScreenLayout
     {
         public const string ArtRoot = "Sprites/StartScreen/";
-        private static Font Font => Resources.Load<Font>(ArtRoot + "Fonts/PF스타더스트 3.0") ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        private static Font Font => LocalizedFonts.Get();
         private static readonly Color Ink = new Color32(66, 39, 37, 255);
         private static readonly Color Cream = new Color32(249, 233, 196, 255);
         public static Sprite Art(string path, int index = 0)
@@ -41,6 +41,7 @@ namespace FarmMVP
             label.font = Font; label.fontSize = size; label.text = text; label.color = light ? Cream : Ink;
             label.alignment = TextAnchor.MiddleCenter; label.raycastTarget = false;
             label.horizontalOverflow = HorizontalWrapMode.Wrap; label.verticalOverflow = VerticalWrapMode.Truncate;
+            LocalizedText.Attach(label, null, name.Contains("Title") || name.Contains("Header") ? FontRole.Bold : FontRole.Default);
             return label;
         }
         private static Button Button(Transform parent, string name, string label, float x, float y, float w = 220, float h = 64, bool dark = false)
@@ -56,7 +57,7 @@ namespace FarmMVP
         {
             var image = Image(parent, name, path, x, y, size, size); image.sprite = Art(path, index); image.raycastTarget = true; image.preserveAspect = true;
             var button = image.gameObject.AddComponent<Button>(); button.targetGraphic = image;
-            UITheme.ApplyGlyphButton(button, name == "EditName" ? "수정" : index == 1 ? "<" : ">", false, 2);
+            UITheme.ApplyGlyphButton(button, name == "EditName" ? Localization.Get("ui.startscreenlayout.edit") : index == 1 ? "<" : ">", false, 2);
             if (name != "EditName") UITheme.ApplyArrow(button, index != 1);
             return button;
         }
@@ -127,15 +128,15 @@ namespace FarmMVP
             var menu = Node(design, "MainMenu", 0, 0, 1920, 1080); view.mainMenu = menu.gameObject;
             var illustration = Image(menu, "StartScreen", "StartScreen", -240, 20, 1250, 860); illustration.preserveAspect = true;
             var buttons = Node(menu, "MenuButtons", 610, -35, 370, 460);
-            view.newGame = Button(buttons, "NewGame", "NEW GAME", 0, 150, 350, 80);
-            view.continueGame = Button(buttons, "Continue", "CONTINUE", 0, 50, 350, 80);
-            view.settings = Button(buttons, "Settings", "SETTING", 0, -50, 350, 80);
-            view.exit = Button(buttons, "Exit", "EXIT", 0, -150, 350, 80);
+            view.newGame = Button(buttons, "NewGame", Localization.Get("ui.menu.new_game"), 0, 150, 350, 80);
+            view.continueGame = Button(buttons, "Continue", Localization.Get("ui.menu.continue"), 0, 50, 350, 80);
+            view.settings = Button(buttons, "Settings", Localization.Get("ui.menu.settings"), 0, -50, 350, 80);
+            view.exit = Button(buttons, "Exit", Localization.Get("ui.menu.exit"), 0, -150, 350, 80);
             UITheme.ApplyClose(view.exit);
 
             var creator = Image(design, "CharacterCreator", "new game pannel_white", -180, 0, 1280, 768).rectTransform;
             creator.GetComponent<Image>().raycastTarget = true; view.creatorPanel = creator.gameObject;
-            view.creatorTitle = Label(creator, "Title", "캐릭터 기본 설정", 0, 308, 1000, 60, 36, true);
+            view.creatorTitle = Label(creator, "Title", Localization.Get("ui.startscreenlayout.character_setup"), 0, 308, 1000, 60, 36, true);
             view.closeCreator = Close(creator, 578, 321);
             var standing = Image(creator, "StandingPanel", "new game payer standing pannel_white", -426, 0, 256, 384);
             view.characterPreview = Node(standing.transform, "Character", 0, 0, 256, 256).gameObject.AddComponent<RawImage>();
@@ -143,10 +144,10 @@ namespace FarmMVP
             // The sprite sheet order is up, left, right, down.
             view.rotateLeft = Icon(creator, "RotateLeft", "arrow icon_white", -510, -245, 48, 1);
             view.rotateRight = Icon(creator, "RotateRight", "arrow icon_white", -342, -245, 48, 2);
-            Label(creator, "RotateHint", "회전", -426, -245, 100, 44, 24, true);
+            Label(creator, "RotateHint", Localization.Get("ui.startscreenlayout.rotate"), -426, -245, 100, 44, 24, true);
 
             var basic = Node(creator, "BasicSettings", 170, 0, 680, 520); view.basicPanel = basic.gameObject;
-            Label(basic, "NameLabel", "name", -245, 155, 130, 50, 30, true);
+            Label(basic, "NameLabel", Localization.Get("ui.character.name"), -245, 155, 130, 50, 30, true);
             var nameBox = Image(basic, "NameInput", "new game name pannel_white", 15, 155, 330, 70);
             nameBox.raycastTarget = true;
             var nameText = Label(nameBox.transform, "Text", "Ros", 0, 0, 292, 52, 30, true); nameText.alignment = TextAnchor.MiddleLeft;
@@ -156,26 +157,26 @@ namespace FarmMVP
             input.caretBlinkRate = .85f; input.caretWidth = 2; input.customCaretColor = true; input.caretColor = Cream;
             view.nameInput = input;
             view.editName = Icon(basic, "EditName", "Edit_btn_normal", 235, 155, 56);
-            Label(basic, "GenderLabel", "성별", -245, 25, 130, 50, 30, true);
+            Label(basic, "GenderLabel", Localization.Get("ui.startscreenlayout.gender"), -245, 25, 130, 50, 30, true);
             var group = basic.gameObject.AddComponent<ToggleGroup>(); group.allowSwitchOff = true;
-            view.male = Radio(basic, "Male", "남", -30, 25, group); view.female = Radio(basic, "Female", "여", 180, 25, group);
-            Label(basic, "BirthdayLabel", "생년월일", -245, -110, 150, 50, 28, true);
+            view.male = Radio(basic, "Male", Localization.Get("ui.startscreenlayout.male"), -30, 25, group); view.female = Radio(basic, "Female", Localization.Get("ui.startscreenlayout.female"), 180, 25, group);
+            Label(basic, "BirthdayLabel", Localization.Get("ui.startscreenlayout.birthday"), -245, -110, 150, 50, 28, true);
             view.seasonPrevious = Icon(basic, "PreviousSeason", "arrow icon_white", -118, -110, 40, 1);
-            view.seasonLabel = Label(basic, "Season", "봄", -25, -110, 120, 50, 30, true);
+            view.seasonLabel = Label(basic, "Season", Localization.Get("ui.startscreenlayout.spring"), -25, -110, 120, 50, 30, true);
             view.seasonNext = Icon(basic, "NextSeason", "arrow icon_white", 66, -110, 40, 2);
             view.dayPrevious = Icon(basic, "PreviousDay", "arrow icon_white", 130, -110, 40, 1);
-            view.dayLabel = Label(basic, "Day", "1일", 215, -110, 100, 50, 30, true);
+            view.dayLabel = Label(basic, "Day", Localization.Get("ui.startscreenlayout.day_1"), 215, -110, 100, 50, 30, true);
             view.dayNext = Icon(basic, "NextDay", "arrow icon_white", 300, -110, 40, 2);
             view.validation = Label(basic, "Validation", "", 20, -205, 590, 50, 25, true);
-            view.next = Button(creator, "NextStep", "다음 단계", 320, -302, 260, 68);
-            view.back = Button(creator, "PreviousStep", "이전 단계", 20, -302, 240, 68);
-            view.finish = Button(creator, "StartGame", "게임 시작", 320, -302, 260, 68);
+            view.next = Button(creator, "NextStep", Localization.Get("ui.startscreenlayout.next"), 320, -302, 260, 68);
+            view.back = Button(creator, "PreviousStep", Localization.Get("ui.startscreenlayout.back"), 20, -302, 240, 68);
+            view.finish = Button(creator, "StartGame", Localization.Get("ui.startscreenlayout.start_game"), 320, -302, 260, 68);
             var custom = Node(creator, "CustomSettings", 170, 0, 680, 520); view.customPanel = custom.gameObject;
             view.customScroll = Scroll(custom, "PartsScroll", 0, 0, 680, 520, false, out var content);
             var layout = content.gameObject.AddComponent<VerticalLayoutGroup>(); layout.childControlWidth = true; layout.childControlHeight = false;
             layout.childForceExpandWidth = true; layout.childForceExpandHeight = false; layout.spacing = 12; layout.padding = new RectOffset(8, 8, 8, 8);
             content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            var labels = new[] { "피부색", "눈", "헤어", "상의", "하의", "한벌옷", "신발", "악세사리" };
+            var labels = new[] { Localization.Get("ui.startscreenlayout.skin"), Localization.Get("ui.startscreenlayout.eyes"), Localization.Get("ui.startscreenlayout.hair"), Localization.Get("ui.startscreenlayout.top"), Localization.Get("ui.startscreenlayout.bottom"), Localization.Get("ui.startscreenlayout.outfit"), Localization.Get("ui.startscreenlayout.shoes"), Localization.Get("ui.startscreenlayout.accessories") };
             var ids = new[] { "Skin", "Eyes", "Hair", "Top", "Bottom", "Outfit", "Shoes", "Accessory" };
             view.parts = new StartScreenPart[labels.Length];
             for (int i = 0; i < labels.Length; i++) view.parts[i] = Part(content, ids[i], labels[i], i);
@@ -195,17 +196,17 @@ namespace FarmMVP
             var root = Image(view.mainMenu.transform.parent, "ContinuePanel", "new game pannel_white", 0, 0, 1280, 768).rectTransform;
             root.GetComponent<Image>().raycastTarget = true;
             view.continuePanel = root.gameObject;
-            Label(root, "Title", "저장 데이터 선택", 0, 308, 950, 60, 36, true);
+            Label(root, "Title", Localization.Get("ui.startscreenlayout.select_save"), 0, 308, 950, 60, 36, true);
             view.closeContinue = Close(root, 578, 321);
             var standing = Image(root, "StandingPanel", "new game payer standing pannel_white", -350, 0, 256, 384);
             view.savedCharacterPreview = Node(standing.transform, "Character", 0, 0, 256, 256).gameObject.AddComponent<RawImage>();
             view.savedCharacterPreview.raycastTarget = false;
             view.savedCharacterPreview.texture = Resources.Load<Texture2D>(ArtRoot + "CharacterPreview/DefaultStanding");
             var info = Image(root, "GameDataInfoPanel", "game data info pannel", 160, 0, 600, 384);
-            view.savePosition = Label(info.transform, "CurrentData", "현재 데이터  1 / 5   (최대 5개)", 0, 142, 550, 46, 27, true);
-            string[] captions = { "캐릭터 이름", "생일", "현재 날짜", "소지금", "플레이시간" };
+            view.savePosition = Label(info.transform, "CurrentData", Localization.Get("ui.startscreenlayout.save_1_5_up_to_5"), 0, 142, 550, 46, 27, true);
+            string[] captions = { Localization.Get("ui.startscreenlayout.character_name"), Localization.Get("ui.startscreenlayout.birthday_417"), Localization.Get("ui.startscreenlayout.current_date"), Localization.Get("ui.startscreenlayout.gold"), Localization.Get("ui.startscreenlayout.play_time") };
             string[] names = { "CharacterName", "Birthday", "CurrentDate", "Money", "PlayTime" };
-            string[] samples = { "Ros", "봄 1일", "1년 봄 1일", "500 G", "0시간 0분" };
+            string[] samples = { "Ros", Localization.Get("ui.startscreenlayout.spring_1"), Localization.Get("ui.startscreenlayout.year_1_spring_1"), "500 G", Localization.Get("ui.startscreenlayout.0h_0m") };
             var values = new Text[5];
             for (int i = 0; i < values.Length; i++)
             {
@@ -222,8 +223,8 @@ namespace FarmMVP
             view.saveMoney = values[3]; view.savePlayTime = values[4];
             view.previousSave = Icon(root, "PreviousSave", "arrow icon_white", -558, 0, 56, 1);
             view.nextSave = Icon(root, "NextSave", "arrow icon_white", 558, 0, 56, 2);
-            view.startSave = Button(root, "StartSave", "시작하기", 190, -302, 220, 68);
-            view.deleteSave = Button(root, "DeleteSave", "삭제하기", 440, -302, 220, 68);
+            view.startSave = Button(root, "StartSave", Localization.Get("ui.startscreenlayout.start"), 190, -302, 220, 68);
+            view.deleteSave = Button(root, "DeleteSave", Localization.Get("ui.startscreenlayout.delete"), 440, -302, 220, 68);
             root.gameObject.SetActive(false);
         }
         private static StartScreenPart Part(Transform parent, string id, string title, int index)
@@ -238,7 +239,7 @@ namespace FarmMVP
                 part.select = frame.gameObject.AddComponent<Button>(); part.select.targetGraphic = frame;
                 part.portrait = Node(frame.transform, "Portrait16x16", 0, 0, 80, 80).gameObject.AddComponent<RawImage>();
                 part.portrait.raycastTarget = false; part.portrait.enabled = index == 1;
-                if (index != 1) Label(frame.transform, "EmptyLabel", "없음", 0, 0, 88, 45, 23);
+                if (index != 1) Label(frame.transform, "EmptyLabel", Localization.Get("ui.startscreenlayout.none"), 0, 0, 88, 45, 23);
             }
             part.swatch = Image(root, "SelectedColor", null, index == 0 ? -220 : -105, index == 0 ? 6 : 34, index == 0 ? 96 : 48, index == 0 ? 96 : 48);
             part.swatch.color = index == 0 ? FarmerAppearancePalette.DefaultSkin : FarmerAppearancePalette.DefaultEyes;
@@ -255,7 +256,7 @@ namespace FarmMVP
             bars.hue = part.hue; bars.saturation = part.saturation; bars.value = part.value;
             bars.hueGradient = Gradient(part.hue); bars.saturationGradient = Gradient(part.saturation); bars.valueGradient = Gradient(part.value);
             bars.enabled = true;
-            Label(root, "RecommendedLabel", "추천", -238, -86, 110, 36, 23, true);
+            Label(root, "RecommendedLabel", Localization.Get("ui.startscreenlayout.suggested"), -238, -86, 110, 36, 23, true);
             part.recommendedColors = index == 0
                 ? new[] { FarmerAppearancePalette.DefaultSkin, Hex("F2D4B7"), Hex("DDB08B"), Hex("BF8861"), Hex("8F5C3F"), Hex("583B2C") }
                 : new[] { FarmerAppearancePalette.DefaultEyes, Hex("825032"), Hex("578572"), Hex("5B8FAE"), Hex("9A78AB"), Hex("D6AD69") };
@@ -281,7 +282,7 @@ namespace FarmMVP
         {
             var root = Image(parent, "PartPicker", "Dark/Panel_bg1", 700, 0, 460, 680).rectTransform;
             root.GetComponent<Image>().raycastTarget = true; view.pickerPanel = root.gameObject;
-            view.pickerTitle = Label(root, "Title", "눈", 0, 278, 300, 52, 34, true);
+            view.pickerTitle = Label(root, "Title", Localization.Get("ui.startscreenlayout.eyes"), 0, 278, 300, 52, 34, true);
             view.pickerClose = Close(root, 180, 282, true);
             view.pickerScroll = Scroll(root, "SlotsScroll", 0, 5, 384, 452, true, out var content); view.pickerContent = content;
             var grid = content.gameObject.AddComponent<GridLayoutGroup>(); grid.cellSize = new Vector2(96, 96); grid.spacing = new Vector2(16, 16);
@@ -293,18 +294,19 @@ namespace FarmMVP
             Label(slot.transform, "EmptyLabel", "", 0, 0, 80, 38, 23, true);
             slot.gameObject.SetActive(false);
             view.slotNormal = Art("Dark/InventorySlot"); view.slotSelected = Art("Dark/InventorySlot2");
-            view.pickerApply = Button(root, "ApplySelection", "설정", -108, -274, 180, 60, true);
-            Label(root, "Hint", "슬롯은 미리보기\n설정 버튼으로 확정", 95, -274, 190, 64, 20, true);
+            view.pickerApply = Button(root, "ApplySelection", Localization.Get("ui.startscreenlayout.settings"), -108, -274, 180, 60, true);
+            Label(root, "Hint", Localization.Get("ui.startscreenlayout.preview_a_slot_then_press_apply_to"), 95, -274, 190, 64, 20, true);
         }
         private static void BuildSettings(Transform parent, StartScreenView view)
         {
             var root = Image(parent, "Settings", "new game pannel_white", 0, 0, 720, 432).rectTransform;
             root.GetComponent<Image>().raycastTarget = true; view.settingsPanel = root.gameObject;
-            Label(root, "Title", "설정", 0, 140, 500, 60, 36, true);
-            Label(root, "VolumeLabel", "음량", -230, 15, 160, 50, 28, true);
+            Label(root, "Title", Localization.Get("ui.startscreenlayout.settings"), 0, 140, 500, 60, 36, true);
+            Label(root, "VolumeLabel", Localization.Get("ui.startscreenlayout.volume"), -230, 15, 160, 50, 28, true);
             view.volume = Slider(root, "Volume", 70, 15, 360);
-            view.settingsBack = Button(root, "Back", "돌아가기", 0, -135, 240, 64);
+            view.settingsBack = Button(root, "Back", Localization.Get("ui.startscreenlayout.back_433"), 0, -135, 240, 64);
             UITheme.ApplyClose(view.settingsBack);
+            SettingsDropdown.Ensure(view);
         }
         private static void BuildModal(Transform parent, StartScreenView view)
         {
@@ -314,9 +316,9 @@ namespace FarmMVP
             var panel = Image(design, "Dialog", null, 0, 0, 800, 400).rectTransform;
             UITheme.ApplyPanel(panel.GetComponent<Image>(), 4);
             panel.GetComponent<Image>().raycastTarget = true;
-            view.modalMessage = Label(panel, "Message", "캐릭터 생성을 취소하시겠습니까?", 0, 60, 680, 150, 32, true);
-            view.modalYes = Button(panel, "Yes", "예", -160, -105, 240, 64);
-            view.modalNo = Button(panel, "No", "아니오", 160, -105, 240, 64);
+            view.modalMessage = Label(panel, "Message", Localization.Get("ui.startscreenlayout.cancel_character_creation"), 0, 60, 680, 150, 32, true);
+            view.modalYes = Button(panel, "Yes", Localization.Get("ui.startscreenlayout.yes"), -160, -105, 240, 64);
+            view.modalNo = Button(panel, "No", Localization.Get("ui.startscreenlayout.no"), 160, -105, 240, 64);
         }
     }
 }

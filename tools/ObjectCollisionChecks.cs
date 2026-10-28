@@ -76,7 +76,7 @@ public static class ObjectCollisionChecks
         var bytes = ObjectCollisionBaker.Bake(paint, 4, 3, new RectInt(0, 0, 4, 3));
         Check(bytes[0] == 3 && bytes[1] == 0, "Only legend, transparent paint and non-key colors excluded.");
         Check(ObjectCollisionBaker.Bake(paint, 4, 3, new RectInt(1, 0, 3, 3))[0] == 1,
-            "Paint is preserved independently of source alpha.");
+            "Keyed collision is independent of original image alpha.");
         Check(ObjectCollisionBaker.Bake(paint, 4, 3, new RectInt(2, 0, 2, 3)) == null,
             "An unpainted companion slice has no keyed pixels before silhouette fallback.");
         var source = new Color32[12];
@@ -84,6 +84,9 @@ public static class ObjectCollisionChecks
         source[7] = new Color32(4, 5, 6, 255);
         var opaque = ObjectCollisionBaker.BakeOpaque(source, 4, 3, new RectInt(1, 0, 3, 2));
         Check(opaque[0] == 34, "An object without a companion uses only its opaque source outline.");
+        source[7].a = 254;
+        opaque = ObjectCollisionBaker.BakeOpaque(source, 4, 3, new RectInt(1, 0, 3, 2));
+        Check(opaque[0] == 2, "A translucent source pixel must not block without a companion either.");
         bool rejected = false;
         paint[8] = default;
         try { ObjectCollisionBaker.Bake(paint, 4, 3, new RectInt(0, 0, 4, 3)); }
@@ -105,7 +108,7 @@ public static class ObjectCollisionChecks
         var original = source.GetPixels32();
         var painted = paint.GetPixels32();
         var key = painted[(paint.height - 1) * paint.width];
-        int outsideSource = 0;
+        int paintOutsideSolidSource = 0;
         foreach (var sprite in sprites)
         {
             var mask = ObjectCollisionMasks.Find(sprite);
@@ -116,15 +119,20 @@ public static class ObjectCollisionChecks
                     int i = ((int)sprite.rect.y + y) * source.width + (int)sprite.rect.x + x;
                     var p = painted[i];
                     bool keyed = i != (paint.height - 1) * paint.width && p.a != 0 && p.r == key.r && p.g == key.g && p.b == key.b;
-                    bool expected = sprite.name.EndsWith("_2") || sprite.name.EndsWith("_3") ? keyed : original[i].a != 0;
+                    bool sourceIsSolid = original[i].a == byte.MaxValue;
+                    bool expected = sprite.name.EndsWith("_2") || sprite.name.EndsWith("_3") ? keyed : sourceIsSolid;
                     Check(mask.Contains(x, y) == expected, sprite.name + " painted pixel mismatch.");
-                    if (keyed && original[i].a == 0) outsideSource++;
+                    if (keyed && !sourceIsSolid)
+                    {
+                        Check(mask.Contains(x, y), "Keyed paint must block even on a transparent or translucent source pixel.");
+                        paintOutsideSolidSource++;
+                    }
                     if (expected) count++;
                 }
             results.Add($"{sprite.name}: {count} solid pixels, {mask.bits.Length} bytes.");
         }
-        Check(outsideSource > 0, "Real PNG must retain paint outside the original silhouette.");
-        results.Add($"Included {outsideSource} painted pixels outside source alpha; legend still excluded.");
+        Check(paintOutsideSolidSource > 0, "Real PNG must retain keyed paint outside the fully opaque source silhouette.");
+        results.Add($"Included {paintOutsideSolidSource} keyed pixels outside the fully opaque source silhouette; legend still excluded.");
         UnityEngine.Object.DestroyImmediate(source);
         UnityEngine.Object.DestroyImmediate(paint);
     }

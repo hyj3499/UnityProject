@@ -38,20 +38,20 @@ namespace FarmMVP
             if (_init) return;
             _init = true;
 
-            Register(ShopCartId, "잡화 수레", "Sprites/Environment/ShopCart", 400,
+            Register(ShopCartId, "@items.furnituredatabase.general_goods_cart", "Sprites/Environment/ShopCart", 400,
                      role: PlaceableRole.Shop);
 
-            Register(WorkbenchId, "작업대", "Sprites/Environment/Workbench", 150,
+            Register(WorkbenchId, "@items.furnituredatabase.workbench", "Sprites/Environment/Workbench", 150,
                      role: PlaceableRole.Workbench);
 
-            Register(BedId, "침대", "Sprites/Interior/Bed", 300,
+            Register(BedId, "@items.furnituredatabase.bed", "Sprites/Interior/Bed", 300,
                      role: PlaceableRole.Bed);
 
-            Register(FireplaceId, "벽난로", "Sprites/Interior/Fireplace", 200);
-            Register(PlantId, "화분", "Sprites/Interior/Plant", 60);
+            Register(FireplaceId, "@items.furnituredatabase.fireplace", "Sprites/Interior/Fireplace", 200);
+            Register(PlantId, "@items.furnituredatabase.flowerpot", "Sprites/Interior/Plant", 60);
 
             // 러그는 바닥에 깔리는 장식이라 지나갈 수 있다.
-            Register(RugId, "러그", "Sprites/Interior/Rug", 80, blocks: false);
+            Register(RugId, "@items.furnituredatabase.rug", "Sprites/Interior/Rug", 80, blocks: false);
         }
 
         private static void Register(string id, string displayName, string spritePath, int sellPrice,

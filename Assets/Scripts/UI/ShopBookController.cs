@@ -186,12 +186,12 @@ namespace FarmMVP
             _tabs.Clear();
             _tabCategories.Clear();
             var names = _shop.useCategories
-                ? _shop.products.Select(p => string.IsNullOrWhiteSpace(p.category) ? "기타" : p.category).Distinct().ToList()
+                ? _shop.products.Select(p => string.IsNullOrWhiteSpace(p.category) ? Localization.Get("ui.shopbookcontroller.other") : p.category).Distinct().ToList()
                 : new List<string>();
             bool enabled = _shop.allowSelling || (_shop.useCategories && _shop.products.Any(p => !string.IsNullOrWhiteSpace(p.category)));
             _view.categoriesScroll.gameObject.SetActive(enabled);
             if (!enabled) return;
-            names.Insert(0, "전체");
+            names.Insert(0, Localization.Get("ui.shopbookcontroller.all"));
             if (_shop.allowSelling) names.Add(SoldCategory);
             for (int i = 0; i < names.Count; i++)
             {
@@ -203,7 +203,7 @@ namespace FarmMVP
                 var rt = (RectTransform)tab.transform;
                 rt.pivot = new Vector2(.5f, 1);
                 rt.anchoredPosition = new Vector2(0, -i * 40);
-                tab.GetComponentInChildren<Text>().text = names[i] == SoldCategory ? "판매" : names[i];
+                tab.GetComponentInChildren<Text>().text = names[i] == SoldCategory ? Localization.Get("ui.shopbookcontroller.sold") : names[i];
                 tab.onClick.AddListener(() => ChangeCategory(category, index));
                 _tabs.Add(tab);
                 _tabCategories.Add(category);
@@ -233,7 +233,7 @@ namespace FarmMVP
             _catalog.AddRange(_shop.products);
             _catalog.AddRange(ShopSellService.Products(_game.Data, _shop));
             _visible.AddRange(_catalog.Where(p => _category == null || (_category == SoldCategory ? p.IsBuyback
-                : !p.IsBuyback && (string.IsNullOrWhiteSpace(p.category) ? "기타" : p.category) == _category)));
+                : !p.IsBuyback && (string.IsNullOrWhiteSpace(p.category) ? Localization.Get("ui.shopbookcontroller.other") : p.category) == _category)));
             for (int i = 0; i < _visible.Count; i++)
             {
                 var product = _visible[i];
@@ -275,10 +275,10 @@ namespace FarmMVP
             var descriptionRect = (RectTransform)_view.descriptionScroll.transform;
             descriptionRect.anchorMin = new Vector2(descriptionRect.anchorMin.x, bulk ? .32f : .22f);
             _view.message.text = "";
-            _view.productName.text = product?.Name ?? "상품을 선택하세요";
+            _view.productName.text = product?.Name ?? Localization.Get("ui.shopbookcontroller.select_a_product");
             _view.productIcon.sprite = product == null ? null : Icon(product);
             _view.productIcon.enabled = _view.productIcon.sprite != null;
-            _view.description.text = product == null ? "판매 중인 상품이 없습니다." : product.Description
+            _view.description.text = product == null ? Localization.Get("ui.shopbookcontroller.no_products_for_sale") : product.Description
                 + (string.IsNullOrWhiteSpace(product.note) ? "" : "\n\n" + product.note);
             Canvas.ForceUpdateCanvases();
             _view.descriptionScroll.content.sizeDelta = new Vector2(0, Mathf.Max(_view.descriptionScroll.viewport.rect.height, _view.description.preferredHeight + 6));
@@ -315,7 +315,7 @@ namespace FarmMVP
             {
                 _rows[i].selection.enabled = _visible[i] == _selected;
                 int stock = ShopSellService.Stock(_game.Data, _visible[i], _shop);
-                _rows[i].price.text = $"{_visible[i].price:N0} G" + (_visible[i].IsBuyback ? $" · 남은 {stock}개" : "");
+                _rows[i].price.text = $"{_visible[i].price:N0} G" + (_visible[i].IsBuyback ? Localization.Format("ui.shopbookcontroller.0_remaining", stock) : "");
                 _rows[i].price.color = ShopPurchaseService.UnavailableReason(_game, _visible[i], _shop) == null
                     ? ShopBookLayout.Ink : new Color(.61f, .28f, .2f);
             }
@@ -398,9 +398,9 @@ namespace FarmMVP
             var def = stack == null || stack.IsEmpty ? null : stack.Def;
             _view.inventoryTooltip.gameObject.SetActive(def != null);
             if (def == null) return;
-            string price = def.sellPrice > 0 ? $"판매 가격 {def.sellPrice:N0} G / 개" : "판매할 수 없는 아이템";
+            string price = def.sellPrice > 0 ? Localization.Format("ui.shopbookcontroller.sell_price_0_n0_g_each", def.sellPrice) : Localization.Get("ui.shopbookcontroller.this_item_cannot_be_sold");
             _view.inventoryTooltipText.text = $"{def.displayName}\n{price}\n\n{def.Description}"
-                + (def.sellPrice > 0 ? "\n\n우클릭: 1개 판매" : "");
+                + (def.sellPrice > 0 ? Localization.Get("ui.shopbookcontroller.right_click_sell_one") : "");
             var tooltip = _view.inventoryTooltip;
             float height = Mathf.Clamp(_view.inventoryTooltipText.preferredHeight + 20, 90, _view.stage.rect.height - 24);
             tooltip.sizeDelta = new Vector2(tooltip.sizeDelta.x, height);

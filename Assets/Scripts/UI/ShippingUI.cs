@@ -46,8 +46,8 @@ namespace FarmMVP
             BuildRoot(canvas);
 
             var boxPanel = Panel("BoxPanel", panelW, boxH, totalH / 2f - boxH / 2f);
-            PanelTitle(boxPanel, "배송함");
-            _valueText = _ui.Label(boxPanel, "예상 판매금액 0 G", 16, new Vector2(-PanelPad, -8), TextAnchor.UpperRight);
+            PanelTitle(boxPanel, Localization.Get("ui.shippingui.shipping_bin"));
+            _valueText = _ui.Label(boxPanel, Localization.Get("ui.shippingui.expected_sales_0_g"), 16, new Vector2(-PanelPad, -8), TextAnchor.UpperRight);
             _valueText.rectTransform.anchorMin = new Vector2(0.4f, 1f);
             _valueText.rectTransform.anchorMax = new Vector2(1f, 1f);
             _valueText.rectTransform.offsetMin = new Vector2(0, -TitleH);
@@ -56,10 +56,10 @@ namespace FarmMVP
             BuildGrid(boxPanel, Inventory.ShippingSlots, isShipping: true);
 
             var bagPanel = Panel("BagPanel", panelW, bagH, -(totalH / 2f - bagH / 2f));
-            PanelTitle(bagPanel, "내 가방");
+            PanelTitle(bagPanel, Localization.Get("ui.shippingui.my_bag"));
             BuildGrid(bagPanel, Inventory.TotalSlots, isShipping: false);
 
-            var hint = _ui.Label(_root, "드래그로 옮기기 · Shift+클릭으로 한 번에 옮기기 · ESC 로 닫기", 14, Vector2.zero, TextAnchor.MiddleCenter);
+            var hint = _ui.Label(_root, Localization.Get("ui.shippingui.drag_to_move_shift_click_to_transfer"), 14, Vector2.zero, TextAnchor.MiddleCenter);
             hint.rectTransform.anchorMin = hint.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
             hint.rectTransform.anchoredPosition = new Vector2(0, -(totalH / 2f) - 22f);
             hint.rectTransform.sizeDelta = new Vector2(600, 24);
@@ -78,7 +78,7 @@ namespace FarmMVP
 
         public void SetExpectedValue(int value)
         {
-            if (_valueText != null) _valueText.text = $"예상 판매금액 {value:N0} G";
+            if (_valueText != null) _valueText.text = Localization.Format("ui.shippingui.expected_sales_0_n0_g", value);
         }
 
         // ---------- 뼈대 ----------

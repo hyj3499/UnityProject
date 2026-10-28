@@ -119,7 +119,7 @@ namespace FarmMVP
             // 대기 중에 누르면 헛챔질 — 다시 던져야 한다
             if (ClickedThisFrame())
             {
-                Cancel("너무 일찍 챘다!");
+                Cancel(Localization.Get("world.fishingcontroller.too_soon"));
                 return;
             }
 
@@ -149,7 +149,7 @@ namespace FarmMVP
 
             _timer -= Time.deltaTime;
             _ui.UpdateBite(_timer / _reactionWindow);
-            if (_timer <= 0f) Cancel("놓쳤다...");
+            if (_timer <= 0f) Cancel(Localization.Get("world.fishingcontroller.it_got_away"));
         }
 
         // ---------- 타이밍 미니게임 ----------
@@ -185,7 +185,7 @@ namespace FarmMVP
         private void UpdateMinigame()
         {
             _minigameTimer -= Time.deltaTime;
-            if (_minigameTimer <= 0f) { Fail("시간 초과! 놓쳤다..."); return; }
+            if (_minigameTimer <= 0f) { Fail(Localization.Get("world.fishingcontroller.time_s_up_it_got_away")); return; }
 
             // 커서가 트랙 끝에서 튕겨 돌아온다
             _markerPos += _markerDir * _markerSpeed * Time.deltaTime;
@@ -209,7 +209,7 @@ namespace FarmMVP
             {
                 _misses++;
                 _ui.FlashMiss();
-                if (_misses >= MissesAllowed) Fail("놓쳤다...");
+                if (_misses >= MissesAllowed) Fail(Localization.Get("world.fishingcontroller.it_got_away"));
             }
         }
 

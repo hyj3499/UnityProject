@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FarmMVP
 {
-    /// <summary>Editor-baked masks. Only painted sprite slices have an entry; others keep their footprint.</summary>
+    /// <summary>Editor-baked masks for supported object sprite slices.</summary>
     public sealed class ObjectCollisionMasks : ScriptableObject
     {
         public const string ResourceName = "ObjectCollisionMasks";

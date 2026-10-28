@@ -8,6 +8,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000000}
   - component: {fileID: 1494736309023880933}
   - component: {fileID: 3113595412531998168}
   - component: {fileID: 2084995163946676584}
@@ -66,7 +67,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -78,7 +79,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uD310\uB9E4 \uC0C1\uD488"
+  m_Text: "Products"
 --- !u!1 &7149148222090508
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,6 +619,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000001}
   - component: {fileID: 2654805611889073840}
   - component: {fileID: 9162694649297281720}
   - component: {fileID: 6227539676832794420}
@@ -677,7 +679,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -713,6 +715,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000002}
   - component: {fileID: 4098479330957875312}
   - component: {fileID: 4435140729881047842}
   - component: {fileID: 7564175914925246813}
@@ -772,7 +775,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -958,6 +961,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000003}
   - component: {fileID: 2169704477799176996}
   - component: {fileID: 1133761266351583107}
   - component: {fileID: 1778512975565223530}
@@ -1016,7 +1020,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -1488,6 +1492,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000004}
   - component: {fileID: 8441301748525710118}
   - component: {fileID: 624680774948176644}
   - component: {fileID: 3533211437933554457}
@@ -1546,7 +1551,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -1642,6 +1647,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000005}
   - component: {fileID: 6835906404634815303}
   - component: {fileID: 8717943878246040998}
   - component: {fileID: 3238134442849744276}
@@ -1700,7 +1706,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -1721,6 +1727,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000006}
   - component: {fileID: 7567606770865294547}
   - component: {fileID: 1610417943492261532}
   - component: {fileID: 1177614293042355704}
@@ -1779,7 +1786,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -2855,6 +2862,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000007}
   - component: {fileID: 1677383411270292439}
   - component: {fileID: 7205899865223529295}
   - component: {fileID: 1468053573376623365}
@@ -2914,7 +2922,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -3514,6 +3522,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000008}
   - component: {fileID: 1135633994373406522}
   - component: {fileID: 6954568134102543639}
   - component: {fileID: 7214702551556920264}
@@ -3573,7 +3582,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -3609,6 +3618,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000009}
   - component: {fileID: 9067212551699015360}
   - component: {fileID: 2205027936088368309}
   - component: {fileID: 8535251745480981397}
@@ -3668,7 +3678,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -3704,6 +3714,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000010}
   - component: {fileID: 3478681574956765261}
   - component: {fileID: 7888183030865921689}
   - component: {fileID: 5788299101891569122}
@@ -3762,7 +3773,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -3783,6 +3794,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000011}
   - component: {fileID: 1147057387433345087}
   - component: {fileID: 6400809146042052629}
   - component: {fileID: 3927421827416055168}
@@ -3842,7 +3854,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -3953,6 +3965,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000012}
   - component: {fileID: 3837178631125321517}
   - component: {fileID: 8754838569893282767}
   - component: {fileID: 7402740296737532481}
@@ -4011,7 +4024,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -4032,6 +4045,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000013}
   - component: {fileID: 567269897406915447}
   - component: {fileID: 8076659969297712856}
   - component: {fileID: 4935516365473994655}
@@ -4090,7 +4104,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -4219,6 +4233,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000014}
   - component: {fileID: 1804972827352862714}
   - component: {fileID: 1040322075069985480}
   - component: {fileID: 2671507201529656482}
@@ -4277,7 +4292,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 16
     m_FontStyle: 0
     m_BestFit: 0
@@ -4441,6 +4456,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000015}
   - component: {fileID: 624939170458086163}
   - component: {fileID: 6130076621192509111}
   - component: {fileID: 3821468366429854138}
@@ -4499,7 +4515,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -4520,6 +4536,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000016}
   - component: {fileID: 2780173272818648160}
   - component: {fileID: 1297866132254466511}
   - component: {fileID: 8959248155860723796}
@@ -4578,7 +4595,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -5007,6 +5024,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000017}
   - component: {fileID: 256506736289294460}
   - component: {fileID: 8056313620516325106}
   - component: {fileID: 5165322959670214172}
@@ -5065,7 +5083,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 17
     m_FontStyle: 1
     m_BestFit: 1
@@ -5420,6 +5438,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000018}
   - component: {fileID: 8731518534056028972}
   - component: {fileID: 437668255717713865}
   - component: {fileID: 3610520985033836432}
@@ -5478,7 +5497,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -5490,7 +5509,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC804\uCCB4"
+  m_Text: "All"
 --- !u!1 &1280193156025130841
 GameObject:
   m_ObjectHideFlags: 0
@@ -5574,6 +5593,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000019}
   - component: {fileID: 6620352369564580474}
   - component: {fileID: 7614988415625080323}
   - component: {fileID: 6921325823626921851}
@@ -5632,7 +5652,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -5644,7 +5664,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uB098\uBB34"
+  m_Text: "Wood"
 --- !u!1 &1345342619259065432
 GameObject:
   m_ObjectHideFlags: 0
@@ -6363,6 +6383,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000020}
   - component: {fileID: 7042344655936368821}
   - component: {fileID: 580131764463792069}
   - component: {fileID: 2715803943140296151}
@@ -6421,7 +6442,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 15
     m_FontStyle: 0
     m_BestFit: 0
@@ -6433,7 +6454,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uCDE8\uC18C"
+  m_Text: "Cancel"
 --- !u!1 &1670395128068203304
 GameObject:
   m_ObjectHideFlags: 0
@@ -7176,6 +7197,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000021}
   - component: {fileID: 503857105813349410}
   - component: {fileID: 8871124432734280053}
   - component: {fileID: 7861087821581919884}
@@ -7235,7 +7257,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -7271,6 +7293,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000022}
   - component: {fileID: 534480395997687237}
   - component: {fileID: 6294732936640230783}
   - component: {fileID: 1515360733099722734}
@@ -7329,7 +7352,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -7651,6 +7674,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000023}
   - component: {fileID: 1161684958431377642}
   - component: {fileID: 8568972111467749794}
   - component: {fileID: 4874877323124722606}
@@ -7710,7 +7734,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -8464,6 +8488,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000024}
   - component: {fileID: 2811037916444526171}
   - component: {fileID: 7132462787623264001}
   - component: {fileID: 2038407427293989709}
@@ -8522,7 +8547,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 13
     m_FontStyle: 0
     m_BestFit: 0
@@ -8744,6 +8769,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000025}
   - component: {fileID: 9221570157130411735}
   - component: {fileID: 7816613113307755756}
   - component: {fileID: 7952598783820462655}
@@ -8802,7 +8828,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -9439,6 +9465,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000026}
   - component: {fileID: 4495536383527950773}
   - component: {fileID: 7082556300972634473}
   - component: {fileID: 7043203463973636872}
@@ -9497,7 +9524,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -9733,6 +9760,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000027}
   - component: {fileID: 2348217486798353752}
   - component: {fileID: 7365179996568247630}
   - component: {fileID: 3358556334078598799}
@@ -9791,7 +9819,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -10079,6 +10107,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000028}
   - component: {fileID: 2208907399766354833}
   - component: {fileID: 1456295608806972103}
   - component: {fileID: 5769051807171277118}
@@ -10138,7 +10167,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -10174,6 +10203,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000029}
   - component: {fileID: 8946094042200235591}
   - component: {fileID: 8911328836418379475}
   - component: {fileID: 21692699275427917}
@@ -10233,7 +10263,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -10720,6 +10750,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000030}
   - component: {fileID: 5793813281090379212}
   - component: {fileID: 8003318156940577178}
   - component: {fileID: 3961756893115526281}
@@ -10778,7 +10809,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -10874,6 +10905,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000031}
   - component: {fileID: 3983608266794234478}
   - component: {fileID: 104611398127937106}
   - component: {fileID: 6561922413601664933}
@@ -10932,7 +10964,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -11246,6 +11278,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000032}
   - component: {fileID: 8037835102339167489}
   - component: {fileID: 7015317053330287807}
   - component: {fileID: 8718086658845442243}
@@ -11305,7 +11338,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -11341,6 +11374,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000033}
   - component: {fileID: 7104073486663886935}
   - component: {fileID: 4585118363020072154}
   - component: {fileID: 7441865064305709559}
@@ -11400,7 +11434,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -11783,6 +11817,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000034}
   - component: {fileID: 4194403972475665613}
   - component: {fileID: 1632114886055492586}
   - component: {fileID: 8787901802036247943}
@@ -11841,7 +11876,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 13
     m_FontStyle: 0
     m_BestFit: 0
@@ -12013,6 +12048,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000035}
   - component: {fileID: 6991913631856333609}
   - component: {fileID: 5880791814590526625}
   - component: {fileID: 4699840379329312697}
@@ -12071,7 +12107,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -12083,7 +12119,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC0C1\uD488 \uC548\uB0B4"
+  m_Text: "Product Details"
 --- !u!1 &2960267709402006968
 GameObject:
   m_ObjectHideFlags: 0
@@ -12159,6 +12195,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000036}
   - component: {fileID: 4584359827017934217}
   - component: {fileID: 7806792264890522832}
   - component: {fileID: 2310603936140875375}
@@ -12218,7 +12255,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -12899,6 +12936,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000037}
   - component: {fileID: 908349613342436238}
   - component: {fileID: 5860285386853222765}
   - component: {fileID: 5321719493286377152}
@@ -12958,7 +12996,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -13190,6 +13228,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000038}
   - component: {fileID: 1419513718582576764}
   - component: {fileID: 3764489079485313368}
   - component: {fileID: 7905804289928179633}
@@ -13248,7 +13287,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 14
     m_FontStyle: 1
     m_BestFit: 1
@@ -13562,6 +13601,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000039}
   - component: {fileID: 4115925778642130046}
   - component: {fileID: 5277496511985971928}
   - component: {fileID: 630193703003890968}
@@ -13620,7 +13660,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -13641,6 +13681,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000040}
   - component: {fileID: 4837784294537459074}
   - component: {fileID: 6559415406243692484}
   - component: {fileID: 6774045219263619611}
@@ -13700,7 +13741,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -14007,6 +14048,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000041}
   - component: {fileID: 6603718466053003711}
   - component: {fileID: 6128206734891849515}
   - component: {fileID: 8377657986105696155}
@@ -14065,7 +14107,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -14086,6 +14128,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000042}
   - component: {fileID: 1137245906256023007}
   - component: {fileID: 6191234805294171954}
   - component: {fileID: 8639291730932831128}
@@ -14144,7 +14187,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 16
     m_FontStyle: 0
     m_BestFit: 0
@@ -14165,6 +14208,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000043}
   - component: {fileID: 2049422133072235288}
   - component: {fileID: 1734596442827234081}
   - component: {fileID: 6318097597511923052}
@@ -14223,7 +14267,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -14244,6 +14288,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000044}
   - component: {fileID: 6797910070487880218}
   - component: {fileID: 8081203049975232765}
   - component: {fileID: 8762679624445361242}
@@ -14303,7 +14348,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -14685,6 +14730,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000045}
   - component: {fileID: 6790179883101892153}
   - component: {fileID: 6532301360264127845}
   - component: {fileID: 4783952407019079245}
@@ -14743,7 +14789,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -14764,6 +14810,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000046}
   - component: {fileID: 8981388441703652701}
   - component: {fileID: 430365539241477674}
   - component: {fileID: 6673717329050321206}
@@ -14822,7 +14869,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -14834,7 +14881,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uCE74\uD14C\uACE0\uB9AC"
+  m_Text: "Categories"
 --- !u!1 &3832815810136377062
 GameObject:
   m_ObjectHideFlags: 0
@@ -15584,6 +15631,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000047}
   - component: {fileID: 4583410632591156516}
   - component: {fileID: 2420591949574820169}
   - component: {fileID: 5131553291019328576}
@@ -15642,7 +15690,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 13
     m_FontStyle: 1
     m_BestFit: 1
@@ -15813,6 +15861,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000048}
   - component: {fileID: 6752814205544812797}
   - component: {fileID: 6693117939803809760}
   - component: {fileID: 1338962569187814347}
@@ -15871,7 +15920,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -16300,6 +16349,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000049}
   - component: {fileID: 6799354764768505576}
   - component: {fileID: 922246361946722842}
   - component: {fileID: 3463619847258899106}
@@ -16359,7 +16409,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -16846,6 +16896,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000050}
   - component: {fileID: 6761395634512804559}
   - component: {fileID: 6634948519006533524}
   - component: {fileID: 4408322667865965108}
@@ -16904,7 +16955,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 14
     m_FontStyle: 1
     m_BestFit: 1
@@ -17150,6 +17201,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000051}
   - component: {fileID: 2766637063018145770}
   - component: {fileID: 8806979486187030242}
   - component: {fileID: 7219676445454288162}
@@ -17208,7 +17260,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 18
     m_FontStyle: 1
     m_BestFit: 1
@@ -17455,6 +17507,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000052}
   - component: {fileID: 2504181333696594741}
   - component: {fileID: 1727461900503786339}
   - component: {fileID: 681979298306536830}
@@ -17514,7 +17567,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -17550,6 +17603,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000053}
   - component: {fileID: 2990125999006520208}
   - component: {fileID: 624270251882426510}
   - component: {fileID: 6781206802820123368}
@@ -17608,7 +17662,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -17629,6 +17683,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000054}
   - component: {fileID: 6883679819727009607}
   - component: {fileID: 6068890868037150126}
   - component: {fileID: 8313703070319084929}
@@ -17687,7 +17742,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -17816,6 +17871,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000055}
   - component: {fileID: 1124292011936246205}
   - component: {fileID: 5207086894970865710}
   - component: {fileID: 927210381279696330}
@@ -17874,7 +17930,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -17895,6 +17951,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000056}
   - component: {fileID: 5858144232434337900}
   - component: {fileID: 4205147013631517872}
   - component: {fileID: 7226979987353338639}
@@ -17954,7 +18011,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -18689,6 +18746,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000057}
   - component: {fileID: 3514065744457848485}
   - component: {fileID: 7554186201605427710}
   - component: {fileID: 742909186993052266}
@@ -18747,7 +18805,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -19176,6 +19234,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000058}
   - component: {fileID: 5171304095312301985}
   - component: {fileID: 9207369409723635186}
   - component: {fileID: 6958023845680969637}
@@ -19234,7 +19293,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -19330,6 +19389,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000059}
   - component: {fileID: 6687652798106834729}
   - component: {fileID: 3780618749915858738}
   - component: {fileID: 6162552246619241048}
@@ -19388,7 +19448,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -19409,6 +19469,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000060}
   - component: {fileID: 7850981720330905853}
   - component: {fileID: 3526915548831879531}
   - component: {fileID: 1622930030339142446}
@@ -19467,7 +19528,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 14
     m_FontStyle: 1
     m_BestFit: 1
@@ -19563,6 +19624,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000061}
   - component: {fileID: 4587460884397149150}
   - component: {fileID: 6977193426997638049}
   - component: {fileID: 8160997294456420609}
@@ -19621,7 +19683,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -19642,6 +19704,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000062}
   - component: {fileID: 5509333849189975934}
   - component: {fileID: 131187278037656477}
   - component: {fileID: 487075564633898484}
@@ -19700,7 +19763,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -19712,7 +19775,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uD720 / \uB4DC\uB798\uADF8\uB85C \uBAA9\uB85D \uBCF4\uAE30"
+  m_Text: "Scroll / drag to browse"
 --- !u!1 &5381442230435707408
 GameObject:
   m_ObjectHideFlags: 0
@@ -19796,6 +19859,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000063}
   - component: {fileID: 7295900814256840113}
   - component: {fileID: 7784417118829949594}
   - component: {fileID: 6559954091070554936}
@@ -19854,7 +19918,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 15
     m_FontStyle: 0
     m_BestFit: 0
@@ -19866,7 +19930,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uAD6C\uB9E4"
+  m_Text: "Buy"
 --- !u!1 &5421701123360452619
 GameObject:
   m_ObjectHideFlags: 0
@@ -20369,6 +20433,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000064}
   - component: {fileID: 5578547834075886985}
   - component: {fileID: 6065018233126003836}
   - component: {fileID: 7427534278349337604}
@@ -20427,7 +20492,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -20857,6 +20922,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000065}
   - component: {fileID: 3124750710447777174}
   - component: {fileID: 444958859376358171}
   - component: {fileID: 7032119946271182180}
@@ -20915,7 +20981,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -20936,6 +21002,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000066}
   - component: {fileID: 2740203979114006328}
   - component: {fileID: 5376109377606762397}
   - component: {fileID: 2465102907219036017}
@@ -20994,7 +21061,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 14
     m_FontStyle: 1
     m_BestFit: 1
@@ -21090,6 +21157,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000067}
   - component: {fileID: 3288400226066372918}
   - component: {fileID: 2064254582616174265}
   - component: {fileID: 1882903095350008248}
@@ -21148,7 +21216,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -21160,7 +21228,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC528\uC557"
+  m_Text: "Seeds"
 --- !u!1 &5684690510252205353
 GameObject:
   m_ObjectHideFlags: 0
@@ -21169,6 +21237,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000068}
   - component: {fileID: 187425817686858895}
   - component: {fileID: 3090345467184222220}
   - component: {fileID: 8134326432739808892}
@@ -21227,7 +21296,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -21248,6 +21317,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000069}
   - component: {fileID: 5012066532608874241}
   - component: {fileID: 8117493658114811287}
   - component: {fileID: 8118955906839133418}
@@ -21307,7 +21377,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -22170,6 +22240,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000070}
   - component: {fileID: 1808906392348860797}
   - component: {fileID: 4375563098295057219}
   - component: {fileID: 5426479107793518882}
@@ -22228,7 +22299,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -22324,6 +22395,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000071}
   - component: {fileID: 8635689177427541888}
   - component: {fileID: 6639474700891706635}
   - component: {fileID: 1708356248868298108}
@@ -22382,7 +22454,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -22812,6 +22884,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000072}
   - component: {fileID: 435783540059848826}
   - component: {fileID: 4778842607812552498}
   - component: {fileID: 3167775204713242327}
@@ -22870,7 +22943,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -23116,6 +23189,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000073}
   - component: {fileID: 5827681615795146176}
   - component: {fileID: 770888258382216981}
   - component: {fileID: 3672688422970637435}
@@ -23175,7 +23249,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -23211,6 +23285,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000074}
   - component: {fileID: 6641335692183190844}
   - component: {fileID: 4605247485486578787}
   - component: {fileID: 3570288672981198833}
@@ -23270,7 +23345,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -23564,6 +23639,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000075}
   - component: {fileID: 3700513538553352053}
   - component: {fileID: 7181441605104960452}
   - component: {fileID: 2498036730642426028}
@@ -23623,7 +23699,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -23767,6 +23843,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000076}
   - component: {fileID: 5673703911004348652}
   - component: {fileID: 6750531164953333729}
   - component: {fileID: 214352956270798739}
@@ -23825,7 +23902,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -24538,6 +24615,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000077}
   - component: {fileID: 5777588801367845732}
   - component: {fileID: 3680039762897434446}
   - component: {fileID: 733410907243812479}
@@ -24596,7 +24674,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -25385,6 +25463,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000078}
   - component: {fileID: 2892495771892979938}
   - component: {fileID: 4464542145756136859}
   - component: {fileID: 7173976696085726800}
@@ -25443,7 +25522,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 14
     m_FontStyle: 1
     m_BestFit: 1
@@ -25539,6 +25618,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000079}
   - component: {fileID: 8463664814396104794}
   - component: {fileID: 3564573766255862535}
   - component: {fileID: 805938623829764711}
@@ -25598,7 +25678,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -25634,6 +25714,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000080}
   - component: {fileID: 1719185662846321086}
   - component: {fileID: 1613845797258752064}
   - component: {fileID: 8249830071965322493}
@@ -25692,7 +25773,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -25788,6 +25869,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000081}
   - component: {fileID: 4275110618006179920}
   - component: {fileID: 4585400256437356262}
   - component: {fileID: 563579636234173643}
@@ -25846,7 +25928,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -25867,6 +25949,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000082}
   - component: {fileID: 635015796242429689}
   - component: {fileID: 3944091311382553259}
   - component: {fileID: 2363717151899294631}
@@ -25925,7 +26008,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 14
     m_FontStyle: 1
     m_BestFit: 1
@@ -26129,6 +26212,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000083}
   - component: {fileID: 1142742506961599703}
   - component: {fileID: 4698932452311127708}
   - component: {fileID: 736314842078049831}
@@ -26187,7 +26271,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -26509,6 +26593,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000084}
   - component: {fileID: 7937914223383709853}
   - component: {fileID: 129669435798431721}
   - component: {fileID: 1577620040750775632}
@@ -26568,7 +26653,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -27852,6 +27937,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000085}
   - component: {fileID: 6575718236469912210}
   - component: {fileID: 1818350265695899914}
   - component: {fileID: 1637730689925963605}
@@ -27910,7 +27996,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -27931,6 +28017,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000086}
   - component: {fileID: 8083179447604215159}
   - component: {fileID: 7111663570767868492}
   - component: {fileID: 4091446232502909569}
@@ -27989,7 +28076,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -28198,6 +28285,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000087}
   - component: {fileID: 3252889663227809455}
   - component: {fileID: 2548824464020401172}
   - component: {fileID: 990988334750124802}
@@ -28256,7 +28344,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -28503,6 +28591,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000088}
   - component: {fileID: 6463436835682562641}
   - component: {fileID: 378571032925128641}
   - component: {fileID: 1140498100740652395}
@@ -28562,7 +28651,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -28815,6 +28904,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000089}
   - component: {fileID: 3856139551332706291}
   - component: {fileID: 8147727812010308674}
   - component: {fileID: 7082569277225066046}
@@ -28874,7 +28964,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -29058,6 +29148,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000090}
   - component: {fileID: 1829586527504739324}
   - component: {fileID: 1392136718599737028}
   - component: {fileID: 4104239027520859663}
@@ -29116,7 +29207,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -29362,6 +29453,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000091}
   - component: {fileID: 3566763510408526472}
   - component: {fileID: 7831778911545359538}
   - component: {fileID: 2502086423884771709}
@@ -29420,7 +29512,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -29516,6 +29608,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000092}
   - component: {fileID: 200541301742416881}
   - component: {fileID: 8307857418027034158}
   - component: {fileID: 5164331188608498149}
@@ -29575,7 +29668,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -29686,6 +29779,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000093}
   - component: {fileID: 5505769206776572052}
   - component: {fileID: 7091832478936248743}
   - component: {fileID: 5668507399644377915}
@@ -29744,7 +29838,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -29765,6 +29859,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000094}
   - component: {fileID: 4084668797806972932}
   - component: {fileID: 3362903286763480705}
   - component: {fileID: 623947766259674129}
@@ -29824,7 +29919,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -29860,6 +29955,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000095}
   - component: {fileID: 2529825746931354267}
   - component: {fileID: 1691131456893464248}
   - component: {fileID: 7062208715197833313}
@@ -29918,7 +30014,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 11
     m_FontStyle: 0
     m_BestFit: 0
@@ -29930,7 +30026,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uAC00\uBC29"
+  m_Text: "Bags"
 --- !u!1 &8397812083984634833
 GameObject:
   m_ObjectHideFlags: 0
@@ -30416,6 +30512,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000096}
   - component: {fileID: 6546364452577796756}
   - component: {fileID: 802800986922302487}
   - component: {fileID: 1351423587126368281}
@@ -30474,7 +30571,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
@@ -31165,6 +31262,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000097}
   - component: {fileID: 4565423743749584286}
   - component: {fileID: 7985977373516228827}
   - component: {fileID: 8512244185507460259}
@@ -31223,7 +31321,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 02c0e54bbcd767c4585640f03801db34, type: 3}
     m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
@@ -31235,7 +31333,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uB2EB\uAE30 \xD7"
+  m_Text: "Close x"
 --- !u!1 &8698978419051772772
 GameObject:
   m_ObjectHideFlags: 0
@@ -31582,6 +31680,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000098}
   - component: {fileID: 6492147913543505813}
   - component: {fileID: 1269559372209561477}
   - component: {fileID: 6208169380674538758}
@@ -31640,7 +31739,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 28ec7e6c80a2a9043a50b9afdbefe390, type: 3}
+    m_Font: {fileID: 12800000, guid: 74333e15e4ed1cb42928590fcce79dcc, type: 3}
     m_FontSize: 13
     m_FontStyle: 1
     m_BestFit: 0
@@ -31932,6 +32031,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 9800000000099}
   - component: {fileID: 8584536596270846834}
   - component: {fileID: 5582543449891246886}
   - component: {fileID: 5548890608331923274}
@@ -31991,7 +32091,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fa1878e4dad8cb84d9bf5814fc4f602a, type: 3}
+    m_Font: {fileID: 12800000, guid: accadcd4c3454214b3d6018908ac0b2f, type: 3}
     m_FontSize: 10
     m_FontStyle: 0
     m_BestFit: 0
@@ -32509,3 +32609,1533 @@ MonoBehaviour:
   - {fileID: 3429806484672494492}
   - {fileID: 8724217387267428717}
   framesPerSecond: 10
+--- !u!114 &9800000000000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2525256807836482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: ui.shopbooklayout.products
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212570321071623301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217284097949639944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 243987061729226833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 440653332434684736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512043959895661215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517378071130694048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 744311509431194226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938447036185634268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 969294499226532676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015926192581976881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1017956082557528543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1058652914313819566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082324554075542506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109370733311995529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1126736820254798964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135245991074987002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224850777662823811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268184388248092878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: ui.shopbookcontroller.all
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288698364959075894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: items.itemdatabase.wood
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581311531392931494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: ui.bookmenulayout.cancel
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856747131744102525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957460873247396324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048675568466805010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2162559636516531351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2178532178004083865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359787174019692280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2419730196978262207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2496063605753077906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2533869616986156527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2699632853597765040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2733363109726035131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2816466906732939404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2836666722809614250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2901222305962331990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2952074239642762329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: ui.shopbooklayout.product_details
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2972595818755342182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3169196237811663615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3286386936502905843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3532999196738163983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3533555061827721116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3684623857912966625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3690646214823098097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3697138657540534525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3710593027377543037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3799761782530279141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3827817849015144552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: ui.shopbooklayout.categories
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4077404195529537289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4130598329575585005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4246648477093268896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4449147473543165855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4502746130504401107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4556823403080294590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4573541287337547385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622600274134793426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4659103115771534977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4672333875258390240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4901742008153357658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5099883498308647369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5178834882082109355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5320835722592069387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5366928207547991944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5377209354509235321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: ui.shopbooklayout.scroll_drag_to_browse
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5388291074841029067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: ui.shopbooklayout.buy
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5550869878334207836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5624008429386605723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5649456728597832025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5678205445940909435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: ui.shopbooklayout.seeds
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5684690510252205353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5691872420755730650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6213067092423440303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6224864298719848312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6270895128124010343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6366399881657687732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6417914593911936760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6577505863929003857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6602505076209404040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6868530100511144476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7030473056262212443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7122282873268763012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7147417890196516688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7153896791798256604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7163123817561439519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7186040660198473881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277901257568786546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7638387541063636541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7647352196951973072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7784816111146017883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7802580759619130436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7907093437139900956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8013518372763375296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8218965015694732420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8258347244312565415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8315083958117490637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8341365960654856766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 
+--- !u!114 &9800000000095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8346075328249357061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: items.shopdatabase.bags
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8470428727782140292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8659051274168980744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: ui.shopbooklayout.close_x
+  fontRole: 0
+  fontLanguage: 
+--- !u!114 &9800000000098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8890195002799270744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 1
+  fontLanguage: 
+--- !u!114 &9800000000099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9098319293575448944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4389eb9f0151b8e47a4a9f7d15e94cec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FarmMVP.LocalizedText
+  key: 
+  fontRole: 2
+  inventoryCount: 1
+  fontLanguage: 

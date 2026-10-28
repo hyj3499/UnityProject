@@ -20,6 +20,7 @@ namespace FarmMVP
         [SerializeField] private TMP_Text count;
 
         private static Image _dragImage;
+        private void OnEnable() => LocalizedText.InventoryCount(count);
 
         public void Setup(QuickInventoryHUD owner, int number, Image highlightImage, Image iconImage, TMP_Text countText)
         {
@@ -28,6 +29,7 @@ namespace FarmMVP
             highlight = highlightImage;
             icon = iconImage;
             count = countText;
+            LocalizedText.InventoryCount(count);
         }
 
         public void Show(ItemStack stack)

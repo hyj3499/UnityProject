@@ -32,7 +32,7 @@ namespace FarmMVP
             Register(new PlaceableDef
             {
                 id = WoodRoadId,
-                displayName = "나무 길",
+                displayName = "@items.roaddatabase.wooden_path",
                 kind = PlaceableKind.Road,
                 sheetPath = "Sprites/Road/Road",
                 spritePrefix = "WoodRoad",   // 시트 한 장에 여러 길이 있어서 접두사로 가른다

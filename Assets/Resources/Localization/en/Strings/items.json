@@ -1,0 +1,552 @@
+{
+  "entries": [
+    {
+      "key": "items.fencedatabase.white_fence",
+      "value": "White Fence"
+    },
+    {
+      "key": "items.fencedatabase.white_fence_gate",
+      "value": "White Fence Gate"
+    },
+    {
+      "key": "items.fencedatabase.wooden_fence",
+      "value": "Wooden Fence"
+    },
+    {
+      "key": "items.fencedatabase.stone_wall",
+      "value": "Stone Wall"
+    },
+    {
+      "key": "items.fencedatabase.iron_fence",
+      "value": "Iron Fence"
+    },
+    {
+      "key": "items.fencedatabase.wooden_fence_gate",
+      "value": "Wooden Fence Gate"
+    },
+    {
+      "key": "items.fencedatabase.stone_wall_gate",
+      "value": "Stone Wall Gate"
+    },
+    {
+      "key": "items.fencedatabase.iron_fence_gate",
+      "value": "Iron Fence Gate"
+    },
+    {
+      "key": "items.furnituredatabase.general_goods_cart",
+      "value": "General Goods Cart"
+    },
+    {
+      "key": "items.furnituredatabase.workbench",
+      "value": "Workbench"
+    },
+    {
+      "key": "items.furnituredatabase.bed",
+      "value": "Bed"
+    },
+    {
+      "key": "items.furnituredatabase.fireplace",
+      "value": "Fireplace"
+    },
+    {
+      "key": "items.furnituredatabase.flowerpot",
+      "value": "Flowerpot"
+    },
+    {
+      "key": "items.furnituredatabase.rug",
+      "value": "Rug"
+    },
+    {
+      "key": "items.roaddatabase.wooden_path",
+      "value": "Wooden Path"
+    },
+    {
+      "key": "items.farmercatalog.eyes_1_highlight",
+      "value": "Eyes 1 (Highlight)"
+    },
+    {
+      "key": "items.farmercatalog.eyes_2_solid",
+      "value": "Eyes 2 (Solid)"
+    },
+    {
+      "key": "items.fish.common",
+      "value": "Common"
+    },
+    {
+      "key": "items.fish.uncommon",
+      "value": "Uncommon"
+    },
+    {
+      "key": "items.fish.rare",
+      "value": "Rare"
+    },
+    {
+      "key": "items.fish.epic",
+      "value": "Epic"
+    },
+    {
+      "key": "items.fish.legendary",
+      "value": "Legendary"
+    },
+    {
+      "key": "items.fishdatabase.carp",
+      "value": "Carp"
+    },
+    {
+      "key": "items.fishdatabase.bluegill",
+      "value": "Bluegill"
+    },
+    {
+      "key": "items.fishdatabase.dace",
+      "value": "Dace"
+    },
+    {
+      "key": "items.fishdatabase.perch",
+      "value": "Perch"
+    },
+    {
+      "key": "items.fishdatabase.bullhead",
+      "value": "Bullhead"
+    },
+    {
+      "key": "items.fishdatabase.bass",
+      "value": "Bass"
+    },
+    {
+      "key": "items.fishdatabase.pike",
+      "value": "Pike"
+    },
+    {
+      "key": "items.fishdatabase.walleye",
+      "value": "Walleye"
+    },
+    {
+      "key": "items.fishdatabase.tiger_trout",
+      "value": "Tiger Trout"
+    },
+    {
+      "key": "items.fishdatabase.sturgeon",
+      "value": "Sturgeon"
+    },
+    {
+      "key": "items.fishdatabase.dorado",
+      "value": "Dorado"
+    },
+    {
+      "key": "items.fishdatabase.ghost_catfish",
+      "value": "Ghost Catfish"
+    },
+    {
+      "key": "items.fishdatabase.golden_fish",
+      "value": "Golden Fish"
+    },
+    {
+      "key": "items.fishdatabase.fairy_fish",
+      "value": "Fairy Fish"
+    },
+    {
+      "key": "items.fishingzonedatabase.shallow_creek",
+      "value": "Shallow Creek"
+    },
+    {
+      "key": "items.fishingzonedatabase.deep_river",
+      "value": "Deep River"
+    },
+    {
+      "key": "items.item.sturdy_wood_gathered_from_trees_used_to",
+      "value": "Sturdy wood gathered from trees. Used to craft furniture and farm facilities."
+    },
+    {
+      "key": "items.item.stone_gathered_from_the_ground_a_basic",
+      "value": "Stone gathered from the ground. A basic material for building and crafting."
+    },
+    {
+      "key": "items.item.dried_grass_gathered_on_the_farm",
+      "value": "Dried grass gathered on the farm."
+    },
+    {
+      "key": "items.item.tough_plant_fibers_used_to_craft_various",
+      "value": "Tough plant fibers used to craft various items."
+    },
+    {
+      "key": "items.item.a_farming_tool_for_tilling_soil_before",
+      "value": "A farming tool for tilling soil before planting crops."
+    },
+    {
+      "key": "items.item.a_tool_for_watering_crops_to_help",
+      "value": "A tool for watering crops to help them grow."
+    },
+    {
+      "key": "items.item.a_tool_for_chopping_trees_and_gathering",
+      "value": "A tool for chopping trees and gathering wood."
+    },
+    {
+      "key": "items.itemdatabase.wood",
+      "value": "Wood"
+    },
+    {
+      "key": "items.itemdatabase.stone",
+      "value": "Stone"
+    },
+    {
+      "key": "items.itemdatabase.hay",
+      "value": "Hay"
+    },
+    {
+      "key": "items.itemdatabase.fiber",
+      "value": "Fiber"
+    },
+    {
+      "key": "items.itemdatabase.hoe",
+      "value": "Hoe"
+    },
+    {
+      "key": "items.itemdatabase.watering_can",
+      "value": "Watering Can"
+    },
+    {
+      "key": "items.itemdatabase.axe",
+      "value": "Axe"
+    },
+    {
+      "key": "items.itemdatabase.seeds",
+      "value": " Seeds"
+    },
+    {
+      "key": "items.shopdatabase.backpack_level_0",
+      "value": "Backpack Level {0}"
+    },
+    {
+      "key": "items.shopdatabase.bags",
+      "value": "Bags"
+    },
+    {
+      "key": "items.shopdatabase.adds_10_inventory_slots_backpacks_must_be",
+      "value": "Adds 10 inventory slots.\n\nBackpacks must be upgraded in order. Purchased slots are permanent."
+    },
+    {
+      "key": "items.shopdatabase.matures_in_0_days",
+      "value": "Matures in {0} days"
+    },
+    {
+      "key": "items.shopdatabase.regrows",
+      "value": " - Regrows"
+    },
+    {
+      "key": "items.shopdatabase.does_not_grow_in_the_current_season",
+      "value": "\nDoes not grow in the current season."
+    },
+    {
+      "key": "items.shopdatabase.grass",
+      "value": "Grass"
+    },
+    {
+      "key": "items.shopdatabase.plant_on_empty_ground_to_let_it",
+      "value": "Plant on empty ground to let it spread."
+    },
+    {
+      "key": "items.shopdatabase.trees",
+      "value": "Trees"
+    },
+    {
+      "key": "items.shopdatabase.plant_on_empty_untilled_ground_matures_in",
+      "value": "Plant on empty, untilled ground.\nMatures in {0} days"
+    },
+    {
+      "key": "items.shopdatabase.wood_for_making_furniture_choose_as_much",
+      "value": "Wood for making furniture.\nChoose as much as you need."
+    },
+    {
+      "key": "items.shoppurchaseservice.select_a_product",
+      "value": "Select a product."
+    },
+    {
+      "key": "items.shoppurchaseservice.invalid_price",
+      "value": "Invalid price."
+    },
+    {
+      "key": "items.shoppurchaseservice.no_buyback_stock_remaining",
+      "value": "No buyback stock remaining."
+    },
+    {
+      "key": "items.shoppurchaseservice.invalid_backpack_level",
+      "value": "Invalid backpack level."
+    },
+    {
+      "key": "items.shoppurchaseservice.purchased",
+      "value": "Purchased"
+    },
+    {
+      "key": "items.shoppurchaseservice.buy_the_previous_backpack_upgrade_first",
+      "value": "Buy the previous backpack upgrade first."
+    },
+    {
+      "key": "items.shoppurchaseservice.check_the_backpack_price_settings",
+      "value": "Check the backpack price settings."
+    },
+    {
+      "key": "items.shoppurchaseservice.unknown_product",
+      "value": "Unknown product."
+    },
+    {
+      "key": "items.shoppurchaseservice.your_bag_is_full",
+      "value": "Your bag is full."
+    },
+    {
+      "key": "items.shoppurchaseservice.not_enough_gold",
+      "value": "Not enough gold."
+    },
+    {
+      "key": "items.shoppurchaseservice.check_the_purchase_quantity",
+      "value": "Check the purchase quantity."
+    },
+    {
+      "key": "items.shoppurchaseservice.transaction_in_progress",
+      "value": "Transaction in progress."
+    },
+    {
+      "key": "items.shoppurchaseservice.purchased_your_bag_gained_10_slots",
+      "value": " purchased! Your bag gained 10 slots."
+    },
+    {
+      "key": "items.shoppurchaseservice.could_not_purchase_the_backpack",
+      "value": "Could not purchase the backpack."
+    },
+    {
+      "key": "items.shoppurchaseservice.purchased_0_x_1",
+      "value": "Purchased {0} x{1}!"
+    },
+    {
+      "key": "items.shopsellservice.sold",
+      "value": "Sold"
+    },
+    {
+      "key": "items.shopsellservice.a_sold_item_it_will_disappear_from",
+      "value": "A sold item. It will disappear from this list next Monday."
+    },
+    {
+      "key": "items.shopsellservice.this_shop_does_not_buy_items",
+      "value": "This shop does not buy items."
+    },
+    {
+      "key": "items.shopsellservice.select_an_item",
+      "value": "Select an item."
+    },
+    {
+      "key": "items.shopsellservice.this_item_cannot_be_sold",
+      "value": "This item cannot be sold."
+    },
+    {
+      "key": "items.shopsellservice.you_have_reached_the_gold_limit",
+      "value": "You have reached the gold limit."
+    },
+    {
+      "key": "items.shopsellservice.transaction_in_progress",
+      "value": "Transaction in progress."
+    },
+    {
+      "key": "items.shopsellservice.sold_0_x1_1_n0_g",
+      "value": "Sold {0} x1! +{1:N0} G"
+    },
+    {
+      "key": "items.magicsystem.earth_magic",
+      "value": "Earth Magic"
+    },
+    {
+      "key": "items.magicsystem.water_magic",
+      "value": "Water Magic"
+    },
+    {
+      "key": "items.magicsystem.blade_magic",
+      "value": "Blade Magic"
+    },
+    {
+      "key": "items.magicsystem.rock_magic",
+      "value": "Rock Magic"
+    },
+    {
+      "key": "items.magicsystem.wind_magic",
+      "value": "Wind Magic"
+    },
+    {
+      "key": "items.magicsystem.shovel_magic",
+      "value": "Shovel Magic"
+    },
+    {
+      "key": "items.magicsystem.fishing_magic",
+      "value": "Fishing Magic"
+    },
+    {
+      "key": "items.cropdatabase.asparagus",
+      "value": "Asparagus"
+    },
+    {
+      "key": "items.cropdatabase.blueberry",
+      "value": "Blueberry"
+    },
+    {
+      "key": "items.cropdatabase.broccoli",
+      "value": "Broccoli"
+    },
+    {
+      "key": "items.cropdatabase.cabbage",
+      "value": "Cabbage"
+    },
+    {
+      "key": "items.cropdatabase.carrot",
+      "value": "Carrot"
+    },
+    {
+      "key": "items.cropdatabase.cauliflower",
+      "value": "Cauliflower"
+    },
+    {
+      "key": "items.cropdatabase.onion",
+      "value": "Onion"
+    },
+    {
+      "key": "items.cropdatabase.parsnip",
+      "value": "Parsnip"
+    },
+    {
+      "key": "items.cropdatabase.potato",
+      "value": "Potato"
+    },
+    {
+      "key": "items.cropdatabase.rice",
+      "value": "Rice"
+    },
+    {
+      "key": "items.cropdatabase.spring_onion",
+      "value": "Spring Onion"
+    },
+    {
+      "key": "items.cropdatabase.strawberry",
+      "value": "Strawberry"
+    },
+    {
+      "key": "items.cropdatabase.adzuki_bean",
+      "value": "Adzuki Bean"
+    },
+    {
+      "key": "items.cropdatabase.blackberry",
+      "value": "Blackberry"
+    },
+    {
+      "key": "items.cropdatabase.cucumber",
+      "value": "Cucumber"
+    },
+    {
+      "key": "items.cropdatabase.peas",
+      "value": "Peas"
+    },
+    {
+      "key": "items.cropdatabase.chili_pepper",
+      "value": "Chili Pepper"
+    },
+    {
+      "key": "items.cropdatabase.melon",
+      "value": "Melon"
+    },
+    {
+      "key": "items.cropdatabase.pineapple",
+      "value": "Pineapple"
+    },
+    {
+      "key": "items.cropdatabase.sunflower",
+      "value": "Sunflower"
+    },
+    {
+      "key": "items.cropdatabase.tomato",
+      "value": "Tomato"
+    },
+    {
+      "key": "items.cropdatabase.watermelon",
+      "value": "Watermelon"
+    },
+    {
+      "key": "items.cropdatabase.bell_pepper",
+      "value": "Bell Pepper"
+    },
+    {
+      "key": "items.cropdatabase.orange_bell_pepper",
+      "value": "Orange Bell Pepper"
+    },
+    {
+      "key": "items.cropdatabase.red_bell_pepper",
+      "value": "Red Bell Pepper"
+    },
+    {
+      "key": "items.cropdatabase.green_bell_pepper",
+      "value": "Green Bell Pepper"
+    },
+    {
+      "key": "items.cropdatabase.aloe",
+      "value": "Aloe"
+    },
+    {
+      "key": "items.cropdatabase.beet",
+      "value": "Beet"
+    },
+    {
+      "key": "items.cropdatabase.corn",
+      "value": "Corn"
+    },
+    {
+      "key": "items.cropdatabase.eggplant",
+      "value": "Eggplant"
+    },
+    {
+      "key": "items.cropdatabase.grapes",
+      "value": "Grapes"
+    },
+    {
+      "key": "items.cropdatabase.pumpkin",
+      "value": "Pumpkin"
+    },
+    {
+      "key": "items.plantdatabase.grass",
+      "value": "Grass"
+    },
+    {
+      "key": "items.plantdatabase.weeds",
+      "value": "Weeds"
+    },
+    {
+      "key": "items.treedatabase.cherry_tree",
+      "value": "Cherry Tree"
+    },
+    {
+      "key": "items.treedatabase.birch_tree",
+      "value": "Birch Tree"
+    },
+    {
+      "key": "items.treedatabase.purple_blossom_tree",
+      "value": "Purple Blossom Tree"
+    },
+    {
+      "key": "items.seed_name",
+      "value": "{0} Seeds"
+    },
+    {
+      "key": "items.description.seed",
+      "value": "{0}. Plant in suitable soil to grow."
+    },
+    {
+      "key": "items.description.crop",
+      "value": "Freshly harvested {0}. Place in the shipping bin to sell."
+    },
+    {
+      "key": "items.description.fish",
+      "value": "A freshly caught {0}. Place in the shipping bin to sell."
+    },
+    {
+      "key": "items.description.tool",
+      "value": "{0}, a tool for working on the farm."
+    },
+    {
+      "key": "items.description.other",
+      "value": "{0}, used around the farm."
+    }
+  ]
+}

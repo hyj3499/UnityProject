@@ -220,12 +220,13 @@ namespace FarmMVP
         {
             if (_view == null || _game == null || _game.Data == null) return;
             var farmer = _game.Data.farmer;
-            _view.playerName.text = "이름  " + (string.IsNullOrWhiteSpace(farmer.playerName) ? "농부" : farmer.playerName);
-            string[] seasons = { "봄", "여름", "가을", "겨울" };
-            _view.birthday.text = "생일  " + (farmer.birthdayDay > 0
-                ? seasons[Mathf.Clamp(farmer.birthdaySeason, 0, 3)] + " " + farmer.birthdayDay + "일" : "미등록");
-            _view.money.text = $"소지금  {_game.Money:N0} G";
-            _view.hp.text = $"체력  {farmer.hp} / {farmer.maxHp}";
+            _view.playerName.text = Localization.Get("ui.bookui.name") + (string.IsNullOrWhiteSpace(farmer.playerName) ? Localization.Get("ui.bookui.farmer") : farmer.playerName);
+            string[] seasons = { Localization.Get("ui.bookui.spring"), Localization.Get("ui.bookui.summer"), Localization.Get("ui.bookui.fall"), Localization.Get("ui.bookui.winter") };
+            _view.birthday.text = farmer.birthdayDay > 0
+                ? Localization.Format("ui.character.birthday", seasons[Mathf.Clamp(farmer.birthdaySeason, 0, 3)], farmer.birthdayDay)
+                : Localization.Get("ui.bookui.birthday") + Localization.Get("ui.bookui.not_set");
+            _view.money.text = Localization.Format("ui.bookui.gold_0_n0_g", _game.Money);
+            _view.hp.text = Localization.Format("ui.bookui.hp_0_1", farmer.hp, farmer.maxHp);
             _view.mp.text = $"MP  {farmer.mp} / {farmer.maxMp}";
             int unlocked = Mathf.Clamp(_game.UnlockedSlots, 0, 30);
             BookInventoryLayout.ApplyMenu(_view, unlocked);
@@ -268,7 +269,7 @@ namespace FarmMVP
             _view.itemIcon.enabled = _view.itemIcon.sprite != null;
             _view.itemName.text = def.displayName;
             _view.itemDescription.text = def.Description;
-            _view.itemFacts.text = $"보유 수량  {item.count}\n" + (def.sellPrice > 0 ? $"판매 가격  {def.sellPrice:N0} G / 개" : "판매할 수 없는 아이템");
+            _view.itemFacts.text = Localization.Format("ui.bookui.owned_0", item.count) + (def.sellPrice > 0 ? Localization.Format("ui.bookui.sell_price_0_n0_g_each", def.sellPrice) : Localization.Get("ui.bookui.this_item_cannot_be_sold"));
             if (_shownSlot != _selectedSlot)
             {
                 _shownSlot = _selectedSlot;
@@ -378,20 +379,20 @@ namespace FarmMVP
                 var size = _resolutions[_resolution];
                 _view.resolutionLabel.text = $"{size.x} × {size.y}";
             }
-            _view.scaleLabel.text = $"화면 스케일 (게임 줌)  {_zoom*100:0}%";
+            _view.scaleLabel.text = Localization.Format("ui.bookui.game_zoom_0_0", _zoom*100);
         }
 
         private void ApplyDisplay()
         {
             _game.SetZoom(_zoom);
             BookDisplaySettings.Apply(_resolutions[_resolution], _mode);
-            _view.displayMessage.text = Application.isEditor ? "저장됨 · 창 모드/해상도는 빌드에서 적용" : "설정을 적용했습니다";
+            _view.displayMessage.text = Application.isEditor ? Localization.Get("ui.bookui.saved_screen_settings_apply_in_the_game") : Localization.Get("ui.bookui.settings_applied");
         }
 
         private void AskQuit(bool save)
         {
             _saveBeforeQuit = save;
-            _view.confirmationText.text = save ? "저장하고 게임을 종료할까요?" : "저장하지 않고 종료할까요?\n저장하지 않은 진행 상황은 사라집니다.";
+            _view.confirmationText.text = save ? Localization.Get("ui.bookui.save_and_exit_the_game") : Localization.Get("ui.bookui.exit_without_saving_unsaved_progress_will_be");
             _view.confirmYes.interactable = true;
             _view.confirmation.SetActive(true);
         }
@@ -400,7 +401,7 @@ namespace FarmMVP
         {
             if (_saveBeforeQuit && !_game.TrySaveNow())
             {
-                _view.confirmationText.text = "저장하지 못했습니다.\n취소 후 다시 시도해 주세요.";
+                _view.confirmationText.text = Localization.Get("ui.bookui.could_not_save_cancel_and_try_again");
                 _view.confirmYes.interactable = false;
                 return;
             }

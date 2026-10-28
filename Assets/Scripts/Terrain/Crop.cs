@@ -11,7 +11,9 @@ namespace FarmMVP
     public class CropVariant
     {
         public string id;            // 아이템 id (예: "bell_pepper_red")
-        public string name;          // 표시 이름
+        [UnityEngine.SerializeField, UnityEngine.Serialization.FormerlySerializedAs("name")] private string _name;
+        public string name { get => Localization.Resolve(_name); set => _name = value; }
+        public string NameReference => _name;          // 표시 이름
         public int ripeStageIndex;   // 다 자란 모습의 시트 번호
         public int fruitIndex;       // 수확물 아이콘의 시트 번호
         public string dropSpriteName; // Sprites/Crops/Drops/{이것} — 바닥에 떨어진 모습
@@ -32,7 +34,9 @@ namespace FarmMVP
     public class CropDef
     {
         public string cropId;
-        public string name;
+        [UnityEngine.SerializeField, UnityEngine.Serialization.FormerlySerializedAs("name")] private string _name;
+        public string name { get => Localization.Resolve(_name); set => _name = value; }
+        public string NameReference => _name;
 
         /// <summary>Resources/Sprites/Crops 안의 시트 이름 (예: "Adzuki Bean").</summary>
         public string sheet;
@@ -91,7 +95,7 @@ namespace FarmMVP
                 yield return new CropVariant
                 {
                     id = cropId,
-                    name = name,
+                    name = _name,
                     ripeStageIndex = stageIndices[stageIndices.Length - 1],
                     fruitIndex = fruitIndex,
                     dropSpriteName = dropSpriteName ?? DefaultDropSpriteName

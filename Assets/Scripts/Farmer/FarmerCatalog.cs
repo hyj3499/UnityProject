@@ -18,7 +18,8 @@ namespace FarmMVP
         /// <summary>부위 이름을 뺀 경로. 여기에 "_shirts" 같은 부위 이름을 붙이면 파일이 된다.</summary>
         public string path;
 
-        public string label;
+        [UnityEngine.SerializeField, UnityEngine.Serialization.FormerlySerializedAs("label")] private string _label;
+        public string label { get => Localization.Resolve(_label); set => _label = value; }
 
         /// <summary>이 품목이 실제로 가지고 있는 부위들.</summary>
         public FarmerSlot[] slots;
@@ -59,11 +60,11 @@ namespace FarmMVP
 
         private static readonly Entry[] Raw =
         {
-            new Entry(FarmerCategory.Eyes, FarmerEyes.FirstStyle, "눈 1 (하이라이트)", "eyes"),
-            new Entry(FarmerCategory.Eyes, FarmerEyes.SecondStyle, "눈 2 (단색)", "eyes"),
-            new Entry(FarmerCategory.Hair, "Hair/Parm_long", "long hair", "hairs"),
-            new Entry(FarmerCategory.Pants, "Pants/short", "short pants", "pants"),
-            new Entry(FarmerCategory.Top, "Shirts/ribon", "ribon shirt", "shirts", sleeve: "overshirts"),
+            new Entry(FarmerCategory.Eyes, FarmerEyes.FirstStyle, "@items.farmercatalog.eyes_1_highlight", "eyes"),
+            new Entry(FarmerCategory.Eyes, FarmerEyes.SecondStyle, "@items.farmercatalog.eyes_2_solid", "eyes"),
+            new Entry(FarmerCategory.Hair, "Hair/Parm_long", "@ui.character.long_hair", "hairs"),
+            new Entry(FarmerCategory.Pants, "Pants/short", "@ui.character.short_pants", "pants"),
+            new Entry(FarmerCategory.Top, "Shirts/ribon", "@ui.character.ribbon_shirt", "shirts", sleeve: "overshirts"),
         };
 
         private static Dictionary<FarmerCategory, List<FarmerItem>> _byCategory;

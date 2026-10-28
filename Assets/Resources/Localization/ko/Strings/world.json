@@ -1,0 +1,228 @@
+{
+  "entries": [
+    {
+      "key": "world.gamebootstrap.could_not_save_the_new_game_please",
+      "value": "새 게임을 저장하지 못했습니다. 다시 저장해 주세요."
+    },
+    {
+      "key": "world.gamemanager.place_two_gates_side_by_side_to",
+      "value": "문은 두 개를 나란히 놓아야 열립니다"
+    },
+    {
+      "key": "world.gamemanager.go_to_sleep",
+      "value": "잠들겠습니까?"
+    },
+    {
+      "key": "world.gamemanager.give_1_to_0",
+      "value": "{0}에게 「{1}」을(를) 선물할까요?"
+    },
+    {
+      "key": "world.gamemanager.we_already_talked_today",
+      "value": "오늘은 이미 이야기를 나눴어요."
+    },
+    {
+      "key": "world.gamemanager.i_see",
+      "value": "그렇군요."
+    },
+    {
+      "key": "world.gamemanager.i_ve_already_received_enough_gifts_this",
+      "value": "이번 주엔 벌써 충분히 받았는걸요!"
+    },
+    {
+      "key": "world.gamemanager.thank_you",
+      "value": "고마워요."
+    },
+    {
+      "key": "world.gamemanager.not_enough_mp",
+      "value": "MP가 부족합니다"
+    },
+    {
+      "key": "world.gamemanager.spreading_branches_and_stones_damaged_the_farm",
+      "value": "퍼져나간 나뭇가지와 돌이 농장에 피해를 입혔습니다"
+    },
+    {
+      "key": "world.gamemanager.2_am_you_fell_asleep",
+      "value": "새벽 2시 — 그대로 곯아떨어졌다"
+    },
+    {
+      "key": "world.gamemanager.caught_0_1",
+      "value": "{0} 을(를) 잡았다! ({1})"
+    },
+    {
+      "key": "world.gamemanager.0_cannot_be_planted_in_1",
+      "value": "{0}은(는) {1}에 심을 수 없다"
+    },
+    {
+      "key": "world.gamemanager.not_enough_materials",
+      "value": "재료가 부족합니다"
+    },
+    {
+      "key": "world.gamemanager.crafted_0_x_1",
+      "value": "{0} x{1} 을(를) 만들었다"
+    },
+    {
+      "key": "world.gamemanager.shipping_sales_0_n0_g",
+      "value": "배송함 판매 +{0:N0} G"
+    },
+    {
+      "key": "world.gamemanager.0_has_arrived",
+      "value": "{0}이(가) 되었다"
+    },
+    {
+      "key": "world.gamemanager.0_out_of_season_crops_withered",
+      "value": " — 철 지난 작물 {0}개가 시들었다"
+    },
+    {
+      "key": "world.gamemanager.saved",
+      "value": "저장됨"
+    },
+    {
+      "key": "world.gamemanager.could_not_save",
+      "value": "저장하지 못했습니다"
+    },
+    {
+      "key": "world.seasons.mon",
+      "value": "월"
+    },
+    {
+      "key": "world.seasons.tue",
+      "value": "화"
+    },
+    {
+      "key": "world.seasons.wed",
+      "value": "수"
+    },
+    {
+      "key": "world.seasons.thu",
+      "value": "목"
+    },
+    {
+      "key": "world.seasons.fri",
+      "value": "금"
+    },
+    {
+      "key": "world.seasons.sat",
+      "value": "토"
+    },
+    {
+      "key": "world.seasons.sun",
+      "value": "일"
+    },
+    {
+      "key": "world.seasons.spring",
+      "value": "봄"
+    },
+    {
+      "key": "world.seasons.summer",
+      "value": "여름"
+    },
+    {
+      "key": "world.seasons.fall",
+      "value": "가을"
+    },
+    {
+      "key": "world.seasons.winter",
+      "value": "겨울"
+    },
+    {
+      "key": "world.seasons.all_seasons",
+      "value": "사계절"
+    },
+    {
+      "key": "world.weather.very_sunny",
+      "value": "매우 맑음"
+    },
+    {
+      "key": "world.weather.cloudy",
+      "value": "흐림"
+    },
+    {
+      "key": "world.weather.windy",
+      "value": "바람"
+    },
+    {
+      "key": "world.weather.lightning",
+      "value": "번개"
+    },
+    {
+      "key": "world.weather.thunderstorm",
+      "value": "번개와 비"
+    },
+    {
+      "key": "world.weather.rain",
+      "value": "비"
+    },
+    {
+      "key": "world.weather.heavy_snow",
+      "value": "폭설"
+    },
+    {
+      "key": "world.weather.storm",
+      "value": "폭풍"
+    },
+    {
+      "key": "world.weather.snow",
+      "value": "눈"
+    },
+    {
+      "key": "world.weather.sunny",
+      "value": "맑음"
+    },
+    {
+      "key": "world.fishingcontroller.too_soon",
+      "value": "너무 일찍 챘다!"
+    },
+    {
+      "key": "world.fishingcontroller.it_got_away",
+      "value": "놓쳤다..."
+    },
+    {
+      "key": "world.fishingcontroller.time_s_up_it_got_away",
+      "value": "시간 초과! 놓쳤다..."
+    },
+    {
+      "key": "world.mapgraph.farm",
+      "value": "목장"
+    },
+    {
+      "key": "world.mapgraph.farmhouse",
+      "value": "농가"
+    },
+    {
+      "key": "world.mapgraph.valley",
+      "value": "계곡"
+    },
+    {
+      "key": "world.mapgraph.campsite_1",
+      "value": "야영지 1"
+    },
+    {
+      "key": "world.mapgraph.campsite_2",
+      "value": "야영지 2"
+    },
+    {
+      "key": "world.mapgraph.meadow",
+      "value": "초원"
+    },
+    {
+      "key": "world.mapgraph.deep_forest",
+      "value": "깊은 숲"
+    },
+    {
+      "key": "world.mapgraph.sea",
+      "value": "바다"
+    },
+    {
+      "key": "world.mapgraph.mountain_1",
+      "value": "산 1"
+    },
+    {
+      "key": "world.mapgraph.mountain_2",
+      "value": "산 2"
+    },
+    {
+      "key": "world.mapgraph.mountain_summit",
+      "value": "산 정상"
+    }
+  ]
+}

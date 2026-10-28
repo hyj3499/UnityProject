@@ -1,0 +1,736 @@
+{
+  "entries": [
+    {
+      "key": "ui.gamedata.farmer",
+      "value": "농부"
+    },
+    {
+      "key": "ui.bookdisplaysettings.windowed",
+      "value": "창 모드"
+    },
+    {
+      "key": "ui.bookdisplaysettings.borderless_fullscreen",
+      "value": "테두리 없는 전체 화면"
+    },
+    {
+      "key": "ui.bookdisplaysettings.fullscreen",
+      "value": "전체 화면"
+    },
+    {
+      "key": "ui.bookmenulayout.inventory",
+      "value": "인벤토리"
+    },
+    {
+      "key": "ui.bookmenulayout.skills",
+      "value": "스킬"
+    },
+    {
+      "key": "ui.bookmenulayout.residents",
+      "value": "주민"
+    },
+    {
+      "key": "ui.bookmenulayout.livestock",
+      "value": "가축"
+    },
+    {
+      "key": "ui.bookmenulayout.quests",
+      "value": "퀘스트"
+    },
+    {
+      "key": "ui.bookmenulayout.map_journal",
+      "value": "지도도감"
+    },
+    {
+      "key": "ui.bookmenulayout.tutorial",
+      "value": "튜토리얼"
+    },
+    {
+      "key": "ui.bookmenulayout.settings",
+      "value": "설정"
+    },
+    {
+      "key": "ui.bookmenulayout.close",
+      "value": "닫기"
+    },
+    {
+      "key": "ui.bookmenulayout.profile",
+      "value": "프로필"
+    },
+    {
+      "key": "ui.bookmenulayout.character_preview",
+      "value": "플레이어\n모습"
+    },
+    {
+      "key": "ui.bookmenulayout.name_farmer",
+      "value": "이름  농부"
+    },
+    {
+      "key": "ui.bookmenulayout.birthday_not_set",
+      "value": "생일  미등록"
+    },
+    {
+      "key": "ui.bookmenulayout.gold_0_g",
+      "value": "소지금  0 G"
+    },
+    {
+      "key": "ui.bookmenulayout.hp_100_100",
+      "value": "체력  100 / 100"
+    },
+    {
+      "key": "ui.bookmenulayout.inventory_275",
+      "value": "인벤토리"
+    },
+    {
+      "key": "ui.bookmenulayout.item_details",
+      "value": "아이템 정보"
+    },
+    {
+      "key": "ui.bookmenulayout.profile_277",
+      "value": "프로필"
+    },
+    {
+      "key": "ui.bookmenulayout.inventory_278",
+      "value": "인벤토리"
+    },
+    {
+      "key": "ui.bookmenulayout.item_details_280",
+      "value": "아이템 정보"
+    },
+    {
+      "key": "ui.bookmenulayout.settings_281",
+      "value": "설정"
+    },
+    {
+      "key": "ui.bookmenulayout.gameplay",
+      "value": "게임 플레이"
+    },
+    {
+      "key": "ui.bookmenulayout.display",
+      "value": "디스플레이"
+    },
+    {
+      "key": "ui.bookmenulayout.audio",
+      "value": "오디오"
+    },
+    {
+      "key": "ui.bookmenulayout.controls",
+      "value": "조작"
+    },
+    {
+      "key": "ui.bookmenulayout.exit",
+      "value": "종료"
+    },
+    {
+      "key": "ui.bookmenulayout.coming_soon",
+      "value": "준비 중입니다"
+    },
+    {
+      "key": "ui.bookmenulayout.screen_mode",
+      "value": "화면 모드"
+    },
+    {
+      "key": "ui.bookmenulayout.windowed",
+      "value": "창 모드"
+    },
+    {
+      "key": "ui.bookmenulayout.resolution",
+      "value": "해상도"
+    },
+    {
+      "key": "ui.bookmenulayout.game_zoom_100",
+      "value": "화면 스케일 (게임 줌)  100%"
+    },
+    {
+      "key": "ui.bookmenulayout.apply",
+      "value": "적용"
+    },
+    {
+      "key": "ui.bookmenulayout.exit_the_game_unsaved_progress_will_be",
+      "value": "게임을 종료합니다.\n저장하지 않은 진행 상황은\n바로 종료 시 사라집니다."
+    },
+    {
+      "key": "ui.bookmenulayout.save_and_exit",
+      "value": "저장하고 종료"
+    },
+    {
+      "key": "ui.bookmenulayout.exit_without_saving",
+      "value": "바로 종료"
+    },
+    {
+      "key": "ui.bookmenulayout.exit_the_game",
+      "value": "게임을 종료할까요?"
+    },
+    {
+      "key": "ui.bookmenulayout.exit_297",
+      "value": "종료"
+    },
+    {
+      "key": "ui.bookmenulayout.cancel",
+      "value": "취소"
+    },
+    {
+      "key": "ui.bookui.name",
+      "value": "이름  "
+    },
+    {
+      "key": "ui.bookui.farmer",
+      "value": "농부"
+    },
+    {
+      "key": "ui.bookui.spring",
+      "value": "봄"
+    },
+    {
+      "key": "ui.bookui.summer",
+      "value": "여름"
+    },
+    {
+      "key": "ui.bookui.fall",
+      "value": "가을"
+    },
+    {
+      "key": "ui.bookui.winter",
+      "value": "겨울"
+    },
+    {
+      "key": "ui.bookui.birthday",
+      "value": "생일  "
+    },
+    {
+      "key": "ui.bookui.not_set",
+      "value": "미등록"
+    },
+    {
+      "key": "ui.bookui.gold_0_n0_g",
+      "value": "소지금  {0:N0} G"
+    },
+    {
+      "key": "ui.bookui.hp_0_1",
+      "value": "체력  {0} / {1}"
+    },
+    {
+      "key": "ui.bookui.owned_0",
+      "value": "보유 수량  {0}\n"
+    },
+    {
+      "key": "ui.bookui.sell_price_0_n0_g_each",
+      "value": "판매 가격  {0:N0} G / 개"
+    },
+    {
+      "key": "ui.bookui.this_item_cannot_be_sold",
+      "value": "판매할 수 없는 아이템"
+    },
+    {
+      "key": "ui.bookui.game_zoom_0_0",
+      "value": "화면 스케일 (게임 줌)  {0:0}%"
+    },
+    {
+      "key": "ui.bookui.saved_screen_settings_apply_in_the_game",
+      "value": "저장됨 · 창 모드/해상도는 빌드에서 적용"
+    },
+    {
+      "key": "ui.bookui.settings_applied",
+      "value": "설정을 적용했습니다"
+    },
+    {
+      "key": "ui.bookui.save_and_exit_the_game",
+      "value": "저장하고 게임을 종료할까요?"
+    },
+    {
+      "key": "ui.bookui.exit_without_saving_unsaved_progress_will_be",
+      "value": "저장하지 않고 종료할까요?\n저장하지 않은 진행 상황은 사라집니다."
+    },
+    {
+      "key": "ui.bookui.could_not_save_cancel_and_try_again",
+      "value": "저장하지 못했습니다.\n취소 후 다시 시도해 주세요."
+    },
+    {
+      "key": "ui.charactercreationdraft.please_enter_a_name",
+      "value": "이름을 입력해주세요."
+    },
+    {
+      "key": "ui.charactercreationdraft.please_select_a_gender",
+      "value": "성별을 선택해주세요."
+    },
+    {
+      "key": "ui.charactercreatorui.cancel_character_creation",
+      "value": "캐릭터 생성을 취소하시겠습니까?"
+    },
+    {
+      "key": "ui.charactercreatorui.customize_character",
+      "value": "캐릭터 커스텀 설정"
+    },
+    {
+      "key": "ui.charactercreatorui.character_setup",
+      "value": "캐릭터 기본 설정"
+    },
+    {
+      "key": "ui.charactercreatorui.spring",
+      "value": "봄"
+    },
+    {
+      "key": "ui.charactercreatorui.summer",
+      "value": "여름"
+    },
+    {
+      "key": "ui.charactercreatorui.fall",
+      "value": "가을"
+    },
+    {
+      "key": "ui.charactercreatorui.winter",
+      "value": "겨울"
+    },
+    {
+      "key": "ui.charactercreatorui.none",
+      "value": "없음"
+    },
+    {
+      "key": "ui.confirmationdialogview.make_this_purchase",
+      "value": "구매하시겠습니까?"
+    },
+    {
+      "key": "ui.confirmationdialogview.yes",
+      "value": "예"
+    },
+    {
+      "key": "ui.confirmationdialogview.no",
+      "value": "아니오"
+    },
+    {
+      "key": "ui.craftingui.craft",
+      "value": "제작"
+    },
+    {
+      "key": "ui.craftingui.workbench",
+      "value": "작업대"
+    },
+    {
+      "key": "ui.craftingui.hold_a_crafted_fence_or_path_and",
+      "value": "만든 울타리·길은 손에 들고 우클릭하면 놓입니다 / ESC 로 닫기"
+    },
+    {
+      "key": "ui.dialogueui.click_space",
+      "value": "▼ 클릭 / Space"
+    },
+    {
+      "key": "ui.fishingui.casting",
+      "value": "찌를 던졌다..."
+    },
+    {
+      "key": "ui.mainmenucontroller.yes",
+      "value": "예"
+    },
+    {
+      "key": "ui.mainmenucontroller.ok",
+      "value": "확인"
+    },
+    {
+      "key": "ui.mainmenucontroller.you_can_have_up_to_5_saves",
+      "value": "저장 데이터는 최대 5개입니다. Continue에서 기존 데이터를 삭제해 주세요."
+    },
+    {
+      "key": "ui.mainmenucontroller.save_0_1_up_to_2",
+      "value": "현재 데이터  {0} / {1}   (최대 {2}개)"
+    },
+    {
+      "key": "ui.mainmenucontroller.0_1",
+      "value": "{0} {1}일"
+    },
+    {
+      "key": "ui.mainmenucontroller.not_set",
+      "value": "미등록"
+    },
+    {
+      "key": "ui.mainmenucontroller.year_0_1_2",
+      "value": "{0}년 {1} {2}일"
+    },
+    {
+      "key": "ui.mainmenucontroller.0_h_1_m",
+      "value": "{0}시간 {1}분"
+    },
+    {
+      "key": "ui.mainmenucontroller.could_not_load_the_selected_save",
+      "value": "선택한 데이터를 불러오지 못했습니다."
+    },
+    {
+      "key": "ui.mainmenucontroller.delete_the_save_for_0_this_cannot",
+      "value": "'{0}'의 저장 데이터를 삭제하시겠습니까?\n삭제한 데이터는 되돌릴 수 없습니다."
+    },
+    {
+      "key": "ui.mainmenucontroller.could_not_delete_the_save",
+      "value": "데이터를 삭제하지 못했습니다."
+    },
+    {
+      "key": "ui.mainmenucontroller.you_can_have_up_to_5_saves_354",
+      "value": "저장 데이터는 최대 5개입니다. 기존 데이터를 삭제해 주세요."
+    },
+    {
+      "key": "ui.shippingui.shipping_bin",
+      "value": "배송함"
+    },
+    {
+      "key": "ui.shippingui.expected_sales_0_g",
+      "value": "예상 판매금액 0 G"
+    },
+    {
+      "key": "ui.shippingui.my_bag",
+      "value": "내 가방"
+    },
+    {
+      "key": "ui.shippingui.drag_to_move_shift_click_to_transfer",
+      "value": "드래그로 옮기기 · Shift+클릭으로 한 번에 옮기기 · ESC 로 닫기"
+    },
+    {
+      "key": "ui.shippingui.expected_sales_0_n0_g",
+      "value": "예상 판매금액 {0:N0} G"
+    },
+    {
+      "key": "ui.shopbookcontroller.other",
+      "value": "기타"
+    },
+    {
+      "key": "ui.shopbookcontroller.all",
+      "value": "전체"
+    },
+    {
+      "key": "ui.shopbookcontroller.sold",
+      "value": "판매"
+    },
+    {
+      "key": "ui.shopbookcontroller.select_a_product",
+      "value": "상품을 선택하세요"
+    },
+    {
+      "key": "ui.shopbookcontroller.no_products_for_sale",
+      "value": "판매 중인 상품이 없습니다."
+    },
+    {
+      "key": "ui.shopbookcontroller.0_remaining",
+      "value": " · 남은 {0}개"
+    },
+    {
+      "key": "ui.shopbookcontroller.sell_price_0_n0_g_each",
+      "value": "판매 가격 {0:N0} G / 개"
+    },
+    {
+      "key": "ui.shopbookcontroller.this_item_cannot_be_sold",
+      "value": "판매할 수 없는 아이템"
+    },
+    {
+      "key": "ui.shopbookcontroller.right_click_sell_one",
+      "value": "\n\n우클릭: 1개 판매"
+    },
+    {
+      "key": "ui.shopbooklayout.products",
+      "value": "판매 상품"
+    },
+    {
+      "key": "ui.shopbooklayout.no_products_for_sale",
+      "value": "판매 중인 상품이 없습니다."
+    },
+    {
+      "key": "ui.shopbooklayout.scroll_drag_to_browse",
+      "value": "휠 / 드래그로 목록 보기"
+    },
+    {
+      "key": "ui.shopbooklayout.categories",
+      "value": "카테고리"
+    },
+    {
+      "key": "ui.shopbooklayout.product_details",
+      "value": "상품 안내"
+    },
+    {
+      "key": "ui.shopbooklayout.select_a_product",
+      "value": "상품을 선택하세요"
+    },
+    {
+      "key": "ui.shopbooklayout.select_a_product_from_the_list_to",
+      "value": "왼쪽 목록에서 상품을 선택하면\n상세 설명이 표시됩니다."
+    },
+    {
+      "key": "ui.shopbooklayout.buy",
+      "value": "구매"
+    },
+    {
+      "key": "ui.shopbooklayout.close_x",
+      "value": "닫기 ×"
+    },
+    {
+      "key": "ui.shopbooklayout.cancel",
+      "value": "취소"
+    },
+    {
+      "key": "ui.shopbooklayout.strawberry_seeds",
+      "value": "딸기 씨앗"
+    },
+    {
+      "key": "ui.shopbooklayout.tree_seeds",
+      "value": "나무 씨앗"
+    },
+    {
+      "key": "ui.shopbooklayout.backpack_level_1",
+      "value": "배낭 1단계"
+    },
+    {
+      "key": "ui.shopbooklayout.products_385",
+      "value": "판매 상품"
+    },
+    {
+      "key": "ui.shopbooklayout.products_386",
+      "value": "판매 상품"
+    },
+    {
+      "key": "ui.shopbooklayout.all",
+      "value": "전체"
+    },
+    {
+      "key": "ui.shopbooklayout.seeds",
+      "value": "씨앗"
+    },
+    {
+      "key": "ui.shopbooklayout.bags",
+      "value": "가방"
+    },
+    {
+      "key": "ui.shopbooklayout.product_name",
+      "value": "상품 이름"
+    },
+    {
+      "key": "ui.startscreenlayout.edit",
+      "value": "수정"
+    },
+    {
+      "key": "ui.startscreenlayout.character_setup",
+      "value": "캐릭터 기본 설정"
+    },
+    {
+      "key": "ui.startscreenlayout.rotate",
+      "value": "회전"
+    },
+    {
+      "key": "ui.startscreenlayout.gender",
+      "value": "성별"
+    },
+    {
+      "key": "ui.startscreenlayout.male",
+      "value": "남"
+    },
+    {
+      "key": "ui.startscreenlayout.female",
+      "value": "여"
+    },
+    {
+      "key": "ui.startscreenlayout.birthday",
+      "value": "생년월일"
+    },
+    {
+      "key": "ui.startscreenlayout.spring",
+      "value": "봄"
+    },
+    {
+      "key": "ui.startscreenlayout.day_1",
+      "value": "1일"
+    },
+    {
+      "key": "ui.startscreenlayout.next",
+      "value": "다음 단계"
+    },
+    {
+      "key": "ui.startscreenlayout.back",
+      "value": "이전 단계"
+    },
+    {
+      "key": "ui.startscreenlayout.start_game",
+      "value": "게임 시작"
+    },
+    {
+      "key": "ui.startscreenlayout.skin",
+      "value": "피부색"
+    },
+    {
+      "key": "ui.startscreenlayout.eyes",
+      "value": "눈"
+    },
+    {
+      "key": "ui.startscreenlayout.hair",
+      "value": "헤어"
+    },
+    {
+      "key": "ui.startscreenlayout.top",
+      "value": "상의"
+    },
+    {
+      "key": "ui.startscreenlayout.bottom",
+      "value": "하의"
+    },
+    {
+      "key": "ui.startscreenlayout.outfit",
+      "value": "한벌옷"
+    },
+    {
+      "key": "ui.startscreenlayout.shoes",
+      "value": "신발"
+    },
+    {
+      "key": "ui.startscreenlayout.accessories",
+      "value": "악세사리"
+    },
+    {
+      "key": "ui.startscreenlayout.select_save",
+      "value": "저장 데이터 선택"
+    },
+    {
+      "key": "ui.startscreenlayout.save_1_5_up_to_5",
+      "value": "현재 데이터  1 / 5   (최대 5개)"
+    },
+    {
+      "key": "ui.startscreenlayout.character_name",
+      "value": "캐릭터 이름"
+    },
+    {
+      "key": "ui.startscreenlayout.birthday_417",
+      "value": "생일"
+    },
+    {
+      "key": "ui.startscreenlayout.current_date",
+      "value": "현재 날짜"
+    },
+    {
+      "key": "ui.startscreenlayout.gold",
+      "value": "소지금"
+    },
+    {
+      "key": "ui.startscreenlayout.play_time",
+      "value": "플레이시간"
+    },
+    {
+      "key": "ui.startscreenlayout.spring_1",
+      "value": "봄 1일"
+    },
+    {
+      "key": "ui.startscreenlayout.year_1_spring_1",
+      "value": "1년 봄 1일"
+    },
+    {
+      "key": "ui.startscreenlayout.0h_0m",
+      "value": "0시간 0분"
+    },
+    {
+      "key": "ui.startscreenlayout.start",
+      "value": "시작하기"
+    },
+    {
+      "key": "ui.startscreenlayout.delete",
+      "value": "삭제하기"
+    },
+    {
+      "key": "ui.startscreenlayout.none",
+      "value": "없음"
+    },
+    {
+      "key": "ui.startscreenlayout.suggested",
+      "value": "추천"
+    },
+    {
+      "key": "ui.startscreenlayout.apply",
+      "value": "설정"
+    },
+    {
+      "key": "ui.startscreenlayout.preview_a_slot_then_press_apply_to",
+      "value": "슬롯은 미리보기\n설정 버튼으로 확정"
+    },
+    {
+      "key": "ui.startscreenlayout.settings",
+      "value": "설정"
+    },
+    {
+      "key": "ui.startscreenlayout.volume",
+      "value": "음량"
+    },
+    {
+      "key": "ui.startscreenlayout.back_433",
+      "value": "돌아가기"
+    },
+    {
+      "key": "ui.startscreenlayout.cancel_character_creation",
+      "value": "캐릭터 생성을 취소하시겠습니까?"
+    },
+    {
+      "key": "ui.startscreenlayout.yes",
+      "value": "예"
+    },
+    {
+      "key": "ui.startscreenlayout.no",
+      "value": "아니오"
+    },
+    {
+      "key": "ui.uimanager.me",
+      "value": "나"
+    },
+    {
+      "key": "ui.uimanager.day_0_06_00",
+      "value": "{0}일차\n06:00"
+    },
+    {
+      "key": "ui.menu.new_game",
+      "value": "새 게임"
+    },
+    {
+      "key": "ui.menu.continue",
+      "value": "계속하기"
+    },
+    {
+      "key": "ui.menu.settings",
+      "value": "설정"
+    },
+    {
+      "key": "ui.menu.exit",
+      "value": "종료"
+    },
+    {
+      "key": "ui.settings.language",
+      "value": "언어"
+    },
+    {
+      "key": "ui.settings.resolution",
+      "value": "해상도"
+    },
+    {
+      "key": "ui.settings.saved",
+      "value": "저장됨. 화면 크기는 빌드에서 변경됩니다."
+    },
+    {
+      "key": "ui.character.name",
+      "value": "이름"
+    },
+    {
+      "key": "ui.character.day",
+      "value": "{0}일"
+    },
+    {
+      "key": "ui.character.birthday",
+      "value": "생일  {0} {1}일"
+    },
+    {
+      "key": "ui.shop.general",
+      "value": "농부의 상점"
+    },
+    {
+      "key": "ui.shop.materials",
+      "value": "로빈의 상점"
+    },
+    {
+      "key": "ui.character.long_hair",
+      "value": "긴 머리"
+    },
+    {
+      "key": "ui.character.short_pants",
+      "value": "반바지"
+    },
+    {
+      "key": "ui.character.ribbon_shirt",
+      "value": "리본 셔츠"
+    }
+  ]
+}

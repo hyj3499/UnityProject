@@ -9,7 +9,8 @@ namespace FarmMVP
     /// <summary>한 마법의 스펙: MP 소모량과 조준 표시 색상.</summary>
     public struct MagicDef
     {
-        public string displayName;
+        [UnityEngine.SerializeField, UnityEngine.Serialization.FormerlySerializedAs("displayName")] private string _displayName;
+        public string displayName { get => Localization.Resolve(_displayName); set => _displayName = value; }
         public int mpCost;
         public Color previewColor;  // 조준 중 표시할 타일 하이라이트 색상
     }
@@ -22,42 +23,42 @@ namespace FarmMVP
     {
         public static readonly MagicDef Earth = new MagicDef
         {
-            displayName = "대지마법",
+            displayName = "@items.magicsystem.earth_magic",
             mpCost = 3,
             previewColor = new Color(0.55f, 0.42f, 0.2f, 0.45f),
         };
 
         public static readonly MagicDef Water = new MagicDef
         {
-            displayName = "물마법",
+            displayName = "@items.magicsystem.water_magic",
             mpCost = 2,
             previewColor = new Color(0.25f, 0.5f, 0.9f, 0.45f),
         };
 
         public static readonly MagicDef Blade = new MagicDef
         {
-            displayName = "칼날마법",
+            displayName = "@items.magicsystem.blade_magic",
             mpCost = 4,
             previewColor = new Color(0.8f, 0.25f, 0.25f, 0.45f),
         };
 
         public static readonly MagicDef Rock = new MagicDef
         {
-            displayName = "바위마법",
+            displayName = "@items.magicsystem.rock_magic",
             mpCost = 5,
             previewColor = new Color(0.55f, 0.55f, 0.6f, 0.45f),
         };
 
         public static readonly MagicDef Wind = new MagicDef
         {
-            displayName = "바람마법",
+            displayName = "@items.magicsystem.wind_magic",
             mpCost = 2,
             previewColor = new Color(0.55f, 0.85f, 0.6f, 0.45f),
         };
 
         public static readonly MagicDef Shovel = new MagicDef
         {
-            displayName = "삽마법",
+            displayName = "@items.magicsystem.shovel_magic",
             mpCost = 2,
             previewColor = new Color(0.88f, 0.68f, 0.35f, 0.45f),
         };
@@ -65,7 +66,7 @@ namespace FarmMVP
         /// <summary>물가에서 낚시 미니게임을 시작하는 전용 마법.</summary>
         public static readonly MagicDef Fishing = new MagicDef
         {
-            displayName = "낚시마법",
+            displayName = "@items.magicsystem.fishing_magic",
             mpCost = 2,
             previewColor = new Color(0.35f, 0.75f, 0.95f, 0.45f),
         };

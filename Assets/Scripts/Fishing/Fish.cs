@@ -14,7 +14,8 @@ namespace FarmMVP
     public class FishDef
     {
         public string fishId;       // 아이템 id로도 그대로 쓰인다
-        public string displayName;
+        [UnityEngine.SerializeField, UnityEngine.Serialization.FormerlySerializedAs("displayName")] private string _displayName;
+        public string displayName { get => Localization.Resolve(_displayName); set => _displayName = value; }
         public FishRarity rarity;
         public int difficulty;      // 1~5. 미니게임의 속도/존 크기/필요 성공 횟수를 정한다
         public string spriteName;   // Resources의 Sprites/Fish/{spriteName}
@@ -29,7 +30,7 @@ namespace FarmMVP
         public ItemDef ToItemDef() => new ItemDef
         {
             id = fishId,
-            displayName = displayName,
+            displayName = _displayName,
             type = ItemType.Fish,
             maxStack = 99,
             spriteKey = "Fish/" + spriteName,
@@ -42,11 +43,11 @@ namespace FarmMVP
             {
                 switch (rarity)
                 {
-                    case FishRarity.Common: return "흔함";
-                    case FishRarity.Uncommon: return "제법 귀함";
-                    case FishRarity.Rare: return "희귀";
-                    case FishRarity.Epic: return "매우 희귀";
-                    case FishRarity.Legendary: return "전설";
+                    case FishRarity.Common: return Localization.Get("items.fish.common");
+                    case FishRarity.Uncommon: return Localization.Get("items.fish.uncommon");
+                    case FishRarity.Rare: return Localization.Get("items.fish.rare");
+                    case FishRarity.Epic: return Localization.Get("items.fish.epic");
+                    case FishRarity.Legendary: return Localization.Get("items.fish.legendary");
                     default: return "";
                 }
             }

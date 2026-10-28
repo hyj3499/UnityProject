@@ -1,0 +1,240 @@
+{
+  "entries": [
+    {
+      "key": "npc.Leona.displayName",
+      "value": "Leona"
+    },
+    {
+      "key": "npc.Leona.giftLines.loved.0",
+      "value": "This... it's one of my favorite things."
+    },
+    {
+      "key": "npc.Leona.giftLines.loved.1",
+      "value": "Thank you. You just made my whole day."
+    },
+    {
+      "key": "npc.Leona.giftLines.liked.0",
+      "value": "Oh, I actually needed this."
+    },
+    {
+      "key": "npc.Leona.giftLines.liked.1",
+      "value": "I'll put it to good use. Thanks!"
+    },
+    {
+      "key": "npc.Leona.giftLines.neutral.0",
+      "value": "Oh, thank you. I'll take it."
+    },
+    {
+      "key": "npc.Leona.giftLines.disliked.0",
+      "value": "Ah... I appreciate the thought, but..."
+    },
+    {
+      "key": "npc.Leona.giftLines.disliked.1",
+      "value": "Could you bring something else next time?"
+    },
+    {
+      "key": "npc.Leona.giftLines.hated.0",
+      "value": "Um, this is a little awkward..."
+    },
+    {
+      "key": "npc.Leona.giftLines.hated.1",
+      "value": "This is my least favorite thing..."
+    },
+    {
+      "key": "npc.Leona.itemGiftLines.0.lines.0",
+      "value": "Strawberries! Oh my goodness, my absolute favorite."
+    },
+    {
+      "key": "npc.Leona.itemGiftLines.0.lines.1",
+      "value": "These could keep me going all night. Thank you so much!"
+    },
+    {
+      "key": "npc.Leona.itemGiftLines.1.lines.0",
+      "value": "Wood! I was just about to build another shelf."
+    },
+    {
+      "key": "npc.Leona.itemGiftLines.1.lines.1",
+      "value": "Just what I needed. Thanks!"
+    },
+    {
+      "key": "npc.Leona.itemGiftLines.2.lines.0",
+      "value": "Seeds... I'm really not good at growing things."
+    },
+    {
+      "key": "npc.Leona.itemGiftLines.2.lines.1",
+      "value": "You'd do a much better job planting these."
+    },
+    {
+      "key": "npc.Leona.alreadyTalkedLines.0",
+      "value": "We've already talked plenty today."
+    },
+    {
+      "key": "npc.Leona.alreadyTalkedLines.1",
+      "value": "Come by again tomorrow!"
+    },
+    {
+      "key": "npc.Leona.giftLimitLines.0",
+      "value": "You've already given me two gifts this week."
+    },
+    {
+      "key": "npc.Leona.giftLimitLines.1",
+      "value": "I'd feel bad taking so many. Let's wait until next week!"
+    },
+    {
+      "key": "npc.Leona.dialogues.any_greet.lines.0",
+      "value": "Hi! Working in the fields again today?"
+    },
+    {
+      "key": "npc.Leona.dialogues.any_greet.lines.1",
+      "value": "I've been keeping busy making things here."
+    },
+    {
+      "key": "npc.Leona.dialogues.any_trouble.lines.0",
+      "value": "The thing I made yesterday started creaking strangely."
+    },
+    {
+      "key": "npc.Leona.dialogues.any_trouble.lines.1",
+      "value": "Every time I fix one part, something else goes wrong. Is that normal?"
+    },
+    {
+      "key": "npc.Leona.dialogues.any_weather.lines.0",
+      "value": "The weather is lovely today."
+    },
+    {
+      "key": "npc.Leona.dialogues.any_weather.lines.1",
+      "value": "On days like this, there's nothing better than being outside."
+    },
+    {
+      "key": "npc.Leona.dialogues.cold_start.lines.0",
+      "value": "Oh, you're the newcomer."
+    },
+    {
+      "key": "npc.Leona.dialogues.cold_start.lines.1",
+      "value": "You'll settle in little by little. There's no rush."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_strawberry.lines.0",
+      "value": "Come to think of it, there's something I've been wondering."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_strawberry.lines.1",
+      "value": "Do you... like strawberries?"
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_strawberry.choices.0.text",
+      "value": "Yes, I love them!"
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_strawberry.choices.0.reply.0",
+      "value": "I knew it! Me too."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_strawberry.choices.0.reply.1",
+      "value": "I've never met a bad person who likes strawberries."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_strawberry.choices.1.text",
+      "value": "No, not really..."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_strawberry.choices.1.reply.0",
+      "value": "Oh... I guess we don't have that in common."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_strawberry.choices.1.reply.1",
+      "value": "Well, everyone has different tastes."
+    },
+    {
+      "key": "npc.Leona.dialogues.warm_talk.lines.0",
+      "value": "Your farm's really starting to look good, isn't it?"
+    },
+    {
+      "key": "npc.Leona.dialogues.warm_talk.lines.1",
+      "value": "I've been sneaking a look whenever I pass by."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_help.lines.0",
+      "value": "Let me know if you ever need a hand."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_help.lines.1",
+      "value": "Would it be okay if I helped?"
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_help.choices.0.text",
+      "value": "Thanks, I'd appreciate it!"
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_help.choices.0.reply.0",
+      "value": "Great! Call me anytime."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_help.choices.0.reply.1",
+      "value": "I'm stronger than I look, you know."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_help.choices.1.text",
+      "value": "I'm fine. I can manage on my own."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_help.choices.1.reply.0",
+      "value": "You're so capable."
+    },
+    {
+      "key": "npc.Leona.dialogues.choice_help.choices.1.reply.1",
+      "value": "Still, let me know if things get tough."
+    },
+    {
+      "key": "npc.Leona.dialogues.close_talk.lines.0",
+      "value": "Somehow, talking to you always cheers me up."
+    },
+    {
+      "key": "npc.Leona.dialogues.close_talk.lines.1",
+      "value": "Thanks for stopping by again today!"
+    },
+    {
+      "key": "npc.Leona.dialogues.best_talk.lines.0",
+      "value": "I'm glad I came to this village."
+    },
+    {
+      "key": "npc.Leona.dialogues.best_talk.lines.1",
+      "value": "Because I got to meet someone like you."
+    },
+    {
+      "key": "npc.Leona.dialogues.best_talk.lines.2",
+      "value": "Here's to more good days together!"
+    },
+    {
+      "key": "events.intro.arrival.commands.0.speaker",
+      "value": "The First Morning"
+    },
+    {
+      "key": "events.intro.arrival.commands.0.lines.0",
+      "value": "A small farm, far from the city I left behind."
+    },
+    {
+      "key": "events.intro.arrival.commands.0.lines.1",
+      "value": "Today, I begin a new life of my own here."
+    },
+    {
+      "key": "events.intro.arrival.commands.3.speaker",
+      "value": "The First Morning"
+    },
+    {
+      "key": "events.intro.arrival.commands.3.lines.0",
+      "value": "Plant seeds and water them, and crops will grow."
+    },
+    {
+      "key": "events.intro.arrival.commands.3.lines.1",
+      "value": "I heard people live in Dove Village beyond the hill. I should visit."
+    },
+    {
+      "key": "events.demo.movement.commands.0.lines.0",
+      "value": "Here's a movement example. I'll take a short walk!"
+    },
+    {
+      "key": "events.demo.movement.commands.7.lines.0",
+      "value": "Just write the commands in order like this. When the scene ends, I return to my usual spot."
+    }
+  ]
+}

@@ -1,0 +1,552 @@
+{
+  "entries": [
+    {
+      "key": "items.fencedatabase.white_fence",
+      "value": "하얀 울타리"
+    },
+    {
+      "key": "items.fencedatabase.white_fence_gate",
+      "value": "하얀 울타리 문"
+    },
+    {
+      "key": "items.fencedatabase.wooden_fence",
+      "value": "나무 울타리"
+    },
+    {
+      "key": "items.fencedatabase.stone_wall",
+      "value": "돌담"
+    },
+    {
+      "key": "items.fencedatabase.iron_fence",
+      "value": "철제 울타리"
+    },
+    {
+      "key": "items.fencedatabase.wooden_fence_gate",
+      "value": "나무 울타리 문"
+    },
+    {
+      "key": "items.fencedatabase.stone_wall_gate",
+      "value": "돌담 문"
+    },
+    {
+      "key": "items.fencedatabase.iron_fence_gate",
+      "value": "철제 울타리 문"
+    },
+    {
+      "key": "items.furnituredatabase.general_goods_cart",
+      "value": "잡화 수레"
+    },
+    {
+      "key": "items.furnituredatabase.workbench",
+      "value": "작업대"
+    },
+    {
+      "key": "items.furnituredatabase.bed",
+      "value": "침대"
+    },
+    {
+      "key": "items.furnituredatabase.fireplace",
+      "value": "벽난로"
+    },
+    {
+      "key": "items.furnituredatabase.flowerpot",
+      "value": "화분"
+    },
+    {
+      "key": "items.furnituredatabase.rug",
+      "value": "러그"
+    },
+    {
+      "key": "items.roaddatabase.wooden_path",
+      "value": "나무 길"
+    },
+    {
+      "key": "items.farmercatalog.eyes_1_highlight",
+      "value": "눈 1 (하이라이트)"
+    },
+    {
+      "key": "items.farmercatalog.eyes_2_solid",
+      "value": "눈 2 (단색)"
+    },
+    {
+      "key": "items.fish.common",
+      "value": "흔함"
+    },
+    {
+      "key": "items.fish.uncommon",
+      "value": "제법 귀함"
+    },
+    {
+      "key": "items.fish.rare",
+      "value": "희귀"
+    },
+    {
+      "key": "items.fish.epic",
+      "value": "매우 희귀"
+    },
+    {
+      "key": "items.fish.legendary",
+      "value": "전설"
+    },
+    {
+      "key": "items.fishdatabase.carp",
+      "value": "잉어"
+    },
+    {
+      "key": "items.fishdatabase.bluegill",
+      "value": "블루길"
+    },
+    {
+      "key": "items.fishdatabase.dace",
+      "value": "황어"
+    },
+    {
+      "key": "items.fishdatabase.perch",
+      "value": "농어"
+    },
+    {
+      "key": "items.fishdatabase.bullhead",
+      "value": "동자개"
+    },
+    {
+      "key": "items.fishdatabase.bass",
+      "value": "배스"
+    },
+    {
+      "key": "items.fishdatabase.pike",
+      "value": "강꼬치고기"
+    },
+    {
+      "key": "items.fishdatabase.walleye",
+      "value": "월아이"
+    },
+    {
+      "key": "items.fishdatabase.tiger_trout",
+      "value": "호랑이송어"
+    },
+    {
+      "key": "items.fishdatabase.sturgeon",
+      "value": "철갑상어"
+    },
+    {
+      "key": "items.fishdatabase.dorado",
+      "value": "도라도"
+    },
+    {
+      "key": "items.fishdatabase.ghost_catfish",
+      "value": "유령메기"
+    },
+    {
+      "key": "items.fishdatabase.golden_fish",
+      "value": "황금물고기"
+    },
+    {
+      "key": "items.fishdatabase.fairy_fish",
+      "value": "요정물고기"
+    },
+    {
+      "key": "items.fishingzonedatabase.shallow_creek",
+      "value": "얕은 개울"
+    },
+    {
+      "key": "items.fishingzonedatabase.deep_river",
+      "value": "깊은 강"
+    },
+    {
+      "key": "items.item.sturdy_wood_gathered_from_trees_used_to",
+      "value": "나무에서 얻은 단단한 목재. 가구와 여러 시설을 만드는 재료로 사용합니다."
+    },
+    {
+      "key": "items.item.stone_gathered_from_the_ground_a_basic",
+      "value": "땅에서 얻은 돌. 건축과 제작에 두루 사용하는 기본 재료입니다."
+    },
+    {
+      "key": "items.item.dried_grass_gathered_on_the_farm",
+      "value": "잘 말린 목초. 농장에서 모아 두는 풀 재료입니다."
+    },
+    {
+      "key": "items.item.tough_plant_fibers_used_to_craft_various",
+      "value": "식물에서 얻은 질긴 섬유. 여러 물건을 만드는 데 사용합니다."
+    },
+    {
+      "key": "items.item.a_farming_tool_for_tilling_soil_before",
+      "value": "땅을 일구어 작물을 심을 밭을 만드는 농기구입니다."
+    },
+    {
+      "key": "items.item.a_tool_for_watering_crops_to_help",
+      "value": "작물이 자랄 수 있도록 밭에 물을 주는 도구입니다."
+    },
+    {
+      "key": "items.item.a_tool_for_chopping_trees_and_gathering",
+      "value": "나무를 베어 목재를 얻는 데 사용하는 도구입니다."
+    },
+    {
+      "key": "items.itemdatabase.wood",
+      "value": "나무"
+    },
+    {
+      "key": "items.itemdatabase.stone",
+      "value": "돌"
+    },
+    {
+      "key": "items.itemdatabase.hay",
+      "value": "목초"
+    },
+    {
+      "key": "items.itemdatabase.fiber",
+      "value": "섬유"
+    },
+    {
+      "key": "items.itemdatabase.hoe",
+      "value": "괭이"
+    },
+    {
+      "key": "items.itemdatabase.watering_can",
+      "value": "물뿌리개"
+    },
+    {
+      "key": "items.itemdatabase.axe",
+      "value": "도끼"
+    },
+    {
+      "key": "items.itemdatabase.seeds",
+      "value": " 씨앗"
+    },
+    {
+      "key": "items.shopdatabase.backpack_level_0",
+      "value": "배낭 {0}단계"
+    },
+    {
+      "key": "items.shopdatabase.bags",
+      "value": "가방"
+    },
+    {
+      "key": "items.shopdatabase.adds_10_inventory_slots_backpacks_must_be",
+      "value": "소지품을 담을 공간이 10칸 늘어납니다.\n\n배낭은 순서대로 확장할 수 있으며, 구매한 공간은 계속 유지됩니다."
+    },
+    {
+      "key": "items.shopdatabase.matures_in_0_days",
+      "value": "다 자라기까지 {0}일"
+    },
+    {
+      "key": "items.shopdatabase.regrows",
+      "value": " · 다작"
+    },
+    {
+      "key": "items.shopdatabase.does_not_grow_in_the_current_season",
+      "value": "\n현재 계절에는 자라지 않습니다."
+    },
+    {
+      "key": "items.shopdatabase.grass",
+      "value": "풀"
+    },
+    {
+      "key": "items.shopdatabase.plant_on_empty_ground_to_let_it",
+      "value": "빈 땅에 심으면 옆으로 번집니다."
+    },
+    {
+      "key": "items.shopdatabase.trees",
+      "value": "나무"
+    },
+    {
+      "key": "items.shopdatabase.plant_on_empty_untilled_ground_matures_in",
+      "value": "밭이 아닌 빈 땅에 심습니다.\n다 자라기까지 {0}일"
+    },
+    {
+      "key": "items.shopdatabase.wood_for_making_furniture_choose_as_much",
+      "value": "가구를 만들기 좋은 목재입니다.\n필요한 만큼 골라 보세요."
+    },
+    {
+      "key": "items.shoppurchaseservice.select_a_product",
+      "value": "상품을 선택하세요"
+    },
+    {
+      "key": "items.shoppurchaseservice.invalid_price",
+      "value": "잘못된 가격입니다"
+    },
+    {
+      "key": "items.shoppurchaseservice.no_buyback_stock_remaining",
+      "value": "재구매 재고가 없습니다"
+    },
+    {
+      "key": "items.shoppurchaseservice.invalid_backpack_level",
+      "value": "잘못된 배낭 단계입니다"
+    },
+    {
+      "key": "items.shoppurchaseservice.purchased",
+      "value": "구매 완료"
+    },
+    {
+      "key": "items.shoppurchaseservice.buy_the_previous_backpack_upgrade_first",
+      "value": "이전 단계 배낭을 먼저 구매하세요"
+    },
+    {
+      "key": "items.shoppurchaseservice.check_the_backpack_price_settings",
+      "value": "배낭 가격 설정을 확인하세요"
+    },
+    {
+      "key": "items.shoppurchaseservice.unknown_product",
+      "value": "등록되지 않은 상품입니다"
+    },
+    {
+      "key": "items.shoppurchaseservice.your_bag_is_full",
+      "value": "가방이 가득 찼습니다"
+    },
+    {
+      "key": "items.shoppurchaseservice.not_enough_gold",
+      "value": "골드가 부족합니다"
+    },
+    {
+      "key": "items.shoppurchaseservice.check_the_purchase_quantity",
+      "value": "구매 수량을 확인하세요"
+    },
+    {
+      "key": "items.shoppurchaseservice.transaction_in_progress",
+      "value": "거래 처리 중입니다"
+    },
+    {
+      "key": "items.shoppurchaseservice.purchased_your_bag_gained_10_slots",
+      "value": " 구매! 가방이 10칸 늘었습니다."
+    },
+    {
+      "key": "items.shoppurchaseservice.could_not_purchase_the_backpack",
+      "value": "배낭을 구매할 수 없습니다"
+    },
+    {
+      "key": "items.shoppurchaseservice.purchased_0_x_1",
+      "value": "{0} {1}개 구매!"
+    },
+    {
+      "key": "items.shopsellservice.sold",
+      "value": "판매"
+    },
+    {
+      "key": "items.shopsellservice.a_sold_item_it_will_disappear_from",
+      "value": "판매한 물건입니다. 다음 주 월요일에 목록에서 사라집니다."
+    },
+    {
+      "key": "items.shopsellservice.this_shop_does_not_buy_items",
+      "value": "판매할 수 없는 상점입니다"
+    },
+    {
+      "key": "items.shopsellservice.select_an_item",
+      "value": "아이템을 선택하세요"
+    },
+    {
+      "key": "items.shopsellservice.this_item_cannot_be_sold",
+      "value": "판매할 수 없는 아이템입니다"
+    },
+    {
+      "key": "items.shopsellservice.you_have_reached_the_gold_limit",
+      "value": "소지금 한도에 도달했습니다"
+    },
+    {
+      "key": "items.shopsellservice.transaction_in_progress",
+      "value": "거래 처리 중입니다"
+    },
+    {
+      "key": "items.shopsellservice.sold_0_x1_1_n0_g",
+      "value": "{0} 1개 판매! +{1:N0} G"
+    },
+    {
+      "key": "items.magicsystem.earth_magic",
+      "value": "대지마법"
+    },
+    {
+      "key": "items.magicsystem.water_magic",
+      "value": "물마법"
+    },
+    {
+      "key": "items.magicsystem.blade_magic",
+      "value": "칼날마법"
+    },
+    {
+      "key": "items.magicsystem.rock_magic",
+      "value": "바위마법"
+    },
+    {
+      "key": "items.magicsystem.wind_magic",
+      "value": "바람마법"
+    },
+    {
+      "key": "items.magicsystem.shovel_magic",
+      "value": "삽마법"
+    },
+    {
+      "key": "items.magicsystem.fishing_magic",
+      "value": "낚시마법"
+    },
+    {
+      "key": "items.cropdatabase.asparagus",
+      "value": "아스파라거스"
+    },
+    {
+      "key": "items.cropdatabase.blueberry",
+      "value": "블루베리"
+    },
+    {
+      "key": "items.cropdatabase.broccoli",
+      "value": "브로콜리"
+    },
+    {
+      "key": "items.cropdatabase.cabbage",
+      "value": "양배추"
+    },
+    {
+      "key": "items.cropdatabase.carrot",
+      "value": "당근"
+    },
+    {
+      "key": "items.cropdatabase.cauliflower",
+      "value": "콜리플라워"
+    },
+    {
+      "key": "items.cropdatabase.onion",
+      "value": "양파"
+    },
+    {
+      "key": "items.cropdatabase.parsnip",
+      "value": "파스닙"
+    },
+    {
+      "key": "items.cropdatabase.potato",
+      "value": "감자"
+    },
+    {
+      "key": "items.cropdatabase.rice",
+      "value": "쌀"
+    },
+    {
+      "key": "items.cropdatabase.spring_onion",
+      "value": "봄양파"
+    },
+    {
+      "key": "items.cropdatabase.strawberry",
+      "value": "딸기"
+    },
+    {
+      "key": "items.cropdatabase.adzuki_bean",
+      "value": "팥"
+    },
+    {
+      "key": "items.cropdatabase.blackberry",
+      "value": "블랙베리"
+    },
+    {
+      "key": "items.cropdatabase.cucumber",
+      "value": "오이"
+    },
+    {
+      "key": "items.cropdatabase.peas",
+      "value": "완두콩"
+    },
+    {
+      "key": "items.cropdatabase.chili_pepper",
+      "value": "고추"
+    },
+    {
+      "key": "items.cropdatabase.melon",
+      "value": "멜론"
+    },
+    {
+      "key": "items.cropdatabase.pineapple",
+      "value": "파인애플"
+    },
+    {
+      "key": "items.cropdatabase.sunflower",
+      "value": "해바라기"
+    },
+    {
+      "key": "items.cropdatabase.tomato",
+      "value": "토마토"
+    },
+    {
+      "key": "items.cropdatabase.watermelon",
+      "value": "수박"
+    },
+    {
+      "key": "items.cropdatabase.bell_pepper",
+      "value": "파프리카"
+    },
+    {
+      "key": "items.cropdatabase.orange_bell_pepper",
+      "value": "주황 파프리카"
+    },
+    {
+      "key": "items.cropdatabase.red_bell_pepper",
+      "value": "빨강 파프리카"
+    },
+    {
+      "key": "items.cropdatabase.green_bell_pepper",
+      "value": "초록 파프리카"
+    },
+    {
+      "key": "items.cropdatabase.aloe",
+      "value": "알로에"
+    },
+    {
+      "key": "items.cropdatabase.beet",
+      "value": "비트"
+    },
+    {
+      "key": "items.cropdatabase.corn",
+      "value": "옥수수"
+    },
+    {
+      "key": "items.cropdatabase.eggplant",
+      "value": "가지"
+    },
+    {
+      "key": "items.cropdatabase.grapes",
+      "value": "포도"
+    },
+    {
+      "key": "items.cropdatabase.pumpkin",
+      "value": "호박"
+    },
+    {
+      "key": "items.plantdatabase.grass",
+      "value": "잔디"
+    },
+    {
+      "key": "items.plantdatabase.weeds",
+      "value": "잡초"
+    },
+    {
+      "key": "items.treedatabase.cherry_tree",
+      "value": "벚나무"
+    },
+    {
+      "key": "items.treedatabase.birch_tree",
+      "value": "자작나무"
+    },
+    {
+      "key": "items.treedatabase.purple_blossom_tree",
+      "value": "보라꽃나무"
+    },
+    {
+      "key": "items.seed_name",
+      "value": "{0} 씨앗"
+    },
+    {
+      "key": "items.description.seed",
+      "value": "{0}. 알맞은 땅에 심어 키울 수 있습니다."
+    },
+    {
+      "key": "items.description.crop",
+      "value": "정성껏 길러 수확한 {0}. 배송함에 넣어 판매할 수 있습니다."
+    },
+    {
+      "key": "items.description.fish",
+      "value": "낚시로 잡은 {0}. 배송함에 넣어 판매할 수 있습니다."
+    },
+    {
+      "key": "items.description.tool",
+      "value": "농장 일을 도와주는 {0}."
+    },
+    {
+      "key": "items.description.other",
+      "value": "농장에서 사용하는 {0}."
+    }
+  ]
+}

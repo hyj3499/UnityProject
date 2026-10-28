@@ -4,11 +4,40 @@
   "priority": 1000,
   "repeat": "Once",
   "commands": [
-    { "op": "Say", "speaker": "첫날 아침", "lines": ["도시를 떠나 도착한 작은 농장.", "오늘부터 이곳에서 나만의 생활을 시작한다."] },
-    { "op": "Face", "actor": "player", "direction": "Down" },
-    { "op": "Animate", "actor": "player", "animation": "Harvest", "seconds": 0.8 },
-    { "op": "Say", "speaker": "첫날 아침", "lines": ["씨앗을 심고 물을 주면 작물이 자란다.", "언덕 너머 비둘기 마을에는 사람도 산다고 했다. 한번 가 봐야지."] },
-    { "op": "Flag", "id": "farm.introduced", "value": true },
-    { "op": "End" }
+    {
+      "op": "Say",
+      "speaker": "@events.intro.arrival.commands.0.speaker",
+      "lines": [
+        "@events.intro.arrival.commands.0.lines.0",
+        "@events.intro.arrival.commands.0.lines.1"
+      ]
+    },
+    {
+      "op": "Face",
+      "actor": "player",
+      "direction": "Down"
+    },
+    {
+      "op": "Animate",
+      "actor": "player",
+      "animation": "Harvest",
+      "seconds": 0.8
+    },
+    {
+      "op": "Say",
+      "speaker": "@events.intro.arrival.commands.3.speaker",
+      "lines": [
+        "@events.intro.arrival.commands.3.lines.0",
+        "@events.intro.arrival.commands.3.lines.1"
+      ]
+    },
+    {
+      "op": "Flag",
+      "id": "farm.introduced",
+      "value": true
+    },
+    {
+      "op": "End"
+    }
   ]
 }

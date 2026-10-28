@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace FarmMVP
 {
-    /// <summary>Companion PNGs and opaque object silhouettes are baked before play; runtime only reads bits.</summary>
+    /// <summary>Companion PNGs and fully opaque object silhouettes are baked before play; runtime only reads bits.</summary>
     [InitializeOnLoad]
     public sealed class ObjectCollisionBaker : AssetPostprocessor, IPreprocessBuildWithReport
     {
@@ -72,8 +72,9 @@ namespace FarmMVP
                         var spriteRect = new RectInt(Mathf.RoundToInt(rect.x), Mathf.RoundToInt(rect.y),
                             Mathf.RoundToInt(rect.width), Mathf.RoundToInt(rect.height));
                         // A companion's keyed paint takes precedence. Slices left unpainted in
-                        // that companion, and every source without a companion, use the opaque
-                        // silhouette from the visible PNG.
+                        // that companion take priority even outside the visible source art.
+                        // Every source without a companion uses the fully opaque silhouette;
+                        // semi-transparent source pixels are shadows.
                         var bits = paintedPixels != null ? Bake(paintedPixels, original.width, original.height, spriteRect) : null;
                         bool usesKeyedPaint = bits != null;
                         if (bits == null) bits = BakeOpaque(originalPixels, original.width, original.height, spriteRect);
@@ -126,7 +127,7 @@ namespace FarmMVP
             throw new InvalidDataException("Cannot read PNG: " + path);
         }
 
-        /// <summary>Use painted RGB/alpha only, including transparent areas of the original. Exclude the legend pixel.</summary>
+        /// <summary>Explicit keyed paint always blocks, including where the original art is transparent. Exclude the legend pixel.</summary>
         public static byte[] Bake(Color32[] painted, int width, int height, RectInt rect)
         {
             if (width <= 0 || height <= 0 || painted.Length != width * height ||
@@ -151,7 +152,7 @@ namespace FarmMVP
             return any ? bits : null;
         }
 
-        /// <summary>Fallback for object art without keyed collision paint: every opaque source pixel blocks.</summary>
+        /// <summary>Fallback for object art without keyed collision paint: only fully opaque source pixels block.</summary>
         public static byte[] BakeOpaque(Color32[] sourcePixels, int width, int height, RectInt rect)
         {
             if (width <= 0 || height <= 0 || sourcePixels.Length != width * height ||
@@ -162,7 +163,7 @@ namespace FarmMVP
             for (int y = 0; y < rect.height; y++)
                 for (int x = 0; x < rect.width; x++)
                 {
-                    if (sourcePixels[(rect.y + y) * width + rect.x + x].a == 0) continue;
+                    if (sourcePixels[(rect.y + y) * width + rect.x + x].a != byte.MaxValue) continue;
                     int i = y * rect.width + x;
                     bits[i >> 3] |= (byte)(1 << (i & 7));
                     any = true;

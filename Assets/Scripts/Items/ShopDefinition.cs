@@ -50,8 +50,8 @@ namespace FarmMVP
         internal string buybackId, buybackShopId;
         public bool IsBuyback => !string.IsNullOrEmpty(buybackId);
         public ItemDef Def => string.IsNullOrWhiteSpace(itemId) ? null : ItemDatabase.Get(itemId);
-        public string Name => !string.IsNullOrWhiteSpace(displayName) ? displayName : Def?.displayName ?? id;
+        public string Name => !string.IsNullOrWhiteSpace(displayName) ? Localization.Resolve(displayName) : Def?.displayName ?? id;
         // 공통 설명은 ItemDef, 상점 전용 설명은 description으로 덮어쓴다.
-        public string Description => !string.IsNullOrWhiteSpace(description) ? description : Def?.Description ?? "";
+        public string Description => !string.IsNullOrWhiteSpace(description) ? Localization.Resolve(description) : Def?.Description ?? "";
     }
 }

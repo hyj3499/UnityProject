@@ -1,0 +1,228 @@
+{
+  "entries": [
+    {
+      "key": "world.gamebootstrap.could_not_save_the_new_game_please",
+      "value": "Could not save the new game. Please try saving again."
+    },
+    {
+      "key": "world.gamemanager.place_two_gates_side_by_side_to",
+      "value": "Place two gates side by side to open them."
+    },
+    {
+      "key": "world.gamemanager.go_to_sleep",
+      "value": "Go to sleep?"
+    },
+    {
+      "key": "world.gamemanager.give_1_to_0",
+      "value": "Give {1} to {0}?"
+    },
+    {
+      "key": "world.gamemanager.we_already_talked_today",
+      "value": "We already talked today."
+    },
+    {
+      "key": "world.gamemanager.i_see",
+      "value": "I see."
+    },
+    {
+      "key": "world.gamemanager.i_ve_already_received_enough_gifts_this",
+      "value": "I've already received enough gifts this week!"
+    },
+    {
+      "key": "world.gamemanager.thank_you",
+      "value": "Thank you."
+    },
+    {
+      "key": "world.gamemanager.not_enough_mp",
+      "value": "Not enough MP"
+    },
+    {
+      "key": "world.gamemanager.spreading_branches_and_stones_damaged_the_farm",
+      "value": "Spreading branches and stones damaged the farm."
+    },
+    {
+      "key": "world.gamemanager.2_am_you_fell_asleep",
+      "value": "2 AM - You fell asleep."
+    },
+    {
+      "key": "world.gamemanager.caught_0_1",
+      "value": "Caught {0}! ({1})"
+    },
+    {
+      "key": "world.gamemanager.0_cannot_be_planted_in_1",
+      "value": "{0} cannot be planted in {1}."
+    },
+    {
+      "key": "world.gamemanager.not_enough_materials",
+      "value": "Not enough materials."
+    },
+    {
+      "key": "world.gamemanager.crafted_0_x_1",
+      "value": "Crafted {0} x{1}."
+    },
+    {
+      "key": "world.gamemanager.shipping_sales_0_n0_g",
+      "value": "Shipping sales +{0:N0} G"
+    },
+    {
+      "key": "world.gamemanager.0_has_arrived",
+      "value": "{0} has arrived."
+    },
+    {
+      "key": "world.gamemanager.0_out_of_season_crops_withered",
+      "value": " - {0} out-of-season crops withered."
+    },
+    {
+      "key": "world.gamemanager.saved",
+      "value": "Saved"
+    },
+    {
+      "key": "world.gamemanager.could_not_save",
+      "value": "Could not save"
+    },
+    {
+      "key": "world.seasons.mon",
+      "value": "Mon"
+    },
+    {
+      "key": "world.seasons.tue",
+      "value": "Tue"
+    },
+    {
+      "key": "world.seasons.wed",
+      "value": "Wed"
+    },
+    {
+      "key": "world.seasons.thu",
+      "value": "Thu"
+    },
+    {
+      "key": "world.seasons.fri",
+      "value": "Fri"
+    },
+    {
+      "key": "world.seasons.sat",
+      "value": "Sat"
+    },
+    {
+      "key": "world.seasons.sun",
+      "value": "Sun"
+    },
+    {
+      "key": "world.seasons.spring",
+      "value": "Spring"
+    },
+    {
+      "key": "world.seasons.summer",
+      "value": "Summer"
+    },
+    {
+      "key": "world.seasons.fall",
+      "value": "Fall"
+    },
+    {
+      "key": "world.seasons.winter",
+      "value": "Winter"
+    },
+    {
+      "key": "world.seasons.all_seasons",
+      "value": "All Seasons"
+    },
+    {
+      "key": "world.weather.very_sunny",
+      "value": "Very Sunny"
+    },
+    {
+      "key": "world.weather.cloudy",
+      "value": "Cloudy"
+    },
+    {
+      "key": "world.weather.windy",
+      "value": "Windy"
+    },
+    {
+      "key": "world.weather.lightning",
+      "value": "Lightning"
+    },
+    {
+      "key": "world.weather.thunderstorm",
+      "value": "Thunderstorm"
+    },
+    {
+      "key": "world.weather.rain",
+      "value": "Rain"
+    },
+    {
+      "key": "world.weather.heavy_snow",
+      "value": "Heavy Snow"
+    },
+    {
+      "key": "world.weather.storm",
+      "value": "Storm"
+    },
+    {
+      "key": "world.weather.snow",
+      "value": "Snow"
+    },
+    {
+      "key": "world.weather.sunny",
+      "value": "Sunny"
+    },
+    {
+      "key": "world.fishingcontroller.too_soon",
+      "value": "Too soon!"
+    },
+    {
+      "key": "world.fishingcontroller.it_got_away",
+      "value": "It got away..."
+    },
+    {
+      "key": "world.fishingcontroller.time_s_up_it_got_away",
+      "value": "Time's up! It got away..."
+    },
+    {
+      "key": "world.mapgraph.farm",
+      "value": "Farm"
+    },
+    {
+      "key": "world.mapgraph.farmhouse",
+      "value": "Farmhouse"
+    },
+    {
+      "key": "world.mapgraph.valley",
+      "value": "Valley"
+    },
+    {
+      "key": "world.mapgraph.campsite_1",
+      "value": "Campsite 1"
+    },
+    {
+      "key": "world.mapgraph.campsite_2",
+      "value": "Campsite 2"
+    },
+    {
+      "key": "world.mapgraph.meadow",
+      "value": "Meadow"
+    },
+    {
+      "key": "world.mapgraph.deep_forest",
+      "value": "Deep Forest"
+    },
+    {
+      "key": "world.mapgraph.sea",
+      "value": "Sea"
+    },
+    {
+      "key": "world.mapgraph.mountain_1",
+      "value": "Mountain 1"
+    },
+    {
+      "key": "world.mapgraph.mountain_2",
+      "value": "Mountain 2"
+    },
+    {
+      "key": "world.mapgraph.mountain_summit",
+      "value": "Mountain Summit"
+    }
+  ]
+}

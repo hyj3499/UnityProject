@@ -11,7 +11,9 @@ namespace FarmMVP
     public class PlantDef
     {
         public string plantId;
-        public string name;
+        [UnityEngine.SerializeField, UnityEngine.Serialization.FormerlySerializedAs("name")] private string _name;
+        public string name { get => Localization.Resolve(_name); set => _name = value; }
+        public string NameReference => _name;
 
         /// <summary>Resources/Sprites/Plants/{sheet}_{계절}.png 의 앞부분 (PlantArt 참고).</summary>
         public string sheet;
@@ -72,7 +74,7 @@ namespace FarmMVP
             Register(new PlantDef
             {
                 plantId = GrassId,
-                name = "잔디",
+                name = "@items.plantdatabase.grass",
                 // 그림 파일이 glass_*.png 다. 이름을 grass_*로 바꾸면 이 줄만 고치면 된다.
                 sheet = "glass",
                 maxStage = 2,
@@ -89,7 +91,7 @@ namespace FarmMVP
             Register(new PlantDef
             {
                 plantId = WeedId,
-                name = "잡초",
+                name = "@items.plantdatabase.weeds",
                 sheet = "weed",
                 maxStage = 0,           // 자라지 않는다 — 조각 3개는 생김새 3종으로 쓴다
                 daysPerStage = 0,

@@ -119,7 +119,7 @@ namespace FarmMVP
     [Serializable]
     public class FarmerData
     {
-        public string playerName = "농부";
+        public string playerName = Localization.Get("ui.gamedata.farmer");
         public string gender = ""; // male / female; empty for legacy saves
         public int birthdaySeason; // 0=봄, 1=여름, 2=가을, 3=겨울
         public int birthdayDay;    // 0=미등록. 기존 세이브와 호환된다.

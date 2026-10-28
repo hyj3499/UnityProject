@@ -170,13 +170,13 @@ namespace FarmMVP
             if (CurrentLocation.HasGate(clicked.x, clicked.y))
             {
                 if (!CurrentLocation.ToggleGate(clicked.x, clicked.y))
-                    UIManager.Instance?.Toast("문은 두 개를 나란히 놓아야 열립니다");
+                    UIManager.Instance?.Toast(Localization.Get("world.gamemanager.place_two_gates_side_by_side_to"));
                 return true;
             }
 
             if (CurrentLocation.IsBedAt(clicked.x, clicked.y))
             {
-                UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
+                UIManager.Instance?.ShowYesNo(Localization.Get("world.gamemanager.go_to_sleep"), onYes: Sleep);
                 return true;
             }
 
@@ -198,7 +198,7 @@ namespace FarmMVP
                 string itemName = stack.Def != null ? stack.Def.displayName : stack.itemId;
                 int slot = Data.farmer.equippedHotbarIndex;
                 UIManager.Instance?.ShowYesNo(
-                    $"{def.displayName}에게 「{itemName}」을(를) 선물할까요?",
+                    Localization.Format("world.gamemanager.give_1_to_0", Localization.Resolve(def.displayName), itemName),
                     onYes: () => GiveGift(def, slot),
                     onNo: () => TalkTo(def));
             }
@@ -217,7 +217,7 @@ namespace FarmMVP
             if (state.lastTalkDay == Data.currentDay)
             {
                 UIManager.Instance?.ShowDialogue(def, def.alreadyTalkedPortrait,
-                    PickLines(def.alreadyTalkedLines, "오늘은 이미 이야기를 나눴어요."), null, null);
+                    PickLines(def.alreadyTalkedLines, Localization.Get("world.gamemanager.we_already_talked_today")), null, null);
                 return;
             }
 
@@ -236,7 +236,7 @@ namespace FarmMVP
                 {
                     ChangeAffection(NpcState(def.id), choice.affection);
                     UIManager.Instance?.ContinueDialogue(def, choice.portrait,
-                        PickLines(choice.reply, "그렇군요."));
+                        PickLines(choice.reply, Localization.Get("world.gamemanager.i_see")));
                 });
         }
 
@@ -253,7 +253,7 @@ namespace FarmMVP
             if (state.giftsThisWeek >= GiftsPerWeek)
             {
                 UIManager.Instance?.ShowDialogue(def, def.giftLimitPortrait,
-                    PickLines(def.giftLimitLines, "이번 주엔 벌써 충분히 받았는걸요!"), null, null);
+                    PickLines(def.giftLimitLines, Localization.Get("world.gamemanager.i_ve_already_received_enough_gifts_this")), null, null);
                 return;
             }
 
@@ -266,7 +266,7 @@ namespace FarmMVP
 
             var custom = def.FindItemGiftLine(itemId);
             string portrait = custom != null ? custom.portrait : def.giftLines.PortraitFor(tier);
-            string[] lines = custom != null ? custom.lines : PickLines(def.giftLines.For(tier), "고마워요.");
+            string[] lines = custom != null ? custom.lines : PickLines(def.giftLines.For(tier), Localization.Get("world.gamemanager.thank_you"));
 
             UIManager.Instance?.ShowDialogue(def, portrait, lines, null, null);
         }
@@ -385,7 +385,7 @@ namespace FarmMVP
         {
             if (Data.farmer.mp < cost)
             {
-                UIManager.Instance?.Toast("MP가 부족합니다");
+                UIManager.Instance?.Toast(Localization.Get("world.gamemanager.not_enough_mp"));
                 return false;
             }
             Data.farmer.mp -= cost;
@@ -650,7 +650,7 @@ namespace FarmMVP
         private void AnnounceDebrisDamage()
         {
             if (CurrentLocation != null && CurrentLocation.DebrisDamage > 0)
-                UIManager.Instance?.Toast("퍼져나간 나뭇가지와 돌이 농장에 피해를 입혔습니다");
+                UIManager.Instance?.Toast(Localization.Get("world.gamemanager.spreading_branches_and_stones_damaged_the_farm"));
         }
 
         /// <summary>이 위치에 저장되어 있던, 아직 줍지 않은 드랍 아이템들을 그대로 되살린다.</summary>
@@ -730,7 +730,7 @@ namespace FarmMVP
         {
             if (Events != null && Events.IsRunning) return;   // 연출 중에는 재우지 않는다
             _timeAccum = 0f;
-            UIManager.Instance?.Toast("새벽 2시 — 그대로 곯아떨어졌다");
+            UIManager.Instance?.Toast(Localization.Get("world.gamemanager.2_am_you_fell_asleep"));
             Sleep();
         }
 
@@ -976,7 +976,7 @@ namespace FarmMVP
                 WorldItem.Create(CurrentLocation.FeatureRoot, this, fish.fishId, left,
                                  new Vector2(Player.transform.position.x, Player.transform.position.y));
 
-            UIManager.Instance?.Toast($"{fish.displayName} 을(를) 잡았다! ({fish.RarityLabel})");
+            UIManager.Instance?.Toast(Localization.Format("world.gamemanager.caught_0_1", fish.displayName, fish.RarityLabel));
         }
 
         /// <summary>낚시 한 판에 소모되는 게임 내 분.</summary>
@@ -1001,7 +1001,7 @@ namespace FarmMVP
                 var crop = CropDatabase.Get(def.cropId);
                 if (crop != null && !Seasons.AllowsNow(crop.seasons))
                 {
-                    UIManager.Instance?.Toast($"{crop.name}은(는) {Seasons.Name(Seasons.Current)}에 심을 수 없다");
+                    UIManager.Instance?.Toast(Localization.Format("world.gamemanager.0_cannot_be_planted_in_1", crop.name, Seasons.Name(Seasons.Current)));
                     return;
                 }
             }
@@ -1011,7 +1011,7 @@ namespace FarmMVP
                 var plant = PlantDatabase.Get(def.plantId);
                 if (plant != null && !Seasons.AllowsNow(plant.seasons))
                 {
-                    UIManager.Instance?.Toast($"{plant.name}은(는) {Seasons.Name(Seasons.Current)}에 심을 수 없다");
+                    UIManager.Instance?.Toast(Localization.Format("world.gamemanager.0_cannot_be_planted_in_1", plant.name, Seasons.Name(Seasons.Current)));
                     return;
                 }
             }
@@ -1074,7 +1074,7 @@ namespace FarmMVP
             if (recipe == null) return false;
             if (!recipe.CanCraft(Inventory))
             {
-                UIManager.Instance?.Toast("재료가 부족합니다");
+                UIManager.Instance?.Toast(Localization.Get("world.gamemanager.not_enough_materials"));
                 return false;
             }
 
@@ -1087,7 +1087,7 @@ namespace FarmMVP
                                  new Vector2(Player.transform.position.x, Player.transform.position.y));
 
             SpendTime(5);
-            UIManager.Instance?.Toast($"{recipe.DisplayName} x{recipe.resultCount} 을(를) 만들었다");
+            UIManager.Instance?.Toast(Localization.Format("world.gamemanager.crafted_0_x_1", recipe.DisplayName, recipe.resultCount));
             return true;
         }
 
@@ -1108,7 +1108,7 @@ namespace FarmMVP
             // 두 칸 떨어져 침대 쪽을 보기만 해도 잠들 수 있었다.
             var bed = CurrentLocation.FindBedTile();
             if (bed.HasValue && InReach(bed.Value))
-                UIManager.Instance?.ShowYesNo("잠들겠습니까?", onYes: Sleep);
+                UIManager.Instance?.ShowYesNo(Localization.Get("world.gamemanager.go_to_sleep"), onYes: Sleep);
         }
 
         /// <summary>
@@ -1215,11 +1215,11 @@ namespace FarmMVP
             Events?.Signal("DayStarted");
 
             UIManager.Instance?.ShowDayBanner(Data.currentDay);
-            if (income > 0) UIManager.Instance?.Toast($"배송함 판매 +{income:N0} G");
+            if (income > 0) UIManager.Instance?.Toast(Localization.Format("world.gamemanager.shipping_sales_0_n0_g", income));
             if (seasonChanged)
             {
-                UIManager.Instance?.Toast($"{Seasons.Name(Seasons.Current)}이(가) 되었다"
-                                          + (withered > 0 ? $" — 철 지난 작물 {withered}개가 시들었다" : ""));
+                UIManager.Instance?.Toast(Localization.Format("world.gamemanager.0_has_arrived", Seasons.Name(Seasons.Current))
+                                          + (withered > 0 ? Localization.Format("world.gamemanager.0_out_of_season_crops_withered", withered) : ""));
             }
             AnnounceDebrisDamage();   // 알림은 마지막 것만 남으므로 피해 소식을 맨 뒤에 다시 띄운다
         }
@@ -1330,7 +1330,7 @@ namespace FarmMVP
         {
             if (Input.GetKeyDown(KeyCode.F5) && (Events == null || !Events.IsRunning))
             {
-                UIManager.Instance?.Toast(TrySaveNow() ? "저장됨" : "저장하지 못했습니다");
+                UIManager.Instance?.Toast(TrySaveNow() ? Localization.Get("world.gamemanager.saved") : Localization.Get("world.gamemanager.could_not_save"));
             }
         }
 

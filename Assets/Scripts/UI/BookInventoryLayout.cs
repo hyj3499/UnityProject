@@ -9,9 +9,7 @@ namespace FarmMVP
     {
         private static Sprite[] _art;
         private static Sprite[] _selector;
-        private static Font _countFont;
-        private static Font CountFont => _countFont ?? (_countFont = Resources.Load<Font>("Sprites/UI/BoldPixels")
-            ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"));
+        private static Font CountFont => LocalizedFonts.Get(FontRole.System1);
         private static Sprite[] Art => _art ?? (_art = Resources.LoadAll<Sprite>(BookMenuLayout.ArtRoot + "Book Inventory")
             .OrderBy(s => s.name).ToArray());
         private static Sprite[] Selector => _selector ?? (_selector = Resources.LoadAll<Sprite>(BookMenuLayout.ArtRoot + "Book Inventory Selector")
@@ -82,6 +80,7 @@ namespace FarmMVP
 
         private static void StyleCount(Text count)
         {
+            LocalizedText.InventoryCount(count);
             count.font = CountFont;
             count.material = null;
             count.color = Color.white;

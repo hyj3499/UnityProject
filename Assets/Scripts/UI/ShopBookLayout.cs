@@ -43,28 +43,28 @@ namespace FarmMVP
             v.money.fontStyle = FontStyle.Bold;
             var line = Picture(left, "HeaderRule", 0, .865f, 1, .87f, null);
             line.color = new Color(.5f, .33f, .19f, .45f);
-            Label(left, "ListCaption", "판매 상품", 0, .78f, 1, .86f, 10);
+            Label(left, "ListCaption", Localization.Get("ui.shopbooklayout.products_386"), 0, .78f, 1, .86f, 10);
             var list = Node(left, "ProductList", 0, .05f, 1, .77f);
             v.productsScroll = Scroll(list, out v.products, true);
             v.rowTemplate = CreateRow(v.products);
             v.rowTemplate.gameObject.SetActive(false);
-            v.emptyList = Label(left, "EmptyList", "판매 중인 상품이 없습니다.", 0, .32f, .9f, .6f, 13, TextAnchor.MiddleCenter);
+            v.emptyList = Label(left, "EmptyList", Localization.Get("ui.shopbooklayout.no_products_for_sale"), 0, .32f, .9f, .6f, 13, TextAnchor.MiddleCenter);
             v.emptyList.gameObject.SetActive(false);
-            Label(left, "Hint", "휠 / 드래그로 목록 보기", 0, -.025f, 1, .04f, 9, TextAnchor.MiddleCenter);
+            Label(left, "Hint", Localization.Get("ui.shopbooklayout.scroll_drag_to_browse"), 0, -.025f, 1, .04f, 9, TextAnchor.MiddleCenter);
 
             var tabs = Node(pages, "CategoryBookmarks", -.105f, .13f, .052f, .9f);
             v.categoriesScroll = Scroll(tabs, out v.categories, false);
-            v.categoryTemplate = Button(v.categories, "CategoryTemplate", "카테고리", 0, 1, 1, 1, "Content/8 Side tabs/2", 11);
+            v.categoryTemplate = Button(v.categories, "CategoryTemplate", Localization.Get("ui.shopbooklayout.categories"), 0, 1, 1, 1, "Content/8 Side tabs/2", 11);
             v.categoryTemplate.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 36);
             v.categoryTemplate.gameObject.SetActive(false);
 
             v.detailPaper = Picture(pages, "DetailPaper", .51f, .095f, .98f, .96f, Art("Shop Book/detail paper")).rectTransform;
             var paper = v.detailPaper;
-            Label(paper, "Caption", "상품 안내", .16f, .82f, .84f, .91f, 10, TextAnchor.MiddleCenter);
+            Label(paper, "Caption", Localization.Get("ui.shopbooklayout.product_details"), .16f, .82f, .84f, .91f, 10, TextAnchor.MiddleCenter);
             v.productIcon = Picture(paper, "ProductIcon", .4f, .65f, .6f, .81f, null);
             v.productIcon.preserveAspect = true;
             v.productIcon.enabled = false;
-            v.productName = Label(paper, "ProductName", "상품을 선택하세요", .14f, .54f, .86f, .65f, 17, TextAnchor.MiddleCenter);
+            v.productName = Label(paper, "ProductName", Localization.Get("ui.shopbooklayout.select_a_product"), .14f, .54f, .86f, .65f, 17, TextAnchor.MiddleCenter);
             v.productName.fontStyle = FontStyle.Bold;
             v.productName.resizeTextForBestFit = true;
             v.productName.resizeTextMinSize = 11;
@@ -72,13 +72,13 @@ namespace FarmMVP
             v.productPrice = Label(paper, "ProductPrice", "", .14f, .46f, .86f, .54f, 13, TextAnchor.MiddleCenter);
             var desc = Node(paper, "DescriptionScroll", .15f, .22f, .85f, .45f);
             v.descriptionScroll = Scroll(desc, out var descriptionContent, false);
-            v.description = Label(descriptionContent, "Description", "왼쪽 목록에서 상품을 선택하면\n상세 설명이 표시됩니다.", 0, 0, 1, 1, 12, TextAnchor.UpperLeft);
+            v.description = Label(descriptionContent, "Description", Localization.Get("ui.shopbooklayout.select_a_product_from_the_list_to"), 0, 0, 1, 1, 12, TextAnchor.UpperLeft);
             descriptionContent.sizeDelta = new Vector2(0, 110);
-            v.buy = Button(paper, "Buy", "구매", .27f, .095f, .73f, .195f, "Content/4 Buttons/0", 15);
+            v.buy = Button(paper, "Buy", Localization.Get("ui.shopbooklayout.buy"), .27f, .095f, .73f, .195f, "Content/4 Buttons/0", 15);
             v.buy.interactable = false;
             v.message = Label(paper, "PurchaseMessage", "", .1f, .035f, .9f, .09f, 9, TextAnchor.MiddleCenter);
             BuildInventory(v);
-            v.close = Button(v.stage, "Close", "닫기 ×", .865f, .92f, .975f, .98f, "Content/4 Buttons/0", 12);
+            v.close = Button(v.stage, "Close", Localization.Get("ui.shopbooklayout.close_x"), .865f, .92f, .975f, .98f, "Content/4 Buttons/0", 12);
             BuildPreview(v);
             v.configured = true;
             Upgrade(v);
@@ -173,7 +173,7 @@ namespace FarmMVP
                 v.quantity.resizeTextMinSize = 8;
                 v.quantity.resizeTextMaxSize = 13;
                 v.increase = QuantityButton(group, "Plus", 1, sprites, 0);
-                v.cancelQuantity = Button(v.detailPaper, "CancelQuantity", "취소", .17f, .095f, .48f, .195f, "Content/4 Buttons/0", 15);
+                v.cancelQuantity = Button(v.detailPaper, "CancelQuantity", Localization.Get("ui.shopbooklayout.cancel"), .17f, .095f, .48f, .195f, "Content/4 Buttons/0", 15);
                 v.cancelQuantity.interactable = false;
                 var colors = v.cancelQuantity.colors;
                 colors.disabledColor = new Color(.55f, .55f, .55f, .55f);
@@ -247,7 +247,7 @@ namespace FarmMVP
         {
             v.products.sizeDelta = new Vector2(0, 299);
             v.productPreview = Node(v.products, "EditorPreview", 0, 0, 1, 1).gameObject;
-            string[] names = { "딸기 씨앗", "나무 씨앗", "배낭 1단계", "판매 상품", "판매 상품" };
+            string[] names = { Localization.Get("ui.shopbooklayout.strawberry_seeds"), Localization.Get("ui.shopbooklayout.tree_seeds"), Localization.Get("ui.shopbooklayout.backpack_level_1"), Localization.Get("ui.shopbooklayout.products_386"), Localization.Get("ui.shopbooklayout.products_386") };
             for (int i = 0; i < names.Length; i++)
             {
                 var row = Object.Instantiate(v.rowTemplate, v.productPreview.transform);
@@ -260,7 +260,7 @@ namespace FarmMVP
             }
             v.categories.sizeDelta = new Vector2(0, 160);
             v.categoryPreview = Node(v.categories, "EditorPreview", 0, 0, 1, 1).gameObject;
-            string[] categories = { "전체", "씨앗", "나무", "가방" };
+            string[] categories = { Localization.Get("ui.shopbooklayout.all"), Localization.Get("ui.shopbooklayout.seeds"), "Fonts/PF스타더스트 3.0", Localization.Get("ui.shopbooklayout.bags") };
             for (int i = 0; i < categories.Length; i++)
             {
                 var tab = Object.Instantiate(v.categoryTemplate, v.categoryPreview.transform);
@@ -287,7 +287,7 @@ namespace FarmMVP
             row.icon = Picture(rect, "Icon", .035f, .18f, .19f, .82f, null);
             row.icon.preserveAspect = true;
             row.icon.enabled = false;
-            row.title = Label(rect, "ProductName", "상품 이름", .23f, .43f, .95f, .9f, 14);
+            row.title = Label(rect, "ProductName", Localization.Get("ui.shopbooklayout.product_name"), .23f, .43f, .95f, .9f, 14);
             row.title.fontStyle = FontStyle.Bold;
             row.title.resizeTextForBestFit = true;
             row.title.resizeTextMinSize = 10;
@@ -344,13 +344,14 @@ namespace FarmMVP
         private static Text Label(Transform parent, string name, string value, float x0, float y0, float x1, float y1, int size, TextAnchor align = TextAnchor.MiddleLeft)
         {
             var text = Node(parent, name, x0, y0, x1, y1).gameObject.AddComponent<Text>();
-            text.font = Resources.Load<Font>("Fonts/PF스타더스트 3.0") ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.font = LocalizedFonts.Get();
             text.text = value;
             text.fontSize = size;
             text.alignment = align;
             text.color = Ink;
             text.raycastTarget = false;
             text.supportRichText = false;
+            LocalizedText.Attach(text, null, name.Contains("Title") || name.Contains("Header") ? FontRole.Bold : FontRole.Default);
             return text;
         }
         private static Button Button(Transform parent, string name, string value, float x0, float y0, float x1, float y1, string sprite, int size)

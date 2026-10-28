@@ -28,10 +28,10 @@ namespace FarmMVP
             var card = StartScreenLayout.Node(stage, "Panel", 0, 0, 800, 400);
             view.panel = card.gameObject.AddComponent<Image>();
             UITheme.ApplyPanel(view.panel, 4);
-            view.message = Label(card, "Message", "구매하시겠습니까?", 0, 60, 680, 150, 32);
+            view.message = Label(card, "Message", Localization.Get("ui.confirmationdialogview.make_this_purchase"), 0, 60, 680, 150, 32);
             view.message.color = UITheme.LightInk;
-            view.yes = MakeButton(card, "Yes", "예", -160);
-            view.no = MakeButton(card, "No", "아니오", 160);
+            view.yes = MakeButton(card, "Yes", Localization.Get("ui.confirmationdialogview.yes"), -160);
+            view.no = MakeButton(card, "No", Localization.Get("ui.confirmationdialogview.no"), 160);
             root.gameObject.SetActive(false);
             return view;
         }
@@ -50,7 +50,7 @@ namespace FarmMVP
         private static Text Label(Transform parent, string name, string text, float x, float y, float w, float h, int size)
         {
             var label = StartScreenLayout.Node(parent, name, x, y, w, h).gameObject.AddComponent<Text>();
-            label.font = Resources.Load<Font>("Fonts/PF스타더스트 3.0") ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            label.font = LocalizedFonts.Get();
             label.text = text;
             label.fontSize = size;
             label.alignment = TextAnchor.MiddleCenter;

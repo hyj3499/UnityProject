@@ -137,7 +137,7 @@ namespace FarmMVP
         {
             _panel.gameObject.SetActive(false);
             _alert.gameObject.SetActive(false);
-            UIManager.Instance?.Toast("찌를 던졌다...");
+            UIManager.Instance?.Toast(Localization.Get("ui.fishingui.casting"));
         }
 
         public void ShowBite(Transform follow)

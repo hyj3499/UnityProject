@@ -123,7 +123,7 @@ namespace FarmMVP
             gm.SetPendingSave(savedData);
             gm.Boot(cam, pc, locationRoot);
             ui.Boot(gm);
-            if (appearance != null && !gm.TrySaveNow()) ui.Toast("새 게임을 저장하지 못했습니다. 다시 저장해 주세요.");
+            if (appearance != null && !gm.TrySaveNow()) ui.Toast(Localization.Get("world.gamebootstrap.could_not_save_the_new_game_please"));
             gm.InitFishing(ui);   // 미니게임 바가 UI 캔버스에 붙으므로 UI 다음에
             gm.InitEvents(ui);
 
