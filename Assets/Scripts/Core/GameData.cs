@@ -10,6 +10,10 @@ namespace FarmMVP
     [Serializable]
     public class GameData
     {
+        // One character owns one save; subsequent saves replace its current progress.
+        public string saveId;
+        public long lastSavedUtcTicks;
+        public double playTimeSeconds;
         public int currentDay = 1;
         /// <summary>
         /// 자정부터의 분. 하루는 06:00(360)에 시작해 다음 날 02:00(1560)에 끝난다 —

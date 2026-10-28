@@ -37,14 +37,17 @@ namespace FarmMVP
         public static void Custom() => Preview(2);
         [MenuItem("Tools/Start Screen/Preview Part Picker")]
         public static void Picker() => Preview(3);
+        [MenuItem("Tools/Start Screen/Preview Continue")]
+        public static void Continue() => Preview(4);
         private static void Preview(int page)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) return;
             var view = Object.FindFirstObjectByType<StartScreenView>(FindObjectsInactive.Include);
             if (view == null) { Create(); view = Object.FindFirstObjectByType<StartScreenView>(FindObjectsInactive.Include); }
             Undo.RegisterFullObjectHierarchyUndo(view.gameObject, "Preview Start Screen");
+            if (view.continuePanel == null) StartScreenLayout.BuildContinue(view);
             view.gameObject.SetActive(true); view.ShowMain();
-            if (page > 0)
+            if (page > 0 && page < 4)
             {
                 view.mainMenu.SetActive(false); view.creatorPanel.SetActive(true);
                 view.basicPanel.SetActive(page == 1); view.customPanel.SetActive(page > 1);
@@ -53,7 +56,8 @@ namespace FarmMVP
                 view.pickerPanel.SetActive(page == 3);
                 view.customScroll.verticalNormalizedPosition = 1;
             }
-            Selection.activeGameObject = page == 0 ? view.mainMenu : page == 1 ? view.basicPanel : page == 2 ? view.customPanel : view.pickerPanel;
+            if (page == 4) { view.mainMenu.SetActive(false); view.continuePanel.SetActive(true); }
+            Selection.activeGameObject = page == 4 ? view.continuePanel : page == 0 ? view.mainMenu : page == 1 ? view.basicPanel : page == 2 ? view.customPanel : view.pickerPanel;
             EditorSceneManager.MarkSceneDirty(view.gameObject.scene);
         }
     }

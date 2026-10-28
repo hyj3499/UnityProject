@@ -22,6 +22,11 @@ namespace FarmMVP
         public StartScreenPart[] parts;
         public Sprite slotNormal, slotSelected;
         public Texture2D previewBody, previewEyes, previewHeadGuide;
+        [Header("Continue / Scene-editable save selection")]
+        public GameObject continuePanel;
+        public Button closeContinue, previousSave, nextSave, startSave, deleteSave;
+        public RawImage savedCharacterPreview;
+        public Text savePosition, saveName, saveBirthday, saveDate, saveMoney, savePlayTime;
 
         public void ShowMain()
         {
@@ -30,6 +35,7 @@ namespace FarmMVP
             settingsPanel.SetActive(false);
             modalPanel.SetActive(false);
             pickerPanel.SetActive(false);
+            if (continuePanel != null) continuePanel.SetActive(false);
         }
     }
 

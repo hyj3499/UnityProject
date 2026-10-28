@@ -63,12 +63,35 @@ public class StartScreenPlayChecks : MonoBehaviour
     }
     private IEnumerator CheckRoutine()
     {
+#if UNITY_EDITOR
+        SaveSystem.TestSaveRoot = Path.GetFullPath("Output/PlaySaves-" + Guid.NewGuid().ToString("N"));
+#endif
+        var older = new GameData(); older.farmer.playerName = "이전 농부";
+        var latest = new GameData(); latest.farmer.playerName = "최근 농부";
+        latest.playTimeSeconds = 3660;
+        Check(SaveSystem.TrySave(older) && SaveSystem.TrySave(latest), "Independent play-test saves created");
         var host = new GameObject("MainMenu");
         var menu = host.AddComponent<MainMenuController>(); menu.Boot(null);
         var view = FindFirstObjectByType<StartScreenView>();
         yield return null;
         Check(view.mainMenu.activeInHierarchy && !view.creatorPanel.activeSelf, "Starts at main menu");
         Capture(view, "Play-MainMenu");
+        ClickAt(view.continueGame); yield return null;
+        Check(view.continuePanel.activeInHierarchy && view.saveName.text == "최근 농부", "Actual Continue click opens latest save");
+        Capture(view, "Play-Continue");
+        ClickAt(view.nextSave); yield return null;
+        Check(view.saveName.text == "이전 농부", "Actual right arrow changes selected save");
+        ClickAt(view.previousSave); yield return null;
+        Check(view.saveName.text == "최근 농부" && view.savePlayTime.text == "1시간 1분", "Actual left arrow restores selected metadata");
+        ClickAt(view.deleteSave); yield return null;
+        var deleteBehind = Raycast(view.nextSave.transform as RectTransform);
+        Check(deleteBehind != null && deleteBehind.transform.IsChildOf(view.modalPanel.transform), "Delete confirmation blocks arrows behind it");
+        ClickAt(view.modalNo); yield return null;
+        Check(SaveSystem.GetSaves().Count == 2, "Actual cancel preserves both saves");
+        ClickAt(view.deleteSave); yield return null; ClickAt(view.modalYes); yield return null;
+        Check(SaveSystem.Load(latest.saveId) == null && view.saveName.text == "이전 농부", "Actual delete removes only selected character");
+        ClickAt(view.closeContinue); yield return null;
+        Check(view.mainMenu.activeInHierarchy, "Actual close returns to main menu");
         ClickAt(view.newGame);
         yield return null;
         Check(view.basicPanel.activeInHierarchy && !view.male.isOn && !view.female.isOn, "Actual raycast opens basic settings with no gender");
@@ -126,6 +149,14 @@ public class StartScreenPlayChecks : MonoBehaviour
         ClickAt(view.settingsBack);
         yield return null;
         Check(view.mainMenu.activeInHierarchy, "Settings back returns to main");
+        ClickAt(view.continueGame); yield return null;
+        // A file disappearing after selection must not launch a different/new character.
+        SaveSystem.DeleteSave(older.saveId);
+        ClickAt(view.startSave); yield return null;
+        Check(view.modalPanel.activeInHierarchy && view.modalMessage.text.Contains("불러오지"), "Start reports a missing selected file without launching a fallback game");
+        ClickAt(view.modalYes); yield return null;
+        Check(view.mainMenu.activeInHierarchy && !view.continueGame.interactable && view.continueGame.GetComponent<CanvasGroup>().alpha < .5f, "Empty saves leave Continue visibly dimmed");
+        Capture(view, "Play-ContinueEmpty");
     }
     private void Check(bool value, string name)
     {

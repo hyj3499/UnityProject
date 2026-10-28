@@ -45,26 +45,25 @@ namespace FarmMVP
         }
         private static Button Button(Transform parent, string name, string label, float x, float y, float w = 220, float h = 64, bool dark = false)
         {
-            var image = Image(parent, name, (dark ? "Dark/" : "White/") + "Button_normal", x, y, w, h);
+            var image = Image(parent, name, null, x, y, w, h);
             image.raycastTarget = true;
             var button = image.gameObject.AddComponent<Button>(); button.targetGraphic = image;
-            button.transition = Selectable.Transition.SpriteSwap;
-            var prefix = dark ? "Dark/" : "White/";
-            button.spriteState = new SpriteState { highlightedSprite = Art(prefix + "Button_hover"), selectedSprite = Art(prefix + "Button_hover"), pressedSprite = Art(prefix + "Button_pressed"), disabledSprite = Art(prefix + "Button_disabled") };
             Label(image.transform, "Label", label, 0, 0, w - 16, h - 12, 26, dark);
+            UITheme.ApplyButton(button, dark, 4);
             return button;
         }
         private static Button Icon(Transform parent, string name, string path, float x, float y, float size, int index = 0)
         {
             var image = Image(parent, name, path, x, y, size, size); image.sprite = Art(path, index); image.raycastTarget = true; image.preserveAspect = true;
-            var button = image.gameObject.AddComponent<Button>(); button.targetGraphic = image; return button;
+            var button = image.gameObject.AddComponent<Button>(); button.targetGraphic = image;
+            UITheme.ApplyGlyphButton(button, name == "EditName" ? "수정" : index == 1 ? "<" : ">", false, 2);
+            if (name != "EditName") UITheme.ApplyArrow(button, index != 1);
+            return button;
         }
         private static Button Close(Transform parent, float x, float y, bool dark = false)
         {
-            string prefix = dark ? "Dark/" : "White/";
-            var button = Icon(parent, "Close", prefix + "Close_btn", x, y, 48);
-            button.transition = Selectable.Transition.SpriteSwap;
-            button.spriteState = new SpriteState { highlightedSprite = Art(prefix + "Close_btn_hovered"), pressedSprite = Art(prefix + "Close_btn_pressed") };
+            var button = Button(parent, "Close", "×", x, y, 48, 48, dark);
+            UITheme.ApplyClose(button);
             return button;
         }
         private static Slider Slider(Transform parent, string name, float x, float y, float width, bool dark = false)
@@ -132,6 +131,7 @@ namespace FarmMVP
             view.continueGame = Button(buttons, "Continue", "CONTINUE", 0, 50, 350, 80);
             view.settings = Button(buttons, "Settings", "SETTING", 0, -50, 350, 80);
             view.exit = Button(buttons, "Exit", "EXIT", 0, -150, 350, 80);
+            UITheme.ApplyClose(view.exit);
 
             var creator = Image(design, "CharacterCreator", "new game pannel_white", -180, 0, 1280, 768).rectTransform;
             creator.GetComponent<Image>().raycastTarget = true; view.creatorPanel = creator.gameObject;
@@ -156,8 +156,6 @@ namespace FarmMVP
             input.caretBlinkRate = .85f; input.caretWidth = 2; input.customCaretColor = true; input.caretColor = Cream;
             view.nameInput = input;
             view.editName = Icon(basic, "EditName", "Edit_btn_normal", 235, 155, 56);
-            view.editName.transition = Selectable.Transition.SpriteSwap;
-            view.editName.spriteState = new SpriteState { highlightedSprite = Art("Edit_btn_hover"), pressedSprite = Art("Edit_btn_pressed") };
             Label(basic, "GenderLabel", "성별", -245, 25, 130, 50, 30, true);
             var group = basic.gameObject.AddComponent<ToggleGroup>(); group.allowSwitchOff = true;
             view.male = Radio(basic, "Male", "남", -30, 25, group); view.female = Radio(basic, "Female", "여", 180, 25, group);
@@ -181,6 +179,7 @@ namespace FarmMVP
             var ids = new[] { "Skin", "Eyes", "Hair", "Top", "Bottom", "Outfit", "Shoes", "Accessory" };
             view.parts = new StartScreenPart[labels.Length];
             for (int i = 0; i < labels.Length; i++) view.parts[i] = Part(content, ids[i], labels[i], i);
+            BuildContinue(view);
             BuildPicker(design, view); BuildSettings(design, view); BuildModal(root, view);
             view.previewBody = Art("CharacterPreview/base_animations").texture;
             view.previewEyes = Art("CharacterPreview/eyes").texture;
@@ -189,6 +188,43 @@ namespace FarmMVP
             view.parts[1].portrait.texture = Resources.Load<Texture2D>(ArtRoot + "CharacterPreview/DefaultPortrait");
             view.ShowMain(); view.customPanel.SetActive(false); view.back.gameObject.SetActive(false); view.finish.gameObject.SetActive(false);
             return view;
+        }
+        public static void BuildContinue(StartScreenView view)
+        {
+            if (view.continuePanel != null) return;
+            var root = Image(view.mainMenu.transform.parent, "ContinuePanel", "new game pannel_white", 0, 0, 1280, 768).rectTransform;
+            root.GetComponent<Image>().raycastTarget = true;
+            view.continuePanel = root.gameObject;
+            Label(root, "Title", "저장 데이터 선택", 0, 308, 950, 60, 36, true);
+            view.closeContinue = Close(root, 578, 321);
+            var standing = Image(root, "StandingPanel", "new game payer standing pannel_white", -350, 0, 256, 384);
+            view.savedCharacterPreview = Node(standing.transform, "Character", 0, 0, 256, 256).gameObject.AddComponent<RawImage>();
+            view.savedCharacterPreview.raycastTarget = false;
+            view.savedCharacterPreview.texture = Resources.Load<Texture2D>(ArtRoot + "CharacterPreview/DefaultStanding");
+            var info = Image(root, "GameDataInfoPanel", "game data info pannel", 160, 0, 600, 384);
+            view.savePosition = Label(info.transform, "CurrentData", "현재 데이터  1 / 5   (최대 5개)", 0, 142, 550, 46, 27, true);
+            string[] captions = { "캐릭터 이름", "생일", "현재 날짜", "소지금", "플레이시간" };
+            string[] names = { "CharacterName", "Birthday", "CurrentDate", "Money", "PlayTime" };
+            string[] samples = { "Ros", "봄 1일", "1년 봄 1일", "500 G", "0시간 0분" };
+            var values = new Text[5];
+            for (int i = 0; i < values.Length; i++)
+            {
+                float y = 78 - i * 53;
+                var caption = Label(info.transform, names[i] + "Label", captions[i], -183, y, 170, 44, 26, true);
+                caption.alignment = TextAnchor.MiddleLeft;
+                values[i] = Label(info.transform, names[i], samples[i], 92, y, 345, 44, 28, true);
+                values[i].alignment = TextAnchor.MiddleLeft;
+                values[i].supportRichText = false;
+                values[i].resizeTextForBestFit = true;
+                values[i].resizeTextMinSize = 16; values[i].resizeTextMaxSize = 28;
+            }
+            view.saveName = values[0]; view.saveBirthday = values[1]; view.saveDate = values[2];
+            view.saveMoney = values[3]; view.savePlayTime = values[4];
+            view.previousSave = Icon(root, "PreviousSave", "arrow icon_white", -558, 0, 56, 1);
+            view.nextSave = Icon(root, "NextSave", "arrow icon_white", 558, 0, 56, 2);
+            view.startSave = Button(root, "StartSave", "시작하기", 190, -302, 220, 68);
+            view.deleteSave = Button(root, "DeleteSave", "삭제하기", 440, -302, 220, 68);
+            root.gameObject.SetActive(false);
         }
         private static StartScreenPart Part(Transform parent, string id, string title, int index)
         {
@@ -268,13 +304,15 @@ namespace FarmMVP
             Label(root, "VolumeLabel", "음량", -230, 15, 160, 50, 28, true);
             view.volume = Slider(root, "Volume", 70, 15, 360);
             view.settingsBack = Button(root, "Back", "돌아가기", 0, -135, 240, 64);
+            UITheme.ApplyClose(view.settingsBack);
         }
         private static void BuildModal(Transform parent, StartScreenView view)
         {
             var overlay = Image(parent, "Confirmation", null, 0, 0, 1920, 1080); Stretch(overlay.rectTransform);
             overlay.color = new Color(0, 0, 0, .5f); overlay.raycastTarget = true; view.modalPanel = overlay.gameObject;
             var design = Node(overlay.transform, "Design", 0, 0, 1920, 1080); design.gameObject.AddComponent<StartScreenFit>();
-            var panel = Image(design, "Dialog", "new game pannel_white", 0, 0, 800, 400).rectTransform;
+            var panel = Image(design, "Dialog", null, 0, 0, 800, 400).rectTransform;
+            UITheme.ApplyPanel(panel.GetComponent<Image>(), 4);
             panel.GetComponent<Image>().raycastTarget = true;
             view.modalMessage = Label(panel, "Message", "캐릭터 생성을 취소하시겠습니까?", 0, 60, 680, 150, 32, true);
             view.modalYes = Button(panel, "Yes", "예", -160, -105, 240, 64);

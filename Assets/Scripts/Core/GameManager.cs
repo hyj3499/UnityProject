@@ -445,6 +445,8 @@ namespace FarmMVP
         /// <summary>새 게임에서 캐릭터를 만들었을 때 그 외형. Boot이 세이브를 읽은 뒤에 덮어쓴다.</summary>
         private PlayerAppearance _pendingAppearance;
         private CharacterProfile _pendingProfile;
+        private GameData _pendingSave;
+        public void SetPendingSave(GameData data) => _pendingSave = data;
         public void SetPendingProfile(CharacterProfile profile) => _pendingProfile = profile;
 
         public void SetPendingAppearance(PlayerAppearance appearance) => _pendingAppearance = appearance;
@@ -471,7 +473,8 @@ namespace FarmMVP
             AssetLibrary.EnsureLoaded();
 
             // load or new game
-            Data = _pendingAppearance != null ? NewGame() : SaveSystem.Load();
+            Data = _pendingSave ?? (_pendingAppearance != null ? NewGame() : SaveSystem.Load());
+            _pendingSave = null;
             if (Data == null)
             {
                 Data = NewGame();
@@ -660,6 +663,9 @@ namespace FarmMVP
         // ---------- update loop ----------
         private void Update()
         {
+            if (Data == null) return;
+            // Real time inside the game (including menus), excluding the title screen.
+            if (Application.isFocused) Data.playTimeSeconds += Time.unscaledDeltaTime;
             // I = 인벤토리 책, ESC = 설정 책 (같은 페이지를 다시 누르면 닫힌다).
             // 배송함이 열려 있을 때는 두 키 모두 배송함을 닫는다.
             if ((Events == null || !Events.IsRunning) && (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Escape)))
@@ -1324,8 +1330,7 @@ namespace FarmMVP
         {
             if (Input.GetKeyDown(KeyCode.F5) && (Events == null || !Events.IsRunning))
             {
-                SaveNow();
-                UIManager.Instance?.Toast("저장됨");
+                UIManager.Instance?.Toast(TrySaveNow() ? "저장됨" : "저장하지 못했습니다");
             }
         }
 
