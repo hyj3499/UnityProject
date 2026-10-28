@@ -23,6 +23,8 @@ foreach ($folder in $bookFolders) {
     }
 }
 Write-Output "Validation project: $bookProject"
+Copy-Item "$bookRepo/Assets/Resources/Sprites/UI/Button" "$bookProject/Assets/Resources/Sprites/UI" -Recurse
+Copy-Item "$bookRepo/Assets/Resources/Sprites/UI/Pannel_White.png*" "$bookProject/Assets/Resources/Sprites/UI/"
 Copy-Item "$bookRepo/Assets/Resources/Sprites/UI/Book/Book Inventory.png*" "$bookProject/Assets/Resources/Sprites/UI/Book/"
 Copy-Item "$bookRepo/Assets/Resources/Sprites/UI/Book/Book Inventory Selector.png*" "$bookProject/Assets/Resources/Sprites/UI/Book/"
 Copy-Item "$bookRepo/Assets/Resources/Sprites/UI/BoldPixels.ttf*" "$bookProject/Assets/Resources/Sprites/UI/"

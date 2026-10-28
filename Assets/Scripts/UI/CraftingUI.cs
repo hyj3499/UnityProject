@@ -136,6 +136,8 @@ namespace FarmMVP
 
             var btn = go.AddComponent<Button>();
             btn.targetGraphic = img;
+            UITheme.ApplyButton(btn);
+            img.color = interactable ? Color.white : new Color(1, 1, 1, .4f);
             btn.interactable = interactable;
             btn.onClick.AddListener(onClick);
 

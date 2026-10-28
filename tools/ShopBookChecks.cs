@@ -77,8 +77,8 @@ namespace FarmMVP
                 Check(view.productsScroll.verticalScrollbar.image.sprite != null, "Holder scrollbar art");
                 Check(view.slots.Length == 30, "Inventory slots");
                 Check(view.flipLeft.Length > 0 && view.flipRight.Length > 0, "Both page turn directions loaded");
-                Check(view.increase.image.sprite.rect.size == new Vector2(16, 16)
-                    && view.increase.spriteState.pressedSprite != null && view.decrease.spriteState.pressedSprite != null, "16px plus/minus and pressed sprites");
+                Check(view.increase.image.sprite.name == "Arrow_btn_2"
+                    && view.decrease.image.sprite.name == "Arrow_btn_1", "Right/left quantity arrows");
                 var slot0Rect = (RectTransform)view.slots[0].button.transform;
                 var slot10Rect = (RectTransform)view.slots[10].button.transform;
                 var slot20Rect = (RectTransform)view.slots[20].button.transform;

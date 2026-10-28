@@ -1,0 +1,897 @@
+fileFormatVersion: 2
+guid: d5c6faeaa9f04d348b99064ee455729a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6696023942961990390
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_0"
+  - first:
+      213: -2953794663480183446
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_1"
+  - first:
+      213: 6191040671675136218
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_2"
+  - first:
+      213: -7494186358924935859
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_3"
+  - first:
+      213: 1775676825750936035
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_4"
+  - first:
+      213: 1815372782169538431
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_5"
+  - first:
+      213: 268269715254263356
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_6"
+  - first:
+      213: -3018501583444749223
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_7"
+  - first:
+      213: -9082150513735484712
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_8"
+  - first:
+      213: -7923946323061315493
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_9"
+  - first:
+      213: -8153805139559449162
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_10"
+  - first:
+      213: -8416313715809940577
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_11"
+  - first:
+      213: -1730660021206763806
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_12"
+  - first:
+      213: 3659299656108341246
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_13"
+  - first:
+      213: 1016224554916666897
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_14"
+  - first:
+      213: 4461353498167486794
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_15"
+  - first:
+      213: 7451805042512108292
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_16"
+  - first:
+      213: 8982642475529968782
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_17"
+  - first:
+      213: -3650911655061246885
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_18"
+  - first:
+      213: 788321120676621776
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_19"
+  - first:
+      213: 5521679753490477472
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_20"
+  - first:
+      213: 6506700184096686677
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_21"
+  - first:
+      213: 4651696802644786345
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_22"
+  - first:
+      213: 7780356423683538599
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_23"
+  - first:
+      213: -8543667883366341033
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_24"
+  - first:
+      213: -3451260757806424343
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_25"
+  - first:
+      213: -3436144993949355178
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_26"
+  - first:
+      213: -6288440323305435922
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_27"
+  - first:
+      213: 3099854199770560886
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_28"
+  - first:
+      213: 8189967282044358559
+    second: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_29"
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_0"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 322
+        width: 117
+        height: 126
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6fa82cf8c4e0dec50800000000000000
+      internalID: 6696023942961990390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_1"
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 369
+        width: 50
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a65b1d747630207d0800000000000000
+      internalID: -2953794663480183446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_2"
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 399
+        width: 50
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad8313970befae550800000000000000
+      internalID: 6191040671675136218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_3"
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 408
+        width: 50
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4d73b3663d4ff790800000000000000
+      internalID: -7494186358924935859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_4"
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 408
+        width: 50
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e917c24aa874a810800000000000000
+      internalID: 1775676825750936035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_5"
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 401
+        width: 48
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7fb0285def713910800000000000000
+      internalID: 1815372782169538431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_6"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 355
+        width: 17
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3eb9b972e519b300800000000000000
+      internalID: 268269715254263356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_7"
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 354
+        width: 18
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95452d47dc02c16d0800000000000000
+      internalID: -3018501583444749223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_8"
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 335
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8da3a202a38b5f180800000000000000
+      internalID: -9082150513735484712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_9"
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 321
+        width: 71
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b58eaa25dcc780290800000000000000
+      internalID: -7923946323061315493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_10"
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 321
+        width: 71
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6bdfdc02d6dd7de80800000000000000
+      internalID: -8153805139559449162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_11"
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 227
+        width: 17
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9b86ea544f333b80800000000000000
+      internalID: -8416313715809940577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_12"
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 194
+        width: 90
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e6300151e57bf7e0800000000000000
+      internalID: -1730660021206763806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_13"
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 226
+        width: 18
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef7fb0146a178c230800000000000000
+      internalID: 3659299656108341246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_14"
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 257
+        width: 50
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11e56d739da5a1e00800000000000000
+      internalID: 1016224554916666897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_15"
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 241
+        width: 71
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4928bb8e59e9ed30800000000000000
+      internalID: 4461353498167486794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_16"
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 241
+        width: 71
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40b166e64312a6760800000000000000
+      internalID: 7451805042512108292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_17"
+      rect:
+        serializedVersion: 2
+        x: 447
+        y: 255
+        width: 81
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8c9c4a4db1c8ac70800000000000000
+      internalID: 8982642475529968782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_18"
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 127
+        width: 60
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5cadbd613b555dc0800000000000000
+      internalID: -3650911655061246885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_19"
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 163
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0dd2edee1eda0fa00800000000000000
+      internalID: 788321120676621776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_20"
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 118
+        width: 62
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a1344e0b72f0ac40800000000000000
+      internalID: 5521679753490477472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_21"
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 161
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5524d0de7517c4a50800000000000000
+      internalID: 6506700184096686677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_22"
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 159
+        width: 102
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ac7674a8952e8040800000000000000
+      internalID: 4651696802644786345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_23"
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 159
+        width: 102
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7aef59bf1f069fb60800000000000000
+      internalID: 7780356423683538599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_24"
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 127
+        width: 18
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 756290d835bce6980800000000000000
+      internalID: -8543667883366341033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_25"
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 131
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9eed3b750a8aa10d0800000000000000
+      internalID: -3451260757806424343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_26"
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 127
+        width: 21
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65379ee555c5050d0800000000000000
+      internalID: -3436144993949355178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_27"
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 129
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eec0322f7d8fab8a0800000000000000
+      internalID: -6288440323305435922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_28"
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 63
+        width: 102
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 679b3d098f4e40b20800000000000000
+      internalID: 3099854199770560886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_29"
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 63
+        width: 102
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9f4358c9db98a170800000000000000
+      internalID: 8189967282044358559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_0": 6696023942961990390
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_1": -2953794663480183446
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_10": -8153805139559449162
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_11": -8416313715809940577
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_12": -1730660021206763806
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_13": 3659299656108341246
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_14": 1016224554916666897
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_15": 4461353498167486794
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_16": 7451805042512108292
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_17": 8982642475529968782
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_18": -3650911655061246885
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_19": 788321120676621776
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_2": 6191040671675136218
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_20": 5521679753490477472
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_21": 6506700184096686677
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_22": 4651696802644786345
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_23": 7780356423683538599
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_24": -8543667883366341033
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_25": -3451260757806424343
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_26": -3436144993949355178
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_27": -6288440323305435922
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_28": 3099854199770560886
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_29": 8189967282044358559
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_3": -7494186358924935859
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_4": 1775676825750936035
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_5": 1815372782169538431
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_6": 268269715254263356
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_7": -3018501583444749223
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_8": -9082150513735484712
+      "Tileset_cliff_spring - \uBCF5\uC0AC\uBCF8_9": -7923946323061315493
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

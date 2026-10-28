@@ -251,6 +251,7 @@ namespace FarmMVP
             v.confirmation = shield.gameObject;
             var card = Picture(shield.transform, "Card", .5f, .5f, .5f, .5f, Sprite("Content/5 Holders/5"));
             card.rectTransform.sizeDelta = new Vector2(340, 180);
+            UITheme.ApplyPanel(card, 2);
             card.rectTransform.localScale = new Vector3(ScaleIncrease, ScaleIncrease, 1);
             v.confirmationText = Label(card.transform, "Question", "게임을 종료할까요?", .08f, .44f, .92f, .88f, 16, TextAnchor.MiddleCenter);
             v.confirmYes = Button(card.transform, "Yes", "종료", .1f, .12f, .46f, .36f, Sprite("Content/4 Buttons/0"), 14);
@@ -305,6 +306,8 @@ namespace FarmMVP
             // 키보드 방향키로 숨겨진 페이지나 다른 메뉴로 포커스가 이동하지 않도록 한다.
             button.navigation = new Navigation { mode = Navigation.Mode.None };
             Label(image.transform, "Label", label, .1f, 0, .9f, 1, size, TextAnchor.MiddleCenter);
+            if (!string.IsNullOrEmpty(label) && !name.StartsWith("Tab_")) UITheme.ApplyButton(button);
+            if (name == "Close") UITheme.ApplyClose(button);
             return button;
         }
 

@@ -215,6 +215,7 @@ namespace FarmMVP
             button.targetGraphic = image;
             button.transition = Selectable.Transition.SpriteSwap;
             button.spriteState = new SpriteState { pressedSprite = sprites.Length > index + 1 ? sprites[index + 1] : null };
+            UITheme.ApplyArrow(button, name == "Plus");
             button.navigation = new Navigation { mode = Navigation.Mode.None };
             return button;
         }
@@ -321,6 +322,7 @@ namespace FarmMVP
                 bar.handleRect = handle.rectTransform;
                 bar.targetGraphic = handle;
                 bar.navigation = new Navigation { mode = Navigation.Mode.None };
+                UITheme.ApplyShopScrollbar(bar);
                 scroll.verticalScrollbar = bar;
                 scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
             }
@@ -360,6 +362,8 @@ namespace FarmMVP
             button.targetGraphic = image;
             button.navigation = new Navigation { mode = Navigation.Mode.None };
             Label(image.transform, "Label", value, .06f, .04f, .94f, .96f, size, TextAnchor.MiddleCenter);
+            if (!string.IsNullOrEmpty(value) && name != "CategoryTemplate") UITheme.ApplyButton(button);
+            if (name == "Close") UITheme.ApplyClose(button);
             return button;
         }
     }

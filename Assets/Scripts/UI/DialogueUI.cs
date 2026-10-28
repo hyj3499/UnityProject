@@ -159,6 +159,7 @@ namespace FarmMVP
 
                 var btn = go.AddComponent<Button>();
                 btn.targetGraphic = img;
+                UITheme.ApplyButton(btn);
                 var captured = choice;
                 btn.onClick.AddListener(() => OnChoicePicked(captured));
 

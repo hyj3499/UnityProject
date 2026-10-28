@@ -11,6 +11,9 @@ Copy-Item "$startRepo/Assets/Scripts" "$startProject/Assets" -Recurse -Force
 Copy-Item "$PSScriptRoot/StartScreenChecks.cs" "$startProject/Assets/Editor/StartScreenChecks.cs" -Force
 Copy-Item "$PSScriptRoot/StartScreenPlayChecks.cs" "$startProject/Assets/StartScreenPlayChecks.cs" -Force
 Copy-Item "$startRepo/Assets/Resources/Sprites/StartScreen" "$startProject/Assets/Resources/Sprites" -Recurse -Force
+New-Item -ItemType Directory -Path "$startProject/Assets/Resources/Sprites/UI" -Force | Out-Null
+Copy-Item "$startRepo/Assets/Resources/Sprites/UI/Button" "$startProject/Assets/Resources/Sprites/UI" -Recurse -Force
+Copy-Item "$startRepo/Assets/Resources/Sprites/UI/Pannel_White.png*" "$startProject/Assets/Resources/Sprites/UI" -Force
 Copy-Item "$startRepo/Assets/Resources/Fonts" "$startProject/Assets/Resources" -Recurse -Force
 # Renderer parity checks use the actual game body, eyes and guide as well.
 New-Item -ItemType Directory -Path "$startProject/Assets/Resources/Sprites/Farmer/Base" -Force | Out-Null

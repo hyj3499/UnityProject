@@ -45,6 +45,7 @@ namespace FarmMVP
 
         // Yes/No confirm dialog
         private GameObject _confirmPanel;
+        private ConfirmationDialogView _confirmView;
         private Text _confirmText;
         private Action _confirmYesAction;
         private Action _confirmNoAction;
@@ -88,6 +89,12 @@ namespace FarmMVP
 
         private void OnDestroy()
         {
+            if (_confirmView != null)
+            {
+                _confirmView.yes.onClick.RemoveListener(ConfirmYes);
+                _confirmView.no.onClick.RemoveListener(ConfirmNo);
+                _confirmView.gameObject.SetActive(false);
+            }
             // 타이틀로 돌아갈 때 UIManager와 함께 캔버스도 정리한다 (캔버스는 별도 오브젝트로 만들어짐).
             if (Instance == this) Instance = null;
             if (_canvas != null) Destroy(_canvas.gameObject);
@@ -340,54 +347,18 @@ namespace FarmMVP
         // ---------- confirm dialog ----------
         private void BuildConfirmDialog()
         {
-            _confirmPanel = new GameObject("ConfirmDialog");
-            var rt = _confirmPanel.AddComponent<RectTransform>();
-            rt.SetParent(_canvas.transform, false);
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.sizeDelta = new Vector2(360, 160);
-
-            var bg = _confirmPanel.AddComponent<Image>();
-            bg.color = new Color(0.08f, 0.08f, 0.10f, 0.96f);
-
-            _confirmText = Label(rt, "", 22, Vector2.zero, TextAnchor.MiddleCenter);
-            _confirmText.rectTransform.anchorMin = new Vector2(0, 0);
-            _confirmText.rectTransform.anchorMax = new Vector2(1, 1);
-            _confirmText.rectTransform.offsetMin = new Vector2(16, 56);
-            _confirmText.rectTransform.offsetMax = new Vector2(-16, -16);
-            _confirmText.rectTransform.anchoredPosition = Vector2.zero;
-
-            MakeButton(rt, "예", new Vector2(-90, 20), () => OnConfirmClicked(true));
-            MakeButton(rt, "아니오", new Vector2(90, 20), () => OnConfirmClicked(false));
-
+            foreach (var view in FindObjectsByType<ConfirmationDialogView>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (view.gameObject.scene == _game.gameObject.scene) { _confirmView = view; break; }
+            if (_confirmView == null) _confirmView = ConfirmationDialogView.Build(_canvas.transform);
+            _confirmPanel = _confirmView.gameObject;
+            _confirmText = _confirmView.message;
+            _confirmView.yes.onClick.AddListener(ConfirmYes);
+            _confirmView.no.onClick.AddListener(ConfirmNo);
             _confirmPanel.SetActive(false);
         }
 
-        private Button MakeButton(RectTransform parent, string text, Vector2 pos, UnityEngine.Events.UnityAction onClick)
-        {
-            var go = new GameObject("Button_" + text);
-            var rt = go.AddComponent<RectTransform>();
-            rt.SetParent(parent, false);
-            rt.anchorMin = new Vector2(0.5f, 0);
-            rt.anchorMax = new Vector2(0.5f, 0);
-            rt.pivot = new Vector2(0.5f, 0);
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = new Vector2(120, 40);
-
-            var img = go.AddComponent<Image>();
-            img.color = new Color(0.25f, 0.25f, 0.3f, 1f);
-
-            var btn = go.AddComponent<Button>();
-            btn.targetGraphic = img;
-            btn.onClick.AddListener(onClick);
-
-            var label = Label(rt, text, 18, Vector2.zero, TextAnchor.MiddleCenter);
-            Stretch(label.rectTransform, 0, 0, 0, 0);
-            label.raycastTarget = false;
-
-            return btn;
-        }
+        private void ConfirmYes() => OnConfirmClicked(true);
+        private void ConfirmNo() => OnConfirmClicked(false);
 
         /// <summary>범용 예/아니오 확인 팝업. Yes/No 클릭 시 해당 콜백을 호출한다.</summary>
         public void ShowYesNo(string message, Action onYes, Action onNo = null)
