@@ -7,7 +7,7 @@ namespace FarmMVP
 {
     /// <summary>
     /// 퀵 인벤토리 한 칸. 클릭하면 선택하고, 다른 칸으로 끌어다 놓으면 자리를 바꾼다.
-    /// 위치와 크기는 에디터에서 자유롭게 옮겨도 된다 (QuickInventoryHUD가 건드리지 않는다).
+    /// 선택 시 슬롯 전체가 올라가며 밝아지고, 선택 테두리는 한 번만 재생한다.
     /// </summary>
     public class QuickInventorySlot : MonoBehaviour,
         IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
@@ -18,9 +18,76 @@ namespace FarmMVP
         [SerializeField] private Image highlight;
         [SerializeField] private Image icon;
         [SerializeField] private TMP_Text count;
+        private Image _background;
+        private BookInventorySelection _selection;
+        private Vector2 _restPosition;
+        private float _lift;
+        private Color _normalTint;
+        private Color _selectedTint;
+        private bool _highlighted;
 
         private static Image _dragImage;
-        private void OnEnable() => LocalizedText.InventoryCount(count);
+        private void OnEnable()
+        {
+            LocalizedText.InventoryCount(count);
+            if (_selection != null) _selection.SetSelected(_highlighted, true);
+        }
+
+        public void ConfigurePresentation(Vector2 center, Vector2 size, float lift,
+            Color normalTint, Color selectedTint, Sprite[] selectorFrames)
+        {
+            _restPosition = center;
+            _lift = lift;
+            _normalTint = normalTint;
+            _selectedTint = selectedTint;
+            var rect = (RectTransform)transform;
+            rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.one * .5f;
+            rect.sizeDelta = size;
+            _background = GetComponent<Image>();
+            _background.raycastTarget = true;
+            _background.type = Image.Type.Simple;
+
+            // Book의 34px 셀렉터와 네 모서리 배치/재생 방식을 그대로 사용한다.
+            highlight.sprite = null;
+            highlight.enabled = false;
+            highlight.raycastTarget = false;
+            var selectorRect = highlight.rectTransform;
+            selectorRect.anchorMin = selectorRect.anchorMax = Vector2.one * .5f;
+            selectorRect.anchoredPosition = Vector2.zero;
+            selectorRect.sizeDelta = size * (34f / 27f);
+            selectorRect.SetAsLastSibling();
+            _selection = highlight.GetComponent<BookInventorySelection>();
+            if (_selection == null) _selection = highlight.gameObject.AddComponent<BookInventorySelection>();
+            _selection.image = highlight;
+            _selection.frames = selectorFrames;
+            _selection.framesPerSecond = 10f;
+            _selection.repeatCount = 1;
+            _selection.corners = new Image[4];
+            string[] names = { "TopLeft", "TopRight", "BottomLeft", "BottomRight" };
+            for (int i = 0; i < names.Length; i++)
+            {
+                var child = selectorRect.Find(names[i]);
+                if (child == null)
+                {
+                    var go = new GameObject(names[i], typeof(RectTransform), typeof(Image));
+                    go.layer = gameObject.layer;
+                    go.transform.SetParent(selectorRect, false);
+                    child = go.transform;
+                }
+                var corner = child.GetComponent<Image>();
+                corner.color = Color.white;
+                corner.raycastTarget = false;
+                _selection.corners[i] = corner;
+            }
+            count.rectTransform.SetAsLastSibling();
+            SetHighlighted(_highlighted);
+        }
+
+        public void SetBackground(Sprite sprite)
+        {
+            if (_background == null) _background = GetComponent<Image>();
+            _background.sprite = sprite;
+        }
 
         public void Setup(QuickInventoryHUD owner, int number, Image highlightImage, Image iconImage, TMP_Text countText)
         {
@@ -44,9 +111,13 @@ namespace FarmMVP
                 count.text = stack != null && !stack.IsEmpty && stack.count > 1 ? stack.count.ToString() : "";
         }
 
-        public void SetHighlighted(bool on)
+        public void SetHighlighted(bool on, bool restart = false)
         {
-            if (highlight != null) highlight.enabled = on;
+            _highlighted = on;
+            ((RectTransform)transform).anchoredPosition = _restPosition + (on ? Vector2.up * _lift : Vector2.zero);
+            if (_background != null) _background.color = on ? _selectedTint : _normalTint;
+            if (icon != null) icon.color = on ? _selectedTint : _normalTint;
+            if (_selection != null) _selection.SetSelected(on, restart);
         }
 
         public void OnPointerClick(PointerEventData e) => hud.OnSlotClicked(slotNumber);

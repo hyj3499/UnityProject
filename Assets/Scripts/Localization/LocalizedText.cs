@@ -46,7 +46,11 @@ namespace FarmMVP
                 {
                     _tmp.color = Color.white;
                     _tmp.fontSharedMaterial = LocalizedFonts.CountMaterial;
+                    _tmp.fontSize = 10f;
                     _tmp.extraPadding = true;
+                    _tmp.enableAutoSizing = false;
+                    _tmp.textWrappingMode = TextWrappingModes.NoWrap;
+                    _tmp.overflowMode = TextOverflowModes.Overflow;
                     foreach (var effect in GetComponents<Shadow>()) effect.enabled = false;
                 }
             }

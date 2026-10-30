@@ -7,9 +7,8 @@ namespace FarmMVP
 {
     /// <summary>
     /// 씬(Canvas/HUD/QuickInventory)에 만들어 둔 퀵 인벤토리를 채운다.
-    /// 배치/크기/색은 전부 유니티 에디터에서 만진다 — 이 스크립트는 스프라이트와 아이템만 바꾼다.
-    ///   QuickInventoryPanel      → 가방 번호에 맞는 QuickInventory_{번호} 스프라이트로 교체
-    ///   Slot_N / Highlight       → 선택한 칸에만 켜지는 QuickInventory_highlight_{N}
+    /// 가방 번호에 맞는 슬롯 그림을 같은 간격으로 10개 배치한다.
+    ///   Slot_N / Highlight       → Book과 같은 네 모서리 선택 애니메이션 (한 번 재생)
     ///   Slot_N / Icon, Count     → 아이템 그림과 개수
     /// 슬롯 오브젝트는 컴포넌트 우클릭 메뉴 "슬롯 생성"으로 만들 수 있고, 만들어 두지 않았으면 실행 시 자동 생성된다.
     /// 게임(GameManager)은 타이틀에서 시작을 누른 뒤에야 생기므로, 없는 동안은 숨긴다.
@@ -21,18 +20,17 @@ namespace FarmMVP
         [Header("Panel")]
         [Tooltip("비워 두면 자식에서 Image를 찾는다 (QuickInventoryPanel).")]
         [SerializeField] private Image panelImage;
-        [Tooltip("가방 0, 1, 2번 패널. 비워 두면 Resources의 QuickInventory_0~2를 불러온다.")]
+        [Tooltip("첫 번째~세 번째 가방의 개별 슬롯 그림.")]
         [SerializeField] private Sprite[] panelSprites = new Sprite[Inventory.BackpackPages];
 
         [Header("Slots")]
         [SerializeField] private QuickInventorySlot[] slots = new QuickInventorySlot[Inventory.HotbarSize];
-        [Tooltip("첫 번째 칸의 중심 (패널 중심 기준, 패널 픽셀 좌표).")]
-        [SerializeField] private Vector2 firstSlotCenter = new Vector2(-112f, 0f);
-        [Tooltip("칸과 칸 사이 간격 (패널 픽셀).")]
-        [SerializeField] private float slotPitch = 25f;
-        [SerializeField] private Vector2 slotSize = new Vector2(26f, 26f);
-        [Tooltip("칸 번호 0~9에 대응하는 하이라이트 스프라이트. 비워 두면 Resources에서 불러온다.")]
-        [SerializeField] private Sprite[] highlightSprites = new Sprite[Inventory.HotbarSize];
+        [Min(0f), SerializeField] private float slotGap = 3f;
+        [SerializeField] private Vector2 slotSize = new Vector2(27f, 27f);
+        [Min(0f), SerializeField] private float selectedLift = 3f;
+        [SerializeField] private Color normalTint = new Color(.8f, .8f, .8f, 1f);
+        [SerializeField] private Color selectedTint = Color.white;
+        private Sprite[] _selectorFrames;
 
         private GameManager _game;
         private CanvasGroup _group;
@@ -105,8 +103,10 @@ namespace FarmMVP
         {
             if (_game == null || _game.Inventory == null) return;
 
+            // 개방한 가방 수(BackpackLevel)가 아니라 현재 Tab으로 보고 있는 가방의 색을 쓴다.
             int page = _game.HotbarPage;
-            if (page != _page)
+            bool pageChanged = page != _page;
+            if (pageChanged)
             {
                 _page = page;
                 ApplyPanelSprite(page);
@@ -121,15 +121,14 @@ namespace FarmMVP
                 int index = IndexOf(i);
                 bool selected = index == equipped;
                 slot.Show(_game.Inventory.GetSlot(index));
-                slot.SetHighlighted(selected);
+                slot.SetHighlighted(selected, pageChanged);
             }
         }
 
         private void ApplyPanelSprite(int page)
         {
-            if (panelImage == null) return;
             var sprite = page >= 0 && page < panelSprites.Length ? panelSprites[page] : null;
-            if (sprite != null) panelImage.sprite = sprite;
+            foreach (var slot in slots) if (slot != null) slot.SetBackground(sprite);
         }
 
         /// <summary>퀵바 N번째 칸이 가리키는 실제 인벤토리 번호 (지금 보는 가방 페이지 기준).</summary>
@@ -142,6 +141,7 @@ namespace FarmMVP
         {
             if (InputBlocked) return;
             _game.SelectHotbar(IndexOf(slotNumber));
+            slots[slotNumber].SetHighlighted(true, true);
         }
 
         public void OnSlotDropped(int fromSlot, int toSlot)
@@ -157,19 +157,18 @@ namespace FarmMVP
         {
             if (panelImage == null) panelImage = GetComponentInChildren<Image>(true);
             LoadMissingSprites();
-
-            bool slotsMissing = slots == null || slots.Length != Inventory.HotbarSize;
-            if (!slotsMissing) foreach (var s in slots) if (s == null) { slotsMissing = true; break; }
-            if (slotsMissing) BuildSlots();
+            BuildSlots();
         }
 
         private void LoadMissingSprites()
         {
             panelSprites = EnsureLength(panelSprites, Inventory.BackpackPages);
-            highlightSprites = EnsureLength(highlightSprites, Inventory.HotbarSize);
-
             FillFromSheet(panelSprites, "QuickInventory");
-            FillFromSheet(highlightSprites, "QuickInventory_highlight");
+            if (_selectorFrames == null || _selectorFrames.Length != 8)
+            {
+                _selectorFrames = new Sprite[8];
+                FillFromSheet(_selectorFrames, "Inventory Selector");
+            }
         }
 
         private static void FillFromSheet(Sprite[] target, string sheet)
@@ -196,39 +195,46 @@ namespace FarmMVP
         }
 
         [ContextMenu("슬롯 생성")]
-        private void BuildSlots()
+        public void BuildSlots()
         {
             if (panelImage == null) panelImage = GetComponentInChildren<Image>(true);
             if (panelImage == null) { Debug.LogWarning("[QuickInventoryHUD] 패널 Image를 찾지 못했습니다."); return; }
             LoadMissingSprites();
-
-            // 이미 만들어 둔 슬롯은 위치를 유지한 채 재사용한다 (에디터에서 옮긴 값을 덮어쓰지 않도록).
+            panelImage.sprite = null;
+            panelImage.enabled = false;
+            panelImage.raycastTarget = false;
+            float pitch = slotSize.x + slotGap;
+            PanelRect.sizeDelta = new Vector2(pitch * Inventory.HotbarSize - slotGap, slotSize.y);
             slots = EnsureLength(slots, Inventory.HotbarSize);
             for (int i = 0; i < Inventory.HotbarSize; i++)
             {
-                if (slots[i] != null) continue;
-
-                var existing = PanelRect.Find("Slot_" + i);
-                slots[i] = existing != null ? existing.GetComponent<QuickInventorySlot>() : null;
+                if (slots[i] == null)
+                {
+                    var existing = PanelRect.Find("Slot_" + i);
+                    slots[i] = existing != null ? existing.GetComponent<QuickInventorySlot>() : null;
+                }
                 if (slots[i] == null) slots[i] = CreateSlot(i);
+                var center = new Vector2((i - (Inventory.HotbarSize - 1) * .5f) * pitch, 0f);
+                slots[i].ConfigurePresentation(center, slotSize, selectedLift, normalTint, selectedTint, _selectorFrames);
             }
+            ApplyPanelSprite(_game != null ? _game.HotbarPage : 0);
         }
 
         private QuickInventorySlot CreateSlot(int i)
         {
             var go = new GameObject("Slot_" + i, typeof(RectTransform));
+            go.layer = PanelRect.gameObject.layer;
             var rt = (RectTransform)go.transform;
             rt.SetParent(PanelRect, false);
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = firstSlotCenter + new Vector2(slotPitch * i, 0f);
             rt.sizeDelta = slotSize;
 
-            // 클릭/드래그를 받는 투명한 판
+            // 슬롯 배경과 클릭/드래그 입력 영역.
             var hit = go.AddComponent<Image>();
-            hit.color = new Color(1f, 1f, 1f, 0f);
+            hit.color = normalTint;
 
-            var highlight = NewImage("Highlight", rt, highlightSprites[i]);
+            var highlight = NewImage("Highlight", rt, null);
             highlight.enabled = false;
             highlight.raycastTarget = false;
             Stretch(highlight.rectTransform, 0f);
@@ -240,6 +246,7 @@ namespace FarmMVP
             Stretch(icon.rectTransform, 3f);
 
             var countGo = new GameObject("Count", typeof(RectTransform));
+            countGo.layer = rt.gameObject.layer;
             var crt = (RectTransform)countGo.transform;
             crt.SetParent(rt, false);
             Stretch(crt, 1f);
@@ -258,6 +265,7 @@ namespace FarmMVP
         private static Image NewImage(string name, RectTransform parent, Sprite sprite)
         {
             var go = new GameObject(name, typeof(RectTransform));
+            go.layer = parent.gameObject.layer;
             go.transform.SetParent(parent, false);
             var img = go.AddComponent<Image>();
             img.sprite = sprite;

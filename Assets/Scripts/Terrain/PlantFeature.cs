@@ -6,7 +6,7 @@ namespace FarmMVP
     /// <summary>
     /// 한 칸을 덮는 풀 (잔디 한 무더기 / 잡초 한 무더기).
     ///
-    /// 그림이 칸 격자(16x16)와 어긋나는 크기인데(잔디 15x20, 잡초 15x12), 그게 이 기능의 핵심이다 —
+    /// 그림이 칸 격자(16x16)와 어긋나는 크기인데(잔디 15x20, 봄 잡초 14x10), 그게 이 기능의 핵심이다 —
     /// 한 칸에 여러 포기를 <b>칸 안에서 조금씩 어긋나게</b> 심어 격자가 보이지 않게 한다.
     /// 몇 포기를 어디에 심을지는 칸 좌표에서 계산하므로(<see cref="Tufts"/>) 저장할 것이 없고,
     /// 같은 칸은 언제 다시 그려도 같은 모양이다.
@@ -17,7 +17,7 @@ namespace FarmMVP
         public int x, y;
         public string plantId;
 
-        /// <summary>잔디는 성장 단계(0~2), 잡초는 생김새 번호(0~2).</summary>
+        /// <summary>잔디는 성장 단계(0~2), 잡초는 한 무더기의 첫 생김새 번호.</summary>
         public int stage;
         public int dayCounter;
 
@@ -37,10 +37,17 @@ namespace FarmMVP
         }
 
         /// <summary>지금 계절의 그림. 겨울처럼 그림이 없는 계절이면 null.</summary>
-        public Sprite GetSprite()
+        public Sprite GetSprite(int tuftIndex = 0)
         {
             var d = Def;
-            return d == null ? null : PlantArt.Stage(d.sheet, stage, Seasons.Current);
+            if (d == null) return null;
+            int index = stage;
+            if (d.maxStage == 0)
+            {
+                int variants = Mathf.Max(1, PlantArt.VariantCount(d.sheet, Seasons.Current));
+                index = (Mathf.Max(0, stage) + tuftIndex) % variants;
+            }
+            return PlantArt.Stage(d.sheet, index, Seasons.Current);
         }
 
         /// <summary>하루가 지난다. 그림이 바뀌었으면 true (그때만 다시 그리면 된다).</summary>

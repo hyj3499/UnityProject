@@ -3,13 +3,15 @@ using UnityEngine.UI;
 
 namespace FarmMVP
 {
-    /// <summary>Book Inventory Selector 스프라이트 시트를 반복 재생한다.</summary>
+    /// <summary>네 모서리 선택 효과. 기본은 반복 재생, 퀵 인벤토리는 횟수를 제한한다.</summary>
     public sealed class BookInventorySelection : MonoBehaviour
     {
         public Image image;
         public Sprite[] frames;
         public Image[] corners;
         [Range(4, 30)] public float framesPerSecond = 10;
+        [Tooltip("0이면 계속 반복하고, 양수이면 지정한 횟수 후 첫 프레임에서 멈춘다.")]
+        [Min(0)] public int repeatCount;
         private bool _selected;
         private float _startedAt;
 
@@ -41,7 +43,8 @@ namespace FarmMVP
         private void Update()
         {
             if (!_selected || frames == null || frames.Length < 8 || corners == null || corners.Length < 4) return;
-            int frame = Mathf.FloorToInt((Time.unscaledTime - _startedAt) * framesPerSecond) % 2;
+            int step = Mathf.FloorToInt((Time.unscaledTime - _startedAt) * framesPerSecond);
+            int frame = repeatCount > 0 && step >= repeatCount * 2 ? 0 : step % 2;
             if (frame == CurrentFrame) return;
             CurrentFrame = frame;
             ApplyFrame(frame);

@@ -1,37 +1,31 @@
 fileFormatVersion: 2
-guid: 6bb24c82588339948aa72e1c2c4877db
+guid: 19139f6f1e6e9454d8de75028a21f38e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5277646235868698527
-    second: QuickInventory_highlight_0
+      213: 1393413075830584962
+    second: Inventory Selector_0
   - first:
-      213: -2706548213370066191
-    second: QuickInventory_highlight_1
+      213: -5644142956417722790
+    second: Inventory Selector_1
   - first:
-      213: 3824664110365730693
-    second: QuickInventory_highlight_2
+      213: 2686932790487851025
+    second: Inventory Selector_2
   - first:
-      213: -750255328475812423
-    second: QuickInventory_highlight_3
+      213: -5505283846084818104
+    second: Inventory Selector_3
   - first:
-      213: -3138451701284934907
-    second: QuickInventory_highlight_4
+      213: -5230177832260915211
+    second: Inventory Selector_4
   - first:
-      213: -7712000013341015915
-    second: QuickInventory_highlight_5
+      213: -4946560665032486885
+    second: Inventory Selector_5
   - first:
-      213: 7903087763010503550
-    second: QuickInventory_highlight_6
+      213: 1530938185958956106
+    second: Inventory Selector_6
   - first:
-      213: -1052677493221685953
-    second: QuickInventory_highlight_7
-  - first:
-      213: -4336745837169629210
-    second: QuickInventory_highlight_8
-  - first:
-      213: -5233116516047806011
-    second: QuickInventory_highlight_9
+      213: 8000237825574680738
+    second: Inventory Selector_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -101,8 +95,8 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
-    textureCompression: 1
+    textureFormat: -1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -115,7 +109,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -127,221 +121,177 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: QuickInventory_highlight_0
+      name: Inventory Selector_0
       rect:
         serializedVersion: 2
-        x: 3
+        x: 15
+        y: 85
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28634425fc5665310800000000000000
+      internalID: 1393413075830584962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Selector_1
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 85
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a56d23592e9fba1b0800000000000000
+      internalID: -5644142956417722790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Selector_2
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 63
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 110a0601327e94520800000000000000
+      internalID: 2686932790487851025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Selector_3
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 63
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84b0b6e928d4993b0800000000000000
+      internalID: -5505283846084818104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Selector_4
+      rect:
+        serializedVersion: 2
+        x: 16
         y: 36
-        width: 26
-        height: 26
+        width: 12
+        height: 12
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1686edce5b802c6b0800000000000000
-      internalID: -5277646235868698527
+      spriteID: 5ff27f3e8fcaa67b0800000000000000
+      internalID: -5230177832260915211
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: QuickInventory_highlight_1
+      name: Inventory Selector_5
       rect:
         serializedVersion: 2
-        x: 35
+        x: 36
         y: 36
-        width: 26
-        height: 26
+        width: 12
+        height: 12
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1faeb966db8607ad0800000000000000
-      internalID: -2706548213370066191
+      spriteID: b1091dc78494a5bb0800000000000000
+      internalID: -4946560665032486885
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: QuickInventory_highlight_2
+      name: Inventory Selector_6
       rect:
         serializedVersion: 2
-        x: 67
-        y: 36
-        width: 26
-        height: 26
+        x: 16
+        y: 16
+        width: 12
+        height: 12
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 587e8839ebfe31530800000000000000
-      internalID: 3824664110365730693
+      spriteID: a4c1a2b3b2cfe3510800000000000000
+      internalID: 1530938185958956106
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: QuickInventory_highlight_3
+      name: Inventory Selector_7
       rect:
         serializedVersion: 2
-        x: 99
-        y: 36
-        width: 26
-        height: 26
+        x: 36
+        y: 16
+        width: 12
+        height: 12
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9bdea57f0ce8695f0800000000000000
-      internalID: -750255328475812423
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: QuickInventory_highlight_4
-      rect:
-        serializedVersion: 2
-        x: 131
-        y: 36
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 50be0305ecaf174d0800000000000000
-      internalID: -3138451701284934907
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: QuickInventory_highlight_5
-      rect:
-        serializedVersion: 2
-        x: 163
-        y: 36
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 590400909d879f490800000000000000
-      internalID: -7712000013341015915
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: QuickInventory_highlight_6
-      rect:
-        serializedVersion: 2
-        x: 195
-        y: 36
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e734af6b2786dad60800000000000000
-      internalID: 7903087763010503550
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: QuickInventory_highlight_7
-      rect:
-        serializedVersion: 2
-        x: 227
-        y: 36
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f350971b5632461f0800000000000000
-      internalID: -1052677493221685953
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: QuickInventory_highlight_8
-      rect:
-        serializedVersion: 2
-        x: 3
-        y: 4
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6e7a95e53a8c0d3c0800000000000000
-      internalID: -4336745837169629210
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: QuickInventory_highlight_9
-      rect:
-        serializedVersion: 2
-        x: 35
-        y: 4
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5c1adb0414c3067b0800000000000000
-      internalID: -5233116516047806011
+      spriteID: 2a8b5005aed860f60800000000000000
+      internalID: 8000237825574680738
       vertices: []
       indices: 
       edges: []
@@ -350,7 +300,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 8a916a22bf279c347af56e8cc1715587
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -358,20 +308,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      QuickInventory_highlight_0: -5277646235868698527
-      QuickInventory_highlight_1: -2706548213370066191
-      QuickInventory_highlight_2: 3824664110365730693
-      QuickInventory_highlight_3: -750255328475812423
-      QuickInventory_highlight_4: -3138451701284934907
-      QuickInventory_highlight_5: -7712000013341015915
-      QuickInventory_highlight_6: 7903087763010503550
-      QuickInventory_highlight_7: -1052677493221685953
-      QuickInventory_highlight_8: -4336745837169629210
-      QuickInventory_highlight_9: -5233116516047806011
+      Inventory Selector_0: 1393413075830584962
+      Inventory Selector_1: -5644142956417722790
+      Inventory Selector_2: 2686932790487851025
+      Inventory Selector_3: -5505283846084818104
+      Inventory Selector_4: -5230177832260915211
+      Inventory Selector_5: -4946560665032486885
+      Inventory Selector_6: 1530938185958956106
+      Inventory Selector_7: 8000237825574680738
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

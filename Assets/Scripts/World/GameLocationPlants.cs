@@ -48,14 +48,16 @@ namespace FarmMVP
             root.SetParent(_featureRoot, false);
             root.position = new Vector3(pos.x, pos.y - 0.5f, 0f);
 
-            foreach (var tuft in plant.Tufts())
+            var tufts = plant.Tufts();
+            for (int i = 0; i < tufts.Length; i++)
             {
+                var tuft = tufts[i];
                 var go = new GameObject("tuft");
                 go.transform.SetParent(root, false);
                 go.transform.localPosition = new Vector3(tuft.x, tuft.y, 0f);
 
                 var sr = go.AddComponent<SpriteRenderer>();
-                sr.sprite = sprite;
+                sr.sprite = plant.GetSprite(i);
                 sr.flipX = tuft.flip;
                 // 같은 칸 안에서도 아래쪽 포기가 앞에 오도록 포기의 실제 높이로 정렬한다.
                 sr.sortingOrder = Depth.YSort(pos.y + tuft.y, Depth.PlantBias);
@@ -196,7 +198,7 @@ namespace FarmMVP
                 // 잡초는 "경작할 수 있는 땅"에만 난다 — Tillable 마스크를 칠해 둔 구역이 곧 들판이다.
                 if (!IsTillable(x, y) || !CanSowPlant(x, y)) continue;
 
-                AddPlant(x, y, def.plantId, Random.Range(0, PlantArt.Variants));
+                AddPlant(x, y, def.plantId, Random.Range(0, Mathf.Max(1, PlantArt.VariantCount(def.sheet, Seasons.Current))));
                 living++;
             }
         }

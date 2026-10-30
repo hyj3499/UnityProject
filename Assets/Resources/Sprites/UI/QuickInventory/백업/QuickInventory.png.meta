@@ -1,13 +1,25 @@
 fileFormatVersion: 2
-guid: 5248ad1f3767d204ba39f4f835e4477c
+guid: 845dc9ab4233363458cb7fc7499ae778
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6541613771402717789
-    second: "weed_spring - \uBCF5\uC0AC\uBCF8_0"
+      213: 8211420276958200931
+    second: QuickInventory_0
   - first:
-      213: -2924655726149469719
-    second: "weed_spring - \uBCF5\uC0AC\uBCF8_1"
+      213: 8012397055222129964
+    second: QuickInventory_1
+  - first:
+      213: 5943128495618995853
+    second: QuickInventory_2
+  - first:
+      213: 3850436069899846496
+    second: QuickInventory_3
+  - first:
+      213: 2962952599627851365
+    second: QuickInventory_4
+  - first:
+      213: 1530706537011427330
+    second: QuickInventory_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,13 +115,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "weed_spring - \uBCF5\uC0AC\uBCF8_0"
+      name: QuickInventory_0
       rect:
         serializedVersion: 2
         x: 1
-        y: 0
-        width: 13
-        height: 11
+        y: 17
+        width: 29
+        height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,20 +130,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d5a234ee01b78ca50800000000000000
-      internalID: 6541613771402717789
+      spriteID: 36488856c33d4f170800000000000000
+      internalID: 8211420276958200931
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "weed_spring - \uBCF5\uC0AC\uBCF8_1"
+      name: QuickInventory_1
       rect:
         serializedVersion: 2
-        x: 15
-        y: 0
-        width: 30
-        height: 12
+        x: 49
+        y: 17
+        width: 29
+        height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,8 +152,96 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9e97c80dc198967d0800000000000000
-      internalID: -2924655726149469719
+      spriteID: c25a6e39ba0c13f60800000000000000
+      internalID: 8012397055222129964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuickInventory_2
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 17
+        width: 29
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d863fd3f0eb3a7250800000000000000
+      internalID: 5943128495618995853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuickInventory_3
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 4
+        width: 27
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0634bb0843f7f6530800000000000000
+      internalID: 3850436069899846496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuickInventory_4
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 4
+        width: 27
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5666323e0b58e1920800000000000000
+      internalID: 2962952599627851365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuickInventory_5
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 4
+        width: 27
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2083fe14c792e3510800000000000000
+      internalID: 1530706537011427330
       vertices: []
       indices: 
       edges: []
@@ -160,8 +260,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "weed_spring - \uBCF5\uC0AC\uBCF8_0": 6541613771402717789
-      "weed_spring - \uBCF5\uC0AC\uBCF8_1": -2924655726149469719
+      QuickInventory_0: 8211420276958200931
+      QuickInventory_1: 8012397055222129964
+      QuickInventory_2: 5943128495618995853
+      QuickInventory_3: 3850436069899846496
+      QuickInventory_4: 2962952599627851365
+      QuickInventory_5: 1530706537011427330
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

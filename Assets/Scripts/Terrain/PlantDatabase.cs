@@ -6,7 +6,7 @@ namespace FarmMVP
     /// 땅을 덮는 풀 한 종류의 정의 (잔디·잡초). 나무(TreeDef)와 달리 칸을 막지 않고,
     /// 밟고 지나갈 수 있으며, 한 칸 안에 여러 포기가 조금씩 어긋나게 심긴다.
     ///
-    /// 새 풀 = 그림 {sheet}_{계절}.png (45x12) + 여기 Register 한 줄.
+    /// 새 풀 = 잘라 둔 그림 {sheet}_{계절}.png + 여기 Register 한 줄.
     /// </summary>
     public class PlantDef
     {
@@ -18,7 +18,7 @@ namespace FarmMVP
         /// <summary>Resources/Sprites/Plants/{sheet}_{계절}.png 의 앞부분 (PlantArt 참고).</summary>
         public string sheet;
 
-        /// <summary>마지막 성장 단계. 0이면 자라지 않는다 (잡초) — 그때는 조각 3개가 생김새 3종이 된다.</summary>
+        /// <summary>마지막 성장 단계. 0이면 자라지 않고 시트의 조각들을 생김새 종류로 섞는다 (잡초).</summary>
         public int maxStage;
         public int daysPerStage;
 
@@ -93,14 +93,14 @@ namespace FarmMVP
                 plantId = WeedId,
                 name = "@items.plantdatabase.weeds",
                 sheet = "weed",
-                maxStage = 0,           // 자라지 않는다 — 조각 3개는 생김새 3종으로 쓴다
+                maxStage = 0,           // 자라지 않는다 — 시트의 모든 생김새를 포기마다 섞는다
                 daysPerStage = 0,
                 // 저절로 아무 데나 나지 않는다 — 나뭇가지·돌멩이와 같은 규칙으로 계절 첫날 깔리고
                 // 밤마다 이웃 칸으로 번진다 (GameLocationDebris). 그래서 sowAttemptsPerDay는 0이다.
                 maxPerLocation = 400,
-                // 잡초는 15x12로 납작해서 세로로 넓게 흩어도 뭉쳐 보이지 않는다.
-                tuftsMin = 4, tuftsMax = 5,
-                scatterX = 0.4f, scatterY = 0.45f,
+                // 외따로 선 한 포기부터 풍성한 무더기까지 칸마다 밀도를 달리한다.
+                tuftsMin = 1, tuftsMax = 6,
+                scatterX = 0.45f, scatterY = 0.6f,
             });
         }
 

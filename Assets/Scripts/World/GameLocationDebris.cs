@@ -5,10 +5,10 @@ namespace FarmMVP
 {
     /// <summary>
     /// 농장 바닥에 놓이는 잔해(나뭇가지·돌멩이·큰 통나무·큰 바위)를 다루는 GameLocation의 반쪽.
-    /// <b>잡초</b>도 풀이지만 생기고 번지는 규칙은 나뭇가지·돌멩이와 똑같아서 여기서 함께 다룬다.
+    /// <b>잡초</b>도 같은 날짜에 생성하며, 군락·작은 무리·떨어진 개별 칸을 섞어 깐다.
     ///
     ///   · 계절 첫날에는 빈 칸에 새로 깔린다. 해가 바뀌는 봄 1일에는 훨씬 많이 깔린다.
-    ///   · 그 밖의 날에는 <b>이미 있는</b> 것이 밤마다 둘레 여덟 칸으로 번진다 — 치우지 않고
+    ///   · 그 밖의 날에는 <b>이미 있는</b> 것이 밤마다 이웃 칸으로 번진다 — 치우지 않고
     ///     두면 농장 전체로 불어난다. 번지는 자리에 작물이나 설치물이 있으면 확률적으로 뭉개 버린다.
     ///   · 큰 것(variant 2·3)은 이 규칙 밖이다. 마커로 직접 놓은 것만 있고, 부수면 다시 생기지 않는다.
     ///
@@ -32,14 +32,19 @@ namespace FarmMVP
 
         // ---- 새로 깔리는 양: "빈 칸 중 몇 %에" (나뭇가지·돌멩이·잡초 각각) ----
         /// <summary>계절 첫날 (여름·가을·겨울 1일).</summary>
-        private const float SeasonWoodRatio = 0.007f, SeasonStoneRatio = 0.007f, SeasonWeedRatio = 0.007f;
+        private const float SeasonWoodRatio = 0.007f, SeasonStoneRatio = 0.007f;
         /// <summary>새해 첫날 (봄 1일)과 처음 들어간 농장.</summary>
         private const float NewYearWoodRatio = 0.10f, NewYearStoneRatio = 0.10f, NewYearWeedRatio = 0.20f;
         /// <summary>빈 칸이 적어도 종류마다 최소 이만큼은 깐다.</summary>
         private const int SeasonMinPerKind = 1, NewYearMinPerKind = 3;
 
+        /// <summary>잡초 한 군락의 칸 수. 상하좌우로 이어 붙여 넓고 빽빽하게 자라게 한다.</summary>
+        private const int WeedPatchMinTiles = 16, WeedPatchMaxTiles = 32;
+
         /// <summary>작은 잔해 하나가 하룻밤에 옆 칸으로 번질 확률.</summary>
         private const float DebrisSpreadChance = 0.08f;
+        /// <summary>잡초 한 칸이 밤에 한 번 이웃으로 번질 확률.</summary>
+        private const float WeedSpreadChance = 0.04f;
         /// <summary>번지려는 칸에 작물·설치물이 있을 때 그것을 뭉개고 들어설 확률.</summary>
         private const float DebrisCrushChance = 0.3f;
 
@@ -158,7 +163,94 @@ namespace FarmMVP
             => Seasons.AllowsNow(WeedDef.seasons) && CountPlants(PlantDatabase.WeedId) < WeedDef.maxPerLocation;
 
         private void AddWeed(Vector2Int pos)
-            => AddPlant(pos.x, pos.y, PlantDatabase.WeedId, Random.Range(0, PlantArt.Variants));
+            => AddPlant(pos.x, pos.y, PlantDatabase.WeedId,
+                Random.Range(0, Mathf.Max(1, PlantArt.VariantCount(WeedDef.sheet, Seasons.Current))));
+
+        /// <summary>씨앗 칸에서 빈 이웃 칸을 차례로 채운다. 모든 새 칸은 군락과 변을 맞댄다.</summary>
+        private int GrowWeedPatch(Vector2Int seed, int budget)
+        {
+            var frontier = new List<Vector2Int> { seed };
+            var visited = new HashSet<Vector2Int> { seed };
+            int added = 0;
+            while (frontier.Count > 0 && added < budget)
+            {
+                int pick = Random.Range(0, frontier.Count);
+                var pos = frontier[pick];
+                frontier[pick] = frontier[frontier.Count - 1];
+                frontier.RemoveAt(frontier.Count - 1);
+                if (!CanHoldDebris(pos.x, pos.y)) continue;
+
+                AddWeed(pos);
+                added++;
+                for (int i = 0; i < 4; i++)
+                {
+                    var next = pos + Neighbor(i);
+                    if (InBounds(next.x, next.y) && visited.Add(next)) frontier.Add(next);
+                }
+            }
+            return added;
+        }
+
+        private void SowWeedsNaturally(List<Vector2Int> free, int budget)
+        {
+            budget = Mathf.Min(budget, Mathf.Max(0, WeedDef.maxPerLocation - CountPlants(PlantDatabase.WeedId)));
+            if (budget <= 0) return;
+
+            // 생성 칸의 약 45%는 큰 군락, 25%는 작은 무리, 나머지는 떨어진 개별 칸.
+            // 개별 칸은 마지막에 놓아 뒤에 생성되는 군락에 흡수되지 않게 한다.
+            int largeBudget = Mathf.RoundToInt(budget * 0.45f);
+            int smallBudget = Mathf.RoundToInt(budget * 0.25f);
+            int added = SowWeedGroups(free, largeBudget, WeedPatchMinTiles, WeedPatchMaxTiles);
+            added += SowWeedGroups(free, smallBudget, 2, 5);
+            added += SowScatteredWeeds(free, budget - added, true);
+
+            // 좁거나 이미 풀이 많은 맵에서는 고립될 자리가 부족할 수 있다.
+            // 남은 예산만 빈 칸에 뿌리고, 원래 생성량과 맵 상한은 지킨다.
+            SowScatteredWeeds(free, budget - added, false);
+        }
+
+        private int SowWeedGroups(List<Vector2Int> free, int budget, int minSize, int maxSize)
+        {
+            var candidates = new List<Vector2Int>(free);
+            int added = 0;
+            while (candidates.Count > 0 && added < budget)
+            {
+                int pick = Random.Range(0, candidates.Count);
+                var seed = candidates[pick];
+                candidates[pick] = candidates[candidates.Count - 1];
+                candidates.RemoveAt(candidates.Count - 1);
+                if (!CanHoldDebris(seed.x, seed.y)) continue;
+                int size = Mathf.Min(budget - added, Random.Range(minSize, maxSize + 1));
+                added += GrowWeedPatch(seed, size);
+            }
+            return added;
+        }
+
+        private int SowScatteredWeeds(List<Vector2Int> free, int budget, bool isolated)
+        {
+            var candidates = new List<Vector2Int>(free);
+            int added = 0;
+            while (candidates.Count > 0 && added < budget)
+            {
+                int pick = Random.Range(0, candidates.Count);
+                var pos = candidates[pick];
+                candidates[pick] = candidates[candidates.Count - 1];
+                candidates.RemoveAt(candidates.Count - 1);
+                if (!CanHoldDebris(pos.x, pos.y)) continue;
+                if (isolated && HasNeighboringWeed(pos)) continue;
+                AddWeed(pos);
+                added++;
+            }
+            return added;
+        }
+
+        private bool HasNeighboringWeed(Vector2Int pos)
+        {
+            foreach (var offset in Around8)
+                if (plants.TryGetValue(pos + offset, out var plant) && plant.plantId == PlantDatabase.WeedId)
+                    return true;
+            return false;
+        }
 
         private void RemoveDebris(Vector2Int anchor)
         {
@@ -200,14 +292,14 @@ namespace FarmMVP
             {
                 if (Seasons.DayOfSeason(day) != 1) SpreadDebris();
                 else if (Seasons.Of(day) == Season.Spring) ScatterNewYear();
-                else Scatter(SeasonWoodRatio, SeasonStoneRatio, SeasonWeedRatio, SeasonMinPerKind);
+                else Scatter(SeasonWoodRatio, SeasonStoneRatio, 0f, SeasonMinPerKind);
             }
         }
 
         private void ScatterNewYear()
             => Scatter(NewYearWoodRatio, NewYearStoneRatio, NewYearWeedRatio, NewYearMinPerKind);
 
-        /// <summary>빈 칸 중 일부에 나뭇가지·돌멩이·잡초를 무작위로 깐다. 비율은 종류마다 따로다.</summary>
+        /// <summary>잡초는 여러 크기의 무리와 개별 칸을 섞고, 나뭇가지·돌멩이는 남은 빈 칸에 흩뿌린다.</summary>
         private void Scatter(float woodRatio, float stoneRatio, float weedRatio, int minPerKind)
         {
             var free = new List<Vector2Int>();
@@ -218,25 +310,28 @@ namespace FarmMVP
             int total = free.Count;
             int wood = Mathf.Max(minPerKind, Mathf.RoundToInt(total * woodRatio));
             int stone = Mathf.Max(minPerKind, Mathf.RoundToInt(total * stoneRatio));
-            int weed = Seasons.AllowsNow(WeedDef.seasons) ? Mathf.Max(minPerKind, Mathf.RoundToInt(total * weedRatio)) : 0;
+            int weed = weedRatio > 0f && Seasons.AllowsNow(WeedDef.seasons)
+                ? Mathf.Max(WeedPatchMinTiles, Mathf.Max(minPerKind, Mathf.RoundToInt(total * weedRatio))) : 0;
 
-            // 칸을 한 번씩만 뽑아 쓰므로 종류끼리 같은 칸에 겹치지 않는다.
-            while (free.Count > 0 && (wood > 0 || stone > 0 || weed > 0))
+            // 잔해를 먼저 흩뿌리면 군락이 중간중간 끊기므로, 잡초 자리를 먼저 잡는다.
+            if (weed > 0) SowWeedsNaturally(free, weed);
+
+            while (free.Count > 0 && (wood > 0 || stone > 0))
             {
                 int pick = Random.Range(0, free.Count);
                 var pos = free[pick];
                 free[pick] = free[free.Count - 1];
                 free.RemoveAt(free.Count - 1);
+                if (!CanHoldDebris(pos.x, pos.y)) continue;
 
                 // 남은 개수에 비례해 종류를 고른다 — 한 종류가 먼저 다 깔리고 나머지가 몰리지 않는다.
-                int roll = Random.Range(0, wood + stone + weed);
+                int roll = Random.Range(0, wood + stone);
                 if (roll < wood) { wood--; if (debris.Count < MaxDebrisPerLocation) AddSmallDebris(pos, DebrisKind.Wood); }
-                else if (roll < wood + stone) { stone--; if (debris.Count < MaxDebrisPerLocation) AddSmallDebris(pos, DebrisKind.Stone); }
-                else { weed--; if (CanAddWeed()) AddWeed(pos); }
+                else { stone--; if (debris.Count < MaxDebrisPerLocation) AddSmallDebris(pos, DebrisKind.Stone); }
             }
         }
 
-        /// <summary>작은 잔해와 잡초가 둘레 여덟 칸 중 하나로 번진다. 번진 자리에는 같은 것이 생긴다.</summary>
+        /// <summary>작은 잔해는 둘레 여덟 칸, 잡초는 변을 맞댄 네 칸으로 번진다.</summary>
         private void SpreadDebris()
         {
             // 번지는 도중에 목록이 커지므로 지금 있는 것만 훑는다.
@@ -257,8 +352,16 @@ namespace FarmMVP
             foreach (var from in weeds)
             {
                 if (!CanAddWeed()) break;
-                if (TrySpreadFrom(from, out var to)) AddWeed(to);
+                if (TrySpreadWeedFrom(from, out var to)) AddWeed(to);
             }
+        }
+
+        private bool TrySpreadWeedFrom(Vector2Int from, out Vector2Int to)
+        {
+            // 성공해도 다른 방향을 다시 찾지 않는다. 이 실패가 군락의 가장자리를 들쭉날쭉하게 만든다.
+            to = from + Neighbor(Random.Range(0, 4));
+            if (Random.value > WeedSpreadChance) return false;
+            return CanHoldDebris(to.x, to.y) || TryCrush(to);
         }
 
         /// <summary>이번 밤에 번지는지 굴려 보고, 번진다면 들어설 수 있는 이웃 칸을 돌려준다.</summary>
